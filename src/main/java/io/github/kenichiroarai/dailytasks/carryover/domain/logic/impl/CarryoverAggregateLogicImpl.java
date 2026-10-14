@@ -45,7 +45,8 @@ public class CarryoverAggregateLogicImpl implements CarryoverAggregateLogic {
 
         /* 日付のある Issue を日付順に並べる */
         final List<CarryoverIssueModel> sorted = issues.stream().filter(issue -> issue.getDate() != null)
-            .sorted(Comparator.comparing(CarryoverIssueModel::getDate).thenComparingInt(CarryoverIssueModel::getNumber)).toList();
+            .sorted(Comparator.comparing(CarryoverIssueModel::getDate).thenComparingInt(CarryoverIssueModel::getNumber))
+            .toList();
 
         /* 日別の集計 */
         final List<DailySummaryModel> days       = new ArrayList<>();
@@ -62,7 +63,8 @@ public class CarryoverAggregateLogicImpl implements CarryoverAggregateLogic {
 
             }
 
-            final DailySummaryModel day = new DailySummaryModel(issue.getDate(), issue.getNumber(), issue.getDeclaredCount());
+            final DailySummaryModel day
+                = new DailySummaryModel(issue.getDate(), issue.getNumber(), issue.getDeclaredCount());
 
             for (final CarryoverItemModel item : issue.getItems()) {
 

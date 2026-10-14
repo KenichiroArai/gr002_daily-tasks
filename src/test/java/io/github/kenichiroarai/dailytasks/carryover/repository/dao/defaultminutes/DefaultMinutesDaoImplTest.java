@@ -34,8 +34,7 @@ public class DefaultMinutesDaoImplTest {
      */
     private static DefaultMinutesDaoImpl createTarget() {
 
-        final DefaultMinutesDaoImpl result
-            = new DefaultMinutesDaoImpl(new JsonMapper(), MessageLogicTestUtil.create());
+        final DefaultMinutesDaoImpl result = new DefaultMinutesDaoImpl(new JsonMapper(), MessageLogicTestUtil.create());
         return result;
 
     }

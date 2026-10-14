@@ -59,8 +59,8 @@ public class CarryoverJsonConvertLogic {
      */
     private static CarryoverItemJsonDto toCarryoverItemJson(final CarryoverItemDto dto) {
 
-        final CarryoverItemJsonDto result = new CarryoverItemJsonDto(dto.getName(), dto.getOriginDate(), dto.isChecked(),
-            dto.getMinutes(), dto.getMinutesSource(), dto.getSection(), dto.getRaw());
+        final CarryoverItemJsonDto result = new CarryoverItemJsonDto(dto.getName(), dto.getOriginDate(),
+            dto.isChecked(), dto.getMinutes(), dto.getMinutesSource(), dto.getSection(), dto.getRaw());
         return result;
 
     }
@@ -75,8 +75,9 @@ public class CarryoverJsonConvertLogic {
      */
     private static DailySummaryJsonDto toDailySummaryJson(final DailySummaryDto dto) {
 
-        final DailySummaryJsonDto result = new DailySummaryJsonDto(dto.getDate(), dto.getIssue(), dto.getDeclaredCount(),
-            CarryoverJsonConvertLogic.toItemStatJson(dto.getTotal()), CarryoverJsonConvertLogic.toItemStatJsons(dto.getByItem()),
+        final DailySummaryJsonDto result = new DailySummaryJsonDto(dto.getDate(), dto.getIssue(),
+            dto.getDeclaredCount(), CarryoverJsonConvertLogic.toItemStatJson(dto.getTotal()),
+            CarryoverJsonConvertLogic.toItemStatJsons(dto.getByItem()),
             CarryoverJsonConvertLogic.toItemStatJsons(dto.getByOriginMonth()));
         return result;
 
@@ -130,8 +131,8 @@ public class CarryoverJsonConvertLogic {
      */
     public CarryoverIssueDto toCarryoverIssueDto(final CarryoverIssueJsonDto json) {
 
-        final List<CarryoverItemDto> items  = json.getItems().stream().map(CarryoverJsonConvertLogic::toCarryoverItemDto)
-            .toList();
+        final List<CarryoverItemDto> items  = json.getItems().stream()
+            .map(CarryoverJsonConvertLogic::toCarryoverItemDto).toList();
         final CarryoverIssueDto      result = new CarryoverIssueDto(json.getNumber(), json.getTitle(), json.getDate(),
             json.getState(), json.getUpdatedAt(), json.getSections(), json.getDeclaredCount(), json.getCount(),
             json.getMinutes(), items);
@@ -149,11 +150,11 @@ public class CarryoverJsonConvertLogic {
      */
     public CarryoverIssueJsonDto toCarryoverIssueJson(final CarryoverIssueDto dto) {
 
-        final List<CarryoverItemJsonDto> items  = dto.getItems().stream().map(CarryoverJsonConvertLogic::toCarryoverItemJson)
-            .toList();
-        final CarryoverIssueJsonDto      result = new CarryoverIssueJsonDto(dto.getNumber(), dto.getTitle(), dto.getDate(),
-            dto.getState(), dto.getUpdatedAt(), dto.getSections(), dto.getDeclaredCount(), dto.getCount(),
-            dto.getMinutes(), items);
+        final List<CarryoverItemJsonDto> items  = dto.getItems().stream()
+            .map(CarryoverJsonConvertLogic::toCarryoverItemJson).toList();
+        final CarryoverIssueJsonDto      result = new CarryoverIssueJsonDto(dto.getNumber(), dto.getTitle(),
+            dto.getDate(), dto.getState(), dto.getUpdatedAt(), dto.getSections(), dto.getDeclaredCount(),
+            dto.getCount(), dto.getMinutes(), items);
         return result;
 
     }
@@ -168,9 +169,10 @@ public class CarryoverJsonConvertLogic {
      */
     public CarryoverSummaryJsonDto toCarryoverSummaryJson(final CarryoverSummaryDto dto) {
 
-        final List<DailySummaryJsonDto> days   = dto.getDays().stream().map(CarryoverJsonConvertLogic::toDailySummaryJson)
-            .toList();
-        final CarryoverSummaryJsonDto   result = new CarryoverSummaryJsonDto(dto.getLatestIssue(), dto.getItems(), days);
+        final List<DailySummaryJsonDto> days   = dto.getDays().stream()
+            .map(CarryoverJsonConvertLogic::toDailySummaryJson).toList();
+        final CarryoverSummaryJsonDto   result = new CarryoverSummaryJsonDto(dto.getLatestIssue(), dto.getItems(),
+            days);
         return result;
 
     }

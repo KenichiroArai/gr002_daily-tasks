@@ -40,7 +40,8 @@ public class CarryoverSummaryJsonDto {
      * @param days
      *                    日別の集計（日付順）
      */
-    public CarryoverSummaryJsonDto(final int latestIssue, final List<String> items, final List<DailySummaryJsonDto> days) {
+    public CarryoverSummaryJsonDto(final int latestIssue, final List<String> items,
+        final List<DailySummaryJsonDto> days) {
 
         this.latestIssue = latestIssue;
         this.items = List.copyOf(items);

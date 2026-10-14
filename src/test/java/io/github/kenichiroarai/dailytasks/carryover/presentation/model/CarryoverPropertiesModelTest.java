@@ -26,8 +26,8 @@ public class CarryoverPropertiesModelTest {
      */
     private static CarryoverPropertiesModel createTarget() {
 
-        final CarryoverPropertiesModel result
-            = new CarryoverPropertiesModel("owner/repo", "secret-token", "docs/data", "config/default-minutes.json", 10);
+        final CarryoverPropertiesModel result = new CarryoverPropertiesModel("owner/repo", "secret-token", "docs/data",
+            "config/default-minutes.json", 10);
         return result;
 
     }

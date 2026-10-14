@@ -24,8 +24,8 @@ public class CarryoverItemJsonDtoTest {
      */
     private static CarryoverItemJsonDto createTarget() {
 
-        final CarryoverItemJsonDto result
-            = new CarryoverItemJsonDto("音楽", "2026-08-18", true, 11.5, "parsed", "持ち越し", "- [x] 音楽2026/08/18（残り時間：11.5分）");
+        final CarryoverItemJsonDto result = new CarryoverItemJsonDto("音楽", "2026-08-18", true, 11.5, "parsed", "持ち越し",
+            "- [x] 音楽2026/08/18（残り時間：11.5分）");
         return result;
 
     }

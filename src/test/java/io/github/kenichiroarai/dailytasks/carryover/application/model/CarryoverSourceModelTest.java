@@ -26,8 +26,8 @@ public class CarryoverSourceModelTest {
      */
     private static CarryoverSourceModel createTarget() {
 
-        final CarryoverSourceModel result = new CarryoverSourceModel("owner/repo", "test-token", Path.of("docs", "data"),
-            Path.of("config", "default-minutes.json"));
+        final CarryoverSourceModel result = new CarryoverSourceModel("owner/repo", "test-token",
+            Path.of("docs", "data"), Path.of("config", "default-minutes.json"));
         return result;
 
     }

@@ -2,6 +2,7 @@ package io.github.kenichiroarai.dailytasks.carryover.presentation.command.impl;
 
 import java.io.IOException;
 import java.io.PrintStream;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -15,8 +16,7 @@ import io.github.kenichiroarai.dailytasks.carryover.presentation.service.Carryov
 /**
  * 持ち越しの収集コマンドの実装<br>
  * <p>
- * 入力の窓口として、設定ファイル（application.properties）の値とコマンドライン引数を presentation 層のサービス（application
- * 層が実装する）へ引き継ぐ。Spring Boot の起動後に
+ * 入力の窓口として、設定ファイル（application.properties）の値とコマンドライン引数を presentation 層のサービス（application 層が実装する）へ引き継ぐ。Spring Boot の起動後に
  * {@link CommandLineRunner} として実行される。daily-tasks-git のルートをカレントディレクトリとして実行する。
  * </p>
  *

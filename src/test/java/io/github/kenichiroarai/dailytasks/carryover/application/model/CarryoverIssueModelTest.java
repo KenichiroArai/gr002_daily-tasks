@@ -22,12 +22,12 @@ import io.github.kenichiroarai.dailytasks.carryover.application.types.MinutesSou
 public class CarryoverIssueModelTest {
 
     /** テスト用の持ち越し項目（未チェック、15分） */
-    private static final CarryoverItemModel ITEM1 = new CarryoverItemModel("国語", "2026-06-18", false, 15, MinutesSourceTypes.PARSED,
-        "持ち越し", "- [ ] 国語2026/06/18（残り時間：15分）");
+    private static final CarryoverItemModel ITEM1 = new CarryoverItemModel("国語", "2026-06-18", false, 15,
+        MinutesSourceTypes.PARSED, "持ち越し", "- [ ] 国語2026/06/18（残り時間：15分）");
 
     /** テスト用の持ち越し項目（チェック済み、8.5分） */
-    private static final CarryoverItemModel ITEM2 = new CarryoverItemModel("音楽", "2026-08-18", true, 8.5, MinutesSourceTypes.PARSED,
-        "持ち越し", "- [x] 音楽2026/08/18（残り時間：8.5分）");
+    private static final CarryoverItemModel ITEM2 = new CarryoverItemModel("音楽", "2026-08-18", true, 8.5,
+        MinutesSourceTypes.PARSED, "持ち越し", "- [x] 音楽2026/08/18（残り時間：8.5分）");
 
     /**
      * テスト用の解析結果を作成する<br>
@@ -123,7 +123,8 @@ public class CarryoverIssueModelTest {
     public void testGetItems_normalValue() {
 
         /* 期待値の定義 */
-        final List<CarryoverItemModel> expectedItems = List.of(CarryoverIssueModelTest.ITEM1, CarryoverIssueModelTest.ITEM2);
+        final List<CarryoverItemModel> expectedItems
+            = List.of(CarryoverIssueModelTest.ITEM1, CarryoverIssueModelTest.ITEM2);
 
         /* 準備 */
         final CarryoverIssueModel testTarget = CarryoverIssueModelTest.createIssue("open", List.of("持ち越し"));

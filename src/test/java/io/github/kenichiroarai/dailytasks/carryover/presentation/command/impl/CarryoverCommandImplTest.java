@@ -169,8 +169,8 @@ public class CarryoverCommandImplTest {
         final StubCarryoverService testService = new StubCarryoverService();
 
         /* テスト対象の実行 */
-        final CarryoverCommandImpl testTarget = new CarryoverCommandImpl(testService,
-            CarryoverCommandImplTest.PROPERTIES, MessageLogicTestUtil.create());
+        final CarryoverCommandImpl testTarget
+            = new CarryoverCommandImpl(testService, CarryoverCommandImplTest.PROPERTIES, MessageLogicTestUtil.create());
 
         /* 検証の準備 */
         final Object      actualService = ReflectionTestUtil.getField(testTarget, "carryoverService");

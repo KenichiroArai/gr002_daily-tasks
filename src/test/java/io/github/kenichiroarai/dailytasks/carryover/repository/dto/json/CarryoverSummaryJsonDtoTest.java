@@ -28,8 +28,8 @@ public class CarryoverSummaryJsonDtoTest {
     private static CarryoverSummaryJsonDto createTarget() {
 
         final ItemStatJsonDto         total  = new ItemStatJsonDto(1, 30, 0, 0);
-        final DailySummaryJsonDto     day    = new DailySummaryJsonDto("2026-03-24", 175, null, total, Map.of("英語", total),
-            Map.of());
+        final DailySummaryJsonDto     day    = new DailySummaryJsonDto("2026-03-24", 175, null, total,
+            Map.of("英語", total), Map.of());
         final CarryoverSummaryJsonDto result = new CarryoverSummaryJsonDto(374, List.of("英語"), List.of(day));
         return result;
 

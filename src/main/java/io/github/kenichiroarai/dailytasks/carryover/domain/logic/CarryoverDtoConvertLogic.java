@@ -72,7 +72,8 @@ public class CarryoverDtoConvertLogic {
     private static DailySummaryDto toDailySummaryDto(final DailySummaryModel day) {
 
         final DailySummaryDto result = new DailySummaryDto(day.getDate(), day.getIssue(), day.getDeclaredCount(),
-            CarryoverDtoConvertLogic.toItemStatDto(day.getTotal()), CarryoverDtoConvertLogic.toItemStatDtos(day.getByItem()),
+            CarryoverDtoConvertLogic.toItemStatDto(day.getTotal()),
+            CarryoverDtoConvertLogic.toItemStatDtos(day.getByItem()),
             CarryoverDtoConvertLogic.toItemStatDtos(day.getByOriginMonth()));
         return result;
 
@@ -161,8 +162,8 @@ public class CarryoverDtoConvertLogic {
      */
     public CarryoverIssueDto toCarryoverIssueDto(final CarryoverIssueModel issue) {
 
-        final List<CarryoverItemDto> items  = issue.getItems().stream().map(CarryoverDtoConvertLogic::toCarryoverItemDto)
-            .toList();
+        final List<CarryoverItemDto> items  = issue.getItems().stream()
+            .map(CarryoverDtoConvertLogic::toCarryoverItemDto).toList();
         final CarryoverIssueDto      result = new CarryoverIssueDto(issue.getNumber(), issue.getTitle(),
             issue.getDate(), issue.getState(), issue.getUpdatedAt(), issue.getSections(), issue.getDeclaredCount(),
             issue.getCount(), issue.getMinutes(), items);
@@ -195,8 +196,8 @@ public class CarryoverDtoConvertLogic {
 
         }
 
-        result = new CarryoverItemModel(dto.getName(), dto.getOriginDate(), dto.isChecked(), dto.getMinutes(), minutesSource,
-            dto.getSection(), dto.getRaw());
+        result = new CarryoverItemModel(dto.getName(), dto.getOriginDate(), dto.isChecked(), dto.getMinutes(),
+            minutesSource, dto.getSection(), dto.getRaw());
         return result;
 
     }
@@ -229,8 +230,8 @@ public class CarryoverDtoConvertLogic {
      */
     public DailyTaskIssueModel toDailyTaskIssue(final GitHubIssueDto dto) {
 
-        final DailyTaskIssueModel result
-            = new DailyTaskIssueModel(dto.getNumber(), dto.getTitle(), dto.getState(), dto.getUpdatedAt(), dto.getBody());
+        final DailyTaskIssueModel result = new DailyTaskIssueModel(dto.getNumber(), dto.getTitle(), dto.getState(),
+            dto.getUpdatedAt(), dto.getBody());
         return result;
 
     }

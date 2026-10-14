@@ -26,8 +26,8 @@ import io.github.kenichiroarai.dailytasks.carryover.presentation.service.Carryov
 /**
  * 持ち越しの収集・集計サービスの実装<br>
  * <p>
- * presentation 層のサービスを実装する。application 層のインタフェース（実装は domain 層）だけを使って、取得・解析・保存・集計の流れを組み立てる。
- * 設定は呼び出しごとに受け取り、application 層のデータの取得元に変換して渡す。
+ * presentation 層のサービスを実装する。application 層のインタフェース（実装は domain 層）だけを使って、取得・解析・保存・集計の流れを組み立てる。 設定は呼び出しごとに受け取り、application
+ * 層のデータの取得元に変換して渡す。
  * </p>
  *
  * @author KenichiroArai
@@ -127,8 +127,8 @@ public class CarryoverServiceImpl implements CarryoverService {
      */
     private static int recentFrom(final List<DailyTaskIssueModel> issues, final int count) {
 
-        final int result = issues.stream().map(DailyTaskIssueModel::getNumber).sorted(Comparator.reverseOrder()).limit(count)
-            .min(Comparator.naturalOrder()).orElse(0);
+        final int result = issues.stream().map(DailyTaskIssueModel::getNumber).sorted(Comparator.reverseOrder())
+            .limit(count).min(Comparator.naturalOrder()).orElse(0);
         return result;
 
     }

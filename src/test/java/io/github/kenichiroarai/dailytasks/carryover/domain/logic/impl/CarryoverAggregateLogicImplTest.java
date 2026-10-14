@@ -82,7 +82,8 @@ public class CarryoverAggregateLogicImplTest {
                 List.of(CarryoverAggregateLogicImplTest.createItem("音楽"))),
             CarryoverAggregateLogicImplTest.createIssue(176, "2026-03-25", List.of(), List.of()),
             CarryoverAggregateLogicImplTest.createIssue(175, "2026-03-24", List.of("負債"),
-                List.of(CarryoverAggregateLogicImplTest.createItem("国語"), CarryoverAggregateLogicImplTest.createItem("音楽"))),
+                List.of(CarryoverAggregateLogicImplTest.createItem("国語"),
+                    CarryoverAggregateLogicImplTest.createItem("音楽"))),
             CarryoverAggregateLogicImplTest.createIssue(174, "2026-03-23", List.of(), List.of()),
             CarryoverAggregateLogicImplTest.createIssue(1, null, List.of("負債"), List.of()));
         final CarryoverAggregateLogicImpl testTarget = new CarryoverAggregateLogicImpl();

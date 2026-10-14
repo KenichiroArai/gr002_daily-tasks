@@ -38,6 +38,8 @@ Cursor / Codex / Claude Code など複数ツールで共通利用する。
 
 ```text
 pom.xml
+.project / .classpath / .settings/  # Eclipse の設定（m2e の生成内容に合わせる）
+launch/                      # Eclipse の実行の構成（収集の差分モード・全件モード、mvn clean package）
 src/main/java/io/github/kenichiroarai/dailytasks/
   DailyTasksApplication.java # 起動クラス（Spring Boot を起動するだけ）
   carryover/                 # 機能パッケージ（持ち越しの収集・集計）
@@ -263,9 +265,12 @@ java -jar ../gr002_daily-tasks/target/daily-tasks-0.1.0.jar --full
 ## Eclipse
 
 - 「ファイル」→「インポート」→「Maven」→「既存 Maven プロジェクト」でリポジトリのルート（`pom.xml`）を読み込む
-- Java 25 に対応した Eclipse（2025-09 以降）を使い、JDK 25 をインストール済み JRE に登録する
-- `bin/` は Git で管理しない。`pom.xml` を変更したら「Maven」→「プロジェクトの更新」で反映する
-- 実行の構成では、作業ディレクトリを daily-tasks-git のルートにする
+- Java 25 に対応した Eclipse（2025-09 以降）を使い、JDK 25 をインストール済み JRE に登録して実行環境 `JavaSE-25` に割り当てる
+- Eclipse の設定（`.project`、`.classpath`、`.settings/`）は Git で管理する。文字コード UTF-8、改行 LF、Java 25、`-parameters`（`pom.xml` の `<parameters>true</parameters>` と同じ。設定のコンストラクタバインドに必要）を設定している
+- `.classpath` と `.settings/` は m2e が `pom.xml` から生成する内容に合わせる。`pom.xml` を変更したら「Maven」→「プロジェクトの更新」で反映し、差分が出たらあわせてコミットする
+- `bin/` と `.factorypath` は Git で管理しない
+- 実行の構成は `launch/` に置く（収集の差分モード・全件モード、`mvn clean package`）。収集の作業ディレクトリは `${project_loc:gr002_daily-tasks}/../daily-tasks-git`（daily-tasks-git のルート）にする
+- 実行の構成に `GITHUB_TOKEN` などのシークレットを書かない（Eclipse を起動した環境から引き継ぐ）
 
 ## 作業時の原則
 

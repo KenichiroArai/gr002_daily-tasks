@@ -75,8 +75,8 @@ public class GitHubIssueApiImplTest {
      */
     private static GitHubIssueApiImpl createTarget(final HttpClient httpClient) {
 
-        final GitHubIssueApiImpl result = new GitHubIssueApiImpl(() -> httpClient,
-            GitHubIssueApiImplTest.API_BASE_URL, new JsonMapper(), MessageLogicTestUtil.create());
+        final GitHubIssueApiImpl result = new GitHubIssueApiImpl(() -> httpClient, GitHubIssueApiImplTest.API_BASE_URL,
+            new JsonMapper(), MessageLogicTestUtil.create());
         return result;
 
     }
@@ -208,10 +208,9 @@ public class GitHubIssueApiImplTest {
      */
     private static String textOrEmpty(final JsonNode node, final String fieldName) throws Exception {
 
-        final String result
-            = ReflectionTestUtil.invokeStatic(GitHubIssueApiImpl.class, "textOrEmpty", new Class<?>[] {
-                JsonNode.class, String.class
-            }, node, fieldName);
+        final String result = ReflectionTestUtil.invokeStatic(GitHubIssueApiImpl.class, "textOrEmpty", new Class<?>[] {
+            JsonNode.class, String.class
+        }, node, fieldName);
         return result;
 
     }
@@ -351,8 +350,7 @@ public class GitHubIssueApiImplTest {
     public void testFetchPage_errorStatus() {
 
         /* 期待値の定義 */
-        final String expectedMessage
-            = "GitHub API の呼び出しに失敗しました: status=403, uri=" + GitHubIssueApiImplTest.PAGE1_URI;
+        final String expectedMessage = "GitHub API の呼び出しに失敗しました: status=403, uri=" + GitHubIssueApiImplTest.PAGE1_URI;
 
         /* 準備 */
         try (StubHttpClient testHttpClient = new StubHttpClient()) {
@@ -394,8 +392,8 @@ public class GitHubIssueApiImplTest {
             final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
 
             /* テスト対象の実行 */
-            GitHubIssueApiImplTest.fetchPage(testTarget, testHttpClient,
-                GitHubIssueApiImplTest.createSettings(null), 1);
+            GitHubIssueApiImplTest.fetchPage(testTarget, testHttpClient, GitHubIssueApiImplTest.createSettings(null),
+                1);
 
             /* 検証の準備 */
             final Optional<String> actualAuthorization
@@ -460,8 +458,7 @@ public class GitHubIssueApiImplTest {
         final JsonMapper testJsonMapper = new JsonMapper();
 
         /* テスト対象の実行 */
-        final GitHubIssueApiImpl testTarget
-            = new GitHubIssueApiImpl(testJsonMapper, MessageLogicTestUtil.create());
+        final GitHubIssueApiImpl testTarget = new GitHubIssueApiImpl(testJsonMapper, MessageLogicTestUtil.create());
 
         /* 検証の準備 */
         final String     actualApiBaseUrl = ReflectionTestUtil.getField(testTarget, "apiBaseUrl");
@@ -560,8 +557,8 @@ public class GitHubIssueApiImplTest {
         final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(null);
 
         /* テスト対象の実行 */
-        final IOException testException = Assertions.assertThrows(IOException.class,
-            () -> GitHubIssueApiImplTest.readTree(testTarget, "[不正"));
+        final IOException testException
+            = Assertions.assertThrows(IOException.class, () -> GitHubIssueApiImplTest.readTree(testTarget, "[不正"));
 
         /* 検証の準備 */
         final Throwable actualCause = testException.getCause();
@@ -611,8 +608,8 @@ public class GitHubIssueApiImplTest {
 
             testHttpClient.setInterruptedException(new InterruptedException("中断"));
             final GitHubIssueApiImpl testTarget  = GitHubIssueApiImplTest.createTarget(testHttpClient);
-            final HttpRequest        testRequest = HttpRequest
-                .newBuilder(URI.create(GitHubIssueApiImplTest.PAGE1_URI)).build();
+            final HttpRequest        testRequest = HttpRequest.newBuilder(URI.create(GitHubIssueApiImplTest.PAGE1_URI))
+                .build();
 
             /* テスト対象の実行 */
             final IOException testException = Assertions.assertThrows(IOException.class,
@@ -649,8 +646,8 @@ public class GitHubIssueApiImplTest {
 
             testHttpClient.addResponse(200, "[]");
             final GitHubIssueApiImpl testTarget  = GitHubIssueApiImplTest.createTarget(testHttpClient);
-            final HttpRequest        testRequest = HttpRequest
-                .newBuilder(URI.create(GitHubIssueApiImplTest.PAGE1_URI)).build();
+            final HttpRequest        testRequest = HttpRequest.newBuilder(URI.create(GitHubIssueApiImplTest.PAGE1_URI))
+                .build();
 
             /* テスト対象の実行 */
             final HttpResponse<String> testResult

@@ -45,8 +45,8 @@ public class CarryoverDtoConvertLogicTest {
      */
     private static CarryoverIssueModel createIssue() {
 
-        final CarryoverItemModel  item   = new CarryoverItemModel("音楽", "2026-08-18", true, 11.5, MinutesSourceTypes.PARSED, "持ち越し",
-            "- [x] 音楽2026/08/18（残り時間：11.5分）");
+        final CarryoverItemModel  item   = new CarryoverItemModel("音楽", "2026-08-18", true, 11.5,
+            MinutesSourceTypes.PARSED, "持ち越し", "- [x] 音楽2026/08/18（残り時間：11.5分）");
         final CarryoverIssueModel result = new CarryoverIssueModel(371, "2026年10月06日のタスク", "2026-10-06", "open",
             "2026-10-06T14:23:08Z", List.of("持ち越し"), 1, List.of(item));
         return result;
@@ -371,7 +371,8 @@ public class CarryoverDtoConvertLogicTest {
         final Map<String, Double> testMinutesByName = Map.of("音楽", 15.0);
 
         /* テスト対象の実行 */
-        final DefaultMinutesModel testResult = CarryoverDtoConvertLogicTest.createTarget().toDefaultMinutes(testMinutesByName);
+        final DefaultMinutesModel testResult
+            = CarryoverDtoConvertLogicTest.createTarget().toDefaultMinutes(testMinutesByName);
 
         /* 検証の準備 */
         final Double actualMinutes = testResult.find("音楽");
@@ -391,11 +392,12 @@ public class CarryoverDtoConvertLogicTest {
         final String expectedRepository = "owner/repo";
 
         /* 準備 */
-        final CarryoverSourceModel testSource = new CarryoverSourceModel("owner/repo", "test-token", Path.of("docs", "data"),
-            Path.of("config", "default-minutes.json"));
+        final CarryoverSourceModel testSource = new CarryoverSourceModel("owner/repo", "test-token",
+            Path.of("docs", "data"), Path.of("config", "default-minutes.json"));
 
         /* テスト対象の実行 */
-        final GitHubSettingsDto testResult = CarryoverDtoConvertLogicTest.createTarget().toGitHubSettingsDto(testSource);
+        final GitHubSettingsDto testResult
+            = CarryoverDtoConvertLogicTest.createTarget().toGitHubSettingsDto(testSource);
 
         /* 検証の準備 */
         final String actualRepository = testResult.getRepository();
@@ -415,11 +417,12 @@ public class CarryoverDtoConvertLogicTest {
         final String expectedToken = "test-token";
 
         /* 準備 */
-        final CarryoverSourceModel testSource = new CarryoverSourceModel("owner/repo", "test-token", Path.of("docs", "data"),
-            Path.of("config", "default-minutes.json"));
+        final CarryoverSourceModel testSource = new CarryoverSourceModel("owner/repo", "test-token",
+            Path.of("docs", "data"), Path.of("config", "default-minutes.json"));
 
         /* テスト対象の実行 */
-        final GitHubSettingsDto testResult = CarryoverDtoConvertLogicTest.createTarget().toGitHubSettingsDto(testSource);
+        final GitHubSettingsDto testResult
+            = CarryoverDtoConvertLogicTest.createTarget().toGitHubSettingsDto(testSource);
 
         /* 検証の準備 */
         final String actualToken = testResult.getToken();

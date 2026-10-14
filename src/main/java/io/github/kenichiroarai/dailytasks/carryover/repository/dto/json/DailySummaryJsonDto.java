@@ -57,8 +57,9 @@ public class DailySummaryJsonDto {
      * @param byOriginMonth
      *                      持ち越し元の月ごとの集計（キーは yyyy-MM）
      */
-    public DailySummaryJsonDto(final String date, final int issue, final Integer declaredCount, final ItemStatJsonDto total,
-        final Map<String, ItemStatJsonDto> byItem, final Map<String, ItemStatJsonDto> byOriginMonth) {
+    public DailySummaryJsonDto(final String date, final int issue, final Integer declaredCount,
+        final ItemStatJsonDto total, final Map<String, ItemStatJsonDto> byItem,
+        final Map<String, ItemStatJsonDto> byOriginMonth) {
 
         this.date = date;
         this.issue = issue;

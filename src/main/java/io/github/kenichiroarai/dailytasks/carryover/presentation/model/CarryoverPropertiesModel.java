@@ -8,8 +8,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * 持ち越しの収集の設定<br>
  * <p>
  * application.properties の {@code carryover.*} を Spring Boot がコンストラクタで設定する。設定ファイルの値を受け取るのは presentation
- * 層のこのクラスだけとし、presentation 層が application 層に引き継ぐ設定としてもそのまま使う。パスはコンストラクタで 1 回だけ変換して保持する。トークンはログに出さないよう、{@link #toString()}
- * に含めない。
+ * 層のこのクラスだけとし、presentation 層が application 層に引き継ぐ設定としてもそのまま使う。パスはコンストラクタで 1
+ * 回だけ変換して保持する。トークンはログに出さないよう、{@link #toString()} に含めない。
  * </p>
  *
  * @author KenichiroArai
@@ -148,9 +148,9 @@ public class CarryoverPropertiesModel {
     @Override
     public String toString() {
 
-        final String result
-            = String.format("CarryoverPropertiesModel[repository=%s, dataDir=%s, defaultMinutesFile=%s, recentCount=%d]",
-                this.repository, this.dataDir, this.defaultMinutesFile, Integer.valueOf(this.recentCount));
+        final String result = String.format(
+            "CarryoverPropertiesModel[repository=%s, dataDir=%s, defaultMinutesFile=%s, recentCount=%d]",
+            this.repository, this.dataDir, this.defaultMinutesFile, Integer.valueOf(this.recentCount));
         return result;
 
     }

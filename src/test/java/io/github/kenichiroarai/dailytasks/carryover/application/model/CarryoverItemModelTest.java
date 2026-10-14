@@ -26,8 +26,8 @@ public class CarryoverItemModelTest {
      */
     private static CarryoverItemModel createItem() {
 
-        final CarryoverItemModel result = new CarryoverItemModel("音楽", "2026-08-18", true, 11.5, MinutesSourceTypes.PARSED, "持ち越し",
-            "- [x] 音楽2026/08/18（残り時間：11.5分）");
+        final CarryoverItemModel result = new CarryoverItemModel("音楽", "2026-08-18", true, 11.5,
+            MinutesSourceTypes.PARSED, "持ち越し", "- [x] 音楽2026/08/18（残り時間：11.5分）");
         return result;
 
     }

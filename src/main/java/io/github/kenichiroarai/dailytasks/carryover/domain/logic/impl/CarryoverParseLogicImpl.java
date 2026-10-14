@@ -373,8 +373,8 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
         /* 残数の検証 */
         this.verifyDeclaredCount(issue.getNumber(), declaredCount, items.size());
 
-        result = new CarryoverIssueModel(issue.getNumber(), issue.getTitle(), date, issue.getState(), issue.getUpdatedAt(),
-            sections, declaredCount, items);
+        result = new CarryoverIssueModel(issue.getNumber(), issue.getTitle(), date, issue.getState(),
+            issue.getUpdatedAt(), sections, declaredCount, items);
         return result;
 
     }
@@ -397,8 +397,8 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
      *
      * @return 持ち越し項目
      */
-    private CarryoverItemModel parseItem(final int number, final String section, final boolean checked, final String content,
-        final String raw, final DefaultMinutesModel defaultMinutes) {
+    private CarryoverItemModel parseItem(final int number, final String section, final boolean checked,
+        final String content, final String raw, final DefaultMinutesModel defaultMinutes) {
 
         CarryoverItemModel result = null;
 
@@ -411,8 +411,8 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
         if (datedMatcher.matches()) {
 
             namePart = datedMatcher.group(1);
-            originDate
-                = CarryoverParseLogicImpl.formatDate(datedMatcher.group(2), datedMatcher.group(3), datedMatcher.group(4));
+            originDate = CarryoverParseLogicImpl.formatDate(datedMatcher.group(2), datedMatcher.group(3),
+                datedMatcher.group(4));
             rest = datedMatcher.group(5);
 
         } else {
@@ -436,7 +436,8 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         if (parsedMinutes != null) {
 
-            result = new CarryoverItemModel(name, originDate, checked, parsedMinutes, MinutesSourceTypes.PARSED, section, raw);
+            result = new CarryoverItemModel(name, originDate, checked, parsedMinutes, MinutesSourceTypes.PARSED,
+                section, raw);
             return result;
 
         }
@@ -460,7 +461,8 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         }
 
-        result = new CarryoverItemModel(name, originDate, checked, defaultValue, MinutesSourceTypes.DEFAULT, section, raw);
+        result
+            = new CarryoverItemModel(name, originDate, checked, defaultValue, MinutesSourceTypes.DEFAULT, section, raw);
         return result;
 
     }

@@ -54,8 +54,8 @@ public class CarryoverJsonConvertLogicTest {
      */
     private static CarryoverIssueJsonDto createIssueJson() {
 
-        final CarryoverItemJsonDto  item   = new CarryoverItemJsonDto("国語", "2026-06-18", false, 15.0, "default", "持ち越し",
-            "- [ ] 国語2026/06/18");
+        final CarryoverItemJsonDto  item   = new CarryoverItemJsonDto("国語", "2026-06-18", false, 15.0, "default",
+            "持ち越し", "- [ ] 国語2026/06/18");
         final CarryoverIssueJsonDto result = new CarryoverIssueJsonDto(370, "2026年10月05日のタスク", "2026-10-05", "closed",
             "2026-10-05T10:00:00Z", List.of("持ち越し"), 1, 1, 15.0, List.of(item));
         return result;

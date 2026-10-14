@@ -23,8 +23,8 @@ import io.github.kenichiroarai.dailytasks.carryover.domain.repository.dao.Defaul
 /**
  * 持ち越しのデータの取得・保存ロジックの実装<br>
  * <p>
- * application 層のデータの取得・保存ロジックを実装する。application 層のモデルと domain 層の DTO を {@link CarryoverDtoConvertLogic}
- * で変換し、domain 層の外部 API・DAO（実装は repository 層）に渡す。データの取得元と保存先は、domain 層の型（接続設定の DTO・パス）に変換して渡す。
+ * application 層のデータの取得・保存ロジックを実装する。application 層のモデルと domain 層の DTO を {@link CarryoverDtoConvertLogic} で変換し、domain 層の外部
+ * API・DAO（実装は repository 層）に渡す。データの取得元と保存先は、domain 層の型（接続設定の DTO・パス）に変換して渡す。
  * </p>
  *
  * @author KenichiroArai
@@ -60,9 +60,8 @@ public class CarryoverIssueLogicImpl implements CarryoverIssueLogic {
      * @param dtoConvertLogic
      *                          DTO とモデルの変換
      */
-    public CarryoverIssueLogicImpl(final GitHubIssueApi gitHubIssueApi,
-        final CarryoverDataDao carryoverDataDao, final DefaultMinutesDao defaultMinutesDao,
-        final CarryoverDtoConvertLogic dtoConvertLogic) {
+    public CarryoverIssueLogicImpl(final GitHubIssueApi gitHubIssueApi, final CarryoverDataDao carryoverDataDao,
+        final DefaultMinutesDao defaultMinutesDao, final CarryoverDtoConvertLogic dtoConvertLogic) {
 
         this.gitHubIssueApi = gitHubIssueApi;
         this.carryoverDataDao = carryoverDataDao;
@@ -128,8 +127,8 @@ public class CarryoverIssueLogicImpl implements CarryoverIssueLogic {
 
         final Map<Integer, CarryoverIssueModel> result = new TreeMap<>();
 
-        for (final Map.Entry<Integer, CarryoverIssueDto> entry : this.carryoverDataDao
-            .loadIssues(source.getDataDir()).entrySet()) {
+        for (final Map.Entry<Integer, CarryoverIssueDto> entry : this.carryoverDataDao.loadIssues(source.getDataDir())
+            .entrySet()) {
 
             result.put(entry.getKey(), this.dtoConvertLogic.toCarryoverIssue(entry.getValue()));
 

@@ -270,10 +270,12 @@ public class CarryoverServiceImplTest {
      */
     private static List<DailyTaskIssueModel> createIssues(final int count) {
 
-        final List<DailyTaskIssueModel> result = IntStream.rangeClosed(1, count)
-            .mapToObj(number -> new DailyTaskIssueModel(number, String.format("2026年03月%02d日のタスク", Integer.valueOf(number)),
-                "closed", "u" + number, "## 負債\n- [ ] 英語2026/03/01（残り時間：10分）"))
-            .toList();
+        final List<DailyTaskIssueModel> result
+            = IntStream.rangeClosed(1, count)
+                .mapToObj(number -> new DailyTaskIssueModel(number,
+                    String.format("2026年03月%02d日のタスク", Integer.valueOf(number)), "closed", "u" + number,
+                    "## 負債\n- [ ] 英語2026/03/01（残り時間：10分）"))
+                .toList();
         return result;
 
     }
@@ -790,8 +792,8 @@ public class CarryoverServiceImplTest {
         final Path   expectedDefaultMinutesFile = Path.of("config", "default-minutes.json");
 
         /* 準備 */
-        final CarryoverPropertiesModel testProperties
-            = new CarryoverPropertiesModel(expectedRepository, expectedToken, "docs/data", "config/default-minutes.json", 10);
+        final CarryoverPropertiesModel testProperties = new CarryoverPropertiesModel(expectedRepository, expectedToken,
+            "docs/data", "config/default-minutes.json", 10);
 
         /* テスト対象の実行 */
         final CarryoverSourceModel testResult = CarryoverServiceImplTest.toSource(testProperties);

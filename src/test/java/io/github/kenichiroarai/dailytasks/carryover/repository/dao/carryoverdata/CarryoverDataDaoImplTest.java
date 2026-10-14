@@ -92,8 +92,7 @@ public class CarryoverDataDaoImplTest {
      */
     private static CarryoverDataDaoImpl createTarget() {
 
-        final CarryoverDataDaoImpl result
-            = new CarryoverDataDaoImpl(new JsonMapper(), new CarryoverJsonConvertLogic());
+        final CarryoverDataDaoImpl result = new CarryoverDataDaoImpl(new JsonMapper(), new CarryoverJsonConvertLogic());
         return result;
 
     }
@@ -111,8 +110,7 @@ public class CarryoverDataDaoImplTest {
      * @throws Exception
      *                   例外が発生した場合
      */
-    private static void write(final CarryoverDataDaoImpl target, final Path path, final Object value)
-        throws Exception {
+    private static void write(final CarryoverDataDaoImpl target, final Path path, final Object value) throws Exception {
 
         ReflectionTestUtil.invoke(target, "write", new Class<?>[] {
             Path.class, Object.class

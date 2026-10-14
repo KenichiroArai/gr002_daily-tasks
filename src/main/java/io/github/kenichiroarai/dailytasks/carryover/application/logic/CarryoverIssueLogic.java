@@ -13,7 +13,8 @@ import io.github.kenichiroarai.dailytasks.carryover.application.model.DefaultMin
 /**
  * 持ち越しのデータ（Issue、解析結果、集計、標準時間）の取得・保存ロジック<br>
  * <p>
- * application 層が domain 層に求めるインタフェース。実装は domain 層に置く。application 層のモデルで取得・保存の手段を提供し、データの置き場所や形式は実装側に任せる。データの取得元と保存先は呼び出しごとに引数で受け取る。
+ * application 層が domain 層に求めるインタフェース。実装は domain 層に置く。application
+ * 層のモデルで取得・保存の手段を提供し、データの置き場所や形式は実装側に任せる。データの取得元と保存先は呼び出しごとに引数で受け取る。
  * </p>
  *
  * @author KenichiroArai

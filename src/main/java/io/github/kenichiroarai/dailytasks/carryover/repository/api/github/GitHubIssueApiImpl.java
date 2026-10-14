@@ -135,8 +135,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
 
         final GitHubIssueDto result = new GitHubIssueDto(node.path("number").asInt(),
             GitHubIssueApiImpl.textOrEmpty(node, "title"), GitHubIssueApiImpl.textOrEmpty(node, "state"),
-            GitHubIssueApiImpl.textOrEmpty(node, "updated_at"),
-            GitHubIssueApiImpl.textOrEmpty(node, "body"));
+            GitHubIssueApiImpl.textOrEmpty(node, "updated_at"), GitHubIssueApiImpl.textOrEmpty(node, "body"));
         return result;
 
     }

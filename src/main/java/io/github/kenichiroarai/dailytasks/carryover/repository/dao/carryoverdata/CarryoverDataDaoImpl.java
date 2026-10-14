@@ -25,8 +25,8 @@ import tools.jackson.databind.json.JsonMapper;
 /**
  * 持ち越しの JSON ファイル（Issue ごとの解析結果と画面用の集計）を読み書きする DAO の実装<br>
  * <p>
- * domain 層の DAO を実装する。受け取った DTO は {@link CarryoverJsonConvertLogic} で JSON の形の型に変換して読み書きする。出力は OS
- * に関係なく改行を LF に統一し、差分が安定するようにする。
+ * domain 層の DAO を実装する。受け取った DTO は {@link CarryoverJsonConvertLogic} で JSON の形の型に変換して読み書きする。出力は OS に関係なく改行を LF
+ * に統一し、差分が安定するようにする。
  * </p>
  *
  * @author KenichiroArai
@@ -105,8 +105,7 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
         try (Stream<Path> paths = Files.list(issuesDir)) {
 
             for (final Path path : paths
-                .filter(p -> p.getFileName().toString().endsWith(CarryoverDataDaoImpl.JSON_EXTENSION))
-                .toList()) {
+                .filter(p -> p.getFileName().toString().endsWith(CarryoverDataDaoImpl.JSON_EXTENSION)).toList()) {
 
                 final CarryoverIssueDto issue = this.jsonConvertLogic.toCarryoverIssueDto(this.readIssue(path));
                 result.put(issue.getNumber(), issue);

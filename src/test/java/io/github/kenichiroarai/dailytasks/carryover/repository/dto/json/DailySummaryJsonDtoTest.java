@@ -32,8 +32,8 @@ public class DailySummaryJsonDtoTest {
         final Map<String, ItemStatJsonDto> byItem = new LinkedHashMap<>();
         byItem.put("英語", new ItemStatJsonDto(1, 30, 0, 0));
         byItem.put("国語", new ItemStatJsonDto(1, 15, 1, 15));
-        final DailySummaryJsonDto result = new DailySummaryJsonDto("2026-03-24", 175, 2, new ItemStatJsonDto(2, 45, 1, 15), byItem,
-            Map.of("2026-03", new ItemStatJsonDto(2, 45, 1, 15)));
+        final DailySummaryJsonDto result = new DailySummaryJsonDto("2026-03-24", 175, 2,
+            new ItemStatJsonDto(2, 45, 1, 15), byItem, Map.of("2026-03", new ItemStatJsonDto(2, 45, 1, 15)));
         return result;
 
     }

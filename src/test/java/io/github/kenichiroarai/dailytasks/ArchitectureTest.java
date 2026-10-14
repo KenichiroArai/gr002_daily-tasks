@@ -78,9 +78,9 @@ public class ArchitectureTest {
         /* 期待値の定義 */
 
         /* 準備 */
-        final ArchRule testRule = ArchRuleDefinition.noClasses().that()
-            .resideOutsideOfPackage("..carryover.repository.dto.json..").should().dependOnClassesThat()
-            .resideInAPackage("com.fasterxml.jackson.annotation..");
+        final ArchRule testRule
+            = ArchRuleDefinition.noClasses().that().resideOutsideOfPackage("..carryover.repository.dto.json..").should()
+                .dependOnClassesThat().resideInAPackage("com.fasterxml.jackson.annotation..");
 
         /* テスト対象の実行 */
         testRule.check(ArchitectureTest.classes);
