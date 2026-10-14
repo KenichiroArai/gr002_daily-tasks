@@ -11,20 +11,19 @@
         <relativePath />
     </parent>
 
-    <groupId>io.github.kenichiroarai</groupId>
-    <artifactId>daily-tasks</artifactId>
+    <groupId>kmg.gr.gr002</groupId>
+    <artifactId>gr002_daily-tasks</artifactId>
     <version>0.1.0</version>
     <packaging>jar</packaging>
-
-    <name>daily-tasks</name>
-    <description>日々のタスク Issue の持ち越しを集計し、GitHub Pages 用の JSON を出力するツール</description>
+    <name>gr002_daily-tasks</name>
+    <description>毎日タスクのバックエンド</description>
 
     <properties>
         <java.version>25</java.version>
         <maven.compiler.release>25</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <main.class>io.github.kenichiroarai.dailytasks.DailyTasksApplication</main.class>
+        <main.class>kmg.gr.gr002.dailytasks.DailyTasksApplication</main.class>
 
         <jacoco.version>0.8.14</jacoco.version>
         <archunit.version>1.4.1</archunit.version>

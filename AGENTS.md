@@ -19,8 +19,8 @@ Cursor / Codex / Claude Code など複数ツールで共通利用する。
 | [mk002_daily-tasks_web-next](https://github.com/KenichiroArai/mk002_daily-tasks_web-next) | 画面（Next.js + TypeScript の静的エクスポート） |
 | [kb002_daily-tasks_doc](https://github.com/KenichiroArai/kb002_daily-tasks_doc) | 設計書と横断的なドキュメント |
 
-- **GAV**: `io.github.kenichiroarai` : `daily-tasks`
-- **ルートパッケージ**: `io.github.kenichiroarai.dailytasks`
+- **GAV**: `kmg.gr.gr002` : `gr002_daily-tasks`
+- **ルートパッケージ**: `kmg.gr.gr002.dailytasks`
 - **対象リポジトリ**: `https://github.com/KenichiroArai/daily-tasks-git/`（Issue #1 から最新まで）
 - **入出力**: 設定ファイル（`config/default-minutes.json`）と出力先（`docs/data/`）は daily-tasks-git にある。jar は daily-tasks-git をカレントディレクトリにして実行する
 
@@ -40,7 +40,7 @@ Cursor / Codex / Claude Code など複数ツールで共通利用する。
 pom.xml
 .project / .classpath / .settings/  # Eclipse の設定（m2e の生成内容に合わせる）
 launch/                      # Eclipse の実行の構成（収集の差分モード・全件モード、mvn clean package）
-src/main/java/io/github/kenichiroarai/dailytasks/
+src/main/java/kmg/gr/gr002/dailytasks/
   DailyTasksApplication.java # 起動クラス（Spring Boot を起動するだけ）
   carryover/                 # 機能パッケージ（持ち越しの収集・集計）
     presentation/            # CLI などの入出力層
@@ -72,7 +72,7 @@ src/main/resources/
   application.properties     # 設定値（carryover.*: 対象リポジトリ、トークン、出力先、標準時間のファイル、最新の件数。spring.*: Spring Boot の設定）
   messages.properties        # 文字列（使い方、ログ・例外のメッセージ）
   logback-spring.xml
-src/test/java/io/github/kenichiroarai/dailytasks/  # main と同じ構成
+src/test/java/kmg/gr/gr002/dailytasks/  # main と同じ構成
   testutil/                  # テスト用のユーティリティ（ログ取得、リフレクション、メッセージの取得の生成など）
 src/test/resources/          # テスト用のリソース
 ```
@@ -90,7 +90,7 @@ daily-tasks-git/
 
 ## パッケージ構成のルール
 
-- `io.github.kenichiroarai.dailytasks` の直下に機能パッケージ（例: `carryover`）を置く
+- `kmg.gr.gr002.dailytasks` の直下に機能パッケージ（例: `carryover`）を置く
 - 各機能パッケージは次の 5 層で構成する
 
 | 層 | 役割 |
@@ -255,8 +255,8 @@ mvn test
 
 # 収集の実行（daily-tasks-git をカレントにして実行。差分モード / 全件モード）:
 cd ../daily-tasks-git
-java -jar ../gr002_daily-tasks/target/daily-tasks-0.1.0.jar
-java -jar ../gr002_daily-tasks/target/daily-tasks-0.1.0.jar --full
+java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.1.0.jar
+java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.1.0.jar --full
 ```
 
 - カバレッジレポート: `target/site/jacoco/index.html`
@@ -619,7 +619,7 @@ public class SampleClass {
 
 ## やってはいけないこと
 
-- 機能パッケージの外（`io.github.kenichiroarai.dailytasks` 直下など。起動クラスを除く）に業務クラスを置くこと
+- 機能パッケージの外（`kmg.gr.gr002.dailytasks` 直下など。起動クラスを除く）に業務クラスを置くこと
 - 層を飛び越して参照すること（例: repository → application、domain → presentation、エントリポイント → presentation）
 - 処理の流れと同じ向き（上の層から下の層）に参照すること（例: presentation → application、application → domain、domain → repository）
 - 呼ぶ側の層のインタフェースや受け渡しの型に、呼ばれる側の層の都合（JSON の形の Jackson のアノテーションなど）を持ち込むこと

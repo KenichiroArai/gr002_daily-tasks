@@ -26,10 +26,10 @@ mvn clean package
 cd ../daily-tasks-git
 
 # 収集（差分モード）: 最新 10 件の Issue は毎回解析し直し、それより前は保存済みの JSON と更新日時が同じなら解析しない
-java -jar ../gr002_daily-tasks/target/daily-tasks-0.1.0.jar
+java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.1.0.jar
 
 # 収集（全件モード）: #1 から最新まで解析し直す
-java -jar ../gr002_daily-tasks/target/daily-tasks-0.1.0.jar --full
+java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.1.0.jar --full
 ```
 
 - 環境変数 `GITHUB_TOKEN` を設定すると GitHub API の認証に使います（未設定でも公開リポジトリなら動きます）。
