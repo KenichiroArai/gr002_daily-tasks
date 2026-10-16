@@ -28,12 +28,6 @@ import tools.jackson.databind.json.JsonMapper;
 @Repository
 public class DefaultMinutesDaoImpl implements DefaultMinutesDao {
 
-    /** ロガー */
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultMinutesDaoImpl.class);
-
-    /** メッセージのキー：設定ファイルがない */
-    private static final String MSG_FILE_NOT_FOUND = "carryover.defaultMinutes.fileNotFound";
-
     /**
      * 設定ファイルの型（項目名と標準時間（分）の対応）
      * <p>
@@ -43,6 +37,12 @@ public class DefaultMinutesDaoImpl implements DefaultMinutesDao {
     private static final TypeReference<Map<String, Double>> DEFAULT_MINUTES_TYPE = new TypeReference<>() {
         // 型情報の保持のみ
     };
+
+    /** ロガー */
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultMinutesDaoImpl.class);
+
+    /** メッセージのキー：設定ファイルがない */
+    private static final String MSG_FILE_NOT_FOUND = "carryover.defaultMinutes.fileNotFound";
 
     /** JSON の変換 */
     private final JsonMapper jsonMapper;

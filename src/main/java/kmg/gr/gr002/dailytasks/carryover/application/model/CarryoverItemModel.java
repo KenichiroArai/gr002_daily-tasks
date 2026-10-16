@@ -16,12 +16,6 @@ import kmg.gr.gr002.dailytasks.carryover.application.types.MinutesSourceTypes;
  */
 public class CarryoverItemModel {
 
-    /** 項目名（正規化済み） */
-    private final String name;
-
-    /** 持ち越し元の日付（yyyy-MM-dd）。日付がない行は null */
-    private final String originDate;
-
     /** チェック済みか */
     private final boolean checked;
 
@@ -31,11 +25,17 @@ public class CarryoverItemModel {
     /** 残り時間の取得元 */
     private final MinutesSourceTypes minutesSource;
 
-    /** セクション名 */
-    private final String section;
+    /** 項目名（正規化済み） */
+    private final String name;
+
+    /** 持ち越し元の日付（yyyy-MM-dd）。日付がない行は null */
+    private final String originDate;
 
     /** 元の行 */
     private final String raw;
+
+    /** セクション名 */
+    private final String section;
 
     /**
      * コンストラクタ<br>

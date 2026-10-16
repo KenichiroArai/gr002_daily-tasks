@@ -24,28 +24,28 @@ public class CarryoverPropertiesModel {
 
     /* オリジナル */
 
-    /** 対象リポジトリ（owner/name） */
-    private final String repository;
-
-    /** GitHub API のトークン。未設定の場合は空文字 */
-    private final String token;
-
     /** 出力先のディレクトリ（例: docs/data） */
     private final String dataDir;
 
+    /** 出力先のディレクトリのパス */
+    private final Path dataDirPath;
+
     /** 標準時間の設定ファイル（例: config/default-minutes.json） */
     private final String defaultMinutesFile;
+
+    /** 標準時間の設定ファイルのパス */
+    private final Path defaultMinutesFilePath;
 
     /** 差分モードで更新日時に関係なく解析し直す最新の Issue の件数 */
     private final int recentCount;
 
     /* 変換後 */
 
-    /** 出力先のディレクトリのパス */
-    private final Path dataDirPath;
+    /** 対象リポジトリ（owner/name） */
+    private final String repository;
 
-    /** 標準時間の設定ファイルのパス */
-    private final Path defaultMinutesFilePath;
+    /** GitHub API のトークン。未設定の場合は空文字 */
+    private final String token;
 
     /**
      * コンストラクタ<br>

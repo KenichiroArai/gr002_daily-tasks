@@ -58,9 +58,6 @@ public class CarryoverServiceImplTest {
         /** 取得する Issue */
         private final List<DailyTaskIssueModel> remoteIssues;
 
-        /** 保存済みの解析結果 */
-        private final Map<Integer, CarryoverIssueModel> storedIssues = new TreeMap<>();
-
         /** 保存した Issue 番号 */
         private final List<Integer> savedNumbers = new ArrayList<>();
 
@@ -69,6 +66,9 @@ public class CarryoverServiceImplTest {
 
         /** 受け取ったデータの取得元と保存先 */
         private final List<CarryoverSourceModel> sources = new ArrayList<>();
+
+        /** 保存済みの解析結果 */
+        private final Map<Integer, CarryoverIssueModel> storedIssues = new TreeMap<>();
 
         /**
          * コンストラクタ<br>
@@ -215,6 +215,9 @@ public class CarryoverServiceImplTest {
 
     }
 
+    /** テスト用の標準時間 */
+    private static final DefaultMinutesModel DEFAULT_MINUTES = new DefaultMinutesModel(Map.of("国語", (double) 15));
+
     /** テスト用の Issue #1（時間表記なし、更新日時 u1） */
     private static final DailyTaskIssueModel ISSUE1
         = new DailyTaskIssueModel(1, "2026年03月24日のタスク", "closed", "u1", "## 負債\n- [ ] 国語2026/03/20");
@@ -222,9 +225,6 @@ public class CarryoverServiceImplTest {
     /** テスト用の Issue #2（時間表記あり、更新日時 u2） */
     private static final DailyTaskIssueModel ISSUE2
         = new DailyTaskIssueModel(2, "2026年03月25日のタスク", "open", "u2", "## 負債\n- [ ] 英語2026/03/20（残り時間：10分）");
-
-    /** テスト用の標準時間 */
-    private static final DefaultMinutesModel DEFAULT_MINUTES = new DefaultMinutesModel(Map.of("国語", (double) 15));
 
     /** テスト用の Issue 本文の解析 */
     private static final CarryoverParseLogic PARSE_LOGIC = new CarryoverParseLogicImpl(MessageLogicTestUtil.create());

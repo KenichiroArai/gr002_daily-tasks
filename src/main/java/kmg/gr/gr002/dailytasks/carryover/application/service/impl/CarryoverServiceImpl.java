@@ -49,11 +49,11 @@ public class CarryoverServiceImpl implements CarryoverService {
     /** メッセージのキー：残り時間の取得元ごとの行数 */
     private static final String MSG_MINUTES_SOURCE_RESULT = "carryover.service.minutesSourceResult";
 
-    /** メッセージのキー：全件モードの名前 */
-    private static final String MSG_MODE_FULL = "carryover.service.modeFull";
-
     /** メッセージのキー：差分モードの名前 */
     private static final String MSG_MODE_DIFF = "carryover.service.modeDiff";
+
+    /** メッセージのキー：全件モードの名前 */
+    private static final String MSG_MODE_FULL = "carryover.service.modeFull";
 
     /**
      * 残り時間の取得元ごとの行数を返す<br>
@@ -149,14 +149,14 @@ public class CarryoverServiceImpl implements CarryoverService {
 
     }
 
+    /** 日別の集計 */
+    private final CarryoverAggregateLogic carryoverAggregateLogic;
+
     /** 持ち越しのデータの取得・保存 */
     private final CarryoverIssueLogic carryoverIssueLogic;
 
     /** Issue 本文の解析 */
     private final CarryoverParseLogic carryoverParseLogic;
-
-    /** 日別の集計 */
-    private final CarryoverAggregateLogic carryoverAggregateLogic;
 
     /** メッセージの取得 */
     private final MessageLogic messageLogic;

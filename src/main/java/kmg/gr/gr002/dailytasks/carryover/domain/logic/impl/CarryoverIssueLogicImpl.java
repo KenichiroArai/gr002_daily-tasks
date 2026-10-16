@@ -36,9 +36,6 @@ import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.DefaultMinutesDao
 @Component
 public class CarryoverIssueLogicImpl implements CarryoverIssueLogic {
 
-    /** GitHub の Issue の取得 */
-    private final GitHubIssueApi gitHubIssueApi;
-
     /** JSON ファイルの読み書き */
     private final CarryoverDataDao carryoverDataDao;
 
@@ -47,6 +44,9 @@ public class CarryoverIssueLogicImpl implements CarryoverIssueLogic {
 
     /** DTO とモデルの変換 */
     private final CarryoverDtoConvertLogic dtoConvertLogic;
+
+    /** GitHub の Issue の取得 */
+    private final GitHubIssueApi gitHubIssueApi;
 
     /**
      * コンストラクタ<br>

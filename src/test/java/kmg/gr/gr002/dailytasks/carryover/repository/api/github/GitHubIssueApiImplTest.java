@@ -43,12 +43,12 @@ public class GitHubIssueApiImplTest {
     /** テスト用の API のベース URL */
     private static final String API_BASE_URL = "https://api.example.com";
 
-    /** テスト用のリポジトリ */
-    private static final String REPOSITORY = "owner/repo";
-
     /** 1 ページ目の URL */
     private static final String PAGE1_URI
         = "https://api.example.com/repos/owner/repo/issues?state=all&sort=created&direction=asc&per_page=100&page=1";
+
+    /** テスト用のリポジトリ */
+    private static final String REPOSITORY = "owner/repo";
 
     /**
      * 接続設定を作成する<br>

@@ -16,17 +16,17 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 })
 public class ItemStatJsonDto {
 
-    /** 件数 */
-    private final int count;
-
-    /** 残り時間（分） */
-    private final double minutes;
-
     /** チェック済みの件数 */
     private final int checkedCount;
 
     /** チェック済みの残り時間（分） */
     private final double checkedMinutes;
+
+    /** 件数 */
+    private final int count;
+
+    /** 残り時間（分） */
+    private final double minutes;
 
     /**
      * コンストラクタ<br>

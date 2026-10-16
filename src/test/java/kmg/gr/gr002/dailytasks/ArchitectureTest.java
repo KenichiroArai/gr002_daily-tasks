@@ -30,11 +30,11 @@ import com.tngtech.archunit.library.Architectures;
 })
 public class ArchitectureTest {
 
-    /** ルートパッケージ */
-    private static final String ROOT_PACKAGE = "kmg.gr.gr002.dailytasks";
-
     /** 検査対象のクラス */
     private static JavaClasses classes;
+
+    /** ルートパッケージ */
+    private static final String ROOT_PACKAGE = "kmg.gr.gr002.dailytasks";
 
     /**
      * 検査対象のクラスを読み込む<br>

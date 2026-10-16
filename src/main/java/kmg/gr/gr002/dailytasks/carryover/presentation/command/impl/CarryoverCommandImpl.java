@@ -30,12 +30,6 @@ import kmg.gr.gr002.dailytasks.carryover.presentation.service.CarryoverService;
 @Component
 public class CarryoverCommandImpl implements CarryoverCommand {
 
-    /** メッセージのキー：使い方 */
-    private static final String MSG_USAGE = "carryover.command.usage";
-
-    /** メッセージのキー：不明な引数 */
-    private static final String MSG_UNKNOWN_ARGUMENT = "carryover.command.unknownArgument";
-
     /** 引数：全件モード */
     private static final String ARG_FULL = "--full";
 
@@ -45,17 +39,23 @@ public class CarryoverCommandImpl implements CarryoverCommand {
     /** 引数：使い方の表示（短縮形） */
     private static final String ARG_SHORT_HELP = "-h";
 
+    /** メッセージのキー：不明な引数 */
+    private static final String MSG_UNKNOWN_ARGUMENT = "carryover.command.unknownArgument";
+
+    /** メッセージのキー：使い方 */
+    private static final String MSG_USAGE = "carryover.command.usage";
+
     /** 持ち越しの収集・集計サービス */
     private final CarryoverService carryoverService;
-
-    /** 設定ファイルの値 */
-    private final CarryoverPropertiesModel properties;
 
     /** メッセージの取得 */
     private final MessageLogic messageLogic;
 
     /** 使い方の出力先 */
     private final PrintStream out;
+
+    /** 設定ファイルの値 */
+    private final CarryoverPropertiesModel properties;
 
     /**
      * コンストラクタ<br>

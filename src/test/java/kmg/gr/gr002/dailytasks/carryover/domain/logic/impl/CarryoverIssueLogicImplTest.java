@@ -51,6 +51,9 @@ public class CarryoverIssueLogicImplTest {
      */
     private static final class StubCarryoverDataDao implements CarryoverDataDao {
 
+        /** 最後に受け取った出力先のディレクトリ */
+        private Path dataDir;
+
         /** 読み込み結果として返す解析結果 */
         private final Map<Integer, CarryoverIssueDto> issues;
 
@@ -59,9 +62,6 @@ public class CarryoverIssueLogicImplTest {
 
         /** 保存された集計 */
         private CarryoverSummaryDto savedSummary;
-
-        /** 最後に受け取った出力先のディレクトリ */
-        private Path dataDir;
 
         /**
          * コンストラクタ<br>
@@ -173,11 +173,11 @@ public class CarryoverIssueLogicImplTest {
      */
     private static final class StubDefaultMinutesDao implements DefaultMinutesDao {
 
-        /** 返す標準時間 */
-        private final Map<String, Double> minutesByName;
-
         /** 受け取った設定ファイルのパス */
         private Path configFile;
+
+        /** 返す標準時間 */
+        private final Map<String, Double> minutesByName;
 
         /**
          * コンストラクタ<br>

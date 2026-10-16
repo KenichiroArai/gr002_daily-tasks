@@ -18,23 +18,23 @@ import java.util.Map;
  */
 public class DailySummaryDto {
 
-    /** その日の日付（yyyy-MM-dd） */
-    private final String date;
-
-    /** Issue 番号 */
-    private final int issue;
-
-    /** 本文の「残：N」の値。記載がない場合は null */
-    private final Integer declaredCount;
-
-    /** 全体の集計 */
-    private final ItemStatDto total;
-
     /** 項目ごとの集計（キーは項目名） */
     private final Map<String, ItemStatDto> byItem;
 
     /** 持ち越し元の月ごとの集計（キーは yyyy-MM） */
     private final Map<String, ItemStatDto> byOriginMonth;
+
+    /** その日の日付（yyyy-MM-dd） */
+    private final String date;
+
+    /** 本文の「残：N」の値。記載がない場合は null */
+    private final Integer declaredCount;
+
+    /** Issue 番号 */
+    private final int issue;
+
+    /** 全体の集計 */
+    private final ItemStatDto total;
 
     /**
      * コンストラクタ<br>

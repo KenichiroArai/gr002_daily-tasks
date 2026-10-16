@@ -14,17 +14,17 @@ package kmg.gr.gr002.dailytasks.carryover.application.model;
  */
 public class ItemStatModel {
 
-    /** 件数 */
-    private int count;
-
-    /** 残り時間（分） */
-    private double minutes;
-
     /** チェック済みの件数 */
     private int checkedCount;
 
     /** チェック済みの残り時間（分） */
     private double checkedMinutes;
+
+    /** 件数 */
+    private int count;
+
+    /** 残り時間（分） */
+    private double minutes;
 
     /**
      * 持ち越し項目を集計に加える<br>

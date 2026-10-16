@@ -14,20 +14,20 @@ package kmg.gr.gr002.dailytasks.carryover.domain.dto;
  */
 public class GitHubIssueDto {
 
+    /** Issue 本文 */
+    private final String body;
+
     /** Issue 番号 */
     private final int number;
-
-    /** Issue タイトル */
-    private final String title;
 
     /** Issue の状態（open / closed） */
     private final String state;
 
+    /** Issue タイトル */
+    private final String title;
+
     /** Issue の更新日時（ISO-8601） */
     private final String updatedAt;
-
-    /** Issue 本文 */
-    private final String body;
 
     /**
      * コンストラクタ<br>

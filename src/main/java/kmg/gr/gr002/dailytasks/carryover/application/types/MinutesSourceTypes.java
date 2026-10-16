@@ -12,11 +12,11 @@ package kmg.gr.gr002.dailytasks.carryover.application.types;
 @SuppressWarnings("nls")
 public enum MinutesSourceTypes {
 
-    /** Issue 本文の時間表記から取得 */
-    PARSED("parsed"),
-
     /** 項目ごとの標準時間で補完 */
     DEFAULT("default"),
+
+    /** Issue 本文の時間表記から取得 */
+    PARSED("parsed"),
 
     /** 標準時間が未登録のため 0 分で補完 */
     UNKNOWN("unknown"),
