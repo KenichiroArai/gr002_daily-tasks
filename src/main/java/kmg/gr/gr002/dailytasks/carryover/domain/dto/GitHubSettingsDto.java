@@ -12,7 +12,6 @@ package kmg.gr.gr002.dailytasks.carryover.domain.dto;
  *
  * @version 0.1.0
  */
-@SuppressWarnings("nls")
 public class GitHubSettingsDto {
 
     /** 対象リポジトリ（owner/name） */

@@ -18,7 +18,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *
  * @version 0.1.0
  */
-@SuppressWarnings("nls")
 @ConfigurationProperties(prefix = "carryover")
 public class CarryoverPropertiesModel {
 

@@ -30,7 +30,6 @@ import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
  *
  * @version 0.1.0
  */
-@SuppressWarnings("nls")
 @Component
 public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 

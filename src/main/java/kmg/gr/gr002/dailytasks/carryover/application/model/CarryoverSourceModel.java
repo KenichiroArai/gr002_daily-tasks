@@ -14,7 +14,6 @@ import java.nio.file.Path;
  *
  * @version 0.1.0
  */
-@SuppressWarnings("nls")
 public class CarryoverSourceModel {
 
     /** 解析結果と集計の保存先のディレクトリ（例: docs/data） */

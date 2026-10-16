@@ -36,7 +36,6 @@ import kmg.gr.gr002.dailytasks.carryover.presentation.service.CarryoverService;
  *
  * @version 0.1.0
  */
-@SuppressWarnings("nls")
 @Service
 public class CarryoverServiceImpl implements CarryoverService {
 

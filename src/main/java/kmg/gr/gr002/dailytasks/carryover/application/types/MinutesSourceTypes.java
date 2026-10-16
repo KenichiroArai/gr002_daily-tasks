@@ -9,7 +9,6 @@ package kmg.gr.gr002.dailytasks.carryover.application.types;
  *
  * @version 0.1.0
  */
-@SuppressWarnings("nls")
 public enum MinutesSourceTypes {
 
     /** 項目ごとの標準時間で補完 */

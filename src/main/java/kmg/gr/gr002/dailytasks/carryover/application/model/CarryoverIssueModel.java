@@ -11,7 +11,6 @@ import java.util.List;
  *
  * @version 0.1.0
  */
-@SuppressWarnings("nls")
 public class CarryoverIssueModel {
 
     /** その日の日付（yyyy-MM-dd）。タイトルから取得できない場合は null */
