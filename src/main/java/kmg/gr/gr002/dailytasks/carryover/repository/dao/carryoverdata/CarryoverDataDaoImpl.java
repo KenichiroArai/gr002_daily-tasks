@@ -15,6 +15,7 @@ import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverSummaryDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.CarryoverDataDao;
 import kmg.gr.gr002.dailytasks.carryover.repository.dto.json.CarryoverIssueJsonDto;
 import kmg.gr.gr002.dailytasks.carryover.repository.logic.CarryoverJsonConvertLogic;
+import kmg.gr.gr002.dailytasks.carryover.repository.types.CarryoverDataFileTypes;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.util.DefaultIndenter;
 import tools.jackson.core.util.DefaultPrettyPrinter;
@@ -37,15 +38,6 @@ import tools.jackson.databind.json.JsonMapper;
  */
 @Repository
 public class CarryoverDataDaoImpl implements CarryoverDataDao {
-
-    /** Issue ごとの JSON を置くディレクトリ名 */
-    private static final String ISSUES_DIR = "issues";
-
-    /** JSON ファイルの拡張子 */
-    private static final String JSON_EXTENSION = ".json";
-
-    /** 画面用の集計の JSON ファイル名 */
-    private static final String SUMMARY_FILE = "summary.json";
 
     /** DTO と JSON の形の変換 */
     private final CarryoverJsonConvertLogic jsonConvertLogic;
@@ -93,7 +85,7 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
     public Map<Integer, CarryoverIssueDto> loadIssues(final Path dataDir) throws IOException {
 
         final Map<Integer, CarryoverIssueDto> result    = new TreeMap<>();
-        final Path                            issuesDir = dataDir.resolve(CarryoverDataDaoImpl.ISSUES_DIR);
+        final Path                            issuesDir = dataDir.resolve(CarryoverDataFileTypes.ISSUES_DIR.getKey());
 
         if (!Files.isDirectory(issuesDir)) {
 
@@ -104,7 +96,8 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
         try (Stream<Path> paths = Files.list(issuesDir)) {
 
             for (final Path path : paths
-                .filter(p -> p.getFileName().toString().endsWith(CarryoverDataDaoImpl.JSON_EXTENSION)).toList()) {
+                .filter(p -> p.getFileName().toString().endsWith(CarryoverDataFileTypes.JSON_EXTENSION.getKey()))
+                .toList()) {
 
                 final CarryoverIssueDto issue = this.jsonConvertLogic.toCarryoverIssueDto(this.readIssue(path));
                 result.put(issue.getNumber(), issue);
@@ -163,8 +156,8 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
     @Override
     public void saveIssue(final Path dataDir, final CarryoverIssueDto issue) throws IOException {
 
-        final Path path = dataDir.resolve(CarryoverDataDaoImpl.ISSUES_DIR)
-            .resolve(String.format("%04d%s", issue.getNumber(), CarryoverDataDaoImpl.JSON_EXTENSION));
+        final Path path = dataDir.resolve(CarryoverDataFileTypes.ISSUES_DIR.getKey())
+            .resolve(String.format("%04d%s", issue.getNumber(), CarryoverDataFileTypes.JSON_EXTENSION.getKey()));
         this.write(path, this.jsonConvertLogic.toCarryoverIssueJson(issue));
 
     }
@@ -183,7 +176,7 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
     @Override
     public void saveSummary(final Path dataDir, final CarryoverSummaryDto summary) throws IOException {
 
-        final Path path = dataDir.resolve(CarryoverDataDaoImpl.SUMMARY_FILE);
+        final Path path = dataDir.resolve(CarryoverDataFileTypes.SUMMARY_FILE.getKey());
         this.write(path, this.jsonConvertLogic.toCarryoverSummaryJson(summary));
 
     }

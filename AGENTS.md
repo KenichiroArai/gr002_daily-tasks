@@ -29,10 +29,10 @@ Cursor / Codex / Claude Code など複数ツールで共通利用する。
 - 言語: Java 25（Temurin）
 - フレームワーク: Spring Boot 4.x（`spring-boot-starter-parent`。DI・設定ファイルのバインド・メッセージ・ログ。Web サーバーは起動しない CLI アプリ）
 - ビルド / パッケージ管理: Maven（spring-boot-maven-plugin で実行可能 jar を作成）
-- ライブラリ: Jackson 3（JSON。パッケージは `tools.jackson.*`、アノテーションは `com.fasterxml.jackson.annotation`）、SLF4J + Logback（ログ）
+- ライブラリ: Jackson 3（JSON。パッケージは `tools.jackson.*`、アノテーションは `com.fasterxml.jackson.annotation`）、SLF4J + Logback（ログ）、kmg-fund 0.3.1（共通型。kmg-core 0.3.2 は kmg-fund が依存し、kmg-fund に無い型だけ直接使う）
 - HTTP: 標準の `java.net.http.HttpClient`（GitHub REST API）
 - テスト: JUnit 5 / JaCoCo（行・分岐 100%）/ ArchUnit（層間のルールの検査）
-- 外部の社内基盤ライブラリ（kmg-core / kmg-fund など）には依存しない
+- 共通型は kmg-fund を優先し、kmg-fund に無いものだけ kmg-core から import する
 
 ## ディレクトリ構成
 
@@ -47,19 +47,22 @@ src/main/java/kmg/gr/gr002/dailytasks/
       command/               # コマンドのインタフェース（CommandLineRunner を継承）
       command/impl/          # コマンドの実装（run で引数の解析、設定の引き継ぎ）
       model/                 # 設定ファイルの値で application にもそのまま引き継ぐ設定（@ConfigurationProperties の CarryoverPropertiesModel）、引数を解析したオプション（CarryoverOptionsModel）
+      types/                 # 列挙型（コマンド引数 CommandOptionTypes）
       service/               # application に求めるサービス（CarryoverService。実装は application）
     application/             # ユースケースや業務ロジック層
       service/impl/          # presentation のサービスの実装（収集・解析・集計の流れ）
       logic/                 # domain に求めるロジック（データの取得・保存 CarryoverIssueLogic、解析 CarryoverParseLogic、集計 CarryoverAggregateLogic。実装は domain）
       model/                 # 業務モデル（Issue、持ち越し項目、日別集計、標準時間、domain に引き継ぐ設定 CarryoverSourceModel）
-      types/                 # 列挙型（残り時間の取得元 MinutesSourceTypes）
+      types/                 # 列挙型（残り時間の取得元 MinutesSourceTypes。KmgCmnTypes を実装）
     domain/                  # 共通ロジック層
       logic/                 # application のモデルと domain の DTO の変換（CarryoverDtoConvertLogic）
       logic/impl/            # application のロジックの実装（データの取得・保存、Issue 本文の解析ルール、日別の集計）
       repository/api/        # repository に求める外部 API（GitHubIssueApi。実装は repository/api）
       repository/dao/        # repository に求める DAO（JSON ファイル CarryoverDataDao、標準時間 DefaultMinutesDao。実装は repository/dao）
       dto/                   # repository と受け渡す DTO（解析結果、集計、GitHub の Issue、接続設定 GitHubSettingsDto）
+      types/                 # 列挙型（対象セクション TargetSectionTypes）
     infrastructure/          # 業務を知らない汎用ユーティリティ
+      types/msg/             # メッセージの種類（Gr002GenMsgTypes、Gr002LogMsgTypes、Gr002ValMsgTypes）
       logic/                 # メッセージの取得のインタフェース（MessageLogic）
       logic/impl/            # メッセージの取得の実装（Spring の MessageSource を使う MessageLogicImpl）
     repository/              # データアクセス層
@@ -68,9 +71,11 @@ src/main/java/kmg/gr/gr002/dailytasks/
       dao/defaultminutes/    # DAO の実装（標準時間の設定ファイルの読み込み DefaultMinutesDaoImpl）
       dto/json/              # JSON ファイルの形（Jackson のアノテーションを持つのはここだけ）
       logic/                 # domain の DTO と JSON の形の変換（CarryoverJsonConvertLogic）
+      types/                 # 列挙型（出力ファイル名 CarryoverDataFileTypes）
 src/main/resources/
   application.properties     # 設定値（carryover.*: 対象リポジトリ、トークン、出力先、標準時間のファイル、最新の件数。spring.*: Spring Boot の設定）
-  messages.properties        # 文字列（使い方、ログ・例外のメッセージ）
+  messages.properties        # 一般メッセージ（使い方、例外）。キーは Gr002GenMsgTypes の定数名
+  messages-log.properties    # ログメッセージ。キーは Gr002LogMsgTypes の定数名
   logback-spring.xml
 src/test/java/kmg/gr/gr002/dailytasks/  # main と同じ構成
   testutil/                  # テスト用のユーティリティ（ログ取得、リフレクション、メッセージの取得の生成など）
@@ -113,13 +118,19 @@ daily-tasks-git/
 | --- | --- | --- | --- | --- |
 | モデル | `model/` | `XxxModel` | repository 以外（presentation、application） | 層の中や層の間で受け渡すデータ。設定ファイルの値もモデルとする（例: `CarryoverPropertiesModel`、`CarryoverIssueModel`） |
 | DTO | `dto/` | `XxxDto`（JSON の形は `XxxJsonDto`） | repository とやり取りするもの（domain の `dto/`）と repository の内部（repository の `dto/`） | repository との受け渡しやファイルの形のデータ（例: `CarryoverIssueDto`、`CarryoverIssueJsonDto`） |
-| 列挙型 | `types/` | `XxxTypes` | 各層 | 値の種類を表す列挙型（例: `MinutesSourceTypes`） |
+| 列挙型 | `types/` | `XxxTypes` | 各層 | 値の種類を表す列挙型（例: `MinutesSourceTypes`）。`KmgCmnTypes<String>` を実装する |
 
 - 名前の末尾は、置くパッケージに合わせて `Model`、`Dto`、`Types` とする
 
 - domain の `dto/` は、domain が repository に求めるインタフェースの受け渡しの型として domain に置く（呼ぶ側の層が型を持つため）
 - repository の `dto/` には、JSON のように決まった形のものをサブパッケージ（例: `dto/json/`）に分けて置く。決まった形でないものは `dto/` の直下に置く
 - 列挙型は `model/` や `dto/` に混ぜず、その層の `types/` に置く
+- 列挙型は kmg-core の `KmgTemplateTypes` を見本にする。コンストラクタの引数は `displayName`、`key`、`detail` の順で、この 3 つは必須とする。種類ごとの個別の値がある場合は、この 3 つの後ろに置く。フィールドも同じ順にする
+- `NONE` は列挙型の必須定数であり、予約語とする。すべての列挙型の先頭に 1 つだけ置く。意味は常に「指定無し」で、`displayName` と `detail` は `"指定無し"`、`key` は `"None"` とする。メッセージの列挙型では、その後ろの文面も `"指定無し"` とする。別の意味の定数に `NONE` という名前を使わない
+- `get`、`getKey`、`toString` が返すのは `key` だけである。`KmgCmnTypes<T>` と `Supplier<T>` が扱う型 `T` は、この `key` の型である。`displayName` と `detail` は `String` のままとする
+- `getDefault`、`getEnum`（不明なキーは `NONE`）、`getInitValue`、`getDisplayName`、`getDetail` を持つ。kmg-fund に値の種類用の独自インタフェースはないので、kmg-core の `KmgCmnTypes<String>` を実装する
+- 閉じた集合の文字列（コマンド引数、対象セクション、出力ファイル名、残り時間の取得元）は、クラス内の文字列定数にせず、その層の `XxxTypes` にする
+- 次は列挙型にしない。正規表現、日付書式、`toString` の書式、Jackson のプロパティ名、GitHub API の URL・ヘッダ・ステータス・タイムアウト、項目名のフォールバック「不明」
 
 ### 外部 API と DAO
 
@@ -228,10 +239,16 @@ flowchart LR
 
 ### 文字列（メッセージ）の管理
 
-- 使い方、ログ・例外のメッセージは `src/main/resources/messages.properties` に置き、各クラスはキーを定数で持って、コンストラクタで注入した `infrastructure/logic/MessageLogic` で取得する
-- `MessageLogic` は Spring の `MessageSource`（`spring.messages.*` で設定）を引数なしで使うため、`{}` や `%s` はそのまま返る
+- 使い方と例外の文面は `src/main/resources/messages.properties`、ログの文面は `src/main/resources/messages-log.properties` に置く。プロパティのキーは列挙型の `key` とする。コード付きのメッセージでは `key` を列挙定数名と同じにする。`NONE` の `key` は `"None"` とする
+- メッセージの種類は `carryover/infrastructure/types/msg` に置く。全層から参照する
+  - 一般（使い方、例外）: `Gr002GenMsgTypes` は `KmgFundCmnGenMsgTypes` と `KmgFundCmnExcMsgTypes` を実装する。コードは `GR002_GEN11xxx`
+  - ログ: `Gr002LogMsgTypes` は `KmgFundCmnLogMsgTypes` を実装する。コードは `GR002_LOG12xxx`
+  - バリデーション: `Gr002ValMsgTypes` は `KmgFundCmnValMsgTypes` と `KmgFundCmnExcMsgTypes` を実装する。コードは `GR002_VAL13xxx`。該当がなければ `NONE` だけ置く
+- メッセージの列挙型も `displayName`、`key`、`detail` の順で受け、その後ろにメッセージの値（文面）を置く。`key` はプロパティのキーであり、`get` と `getCode` は `key` を返す。文面はプロパティと列挙型のメッセージの値の両方に書く
+- 取得はコンストラクタで注入した `infrastructure/logic/MessageLogic#get(KmgFundCmnMsgTypes)` を使う。実装は `getKey()` で Spring の `MessageSource` を引数なしで引くため、`{}` や `%s` はそのまま返る。kmg-fund の `KmgMessageSource`（`{0}` とログ先頭へのコード埋め込み）は使わない
 - ログは SLF4J の `{}`、例外は `String.format` の `%s` / `%d` を埋め込み位置に使う。取得したメッセージはいったん変数に入れてから渡す
-- 解析ルールそのものの文字列（対象セクション名、正規表現など）は messages.properties に置かず、それを使う実装の定数にする
+- 新しいメッセージは空き番号を採番し、同じ番号を再利用しない
+- 解析ルールの正規表現は messages.properties に置かず、それを使う実装の定数にする。対象セクション名は `TargetSectionTypes` にする
 
 ### ルールの検査
 
@@ -301,7 +318,7 @@ java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.1.0.jar --full
 ### アクセス修飾子
 
 - 外部に公開しないもの、サブクラスも使わないもの（フィールド・メソッド・コンストラクタ・入れ子クラス）は `private` にする
-- 修飾子なし（パッケージプライベート）は原則として禁止する。enum のコンストラクタも `private` を明示する
+- 修飾子なし（パッケージプライベート）は原則として禁止する。例外として、enum のコンストラクタは言語仕様で暗黙に private なので修飾子を付けない
 - テストから呼び出すためだけにパッケージプライベートにしない。テストでは `testutil/ReflectionTestUtil`（標準のリフレクション）で private のメソッド・フィールドにアクセスする
 - 例外: JUnit の `@TempDir` フィールドなど、フレームワークの制約で `private` にできないもの。インタフェースのメソッドは暗黙的に `public` なので修飾子を付けなくてよい
 
@@ -603,7 +620,7 @@ public class SampleClass {
 
 - [ ] パッケージ構成ルール（機能パッケージ + 5 層）の順守
 - [ ] サービス（一連の流れ。`service/`）とロジック（個々の処理。`logic/`、サービスを呼ばない）の区分の順守
-- [ ] データ系の型（`model/`、`dto/`、`types/`）と、データアクセス（外部 API は `api/<提供元>/`、ファイル・DB は `dao/<用途>/`）の置き場所の順守
+- [ ] データ系の型（`model/`、`dto/`、`types/`）と、データアクセス（外部 API は `api/<提供元>/`、ファイル・DB は `dao/<用途>/`）の置き場所の順守。値の種類は `KmgCmnTypes`、メッセージは `KmgFundCmn*MsgTypes` を実装していること。列挙型は予約語の `NONE` を先頭に持つこと
 - [ ] 層間のルール（依存性逆転：依存はすぐ上の層だけ、飛び越し・処理の流れと同じ向きの参照なし、データ・設定値は呼ぶ側の層で自層の型に変換）の順守（`ArchitectureTest` が通ること）
 - [ ] 下の層を差し替える場合、上の層のインタフェースを実装した `impl/` を追加し、上の層のコードを変更していないこと
 - [ ] DI のルール（Bean として登録、コンストラクタインジェクション、ステートレス、設定値はメソッドの引数で渡す）の順守
@@ -625,7 +642,8 @@ public class SampleClass {
 - 呼ぶ側の層のインタフェースや受け渡しの型に、呼ばれる側の層の都合（JSON の形の Jackson のアノテーションなど）を持ち込むこと
 - フィールドインジェクション（フィールドへの `@Autowired`）、`@Value` での設定値の個別取得、Bean のフィールドに設定値を持つこと
 - infrastructure に機能固有の値や業務の判断を置くこと、infrastructure から他の層を参照すること
-- kmg-core / kmg-fund などの社内基盤ライブラリに依存すること
+- kmg-fund にある型を使わずに、同じ役割の型を kmg-core から import すること。kmg-fund に無い型を kmg-core から import することは許す
+- 列挙型から `NONE` を省くこと、`NONE` を「指定無し」以外の意味で使うこと
 - シークレット（`GITHUB_TOKEN` など）をコード・ログ・JSON に出すこと
 - テストで GitHub API に実通信すること
 - daily-tasks-git の `docs/data/` の JSON を手で編集すること（必ず収集ツールで生成する）

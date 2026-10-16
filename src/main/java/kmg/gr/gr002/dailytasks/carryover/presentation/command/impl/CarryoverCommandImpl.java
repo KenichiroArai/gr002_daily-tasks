@@ -8,10 +8,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002GenMsgTypes;
 import kmg.gr.gr002.dailytasks.carryover.presentation.command.CarryoverCommand;
 import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverOptionsModel;
 import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel;
 import kmg.gr.gr002.dailytasks.carryover.presentation.service.CarryoverService;
+import kmg.gr.gr002.dailytasks.carryover.presentation.types.CommandOptionTypes;
 
 /**
  * 持ち越しの収集コマンドの実装<br>
@@ -28,21 +30,6 @@ import kmg.gr.gr002.dailytasks.carryover.presentation.service.CarryoverService;
  */
 @Component
 public class CarryoverCommandImpl implements CarryoverCommand {
-
-    /** 引数：全件モード */
-    private static final String ARG_FULL = "--full";
-
-    /** 引数：使い方の表示 */
-    private static final String ARG_HELP = "--help";
-
-    /** 引数：使い方の表示（短縮形） */
-    private static final String ARG_SHORT_HELP = "-h";
-
-    /** メッセージのキー：不明な引数 */
-    private static final String MSG_UNKNOWN_ARGUMENT = "carryover.command.unknownArgument";
-
-    /** メッセージのキー：使い方 */
-    private static final String MSG_USAGE = "carryover.command.usage";
 
     /** 持ち越しの収集・集計サービス */
     private final CarryoverService carryoverService;
@@ -116,21 +103,25 @@ public class CarryoverCommandImpl implements CarryoverCommand {
 
         for (final String arg : args) {
 
-            switch (arg) {
+            final CommandOptionTypes option = CommandOptionTypes.getEnum(arg);
 
-                case CarryoverCommandImpl.ARG_FULL -> result.setFull(true);
+            if (option == CommandOptionTypes.FULL) {
 
-                case CarryoverCommandImpl.ARG_HELP, CarryoverCommandImpl.ARG_SHORT_HELP -> result.setHelp(true);
-
-                default -> {
-
-                    final String template = this.messageLogic.get(CarryoverCommandImpl.MSG_UNKNOWN_ARGUMENT);
-                    final String message  = String.format(template, arg);
-                    throw new IllegalArgumentException(message);
-
-                }
+                result.setFull(true);
+                continue;
 
             }
+
+            if ((option == CommandOptionTypes.HELP) || (option == CommandOptionTypes.HELP_SHORT)) {
+
+                result.setHelp(true);
+                continue;
+
+            }
+
+            final String template = this.messageLogic.get(Gr002GenMsgTypes.GR002_GEN11101);
+            final String message  = String.format(template, arg);
+            throw new IllegalArgumentException(message);
 
         }
 
@@ -158,7 +149,7 @@ public class CarryoverCommandImpl implements CarryoverCommand {
         /* 使い方の表示 */
         if (options.isHelp()) {
 
-            final String usage = this.messageLogic.get(CarryoverCommandImpl.MSG_USAGE);
+            final String usage = this.messageLogic.get(Gr002GenMsgTypes.GR002_GEN11100);
             this.out.println(usage);
             return;
 

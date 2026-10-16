@@ -1,7 +1,7 @@
 /**
  * 持ち越し機能の application 層の列挙型<br>
  * <p>
- * 残り時間の取得元など、値の種類を表す列挙型を置く。
+ * 残り時間の取得元など、値の種類を表す列挙型を置く。kmg-core の KmgCmnTypes を実装する。
  * </p>
  *
  * @author KenichiroArai

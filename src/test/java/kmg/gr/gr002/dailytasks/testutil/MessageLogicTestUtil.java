@@ -10,7 +10,7 @@ import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.impl.MessageLogicI
 /**
  * テスト用のメッセージの取得の生成<br>
  * <p>
- * Spring Boot を起動せずに、本番と同じ messages.properties を読む {@link MessageLogic} を作る。
+ * Spring Boot を起動せずに、本番と同じ messages.properties と messages-log.properties を読む {@link MessageLogic} を作る。
  * </p>
  *
  * @author KenichiroArai
@@ -30,7 +30,7 @@ public final class MessageLogicTestUtil {
     public static MessageLogic create() {
 
         final ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasename("messages");
+        messageSource.setBasenames("messages", "messages-log");
         messageSource.setDefaultEncoding(StandardCharsets.UTF_8.name());
         messageSource.setFallbackToSystemLocale(false);
 

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.DefaultMinutesDao;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTypes;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.json.JsonMapper;
@@ -39,9 +40,6 @@ public class DefaultMinutesDaoImpl implements DefaultMinutesDao {
 
     /** ロガー */
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultMinutesDaoImpl.class);
-
-    /** メッセージのキー：設定ファイルがない */
-    private static final String MSG_FILE_NOT_FOUND = "carryover.defaultMinutes.fileNotFound";
 
     /** JSON の変換 */
     private final JsonMapper jsonMapper;
@@ -82,7 +80,7 @@ public class DefaultMinutesDaoImpl implements DefaultMinutesDao {
 
         if (!Files.isRegularFile(configFile)) {
 
-            final String message = this.messageLogic.get(DefaultMinutesDaoImpl.MSG_FILE_NOT_FOUND);
+            final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12009);
             DefaultMinutesDaoImpl.LOGGER.warn(message, configFile);
             return result;
 

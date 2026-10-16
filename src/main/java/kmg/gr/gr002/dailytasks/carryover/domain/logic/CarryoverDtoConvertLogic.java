@@ -23,6 +23,7 @@ import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubIssueDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubSettingsDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.ItemStatDto;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002GenMsgTypes;
 
 /**
  * application 層のモデルと domain 層の DTO を相互に変換する<br>
@@ -42,9 +43,6 @@ import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
 })
 public class CarryoverDtoConvertLogic {
 
-    /** メッセージのキー：不明な残り時間の取得元 */
-    private static final String MSG_UNKNOWN_MINUTES_SOURCE = "carryover.minutesSource.unknownValue";
-
     /**
      * 持ち越し項目を保存用の DTO に変換する<br>
      *
@@ -56,7 +54,7 @@ public class CarryoverDtoConvertLogic {
     private static CarryoverItemDto toCarryoverItemDto(final CarryoverItemModel item) {
 
         final CarryoverItemDto result = new CarryoverItemDto(item.getName(), item.getOriginDate(), item.isChecked(),
-            item.getMinutes(), item.getMinutesSource().getValue(), item.getSection(), item.getRaw());
+            item.getMinutes(), item.getMinutesSource().getKey(), item.getSection(), item.getRaw());
         return result;
 
     }
@@ -186,11 +184,11 @@ public class CarryoverDtoConvertLogic {
 
         CarryoverItemModel result = null;
 
-        final MinutesSourceTypes minutesSource = MinutesSourceTypes.fromValue(dto.getMinutesSource());
+        final MinutesSourceTypes minutesSource = MinutesSourceTypes.getEnum(dto.getMinutesSource());
 
-        if (minutesSource == null) {
+        if (minutesSource == MinutesSourceTypes.NONE) {
 
-            final String template = this.messageLogic.get(CarryoverDtoConvertLogic.MSG_UNKNOWN_MINUTES_SOURCE);
+            final String template = this.messageLogic.get(Gr002GenMsgTypes.GR002_GEN11102);
             final String message  = String.format(template, dto.getMinutesSource());
             throw new IllegalArgumentException(message);
 

@@ -20,6 +20,8 @@ import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubIssueDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubSettingsDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.api.GitHubIssueApi;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002GenMsgTypes;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTypes;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
@@ -44,18 +46,6 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
 
     /** ロガー */
     private static final Logger LOGGER = LoggerFactory.getLogger(GitHubIssueApiImpl.class);
-
-    /** メッセージのキー：API の呼び出しの失敗 */
-    private static final String MSG_CALL_FAILED = "carryover.github.callFailed";
-
-    /** メッセージのキー：Issue の取得件数 */
-    private static final String MSG_FETCHED = "carryover.github.fetched";
-
-    /** メッセージのキー：API の呼び出しの中断 */
-    private static final String MSG_INTERRUPTED = "carryover.github.interrupted";
-
-    /** メッセージのキー：応答が配列ではない */
-    private static final String MSG_NOT_ARRAY = "carryover.github.notArray";
 
     /** 1 ページあたりの取得件数（GitHub API の上限） */
     private static final int PER_PAGE = 100;
@@ -237,7 +227,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
 
         }
 
-        final String message = this.messageLogic.get(GitHubIssueApiImpl.MSG_FETCHED);
+        final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12010);
         GitHubIssueApiImpl.LOGGER.info(message, result.size(), page - 1);
         return result;
 
@@ -281,7 +271,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
 
         if (response.statusCode() != GitHubIssueApiImpl.STATUS_OK) {
 
-            final String template = this.messageLogic.get(GitHubIssueApiImpl.MSG_CALL_FAILED);
+            final String template = this.messageLogic.get(Gr002GenMsgTypes.GR002_GEN11103);
             final String message  = String.format(template, response.statusCode(), uri);
             throw new IOException(message);
 
@@ -291,7 +281,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
 
         if (!result.isArray()) {
 
-            final String template = this.messageLogic.get(GitHubIssueApiImpl.MSG_NOT_ARRAY);
+            final String template = this.messageLogic.get(Gr002GenMsgTypes.GR002_GEN11104);
             final String message  = String.format(template, uri);
             throw new IOException(message);
 
@@ -354,7 +344,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
         } catch (final InterruptedException e) {
 
             Thread.currentThread().interrupt();
-            final String message = this.messageLogic.get(GitHubIssueApiImpl.MSG_INTERRUPTED);
+            final String message = this.messageLogic.get(Gr002GenMsgTypes.GR002_GEN11105);
             throw new IOException(message, e);
 
         }

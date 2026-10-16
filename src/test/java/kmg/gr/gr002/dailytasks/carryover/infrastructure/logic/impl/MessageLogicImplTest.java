@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.context.NoSuchMessageException;
 
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002GenMsgTypes;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002ValMsgTypes;
 import kmg.gr.gr002.dailytasks.testutil.MessageLogicTestUtil;
 
 /**
@@ -34,7 +36,7 @@ public class MessageLogicImplTest {
         final MessageLogic testTarget = MessageLogicTestUtil.create();
 
         /* テスト対象の実行 */
-        final String testResult = testTarget.get("carryover.command.unknownArgument");
+        final String testResult = testTarget.get(Gr002GenMsgTypes.GR002_GEN11101);
 
         /* 検証の準備 */
         final String actualMessage = testResult;
@@ -51,14 +53,14 @@ public class MessageLogicImplTest {
     public void testGet_semiUnknownKey() {
 
         /* 期待値の定義 */
-        final String expectedMessage = "No message found under code 'unknown.key' for locale ''.";
+        final String expectedMessage = "No message found under code 'None' for locale ''.";
 
         /* 準備 */
         final MessageLogic testTarget = MessageLogicTestUtil.create();
 
         /* テスト対象の実行 */
         final NoSuchMessageException testException
-            = Assertions.assertThrows(NoSuchMessageException.class, () -> testTarget.get("unknown.key"));
+            = Assertions.assertThrows(NoSuchMessageException.class, () -> testTarget.get(Gr002ValMsgTypes.NONE));
 
         /* 検証の準備 */
         final String actualMessage = testException.getMessage();

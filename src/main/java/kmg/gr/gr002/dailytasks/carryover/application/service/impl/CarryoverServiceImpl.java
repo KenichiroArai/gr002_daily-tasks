@@ -20,6 +20,7 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DefaultMinutesModel;
 import kmg.gr.gr002.dailytasks.carryover.application.types.MinutesSourceTypes;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTypes;
 import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel;
 import kmg.gr.gr002.dailytasks.carryover.presentation.service.CarryoverService;
 
@@ -41,18 +42,6 @@ public class CarryoverServiceImpl implements CarryoverService {
 
     /** ロガー */
     private static final Logger LOGGER = LoggerFactory.getLogger(CarryoverServiceImpl.class);
-
-    /** メッセージのキー：収集の結果 */
-    private static final String MSG_COLLECT_RESULT = "carryover.service.collectResult";
-
-    /** メッセージのキー：残り時間の取得元ごとの行数 */
-    private static final String MSG_MINUTES_SOURCE_RESULT = "carryover.service.minutesSourceResult";
-
-    /** メッセージのキー：差分モードの名前 */
-    private static final String MSG_MODE_DIFF = "carryover.service.modeDiff";
-
-    /** メッセージのキー：全件モードの名前 */
-    private static final String MSG_MODE_FULL = "carryover.service.modeFull";
 
     /**
      * 残り時間の取得元ごとの行数を返す<br>
@@ -239,12 +228,12 @@ public class CarryoverServiceImpl implements CarryoverService {
         this.carryoverIssueLogic.saveSummary(source, summary);
 
         /* 結果のログ */
-        final String collectMessage = this.messageLogic.get(CarryoverServiceImpl.MSG_COLLECT_RESULT);
+        final String collectMessage = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12000);
         final String modeName       = this.modeName(full);
         CarryoverServiceImpl.LOGGER.info(collectMessage, modeName, remoteIssues.size(), result,
             summary.getDays().size());
 
-        final String minutesSourceMessage = this.messageLogic.get(CarryoverServiceImpl.MSG_MINUTES_SOURCE_RESULT);
+        final String minutesSourceMessage = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12001);
         final long   defaultCount         = CarryoverServiceImpl.countBySource(all, MinutesSourceTypes.DEFAULT);
         final long   unknownCount         = CarryoverServiceImpl.countBySource(all, MinutesSourceTypes.UNKNOWN);
         CarryoverServiceImpl.LOGGER.info(minutesSourceMessage, defaultCount, unknownCount);
@@ -263,7 +252,7 @@ public class CarryoverServiceImpl implements CarryoverService {
      */
     private String modeName(final boolean full) {
 
-        String result = this.messageLogic.get(CarryoverServiceImpl.MSG_MODE_DIFF);
+        String result = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12012);
 
         if (!full) {
 
@@ -271,7 +260,7 @@ public class CarryoverServiceImpl implements CarryoverService {
 
         }
 
-        result = this.messageLogic.get(CarryoverServiceImpl.MSG_MODE_FULL);
+        result = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12011);
         return result;
 
     }

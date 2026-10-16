@@ -5,6 +5,7 @@ import java.util.Locale;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
+import kmg.fund.infrastructure.cmn.msg.KmgFundCmnMsgTypes;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
 
 /**
@@ -40,8 +41,8 @@ public class MessageLogicImpl implements MessageLogic {
     /**
      * メッセージを取得する<br>
      *
-     * @param key
-     *            キー
+     * @param type
+     *             メッセージの種類
      *
      * @return メッセージ
      *
@@ -49,9 +50,9 @@ public class MessageLogicImpl implements MessageLogic {
      *                                                            キーが見つからない場合
      */
     @Override
-    public String get(final String key) {
+    public String get(final KmgFundCmnMsgTypes type) {
 
-        final String result = this.messageSource.getMessage(key, null, Locale.ROOT);
+        final String result = this.messageSource.getMessage(type.getKey(), null, Locale.ROOT);
         return result;
 
     }

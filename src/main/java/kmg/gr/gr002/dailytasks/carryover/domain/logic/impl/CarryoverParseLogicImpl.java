@@ -2,7 +2,6 @@ package kmg.gr.gr002.dailytasks.carryover.domain.logic.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,7 +15,9 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverItemModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DefaultMinutesModel;
 import kmg.gr.gr002.dailytasks.carryover.application.types.MinutesSourceTypes;
+import kmg.gr.gr002.dailytasks.carryover.domain.types.TargetSectionTypes;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTypes;
 
 /**
  * 日々のタスク Issue から持ち越し項目を解析する実装<br>
@@ -48,27 +49,6 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
     /** ロガー */
     private static final Logger LOGGER = LoggerFactory.getLogger(CarryoverParseLogicImpl.class);
 
-    /** メッセージのキー：残数と解析件数の食い違い */
-    private static final String MSG_DECLARED_COUNT_MISMATCH = "carryover.parser.declaredCountMismatch";
-
-    /** メッセージのキー：標準時間が未登録 */
-    private static final String MSG_DEFAULT_MINUTES_NOT_FOUND = "carryover.parser.defaultMinutesNotFound";
-
-    /** メッセージのキー：時間表記を解釈できない */
-    private static final String MSG_MINUTES_NOT_PARSED = "carryover.parser.minutesNotParsed";
-
-    /** メッセージのキー：項目名を取得できない */
-    private static final String MSG_NAME_NOT_FOUND = "carryover.parser.nameNotFound";
-
-    /** メッセージのキー：持ち越し元の日付がない */
-    private static final String MSG_ORIGIN_DATE_NOT_FOUND = "carryover.parser.originDateNotFound";
-
-    /** メッセージのキー：タイトルから日付を取得できない */
-    private static final String MSG_TITLE_DATE_NOT_FOUND = "carryover.parser.titleDateNotFound";
-
-    /** メッセージのキー：想定外の行 */
-    private static final String MSG_UNEXPECTED_LINE = "carryover.parser.unexpectedLine";
-
     /** 括弧内の時間表記 */
     private static final Pattern PARENTHESES = Pattern.compile("[（(]([^）)]*)[）)]");
 
@@ -77,9 +57,6 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
     /** 時間だけの表記（N分） */
     private static final Pattern SIMPLE_MINUTES = Pattern.compile("^\\s*(\\d+(?:\\.\\d+)?)\\s*分\\s*$");
-
-    /** 対象セクション名 */
-    private static final Set<String> TARGET_SECTIONS = Set.of("負債", "繰り越し", "持ち越し");
 
     /** タイトルの日付（YYYY年MM月DD日） */
     private static final Pattern TITLE_DATE = Pattern.compile("(\\d{4})年(\\d{1,2})月(\\d{1,2})日");
@@ -103,7 +80,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
      */
     private static void addSection(final List<String> sections, final String section) {
 
-        if (!CarryoverParseLogicImpl.TARGET_SECTIONS.contains(section)) {
+        if (TargetSectionTypes.getEnum(section) == TargetSectionTypes.NONE) {
 
             return;
 
@@ -313,7 +290,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         if (date == null) {
 
-            final String message = this.messageLogic.get(CarryoverParseLogicImpl.MSG_TITLE_DATE_NOT_FOUND);
+            final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12002);
             CarryoverParseLogicImpl.LOGGER.warn(message, issue.getNumber(), issue.getTitle());
 
         }
@@ -337,7 +314,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
             }
 
-            if (!CarryoverParseLogicImpl.TARGET_SECTIONS.contains(currentSection)) {
+            if (TargetSectionTypes.getEnum(currentSection) == TargetSectionTypes.NONE) {
 
                 continue;
 
@@ -416,7 +393,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         } else {
 
-            final String message = this.messageLogic.get(CarryoverParseLogicImpl.MSG_ORIGIN_DATE_NOT_FOUND);
+            final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12003);
             CarryoverParseLogicImpl.LOGGER.warn(message, number, raw);
 
         }
@@ -425,7 +402,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         if (CarryoverParseLogicImpl.UNKNOWN_NAME.equals(name)) {
 
-            final String message = this.messageLogic.get(CarryoverParseLogicImpl.MSG_NAME_NOT_FOUND);
+            final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12004);
             CarryoverParseLogicImpl.LOGGER.warn(message, number, raw);
 
         }
@@ -443,7 +420,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         if (!rest.isBlank()) {
 
-            final String message = this.messageLogic.get(CarryoverParseLogicImpl.MSG_MINUTES_NOT_PARSED);
+            final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12005);
             CarryoverParseLogicImpl.LOGGER.warn(message, number, raw);
 
         }
@@ -453,7 +430,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         if (defaultValue == null) {
 
-            final String message = this.messageLogic.get(CarryoverParseLogicImpl.MSG_DEFAULT_MINUTES_NOT_FOUND);
+            final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12006);
             CarryoverParseLogicImpl.LOGGER.warn(message, number, name);
             result = new CarryoverItemModel(name, originDate, checked, 0, MinutesSourceTypes.UNKNOWN, section, raw);
             return result;
@@ -490,7 +467,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         }
 
-        final String message = this.messageLogic.get(CarryoverParseLogicImpl.MSG_DECLARED_COUNT_MISMATCH);
+        final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12008);
         CarryoverParseLogicImpl.LOGGER.warn(message, number, declaredCount, parsedCount);
 
     }
@@ -522,7 +499,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         }
 
-        final String message = this.messageLogic.get(CarryoverParseLogicImpl.MSG_UNEXPECTED_LINE);
+        final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12007);
         CarryoverParseLogicImpl.LOGGER.warn(message, number, line);
 
     }

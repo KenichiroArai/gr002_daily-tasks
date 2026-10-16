@@ -10,6 +10,7 @@ import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002GenMsgTypes;
 import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverOptionsModel;
 import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel;
 import kmg.gr.gr002.dailytasks.carryover.presentation.service.CarryoverService;
@@ -147,7 +148,7 @@ public class CarryoverCommandImplTest {
      */
     private static String usage() {
 
-        final String result = MessageLogicTestUtil.create().get("carryover.command.usage");
+        final String result = MessageLogicTestUtil.create().get(Gr002GenMsgTypes.GR002_GEN11100);
         return result;
 
     }
