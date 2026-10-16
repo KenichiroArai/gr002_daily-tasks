@@ -27,6 +27,8 @@
 
         <jacoco.version>0.8.14</jacoco.version>
         <archunit.version>1.4.1</archunit.version>
+        <kmg-core.version>0.3.2</kmg-core.version>
+        <kmg-fund.version>0.3.1</kmg-fund.version>
     </properties>
 
     <dependencies>
@@ -37,6 +39,17 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jackson</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>kmg.core</groupId>
+            <artifactId>kmg-core</artifactId>
+            <version>${kmg-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>kmg.fund</groupId>
+            <artifactId>kmg-fund</artifactId>
+            <version>${kmg-fund.version}</version>
         </dependency>
 
         <dependency>
@@ -127,4 +140,17 @@
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>github-kmg-core</id>
+            <name>GitHub KenichiroArai Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/KenichiroArai/kmg-core</url>
+        </repository>
+        <repository>
+            <id>github-kmg-fund</id>
+            <name>GitHub KenichiroArai Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/KenichiroArai/kmg-fund</url>
+        </repository>
+    </repositories>
 </project>
