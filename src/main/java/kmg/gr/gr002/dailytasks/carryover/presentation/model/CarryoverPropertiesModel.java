@@ -4,6 +4,8 @@ import java.nio.file.Path;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import kmg.gr.gr002.dailytasks.carryover.presentation.types.CarryoverPropertiesFormatTypes;
+
 /**
  * 持ち越しの収集の設定<br>
  * <p>
@@ -147,9 +149,8 @@ public class CarryoverPropertiesModel {
     @Override
     public String toString() {
 
-        final String result = String.format(
-            "CarryoverPropertiesModel[repository=%s, dataDir=%s, defaultMinutesFile=%s, recentCount=%d]",
-            this.repository, this.dataDir, this.defaultMinutesFile, Integer.valueOf(this.recentCount));
+        final String result = String.format(CarryoverPropertiesFormatTypes.TO_STRING.getFormat(), this.repository,
+            this.dataDir, this.defaultMinutesFile, Integer.valueOf(this.recentCount));
         return result;
 
     }

@@ -15,6 +15,8 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverItemModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DefaultMinutesModel;
 import kmg.gr.gr002.dailytasks.carryover.application.types.MinutesSourceTypes;
+import kmg.gr.gr002.dailytasks.carryover.domain.types.CarryoverParsePatternTypes;
+import kmg.gr.gr002.dailytasks.carryover.domain.types.CarryoverParseTextTypes;
 import kmg.gr.gr002.dailytasks.carryover.domain.types.TargetSectionTypes;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTypes;
@@ -35,40 +37,42 @@ import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTyp
 public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
     /** チェックボックスの行（- [ ] 内容 / - [x] 内容） */
-    private static final Pattern CHECKBOX = Pattern.compile("^\\s*[-*]\\s*\\[([ xX])\\]\\s*(.*?)\\s*$");
+    private static final Pattern CHECKBOX = Pattern.compile(CarryoverParsePatternTypes.CHECKBOX.getPattern());
 
     /** 持ち越し元の日付を含む内容（項目名YYYY/MM/DD残り） */
-    private static final Pattern DATED_CONTENT = Pattern.compile("^(.*?)(\\d{4})/(\\d{1,2})/(\\d{1,2})(.*)$");
+    private static final Pattern DATED_CONTENT = Pattern.compile(CarryoverParsePatternTypes.DATED_CONTENT.getPattern());
 
     /** 残数（残：N） */
-    private static final Pattern DECLARED_COUNT = Pattern.compile("^\\s*残\\s*[：:]\\s*(\\d+)\\s*$");
+    private static final Pattern DECLARED_COUNT
+        = Pattern.compile(CarryoverParsePatternTypes.DECLARED_COUNT.getPattern());
 
     /** 見出し（## 見出し） */
-    private static final Pattern HEADING = Pattern.compile("^##(?!#)\\s*(.*?)\\s*$");
+    private static final Pattern HEADING = Pattern.compile(CarryoverParsePatternTypes.HEADING.getPattern());
 
     /** ロガー */
     private static final Logger LOGGER = LoggerFactory.getLogger(CarryoverParseLogicImpl.class);
 
     /** 括弧内の時間表記 */
-    private static final Pattern PARENTHESES = Pattern.compile("[（(]([^）)]*)[）)]");
+    private static final Pattern PARENTHESES = Pattern.compile(CarryoverParsePatternTypes.PARENTHESES.getPattern());
 
     /** 残り時間の表記（残り時間：N分 / 残りN分 / 先行分残りN分） */
-    private static final Pattern REMAINING_MINUTES = Pattern.compile("残り(?:時間)?\\s*[：:]?\\s*(\\d+(?:\\.\\d+)?)\\s*分");
+    private static final Pattern REMAINING_MINUTES
+        = Pattern.compile(CarryoverParsePatternTypes.REMAINING_MINUTES.getPattern());
 
     /** 時間だけの表記（N分） */
-    private static final Pattern SIMPLE_MINUTES = Pattern.compile("^\\s*(\\d+(?:\\.\\d+)?)\\s*分\\s*$");
+    private static final Pattern SIMPLE_MINUTES
+        = Pattern.compile(CarryoverParsePatternTypes.SIMPLE_MINUTES.getPattern());
 
     /** タイトルの日付（YYYY年MM月DD日） */
-    private static final Pattern TITLE_DATE = Pattern.compile("(\\d{4})年(\\d{1,2})月(\\d{1,2})日");
+    private static final Pattern TITLE_DATE = Pattern.compile(CarryoverParsePatternTypes.TITLE_DATE.getPattern());
 
     /** 項目名の末尾の開き括弧 */
-    private static final Pattern TRAILING_OPEN_PARENTHESES = Pattern.compile("[（(]+$");
+    private static final Pattern TRAILING_OPEN_PARENTHESES
+        = Pattern.compile(CarryoverParsePatternTypes.TRAILING_OPEN_PARENTHESES.getPattern());
 
     /** 項目名の末尾の括弧書き */
-    private static final Pattern TRAILING_PARENTHESES = Pattern.compile("[（(][^（()）]*[）)]$");
-
-    /** 項目名が空の場合の名前 */
-    private static final String UNKNOWN_NAME = "不明";
+    private static final Pattern TRAILING_PARENTHESES
+        = Pattern.compile(CarryoverParsePatternTypes.TRAILING_PARENTHESES.getPattern());
 
     /**
      * 対象セクションの場合にセクション名を追加する<br>
@@ -110,8 +114,8 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
      */
     private static String formatDate(final String year, final String month, final String day) {
 
-        final String result
-            = String.format("%04d-%02d-%02d", Integer.valueOf(year), Integer.valueOf(month), Integer.valueOf(day));
+        final String result = String.format(CarryoverParseTextTypes.DATE.getText(), Integer.valueOf(year),
+            Integer.valueOf(month), Integer.valueOf(day));
         return result;
 
     }
@@ -135,8 +139,10 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
         do {
 
             previous = result;
-            result = CarryoverParseLogicImpl.TRAILING_PARENTHESES.matcher(result).replaceAll("").strip();
-            result = CarryoverParseLogicImpl.TRAILING_OPEN_PARENTHESES.matcher(result).replaceAll("").strip();
+            result = CarryoverParseLogicImpl.TRAILING_PARENTHESES.matcher(result)
+                .replaceAll(CarryoverParseTextTypes.EMPTY.getText()).strip();
+            result = CarryoverParseLogicImpl.TRAILING_OPEN_PARENTHESES.matcher(result)
+                .replaceAll(CarryoverParseTextTypes.EMPTY.getText()).strip();
 
         } while (!result.equals(previous));
 
@@ -146,7 +152,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         }
 
-        result = CarryoverParseLogicImpl.UNKNOWN_NAME;
+        result = CarryoverParseTextTypes.UNKNOWN.getText();
         return result;
 
     }
@@ -250,7 +256,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         }
 
-        result = List.of(body.split("\\R", -1));
+        result = List.of(body.split(CarryoverParsePatternTypes.LINE_SEPARATOR.getPattern(), -1));
         return result;
 
     }
@@ -299,7 +305,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
         final List<String>             sections       = new ArrayList<>();
         final List<CarryoverItemModel> items          = new ArrayList<>();
         Integer                        declaredCount  = null;
-        String                         currentSection = "";
+        String                         currentSection = CarryoverParseTextTypes.EMPTY.getText();
 
         for (final String line : CarryoverParseLogicImpl.splitLines(issue.getBody())) {
 
@@ -340,7 +346,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
             }
 
-            final boolean checked = !" ".equals(checkboxMatcher.group(1));
+            final boolean checked = !CarryoverParseTextTypes.UNCHECKED.getText().equals(checkboxMatcher.group(1));
             items.add(this.parseItem(issue.getNumber(), currentSection, checked, checkboxMatcher.group(2), line,
                 defaultMinutes));
 
@@ -400,7 +406,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         final String name = CarryoverParseLogicImpl.normalizeName(namePart);
 
-        if (CarryoverParseLogicImpl.UNKNOWN_NAME.equals(name)) {
+        if (CarryoverParseTextTypes.UNKNOWN.getText().equals(name)) {
 
             final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12004);
             CarryoverParseLogicImpl.LOGGER.warn(message, number, raw);
@@ -493,7 +499,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         }
 
-        if (stripped.matches("^-{3,}$")) {
+        if (stripped.matches(CarryoverParsePatternTypes.HORIZONTAL_RULE.getPattern())) {
 
             return;
 

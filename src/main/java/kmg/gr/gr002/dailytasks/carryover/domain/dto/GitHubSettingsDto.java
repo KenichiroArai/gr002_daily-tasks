@@ -1,5 +1,7 @@
 package kmg.gr.gr002.dailytasks.carryover.domain.dto;
 
+import kmg.gr.gr002.dailytasks.carryover.domain.types.GitHubSettingsFormatTypes;
+
 /**
  * GitHub API の接続設定の DTO<br>
  * <p>
@@ -70,7 +72,7 @@ public class GitHubSettingsDto {
     @Override
     public String toString() {
 
-        final String result = String.format("GitHubSettingsDto[repository=%s]", this.repository);
+        final String result = String.format(GitHubSettingsFormatTypes.TO_STRING.getFormat(), this.repository);
         return result;
 
     }

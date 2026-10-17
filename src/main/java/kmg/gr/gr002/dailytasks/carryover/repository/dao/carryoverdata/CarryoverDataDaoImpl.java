@@ -16,6 +16,7 @@ import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.CarryoverDataDao;
 import kmg.gr.gr002.dailytasks.carryover.repository.dto.json.CarryoverIssueJsonDto;
 import kmg.gr.gr002.dailytasks.carryover.repository.logic.CarryoverJsonConvertLogic;
 import kmg.gr.gr002.dailytasks.carryover.repository.types.CarryoverDataFileTypes;
+import kmg.gr.gr002.dailytasks.carryover.repository.types.CarryoverDataFormatTypes;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.util.DefaultIndenter;
 import tools.jackson.core.util.DefaultPrettyPrinter;
@@ -62,7 +63,8 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
         this.jsonConvertLogic = jsonConvertLogic;
 
         /* 改行を LF に統一した整形出力 */
-        final DefaultIndenter      indenter = new DefaultIndenter("  ", "\n");
+        final DefaultIndenter      indenter = new DefaultIndenter(CarryoverDataFormatTypes.INDENT.getFormat(),
+            CarryoverDataFormatTypes.LINE_FEED.getFormat());
         final DefaultPrettyPrinter printer  = new DefaultPrettyPrinter()
             .withSeparators(Separators.createDefaultInstance().withObjectNameValueSpacing(Separators.Spacing.AFTER))
             .withObjectIndenter(indenter).withArrayIndenter(indenter);
@@ -85,7 +87,8 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
     public Map<Integer, CarryoverIssueDto> loadIssues(final Path dataDir) throws IOException {
 
         final Map<Integer, CarryoverIssueDto> result    = new TreeMap<>();
-        final Path                            issuesDir = dataDir.resolve(CarryoverDataFileTypes.ISSUES_DIR.getKey());
+        final Path                            issuesDir
+            = dataDir.resolve(CarryoverDataFileTypes.ISSUES_DIR.getFileName());
 
         if (!Files.isDirectory(issuesDir)) {
 
@@ -96,7 +99,7 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
         try (Stream<Path> paths = Files.list(issuesDir)) {
 
             for (final Path path : paths
-                .filter(p -> p.getFileName().toString().endsWith(CarryoverDataFileTypes.JSON_EXTENSION.getKey()))
+                .filter(p -> p.getFileName().toString().endsWith(CarryoverDataFileTypes.JSON_EXTENSION.getFileName()))
                 .toList()) {
 
                 final CarryoverIssueDto issue = this.jsonConvertLogic.toCarryoverIssueDto(this.readIssue(path));
@@ -156,8 +159,9 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
     @Override
     public void saveIssue(final Path dataDir, final CarryoverIssueDto issue) throws IOException {
 
-        final Path path = dataDir.resolve(CarryoverDataFileTypes.ISSUES_DIR.getKey())
-            .resolve(String.format("%04d%s", issue.getNumber(), CarryoverDataFileTypes.JSON_EXTENSION.getKey()));
+        final Path path = dataDir.resolve(CarryoverDataFileTypes.ISSUES_DIR.getFileName())
+            .resolve(String.format(CarryoverDataFormatTypes.ISSUE_FILE_NAME.getFormat(), issue.getNumber(),
+                CarryoverDataFileTypes.JSON_EXTENSION.getFileName()));
         this.write(path, this.jsonConvertLogic.toCarryoverIssueJson(issue));
 
     }
@@ -176,7 +180,7 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
     @Override
     public void saveSummary(final Path dataDir, final CarryoverSummaryDto summary) throws IOException {
 
-        final Path path = dataDir.resolve(CarryoverDataFileTypes.SUMMARY_FILE.getKey());
+        final Path path = dataDir.resolve(CarryoverDataFileTypes.SUMMARY_FILE.getFileName());
         this.write(path, this.jsonConvertLogic.toCarryoverSummaryJson(summary));
 
     }
@@ -198,7 +202,7 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
 
         try {
 
-            json = this.objectWriter.writeValueAsString(value) + "\n";
+            json = this.objectWriter.writeValueAsString(value) + CarryoverDataFormatTypes.LINE_FEED.getFormat();
 
         } catch (final JacksonException e) {
 

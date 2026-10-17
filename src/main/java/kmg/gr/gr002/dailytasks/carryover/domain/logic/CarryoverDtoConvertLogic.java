@@ -39,7 +39,7 @@ import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002GenMsgTyp
  */
 @Component
 @SuppressWarnings({
-    "static-method", "nls"
+    "static-method",
 })
 public class CarryoverDtoConvertLogic {
 
@@ -54,7 +54,7 @@ public class CarryoverDtoConvertLogic {
     private static CarryoverItemDto toCarryoverItemDto(final CarryoverItemModel item) {
 
         final CarryoverItemDto result = new CarryoverItemDto(item.getName(), item.getOriginDate(), item.isChecked(),
-            item.getMinutes(), item.getMinutesSource().getKey(), item.getSection(), item.getRaw());
+            item.getMinutes(), item.getMinutesSource().getSource(), item.getSection(), item.getRaw());
         return result;
 
     }

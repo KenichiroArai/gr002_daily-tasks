@@ -20,16 +20,16 @@ public enum CarryoverDataFileTypes implements KmgCmnTypes<String> {
     /* 定義：開始 */
 
     /** 指定無し */
-    NONE("指定無し", "None", "指定無し"),
+    NONE("指定無し", "None", "指定無し", null),
 
     /** Issue ごとの JSON を置くディレクトリ名 */
-    ISSUES_DIR("Issue ごとの JSON を置くディレクトリ名", "issues", "Issue ごとの JSON を置くディレクトリ名"),
+    ISSUES_DIR("Issue ごとの JSON を置くディレクトリ名", "IssuesDir", "Issue ごとの JSON を置くディレクトリ名", "issues"),
 
     /** JSON ファイルの拡張子 */
-    JSON_EXTENSION("JSON ファイルの拡張子", ".json", "JSON ファイルの拡張子"),
+    JSON_EXTENSION("JSON ファイルの拡張子", "JsonExtension", "JSON ファイルの拡張子", ".json"),
 
     /** 画面用の集計の JSON ファイル名 */
-    SUMMARY_FILE("画面用の集計の JSON ファイル名", "summary.json", "画面用の集計の JSON ファイル名"),
+    SUMMARY_FILE("画面用の集計の JSON ファイル名", "SummaryFile", "画面用の集計の JSON ファイル名", "summary.json"),
 
     /* 定義：終了 */
     ;
@@ -43,6 +43,12 @@ public enum CarryoverDataFileTypes implements KmgCmnTypes<String> {
         for (final CarryoverDataFileTypes type : CarryoverDataFileTypes.values()) {
 
             CarryoverDataFileTypes.VALUES_MAP.put(type.get(), type);
+
+            if (type.getFileName() != null) {
+
+                CarryoverDataFileTypes.VALUES_MAP.put(type.getFileName(), type);
+
+            }
 
         }
 
@@ -105,6 +111,9 @@ public enum CarryoverDataFileTypes implements KmgCmnTypes<String> {
     /** 詳細情報 */
     private final String detail;
 
+    /** ファイル名 */
+    private final String fileName;
+
     /**
      * コンストラクタ<br>
      *
@@ -114,12 +123,15 @@ public enum CarryoverDataFileTypes implements KmgCmnTypes<String> {
      *                    キー
      * @param detail
      *                    詳細情報
+     * @param fileName
+     *                    ファイル名
      */
-    CarryoverDataFileTypes(final String displayName, final String key, final String detail) {
+    CarryoverDataFileTypes(final String displayName, final String key, final String detail, final String fileName) {
 
         this.displayName = displayName;
         this.key = key;
         this.detail = detail;
+        this.fileName = fileName;
 
     }
 
@@ -163,6 +175,18 @@ public enum CarryoverDataFileTypes implements KmgCmnTypes<String> {
     public String getDisplayName() {
 
         final String result = this.displayName;
+        return result;
+
+    }
+
+    /**
+     * ファイル名を返す。<br>
+     *
+     * @return ファイル名
+     */
+    public String getFileName() {
+
+        final String result = this.fileName;
         return result;
 
     }

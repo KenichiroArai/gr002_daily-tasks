@@ -19,17 +19,17 @@ public enum TargetSectionTypes implements KmgCmnTypes<String> {
 
     /* 定義：開始 */
 
+    /** 指定無し */
+    NONE("指定無し", "None", "指定無し", null),
+
     /** 持ち越し */
-    CARRYOVER("持ち越し", "持ち越し", "対象セクション"),
+    CARRYOVER("持ち越し", "Carryover", "対象セクション", "持ち越し"),
 
     /** 繰り越し */
-    CARRYOVER_LEGACY("繰り越し", "繰り越し", "旧名称の対象セクション"),
+    CARRYOVER_LEGACY("繰り越し", "CarryoverLegacy", "旧名称の対象セクション", "繰り越し"),
 
     /** 負債 */
-    DEBT("負債", "負債", "旧名称の対象セクション"),
-
-    /** 指定無し */
-    NONE("指定無し", "None", "指定無し"),
+    DEBT("負債", "Debt", "旧名称の対象セクション", "負債"),
 
     /* 定義：終了 */
     ;
@@ -43,6 +43,12 @@ public enum TargetSectionTypes implements KmgCmnTypes<String> {
         for (final TargetSectionTypes type : TargetSectionTypes.values()) {
 
             TargetSectionTypes.VALUES_MAP.put(type.get(), type);
+
+            if (type.getSection() != null) {
+
+                TargetSectionTypes.VALUES_MAP.put(type.getSection(), type);
+
+            }
 
         }
 
@@ -105,6 +111,9 @@ public enum TargetSectionTypes implements KmgCmnTypes<String> {
     /** キー */
     private final String key;
 
+    /** セクション名 */
+    private final String section;
+
     /**
      * コンストラクタ<br>
      *
@@ -114,12 +123,15 @@ public enum TargetSectionTypes implements KmgCmnTypes<String> {
      *                    キー
      * @param detail
      *                    詳細情報
+     * @param section
+     *                    セクション名
      */
-    TargetSectionTypes(final String displayName, final String key, final String detail) {
+    TargetSectionTypes(final String displayName, final String key, final String detail, final String section) {
 
         this.displayName = displayName;
         this.key = key;
         this.detail = detail;
+        this.section = section;
 
     }
 
@@ -163,6 +175,18 @@ public enum TargetSectionTypes implements KmgCmnTypes<String> {
     public String getDisplayName() {
 
         final String result = this.displayName;
+        return result;
+
+    }
+
+    /**
+     * セクション名を返す。<br>
+     *
+     * @return セクション名
+     */
+    public String getSection() {
+
+        final String result = this.section;
         return result;
 
     }

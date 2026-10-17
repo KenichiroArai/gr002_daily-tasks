@@ -2,6 +2,8 @@ package kmg.gr.gr002.dailytasks.carryover.application.model;
 
 import java.util.List;
 
+import kmg.gr.gr002.dailytasks.carryover.application.types.IssueStateTypes;
+
 /**
  * 持ち越しの解析結果（Issue 単位）<br>
  *
@@ -211,7 +213,7 @@ public class CarryoverIssueModel {
      */
     public boolean isOpen() {
 
-        final boolean result = "open".equals(this.state);
+        final boolean result = IssueStateTypes.OPEN.getState().equals(this.state);
         return result;
 
     }

@@ -24,7 +24,7 @@ public class MinutesSourceTypesTest {
     public void testGet_normalDefault() {
 
         /* 期待値の定義 */
-        final String expectedKey = "default";
+        final String expectedKey = "Default";
 
         /* 準備 */
         final MinutesSourceTypes testTarget = MinutesSourceTypes.DEFAULT;
@@ -179,7 +179,7 @@ public class MinutesSourceTypesTest {
     public void testGetKey_normalDefault() {
 
         /* 期待値の定義 */
-        final String expectedKey = "default";
+        final String expectedKey = "Default";
 
         /* 準備 */
         final MinutesSourceTypes testTarget = MinutesSourceTypes.DEFAULT;
@@ -202,7 +202,7 @@ public class MinutesSourceTypesTest {
     public void testToString_normalParsed() {
 
         /* 期待値の定義 */
-        final String expectedKey = "parsed";
+        final String expectedKey = "Parsed";
 
         /* 準備 */
         final MinutesSourceTypes testTarget = MinutesSourceTypes.PARSED;

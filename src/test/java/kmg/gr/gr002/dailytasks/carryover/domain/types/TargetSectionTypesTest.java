@@ -24,7 +24,7 @@ public class TargetSectionTypesTest {
     public void testGet_normalCarryover() {
 
         /* 期待値の定義 */
-        final String expectedKey = "持ち越し";
+        final String expectedKey = "Carryover";
 
         /* 準備 */
         final TargetSectionTypes testTarget = TargetSectionTypes.CARRYOVER;
@@ -179,7 +179,7 @@ public class TargetSectionTypesTest {
     public void testGetKey_normalLegacy() {
 
         /* 期待値の定義 */
-        final String expectedKey = "繰り越し";
+        final String expectedKey = "CarryoverLegacy";
 
         /* 準備 */
         final TargetSectionTypes testTarget = TargetSectionTypes.CARRYOVER_LEGACY;
@@ -202,7 +202,7 @@ public class TargetSectionTypesTest {
     public void testToString_normalCarryover() {
 
         /* 期待値の定義 */
-        final String expectedKey = "持ち越し";
+        final String expectedKey = "Carryover";
 
         /* 準備 */
         final TargetSectionTypes testTarget = TargetSectionTypes.CARRYOVER;

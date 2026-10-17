@@ -24,7 +24,7 @@ public class CarryoverDataFileTypesTest {
     public void testGet_normalSummaryFile() {
 
         /* 期待値の定義 */
-        final String expectedKey = "summary.json";
+        final String expectedKey = "SummaryFile";
 
         /* 準備 */
         final CarryoverDataFileTypes testTarget = CarryoverDataFileTypes.SUMMARY_FILE;
@@ -179,7 +179,7 @@ public class CarryoverDataFileTypesTest {
     public void testGetKey_normalJsonExtension() {
 
         /* 期待値の定義 */
-        final String expectedKey = ".json";
+        final String expectedKey = "JsonExtension";
 
         /* 準備 */
         final CarryoverDataFileTypes testTarget = CarryoverDataFileTypes.JSON_EXTENSION;
@@ -202,7 +202,7 @@ public class CarryoverDataFileTypesTest {
     public void testToString_normalSummaryFile() {
 
         /* 期待値の定義 */
-        final String expectedKey = "summary.json";
+        final String expectedKey = "SummaryFile";
 
         /* 準備 */
         final CarryoverDataFileTypes testTarget = CarryoverDataFileTypes.SUMMARY_FILE;

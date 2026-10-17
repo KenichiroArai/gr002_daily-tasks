@@ -24,7 +24,7 @@ public class Gr002GenMsgTypesTest {
     public void testGet_normalUnknownArgument() {
 
         /* 期待値の定義 */
-        final String expectedKey = "GR002_GEN11101";
+        final String expectedKey = "Gr002Gen11101";
 
         /* 準備 */
         final Gr002GenMsgTypes testTarget = Gr002GenMsgTypes.GR002_GEN11101;
@@ -139,7 +139,7 @@ public class Gr002GenMsgTypesTest {
         final Gr002GenMsgTypes expectedType = Gr002GenMsgTypes.GR002_GEN11101;
 
         /* 準備 */
-        final String testKey = "GR002_GEN11101";
+        final String testKey = "Gr002Gen11101";
 
         /* テスト対象の実行 */
         final Gr002GenMsgTypes testResult = Gr002GenMsgTypes.getEnum(testKey);
@@ -202,7 +202,7 @@ public class Gr002GenMsgTypesTest {
     public void testGetKey_normalUsage() {
 
         /* 期待値の定義 */
-        final String expectedKey = "GR002_GEN11100";
+        final String expectedKey = "Gr002Gen11100";
 
         /* 準備 */
         final Gr002GenMsgTypes testTarget = Gr002GenMsgTypes.GR002_GEN11100;
@@ -248,7 +248,7 @@ public class Gr002GenMsgTypesTest {
     public void testToString_normalCallFailed() {
 
         /* 期待値の定義 */
-        final String expectedKey = "GR002_GEN11103";
+        final String expectedKey = "Gr002Gen11103";
 
         /* 準備 */
         final Gr002GenMsgTypes testTarget = Gr002GenMsgTypes.GR002_GEN11103;

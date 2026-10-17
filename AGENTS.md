@@ -47,20 +47,20 @@ src/main/java/kmg/gr/gr002/dailytasks/
       command/               # コマンドのインタフェース（CommandLineRunner を継承）
       command/impl/          # コマンドの実装（run で引数の解析、設定の引き継ぎ）
       model/                 # 設定ファイルの値で application にもそのまま引き継ぐ設定（@ConfigurationProperties の CarryoverPropertiesModel）、引数を解析したオプション（CarryoverOptionsModel）
-      types/                 # 列挙型（コマンド引数 CommandOptionTypes）
+      types/                 # 列挙型（コマンド引数 CommandOptionTypes、設定の文字列表現 CarryoverPropertiesFormatTypes）
       service/               # application に求めるサービス（CarryoverService。実装は application）
     application/             # ユースケースや業務ロジック層
       service/impl/          # presentation のサービスの実装（収集・解析・集計の流れ）
       logic/                 # domain に求めるロジック（データの取得・保存 CarryoverIssueLogic、解析 CarryoverParseLogic、集計 CarryoverAggregateLogic。実装は domain）
       model/                 # 業務モデル（Issue、持ち越し項目、日別集計、標準時間、domain に引き継ぐ設定 CarryoverSourceModel）
-      types/                 # 列挙型（残り時間の取得元 MinutesSourceTypes。KmgCmnTypes を実装）
+      types/                 # 列挙型（残り時間の取得元 MinutesSourceTypes、Issue の状態 IssueStateTypes、取得元の文字列表現 CarryoverSourceFormatTypes。KmgCmnTypes を実装）
     domain/                  # 共通ロジック層
       logic/                 # application のモデルと domain の DTO の変換（CarryoverDtoConvertLogic）
       logic/impl/            # application のロジックの実装（データの取得・保存、Issue 本文の解析ルール、日別の集計）
       repository/api/        # repository に求める外部 API（GitHubIssueApi。実装は repository/api）
       repository/dao/        # repository に求める DAO（JSON ファイル CarryoverDataDao、標準時間 DefaultMinutesDao。実装は repository/dao）
       dto/                   # repository と受け渡す DTO（解析結果、集計、GitHub の Issue、接続設定 GitHubSettingsDto）
-      types/                 # 列挙型（対象セクション TargetSectionTypes）
+      types/                 # 列挙型（対象セクション TargetSectionTypes、解析の正規表現 CarryoverParsePatternTypes、解析の固定文字列 CarryoverParseTextTypes、接続設定の文字列表現 GitHubSettingsFormatTypes）
     infrastructure/          # 業務を知らない汎用ユーティリティ
       types/msg/             # メッセージの種類（Gr002GenMsgTypes、Gr002LogMsgTypes、Gr002ValMsgTypes）
       logic/                 # メッセージの取得のインタフェース（MessageLogic）
@@ -71,11 +71,11 @@ src/main/java/kmg/gr/gr002/dailytasks/
       dao/defaultminutes/    # DAO の実装（標準時間の設定ファイルの読み込み DefaultMinutesDaoImpl）
       dto/json/              # JSON ファイルの形（Jackson のアノテーションを持つのはここだけ）
       logic/                 # domain の DTO と JSON の形の変換（CarryoverJsonConvertLogic）
-      types/                 # 列挙型（出力ファイル名 CarryoverDataFileTypes）
+      types/                 # 列挙型（出力ファイル名 CarryoverDataFileTypes、JSON の出力書式 CarryoverDataFormatTypes、GitHub API の URL GitHubApiUrlTypes、ヘッダ GitHubApiHeaderTypes、項目名 GitHubIssueFieldTypes、空文字 GitHubApiTextTypes）
 src/main/resources/
   application.properties     # 設定値（carryover.*: 対象リポジトリ、トークン、出力先、標準時間のファイル、最新の件数。spring.*: Spring Boot の設定）
-  messages.properties        # 一般メッセージ（使い方、例外）。キーは Gr002GenMsgTypes の定数名
-  messages-log.properties    # ログメッセージ。キーは Gr002LogMsgTypes の定数名
+  messages.properties        # 一般メッセージ（使い方、例外）。キーは Gr002GenMsgTypes の key
+  messages-log.properties    # ログメッセージ。キーは Gr002LogMsgTypes の key
   logback-spring.xml
 src/test/java/kmg/gr/gr002/dailytasks/  # main と同じ構成
   testutil/                  # テスト用のユーティリティ（ログ取得、リフレクション、メッセージの取得の生成など）
@@ -127,10 +127,12 @@ daily-tasks-git/
 - 列挙型は `model/` や `dto/` に混ぜず、その層の `types/` に置く
 - 列挙型は kmg-core の `KmgTemplateTypes` を見本にする。コンストラクタの引数は `displayName`、`key`、`detail` の順で、この 3 つは必須とする。種類ごとの個別の値がある場合は、この 3 つの後ろに置く。フィールドも同じ順にする
 - `NONE` は列挙型の必須定数であり、予約語とする。すべての列挙型の先頭に 1 つだけ置く。意味は常に「指定無し」で、`displayName` と `detail` は `"指定無し"`、`key` は `"None"` とする。メッセージの列挙型では、その後ろの文面も `"指定無し"` とする。別の意味の定数に `NONE` という名前を使わない
-- `get`、`getKey`、`toString` が返すのは `key` だけである。`KmgCmnTypes<T>` と `Supplier<T>` が扱う型 `T` は、この `key` の型である。`displayName` と `detail` は `String` のままとする
+- `key` は列挙定数名を先頭大文字のラクダケースにしたものとする。例: `ISSUES_DIR` の `key` は `"IssuesDir"`。`NONE` の `key` は `"None"` とする
+- `get`、`getKey`、`toString` が返すのは `key` だけである。呼び出し側でキーが必要なときは `getKey()` ではなく `get()` を使う。`KmgCmnTypes<T>` と `Supplier<T>` が扱う型 `T` は、この `key` の型である。`displayName` と `detail` は `String` のままとする
+- `key` と実際に使う文字列が異なる場合は、`displayName`、`key`、`detail` の後ろに、その列挙型に合う名前の値を置く（例: `format`、`pattern`、`fileName`）。実際に使う文字列は、その値のゲッターで返す。`key` と同じ文字列は値に重複して持たない
 - `getDefault`、`getEnum`（不明なキーは `NONE`）、`getInitValue`、`getDisplayName`、`getDetail` を持つ。kmg-fund に値の種類用の独自インタフェースはないので、kmg-core の `KmgCmnTypes<String>` を実装する
-- 閉じた集合の文字列（コマンド引数、対象セクション、出力ファイル名、残り時間の取得元）は、クラス内の文字列定数にせず、その層の `XxxTypes` にする
-- 次は列挙型にしない。正規表現、日付書式、`toString` の書式、Jackson のプロパティ名、GitHub API の URL・ヘッダ・ステータス・タイムアウト、項目名のフォールバック「不明」
+- 閉じた集合の文字列は、クラス内の文字列定数にせず、使う層の `XxxTypes` にする。対象はコマンド引数、対象セクション、出力ファイル名、残り時間の取得元、Issue の状態、正規表現、日付書式、`toString` の書式、JSON の項目名、GitHub API の URL・ヘッダ・空文字、項目名のフォールバック「不明」、JSON 出力のインデント・改行・ファイル名の書式である
+- HTTP ステータスコード、タイムアウト、1 ページの件数のように文字列でない固定値は、それを使う実装クラスの定数にする
 
 ### 外部 API と DAO
 
@@ -234,21 +236,21 @@ flowchart LR
   - presentation → application: `presentation/model/CarryoverPropertiesModel`
   - application → domain: `application/model/CarryoverSourceModel`
   - domain → repository: `domain/dto/GitHubSettingsDto`、ファイルのパス（`Path`）
-- GitHub API のベース URL のような、業務の設定ではない技術的な固定値は、それを使う外部 API や DAO の実装の定数にする
+- GitHub API のベース URL のような、業務の設定ではない技術的な固定文字列は、それを使う層の `XxxTypes` にする。HTTP ステータスコード、タイムアウト、1 ページの件数のように文字列でない固定値は、それを使う実装クラスの定数にする
 - トークンは設定型の `toString` に含めない
 
 ### 文字列（メッセージ）の管理
 
-- 使い方と例外の文面は `src/main/resources/messages.properties`、ログの文面は `src/main/resources/messages-log.properties` に置く。プロパティのキーは列挙型の `key` とする。コード付きのメッセージでは `key` を列挙定数名と同じにする。`NONE` の `key` は `"None"` とする
+- 使い方と例外の文面は `src/main/resources/messages.properties`、ログの文面は `src/main/resources/messages-log.properties` に置く。プロパティのキーは列挙型の `key` とする。コード付きのメッセージでは `key` を列挙定数名のパスカルケースにする。`NONE` の `key` は `"None"` とする
 - メッセージの種類は `carryover/infrastructure/types/msg` に置く。全層から参照する
   - 一般（使い方、例外）: `Gr002GenMsgTypes` は `KmgFundCmnGenMsgTypes` と `KmgFundCmnExcMsgTypes` を実装する。コードは `GR002_GEN11xxx`
   - ログ: `Gr002LogMsgTypes` は `KmgFundCmnLogMsgTypes` を実装する。コードは `GR002_LOG12xxx`
   - バリデーション: `Gr002ValMsgTypes` は `KmgFundCmnValMsgTypes` と `KmgFundCmnExcMsgTypes` を実装する。コードは `GR002_VAL13xxx`。該当がなければ `NONE` だけ置く
 - メッセージの列挙型も `displayName`、`key`、`detail` の順で受け、その後ろにメッセージの値（文面）を置く。`key` はプロパティのキーであり、`get` と `getCode` は `key` を返す。文面はプロパティと列挙型のメッセージの値の両方に書く
-- 取得はコンストラクタで注入した `infrastructure/logic/MessageLogic#get(KmgFundCmnMsgTypes)` を使う。実装は `getKey()` で Spring の `MessageSource` を引数なしで引くため、`{}` や `%s` はそのまま返る。kmg-fund の `KmgMessageSource`（`{0}` とログ先頭へのコード埋め込み）は使わない
+- 取得はコンストラクタで注入した `infrastructure/logic/MessageLogic#get(KmgFundCmnMsgTypes)` を使う。実装は `get()` で Spring の `MessageSource` を引数なしで引くため、`{}` や `%s` はそのまま返る。kmg-fund の `KmgMessageSource`（`{0}` とログ先頭へのコード埋め込み）は使わない
 - ログは SLF4J の `{}`、例外は `String.format` の `%s` / `%d` を埋め込み位置に使う。取得したメッセージはいったん変数に入れてから渡す
 - 新しいメッセージは空き番号を採番し、同じ番号を再利用しない
-- 解析ルールの正規表現は messages.properties に置かず、それを使う実装の定数にする。対象セクション名は `TargetSectionTypes` にする
+- 解析ルールの正規表現は messages.properties に置かず、`CarryoverParsePatternTypes` に置く。日付書式や項目名のフォールバックは `CarryoverParseTextTypes` に置く。対象セクション名は `TargetSectionTypes` にする
 
 ### ルールの検査
 

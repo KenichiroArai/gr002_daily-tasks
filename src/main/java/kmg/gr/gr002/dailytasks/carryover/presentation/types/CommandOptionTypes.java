@@ -19,17 +19,17 @@ public enum CommandOptionTypes implements KmgCmnTypes<String> {
 
     /* 定義：開始 */
 
+    /** 指定無し */
+    NONE("指定無し", "None", "指定無し", null),
+
     /** 全件モード */
-    FULL("全件モード", "--full", "全件モード。#1 から最新まで解析し直す"),
+    FULL("全件モード", "Full", "全件モード。#1 から最新まで解析し直す", "--full"),
 
     /** 使い方の表示 */
-    HELP("使い方の表示", "--help", "使い方を表示する"),
+    HELP("使い方の表示", "Help", "使い方を表示する", "--help"),
 
     /** 使い方の表示（短縮形） */
-    HELP_SHORT("使い方の表示（短縮形）", "-h", "使い方を表示する短縮形"),
-
-    /** 指定無し */
-    NONE("指定無し", "None", "指定無し"),
+    HELP_SHORT("使い方の表示（短縮形）", "HelpShort", "使い方を表示する短縮形", "-h"),
 
     /* 定義：終了 */
     ;
@@ -43,6 +43,12 @@ public enum CommandOptionTypes implements KmgCmnTypes<String> {
         for (final CommandOptionTypes type : CommandOptionTypes.values()) {
 
             CommandOptionTypes.VALUES_MAP.put(type.get(), type);
+
+            if (type.getOption() != null) {
+
+                CommandOptionTypes.VALUES_MAP.put(type.getOption(), type);
+
+            }
 
         }
 
@@ -105,6 +111,9 @@ public enum CommandOptionTypes implements KmgCmnTypes<String> {
     /** キー */
     private final String key;
 
+    /** コマンド引数 */
+    private final String option;
+
     /**
      * コンストラクタ<br>
      *
@@ -114,12 +123,15 @@ public enum CommandOptionTypes implements KmgCmnTypes<String> {
      *                    キー
      * @param detail
      *                    詳細情報
+     * @param option
+     *                    コマンド引数
      */
-    CommandOptionTypes(final String displayName, final String key, final String detail) {
+    CommandOptionTypes(final String displayName, final String key, final String detail, final String option) {
 
         this.displayName = displayName;
         this.key = key;
         this.detail = detail;
+        this.option = option;
 
     }
 
@@ -163,6 +175,18 @@ public enum CommandOptionTypes implements KmgCmnTypes<String> {
     public String getDisplayName() {
 
         final String result = this.displayName;
+        return result;
+
+    }
+
+    /**
+     * コマンド引数を返す。<br>
+     *
+     * @return コマンド引数
+     */
+    public String getOption() {
+
+        final String result = this.option;
         return result;
 
     }

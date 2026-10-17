@@ -38,6 +38,7 @@ public class CarryoverAggregateLogicImpl implements CarryoverAggregateLogic {
      *
      * @return 画面用の持ち越しの集計
      */
+    @SuppressWarnings("null")
     @Override
     public CarryoverSummaryModel aggregate(final Collection<CarryoverIssueModel> issues) {
 

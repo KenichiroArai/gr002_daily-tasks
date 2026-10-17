@@ -2,6 +2,8 @@ package kmg.gr.gr002.dailytasks.carryover.application.model;
 
 import java.nio.file.Path;
 
+import kmg.gr.gr002.dailytasks.carryover.application.types.CarryoverSourceFormatTypes;
+
 /**
  * 持ち越しのデータの取得元と保存先<br>
  * <p>
@@ -109,8 +111,8 @@ public class CarryoverSourceModel {
     @Override
     public String toString() {
 
-        final String result = String.format("CarryoverSourceModel[repository=%s, dataDir=%s, defaultMinutesFile=%s]",
-            this.repository, this.dataDir, this.defaultMinutesFile);
+        final String result = String.format(CarryoverSourceFormatTypes.TO_STRING.getFormat(), this.repository,
+            this.dataDir, this.defaultMinutesFile);
         return result;
 
     }

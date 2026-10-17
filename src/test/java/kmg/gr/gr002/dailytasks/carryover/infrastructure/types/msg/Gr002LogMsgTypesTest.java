@@ -24,7 +24,7 @@ public class Gr002LogMsgTypesTest {
     public void testGet_normalCollectResult() {
 
         /* 期待値の定義 */
-        final String expectedKey = "GR002_LOG12000";
+        final String expectedKey = "Gr002Log12000";
 
         /* 準備 */
         final Gr002LogMsgTypes testTarget = Gr002LogMsgTypes.GR002_LOG12000;
@@ -139,7 +139,7 @@ public class Gr002LogMsgTypesTest {
         final Gr002LogMsgTypes expectedType = Gr002LogMsgTypes.GR002_LOG12010;
 
         /* 準備 */
-        final String testKey = "GR002_LOG12010";
+        final String testKey = "Gr002Log12010";
 
         /* テスト対象の実行 */
         final Gr002LogMsgTypes testResult = Gr002LogMsgTypes.getEnum(testKey);
@@ -202,7 +202,7 @@ public class Gr002LogMsgTypesTest {
     public void testGetKey_normalFileNotFound() {
 
         /* 期待値の定義 */
-        final String expectedKey = "GR002_LOG12009";
+        final String expectedKey = "Gr002Log12009";
 
         /* 準備 */
         final Gr002LogMsgTypes testTarget = Gr002LogMsgTypes.GR002_LOG12009;
@@ -248,7 +248,7 @@ public class Gr002LogMsgTypesTest {
     public void testToString_normalUnexpectedLine() {
 
         /* 期待値の定義 */
-        final String expectedKey = "GR002_LOG12007";
+        final String expectedKey = "Gr002Log12007";
 
         /* 準備 */
         final Gr002LogMsgTypes testTarget = Gr002LogMsgTypes.GR002_LOG12007;

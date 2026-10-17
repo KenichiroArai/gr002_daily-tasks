@@ -1,0 +1,231 @@
+package kmg.gr.gr002.dailytasks.carryover.repository.types;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import kmg.core.infrastructure.cmn.KmgCmnTypes;
+
+/**
+ * GitHub Issue の JSON 項目名<br>
+ *
+ * @author KenichiroArai
+ *
+ * @since 0.1.0
+ *
+ * @version 0.1.0
+ */
+@SuppressWarnings("nls")
+public enum GitHubIssueFieldTypes implements KmgCmnTypes<String> {
+
+    /* 定義：開始 */
+
+    /** 指定無し */
+    NONE("指定無し", "None", "指定無し", null),
+
+    /** 本文 */
+    BODY("本文", "Body", "本文", "body"),
+
+    /** 番号 */
+    NUMBER("番号", "Number", "番号", "number"),
+
+    /** プルリクエスト */
+    PULL_REQUEST("プルリクエスト", "PullRequest", "プルリクエスト", "pull_request"),
+
+    /** 状態 */
+    STATE("状態", "State", "状態", "state"),
+
+    /** タイトル */
+    TITLE("タイトル", "Title", "タイトル", "title"),
+
+    /** 更新日時 */
+    UPDATED_AT("更新日時", "UpdatedAt", "更新日時", "updated_at"),
+
+    /* 定義：終了 */
+    ;
+
+    /** 種類のマップ */
+    private static final Map<String, GitHubIssueFieldTypes> VALUES_MAP = new HashMap<>();
+
+    static {
+
+        /* 種類のマップにプット */
+        for (final GitHubIssueFieldTypes type : GitHubIssueFieldTypes.values()) {
+
+            GitHubIssueFieldTypes.VALUES_MAP.put(type.get(), type);
+
+            if (type.getFieldName() != null) {
+
+                GitHubIssueFieldTypes.VALUES_MAP.put(type.getFieldName(), type);
+
+            }
+
+        }
+
+    }
+
+    /**
+     * デフォルトの種類を返す<br>
+     *
+     * @return デフォルト値
+     */
+    public static GitHubIssueFieldTypes getDefault() {
+
+        final GitHubIssueFieldTypes result = NONE;
+        return result;
+
+    }
+
+    /**
+     * キーに該当する種類を返す<br>
+     * <p>
+     * 但し、キーが存在しない場合は、指定無し（NONE）を返す。
+     * </p>
+     *
+     * @param key
+     *            キー
+     *
+     * @return 種類。指定無し（NONE）：キーが存在しない場合。
+     */
+    public static GitHubIssueFieldTypes getEnum(final String key) {
+
+        GitHubIssueFieldTypes result = GitHubIssueFieldTypes.VALUES_MAP.get(key);
+
+        if (result == null) {
+
+            result = NONE;
+
+        }
+        return result;
+
+    }
+
+    /**
+     * 初期値の種類を返す<br>
+     *
+     * @return 初期値
+     */
+    public static GitHubIssueFieldTypes getInitValue() {
+
+        final GitHubIssueFieldTypes result = NONE;
+        return result;
+
+    }
+
+    /** 表示名 */
+    private final String displayName;
+
+    /** キー */
+    private final String key;
+
+    /** 詳細情報 */
+    private final String detail;
+
+    /** 項目名 */
+    private final String fieldName;
+
+    /**
+     * コンストラクタ<br>
+     *
+     * @param displayName
+     *                    表示名
+     * @param key
+     *                    キー
+     * @param detail
+     *                    詳細情報
+     * @param fieldName
+     *                    項目名
+     */
+    GitHubIssueFieldTypes(final String displayName, final String key, final String detail, final String fieldName) {
+
+        this.displayName = displayName;
+        this.key = key;
+        this.detail = detail;
+        this.fieldName = fieldName;
+
+    }
+
+    /**
+     * キーを返す。<br>
+     *
+     * @return キー
+     *
+     * @see #getKey()
+     */
+    @Override
+    public String get() {
+
+        final String result = this.getKey();
+        return result;
+
+    }
+
+    /**
+     * 詳細情報を返す。<br>
+     *
+     * @return 詳細情報
+     */
+    @Override
+    public String getDetail() {
+
+        final String result = this.detail;
+        return result;
+
+    }
+
+    /**
+     * 表示名を返す。<br>
+     * <p>
+     * 識別するための表示名を返す。
+     * </p>
+     *
+     * @return 表示名
+     */
+    @Override
+    public String getDisplayName() {
+
+        final String result = this.displayName;
+        return result;
+
+    }
+
+    /**
+     * 項目名を返す。<br>
+     *
+     * @return 項目名
+     */
+    public String getFieldName() {
+
+        final String result = this.fieldName;
+        return result;
+
+    }
+
+    /**
+     * キーを返す。<br>
+     *
+     * @return キー
+     */
+    @Override
+    public String getKey() {
+
+        final String result = this.key;
+        return result;
+
+    }
+
+    /**
+     * キーを返す。<br>
+     *
+     * @return キー
+     *
+     * @see #getKey()
+     */
+    @Override
+    public String toString() {
+
+        final String result = this.getKey();
+        return result;
+
+    }
+
+}

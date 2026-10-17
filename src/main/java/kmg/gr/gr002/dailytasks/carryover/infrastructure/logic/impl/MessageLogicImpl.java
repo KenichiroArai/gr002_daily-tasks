@@ -52,7 +52,7 @@ public class MessageLogicImpl implements MessageLogic {
     @Override
     public String get(final KmgFundCmnMsgTypes type) {
 
-        final String result = this.messageSource.getMessage(type.getKey(), null, Locale.ROOT);
+        final String result = this.messageSource.getMessage(type.get(), null, Locale.ROOT);
         return result;
 
     }

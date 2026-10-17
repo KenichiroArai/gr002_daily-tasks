@@ -24,7 +24,7 @@ public class CommandOptionTypesTest {
     public void testGet_normalFull() {
 
         /* 期待値の定義 */
-        final String expectedKey = "--full";
+        final String expectedKey = "Full";
 
         /* 準備 */
         final CommandOptionTypes testTarget = CommandOptionTypes.FULL;
@@ -179,7 +179,7 @@ public class CommandOptionTypesTest {
     public void testGetKey_normalHelp() {
 
         /* 期待値の定義 */
-        final String expectedKey = "--help";
+        final String expectedKey = "Help";
 
         /* 準備 */
         final CommandOptionTypes testTarget = CommandOptionTypes.HELP;
@@ -202,7 +202,7 @@ public class CommandOptionTypesTest {
     public void testToString_normalHelpShort() {
 
         /* 期待値の定義 */
-        final String expectedKey = "-h";
+        final String expectedKey = "HelpShort";
 
         /* 準備 */
         final CommandOptionTypes testTarget = CommandOptionTypes.HELP_SHORT;

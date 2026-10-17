@@ -19,17 +19,17 @@ public enum MinutesSourceTypes implements KmgCmnTypes<String> {
 
     /* 定義：開始 */
 
-    /** 項目ごとの標準時間で補完 */
-    DEFAULT("項目ごとの標準時間で補完", "default", "項目ごとの標準時間で補完"),
-
     /** 指定無し */
-    NONE("指定無し", "None", "指定無し"),
+    NONE("指定無し", "None", "指定無し", null),
+
+    /** 項目ごとの標準時間で補完 */
+    DEFAULT("項目ごとの標準時間で補完", "Default", "項目ごとの標準時間で補完", "default"),
 
     /** Issue 本文の時間表記から取得 */
-    PARSED("Issue 本文の時間表記から取得", "parsed", "Issue 本文の時間表記から取得"),
+    PARSED("Issue 本文の時間表記から取得", "Parsed", "Issue 本文の時間表記から取得", "parsed"),
 
     /** 標準時間が未登録のため 0 分で補完 */
-    UNKNOWN("標準時間が未登録のため 0 分で補完", "unknown", "標準時間が未登録のため 0 分で補完"),
+    UNKNOWN("標準時間が未登録のため 0 分で補完", "Unknown", "標準時間が未登録のため 0 分で補完", "unknown"),
 
     /* 定義：終了 */
     ;
@@ -43,6 +43,12 @@ public enum MinutesSourceTypes implements KmgCmnTypes<String> {
         for (final MinutesSourceTypes type : MinutesSourceTypes.values()) {
 
             MinutesSourceTypes.VALUES_MAP.put(type.get(), type);
+
+            if (type.getSource() != null) {
+
+                MinutesSourceTypes.VALUES_MAP.put(type.getSource(), type);
+
+            }
 
         }
 
@@ -105,6 +111,9 @@ public enum MinutesSourceTypes implements KmgCmnTypes<String> {
     /** キー */
     private final String key;
 
+    /** 取得元 */
+    private final String source;
+
     /**
      * コンストラクタ<br>
      *
@@ -114,12 +123,15 @@ public enum MinutesSourceTypes implements KmgCmnTypes<String> {
      *                    キー
      * @param detail
      *                    詳細情報
+     * @param source
+     *                    取得元
      */
-    MinutesSourceTypes(final String displayName, final String key, final String detail) {
+    MinutesSourceTypes(final String displayName, final String key, final String detail, final String source) {
 
         this.displayName = displayName;
         this.key = key;
         this.detail = detail;
+        this.source = source;
 
     }
 
@@ -163,6 +175,18 @@ public enum MinutesSourceTypes implements KmgCmnTypes<String> {
     public String getDisplayName() {
 
         final String result = this.displayName;
+        return result;
+
+    }
+
+    /**
+     * 取得元を返す。<br>
+     *
+     * @return 取得元
+     */
+    public String getSource() {
+
+        final String result = this.source;
         return result;
 
     }

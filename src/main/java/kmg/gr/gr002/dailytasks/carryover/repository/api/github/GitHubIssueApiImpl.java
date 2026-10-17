@@ -22,6 +22,10 @@ import kmg.gr.gr002.dailytasks.carryover.domain.repository.api.GitHubIssueApi;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002GenMsgTypes;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTypes;
+import kmg.gr.gr002.dailytasks.carryover.repository.types.GitHubApiHeaderTypes;
+import kmg.gr.gr002.dailytasks.carryover.repository.types.GitHubApiTextTypes;
+import kmg.gr.gr002.dailytasks.carryover.repository.types.GitHubApiUrlTypes;
+import kmg.gr.gr002.dailytasks.carryover.repository.types.GitHubIssueFieldTypes;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
@@ -40,9 +44,6 @@ import tools.jackson.databind.json.JsonMapper;
  */
 @Repository
 public class GitHubIssueApiImpl implements GitHubIssueApi {
-
-    /** GitHub API のベース URL */
-    private static final String API_BASE_URL = "https://api.github.com";
 
     /** ロガー */
     private static final Logger LOGGER = LoggerFactory.getLogger(GitHubIssueApiImpl.class);
@@ -92,7 +93,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
      */
     private static String textOrEmpty(final JsonNode node, final String fieldName) {
 
-        String         result = "";
+        String         result = GitHubApiTextTypes.EMPTY.getText();
         final JsonNode value  = node.get(fieldName);
 
         if (value == null) {
@@ -122,9 +123,11 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
      */
     private static GitHubIssueDto toIssue(final JsonNode node) {
 
-        final GitHubIssueDto result = new GitHubIssueDto(node.path("number").asInt(),
-            GitHubIssueApiImpl.textOrEmpty(node, "title"), GitHubIssueApiImpl.textOrEmpty(node, "state"),
-            GitHubIssueApiImpl.textOrEmpty(node, "updated_at"), GitHubIssueApiImpl.textOrEmpty(node, "body"));
+        final GitHubIssueDto result = new GitHubIssueDto(node.path(GitHubIssueFieldTypes.NUMBER.getFieldName()).asInt(),
+            GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.TITLE.getFieldName()),
+            GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.STATE.getFieldName()),
+            GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.UPDATED_AT.getFieldName()),
+            GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.BODY.getFieldName()));
         return result;
 
     }
@@ -152,7 +155,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
     @Autowired
     public GitHubIssueApiImpl(final JsonMapper jsonMapper, final MessageLogic messageLogic) {
 
-        this(HttpClient::newHttpClient, GitHubIssueApiImpl.API_BASE_URL, jsonMapper, messageLogic);
+        this(HttpClient::newHttpClient, GitHubApiUrlTypes.BASE_URL.getUrl(), jsonMapper, messageLogic);
 
     }
 
@@ -211,7 +214,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
                 for (final JsonNode node : issues) {
 
                     // プルリクエストは対象外
-                    if (node.has("pull_request")) {
+                    if (node.has(GitHubIssueFieldTypes.PULL_REQUEST.getFieldName())) {
 
                         continue;
 
@@ -254,15 +257,17 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
         JsonNode result = null;
 
         /* リクエストの作成 */
-        final URI                 uri     = URI
-            .create(String.format("%s/repos/%s/issues?state=all&sort=created&direction=asc&per_page=%d&page=%d",
-                this.apiBaseUrl, settings.getRepository(), GitHubIssueApiImpl.PER_PAGE, page));
+        final URI                 uri     = URI.create(String.format(GitHubApiUrlTypes.ISSUES_QUERY.getUrl(),
+            this.apiBaseUrl, settings.getRepository(), GitHubIssueApiImpl.PER_PAGE, page));
         final HttpRequest.Builder builder = HttpRequest.newBuilder(uri).timeout(GitHubIssueApiImpl.TIMEOUT)
-            .header("Accept", "application/vnd.github+json").header("X-GitHub-Api-Version", "2022-11-28").GET();
+            .header(GitHubApiHeaderTypes.ACCEPT.get(), GitHubApiHeaderTypes.GITHUB_JSON.getHeader())
+            .header(GitHubApiHeaderTypes.API_VERSION.getHeader(), GitHubApiHeaderTypes.API_VERSION_VALUE.getHeader())
+            .GET();
 
         if (GitHubIssueApiImpl.hasToken(settings)) {
 
-            builder.header("Authorization", "Bearer " + settings.getToken());
+            builder.header(GitHubApiHeaderTypes.AUTHORIZATION.get(),
+                GitHubApiHeaderTypes.BEARER.getHeader() + settings.getToken());
 
         }
 
