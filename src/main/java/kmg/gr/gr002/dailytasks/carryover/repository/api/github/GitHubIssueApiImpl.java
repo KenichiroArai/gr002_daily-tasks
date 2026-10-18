@@ -133,51 +133,25 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
     }
 
     /** API のベース URL（例: https://api.github.com） */
-    private final String apiBaseUrl;
+    private String apiBaseUrl = GitHubApiUrlTypes.BASE_URL.getUrl();
 
     /** HTTP クライアントの生成 */
-    private final Supplier<HttpClient> httpClientSupplier;
+    private Supplier<HttpClient> httpClientSupplier;
 
     /** JSON の変換 */
-    private final JsonMapper jsonMapper;
+    @Autowired
+    private JsonMapper jsonMapper;
 
     /** メッセージの取得 */
-    private final MessageLogic messageLogic;
+    @Autowired
+    private MessageLogic messageLogic;
 
     /**
      * コンストラクタ<br>
-     *
-     * @param jsonMapper
-     *                     JSON の変換
-     * @param messageLogic
-     *                     メッセージの取得
      */
-    @Autowired
-    public GitHubIssueApiImpl(final JsonMapper jsonMapper, final MessageLogic messageLogic) {
+    public GitHubIssueApiImpl() {
 
-        this(HttpClient::newHttpClient, GitHubApiUrlTypes.BASE_URL.getUrl(), jsonMapper, messageLogic);
-
-    }
-
-    /**
-     * HTTP クライアントの生成と API のベース URL を指定するコンストラクタ<br>
-     *
-     * @param httpClientSupplier
-     *                           HTTP クライアントの生成
-     * @param apiBaseUrl
-     *                           API のベース URL（例: https://api.github.com）
-     * @param jsonMapper
-     *                           JSON の変換
-     * @param messageLogic
-     *                           メッセージの取得
-     */
-    public GitHubIssueApiImpl(final Supplier<HttpClient> httpClientSupplier, final String apiBaseUrl,
-        final JsonMapper jsonMapper, final MessageLogic messageLogic) {
-
-        this.httpClientSupplier = httpClientSupplier;
-        this.apiBaseUrl = apiBaseUrl;
-        this.jsonMapper = jsonMapper;
-        this.messageLogic = messageLogic;
+        this.httpClientSupplier = HttpClient::newHttpClient;
 
     }
 

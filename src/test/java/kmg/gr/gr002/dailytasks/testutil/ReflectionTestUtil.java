@@ -198,6 +198,32 @@ public final class ReflectionTestUtil {
     }
 
     /**
+     * インスタンスフィールドに値を設定する<br>
+     *
+     * @param target
+     *               フィールドを持つインスタンス
+     * @param name
+     *               フィールド名
+     * @param value
+     *               設定する値
+     */
+    public static void setField(final Object target, final String name, final Object value) {
+
+        try {
+
+            final Field field = target.getClass().getDeclaredField(name);
+            field.setAccessible(true);
+            field.set(target, value);
+
+        } catch (final ReflectiveOperationException e) {
+
+            throw new IllegalStateException(e);
+
+        }
+
+    }
+
+    /**
      * static メソッドを呼び出す<br>
      * <p>
      * 呼び出したメソッドが例外を投げた場合は、その例外をそのまま投げ直す。

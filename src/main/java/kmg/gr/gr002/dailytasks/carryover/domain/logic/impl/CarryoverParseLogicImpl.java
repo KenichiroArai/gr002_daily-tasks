@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverParseLogic;
@@ -262,19 +263,8 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
     }
 
     /** メッセージの取得 */
-    private final MessageLogic messageLogic;
-
-    /**
-     * コンストラクタ<br>
-     *
-     * @param messageLogic
-     *                     メッセージの取得
-     */
-    public CarryoverParseLogicImpl(final MessageLogic messageLogic) {
-
-        this.messageLogic = messageLogic;
-
-    }
+    @Autowired
+    private MessageLogic messageLogic;
 
     /**
      * Issue を解析する<br>

@@ -78,7 +78,8 @@ public class CarryoverParseLogicImplTest {
      */
     private static CarryoverParseLogicImpl createTarget() {
 
-        final CarryoverParseLogicImpl result = new CarryoverParseLogicImpl(MessageLogicTestUtil.create());
+        final CarryoverParseLogicImpl result = new CarryoverParseLogicImpl();
+        ReflectionTestUtil.setField(result, "messageLogic", MessageLogicTestUtil.create());
         return result;
 
     }

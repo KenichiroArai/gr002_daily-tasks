@@ -227,7 +227,7 @@ public class CarryoverServiceImplTest {
         = new DailyTaskIssueModel(2, "2026年03月25日のタスク", "open", "u2", "## 負債\n- [ ] 英語2026/03/20（残り時間：10分）");
 
     /** テスト用の Issue 本文の解析 */
-    private static final CarryoverParseLogic PARSE_LOGIC = new CarryoverParseLogicImpl(MessageLogicTestUtil.create());
+    private static final CarryoverParseLogic PARSE_LOGIC = CarryoverServiceImplTest.createParseLogic();
 
     /** テスト用の持ち越しの収集の設定 */
     private static final CarryoverPropertiesModel PROPERTIES
@@ -281,6 +281,19 @@ public class CarryoverServiceImplTest {
     }
 
     /**
+     * 解析ロジックを作成する<br>
+     *
+     * @return 解析ロジック
+     */
+    private static CarryoverParseLogic createParseLogic() {
+
+        final CarryoverParseLogicImpl result = new CarryoverParseLogicImpl();
+        ReflectionTestUtil.setField(result, "messageLogic", MessageLogicTestUtil.create());
+        return result;
+
+    }
+
+    /**
      * テスト対象を作成する<br>
      *
      * @param issueLogic
@@ -290,8 +303,11 @@ public class CarryoverServiceImplTest {
      */
     private static CarryoverServiceImpl createTarget(final CarryoverIssueLogic issueLogic) {
 
-        final CarryoverServiceImpl result = new CarryoverServiceImpl(issueLogic, CarryoverServiceImplTest.PARSE_LOGIC,
-            new CarryoverAggregateLogicImpl(), MessageLogicTestUtil.create());
+        final CarryoverServiceImpl result = new CarryoverServiceImpl();
+        ReflectionTestUtil.setField(result, "carryoverIssueLogic", issueLogic);
+        ReflectionTestUtil.setField(result, "carryoverParseLogic", CarryoverServiceImplTest.PARSE_LOGIC);
+        ReflectionTestUtil.setField(result, "carryoverAggregateLogic", new CarryoverAggregateLogicImpl());
+        ReflectionTestUtil.setField(result, "messageLogic", MessageLogicTestUtil.create());
         return result;
 
     }

@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 /**
  * 起動クラス<br>
  * <p>
- * Spring Boot を起動するだけとする。各層の部品はコンポーネントスキャンで登録し、コンストラクタインジェクションで組み立てる。presentation 層のコマンド（CommandLineRunner）が起動後に実行される。
+ * Spring Boot を起動するだけとする。各層の部品はコンポーネントスキャンで登録し、インスタンス変数の `@Autowired` で組み立てる。presentation 層のコマンド（CommandLineRunner）が起動後に実行される。
  * daily-tasks-git のルートをカレントディレクトリとして実行する。
  * </p>
  *

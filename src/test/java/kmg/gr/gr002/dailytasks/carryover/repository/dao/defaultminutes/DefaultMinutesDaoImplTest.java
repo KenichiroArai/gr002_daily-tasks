@@ -12,6 +12,7 @@ import org.junit.jupiter.api.io.TempDir;
 import kmg.gr.gr002.dailytasks.testutil.LogAssertions;
 import kmg.gr.gr002.dailytasks.testutil.LogCapture;
 import kmg.gr.gr002.dailytasks.testutil.MessageLogicTestUtil;
+import kmg.gr.gr002.dailytasks.testutil.ReflectionTestUtil;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -34,7 +35,9 @@ public class DefaultMinutesDaoImplTest {
      */
     private static DefaultMinutesDaoImpl createTarget() {
 
-        final DefaultMinutesDaoImpl result = new DefaultMinutesDaoImpl(new JsonMapper(), MessageLogicTestUtil.create());
+        final DefaultMinutesDaoImpl result = new DefaultMinutesDaoImpl();
+        ReflectionTestUtil.setField(result, "jsonMapper", new JsonMapper());
+        ReflectionTestUtil.setField(result, "messageLogic", MessageLogicTestUtil.create());
         return result;
 
     }

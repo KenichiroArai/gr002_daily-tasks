@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverIssueLogic;
@@ -37,38 +38,20 @@ import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.DefaultMinutesDao
 public class CarryoverIssueLogicImpl implements CarryoverIssueLogic {
 
     /** JSON ファイルの読み書き */
-    private final CarryoverDataDao carryoverDataDao;
+    @Autowired
+    private CarryoverDataDao carryoverDataDao;
 
     /** 標準時間の設定の読み込み */
-    private final DefaultMinutesDao defaultMinutesDao;
+    @Autowired
+    private DefaultMinutesDao defaultMinutesDao;
 
     /** DTO とモデルの変換 */
-    private final CarryoverDtoConvertLogic dtoConvertLogic;
+    @Autowired
+    private CarryoverDtoConvertLogic dtoConvertLogic;
 
     /** GitHub の Issue の取得 */
-    private final GitHubIssueApi gitHubIssueApi;
-
-    /**
-     * コンストラクタ<br>
-     *
-     * @param gitHubIssueApi
-     *                          GitHub の Issue の取得
-     * @param carryoverDataDao
-     *                          JSON ファイルの読み書き
-     * @param defaultMinutesDao
-     *                          標準時間の設定の読み込み
-     * @param dtoConvertLogic
-     *                          DTO とモデルの変換
-     */
-    public CarryoverIssueLogicImpl(final GitHubIssueApi gitHubIssueApi, final CarryoverDataDao carryoverDataDao,
-        final DefaultMinutesDao defaultMinutesDao, final CarryoverDtoConvertLogic dtoConvertLogic) {
-
-        this.gitHubIssueApi = gitHubIssueApi;
-        this.carryoverDataDao = carryoverDataDao;
-        this.defaultMinutesDao = defaultMinutesDao;
-        this.dtoConvertLogic = dtoConvertLogic;
-
-    }
+    @Autowired
+    private GitHubIssueApi gitHubIssueApi;
 
     /**
      * すべての日々のタスク Issue を取得する<br>

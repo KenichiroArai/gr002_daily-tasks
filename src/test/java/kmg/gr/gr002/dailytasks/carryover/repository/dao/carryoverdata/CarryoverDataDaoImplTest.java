@@ -92,7 +92,9 @@ public class CarryoverDataDaoImplTest {
      */
     private static CarryoverDataDaoImpl createTarget() {
 
-        final CarryoverDataDaoImpl result = new CarryoverDataDaoImpl(new JsonMapper(), new CarryoverJsonConvertLogic());
+        final CarryoverDataDaoImpl result = new CarryoverDataDaoImpl();
+        ReflectionTestUtil.setField(result, "jsonMapper", new JsonMapper());
+        ReflectionTestUtil.setField(result, "jsonConvertLogic", new CarryoverJsonConvertLogic());
         return result;
 
     }

@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
@@ -116,19 +117,8 @@ public class CarryoverDtoConvertLogic {
     }
 
     /** メッセージの取得 */
-    private final MessageLogic messageLogic;
-
-    /**
-     * コンストラクタ<br>
-     *
-     * @param messageLogic
-     *                     メッセージの取得
-     */
-    public CarryoverDtoConvertLogic(final MessageLogic messageLogic) {
-
-        this.messageLogic = messageLogic;
-
-    }
+    @Autowired
+    private MessageLogic messageLogic;
 
     /**
      * 保存済みの解析結果を持ち越しの解析結果に変換する<br>

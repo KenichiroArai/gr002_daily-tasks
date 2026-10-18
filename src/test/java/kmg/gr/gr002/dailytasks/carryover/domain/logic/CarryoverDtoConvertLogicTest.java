@@ -23,6 +23,7 @@ import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubIssueDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubSettingsDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.ItemStatDto;
 import kmg.gr.gr002.dailytasks.testutil.MessageLogicTestUtil;
+import kmg.gr.gr002.dailytasks.testutil.ReflectionTestUtil;
 
 /**
  * {@link CarryoverDtoConvertLogic} のテスト<br>
@@ -92,7 +93,8 @@ public class CarryoverDtoConvertLogicTest {
      */
     private static CarryoverDtoConvertLogic createTarget() {
 
-        final CarryoverDtoConvertLogic result = new CarryoverDtoConvertLogic(MessageLogicTestUtil.create());
+        final CarryoverDtoConvertLogic result = new CarryoverDtoConvertLogic();
+        ReflectionTestUtil.setField(result, "messageLogic", MessageLogicTestUtil.create());
         return result;
 
     }

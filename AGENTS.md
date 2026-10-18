@@ -209,9 +209,10 @@ flowchart LR
   - presentation のコマンド・各層のロジック（`logic/`、`logic/impl/`）: `@Component`
   - サービス（`service/impl/`）: `@Service`
   - repository の外部 API と DAO の実装: `@Repository`
-- 注入はコンストラクタインジェクションだけにする。フィールドインジェクション（フィールドへの `@Autowired`）は使わない
+- 注入はインスタンス変数への `@Autowired` で行う。コンストラクタでは依存を受け取らない
+- 注入するインスタンス変数は `private` とし、`final` にはしない。Spring が生成後に代入するためである
 - 受け取るのは「自層のインタフェース」（と自層の部品、infrastructure のインタフェース、`JsonMapper` などのフレームワークの部品）とする。実装は Spring が下の層から注入する
-- コンストラクタが 1 つなら `@Autowired` は付けない。テスト用のコンストラクタ（出力先や `HttpClient` の差し替えなど）を別に持つ場合だけ、本番用のコンストラクタに `@Autowired` を付ける
+- Spring が注入しないインスタンス変数（出力先や `HttpClient` など）は、コンストラクタで初期化する。テストからフィールドを差し替える。列挙型からの取得はフィールドの初期値にしてよい
 - Bean はステートレス（シングルトンで状態を持たない）にする。設定値はフィールドに持たず、メソッドの引数で渡す
 - コマンドは `CommandLineRunner` として Spring Boot の起動後に実行する。起動クラスは `SpringApplication.run` を呼ぶだけとする
 
@@ -247,14 +248,14 @@ flowchart LR
   - ログ: `Gr002LogMsgTypes` は `KmgFundCmnLogMsgTypes` を実装する。コードは `GR002_LOG12xxx`
   - バリデーション: `Gr002ValMsgTypes` は `KmgFundCmnValMsgTypes` と `KmgFundCmnExcMsgTypes` を実装する。コードは `GR002_VAL13xxx`。該当がなければ `NONE` だけ置く
 - メッセージの列挙型も `displayName`、`key`、`detail` の順で受け、その後ろにメッセージの値（文面）を置く。`key` はプロパティのキーであり、`get` と `getCode` は `key` を返す。文面はプロパティと列挙型のメッセージの値の両方に書く
-- 取得はコンストラクタで注入した `infrastructure/logic/MessageLogic#get(KmgFundCmnMsgTypes)` を使う。実装は `get()` で Spring の `MessageSource` を引数なしで引くため、`{}` や `%s` はそのまま返る。kmg-fund の `KmgMessageSource`（`{0}` とログ先頭へのコード埋め込み）は使わない
+- 取得はインスタンス変数に注入した `infrastructure/logic/MessageLogic#get(KmgFundCmnMsgTypes)` を使う。実装は `get()` で Spring の `MessageSource` を引数なしで引くため、`{}` や `%s` はそのまま返る。kmg-fund の `KmgMessageSource`（`{0}` とログ先頭へのコード埋め込み）は使わない
 - ログは SLF4J の `{}`、例外は `String.format` の `%s` / `%d` を埋め込み位置に使う。取得したメッセージはいったん変数に入れてから渡す
 - 新しいメッセージは空き番号を採番し、同じ番号を再利用しない
 - 解析ルールの正規表現は messages.properties に置かず、`CarryoverParsePatternTypes` に置く。日付書式や項目名のフォールバックは `CarryoverParseTextTypes` に置く。対象セクション名は `TargetSectionTypes` にする
 
 ### ルールの検査
 
-- 層間のルール（依存はすぐ上の層だけ。飛び越しと処理の流れと同じ向きの参照の禁止）、フィールドインジェクションの禁止、`@Value` の禁止、`@ConfigurationProperties` を presentation にだけ置くこと、Jackson のアノテーションを `repository/dto/json/` にだけ置くこと、ロジック（`logic/`）がサービス（`service/`）を参照しないことは `ArchitectureTest`（ArchUnit）で検査する。違反があると `mvn test` は失敗する
+- 層間のルール（依存はすぐ上の層だけ。飛び越しと処理の流れと同じ向きの参照の禁止）、コンストラクタによる依存の注入の禁止、`@Value` の禁止、`@ConfigurationProperties` を presentation にだけ置くこと、Jackson のアノテーションを `repository/dto/json/` にだけ置くこと、ロジック（`logic/`）がサービス（`service/`）を参照しないことは `ArchitectureTest`（ArchUnit）で検査する。違反があると `mvn test` は失敗する
 
 ## Issue 解析の仕様と収集のモード
 
@@ -306,6 +307,12 @@ java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.1.0.jar --full
 - メソッドの戻り値の変数は先頭で宣言する
 - return 文は `return result;` に統一する
 - このルールは画面（mk002_daily-tasks_web-next の TypeScript）にも共通する。共通ルールは kb002_daily-tasks_doc の [docs/coding-rules.md](https://github.com/KenichiroArai/kb002_daily-tasks_doc/blob/main/docs/coding-rules.md) を参照する
+
+### 初期化
+
+- インスタンス変数の初期化はコンストラクタで行う。ブレークポイントを置いてデバッグしやすくするためである。依存の注入はインスタンス変数の `@Autowired` のままとし、コンストラクタでは依存を受け取らない
+- ロガー（`LoggerFactory.getLogger`）はフィールドの初期値にしてよい
+- 値が変動しないクラス変数（リテラル、`Duration.ofSeconds`、`Pattern.compile`、列挙型からの取得など）はフィールドの初期値にしてよい。クラス変数へインスタンスを入れるだけのもの（列挙型の `VALUES_MAP = new HashMap<>()` など）もフィールドの初期値にしてよい。ハッシュ値の算出のように計算結果を求めるものは static 初期化子で代入する
 
 ### 処理コメント
 
@@ -625,11 +632,11 @@ public class SampleClass {
 - [ ] データ系の型（`model/`、`dto/`、`types/`）と、データアクセス（外部 API は `api/<提供元>/`、ファイル・DB は `dao/<用途>/`）の置き場所の順守。値の種類は `KmgCmnTypes`、メッセージは `KmgFundCmn*MsgTypes` を実装していること。列挙型は予約語の `NONE` を先頭に持つこと
 - [ ] 層間のルール（依存性逆転：依存はすぐ上の層だけ、飛び越し・処理の流れと同じ向きの参照なし、データ・設定値は呼ぶ側の層で自層の型に変換）の順守（`ArchitectureTest` が通ること）
 - [ ] 下の層を差し替える場合、上の層のインタフェースを実装した `impl/` を追加し、上の層のコードを変更していないこと
-- [ ] DI のルール（Bean として登録、コンストラクタインジェクション、ステートレス、設定値はメソッドの引数で渡す）の順守
+- [ ] DI のルール（Bean として登録、インスタンス変数への `@Autowired`、コンストラクタでは依存を受け取らない、ステートレス、設定値はメソッドの引数で渡す）の順守
 - [ ] JSON 形式の後方互換の確認（変更時は全件モードで再生成）
 - [ ] テストの追加 / 更新（命名・実装順序・検証方法を含む）
 - [ ] `mvn test` で JaCoCo カバレッジ 100% を維持
-- [ ] コーディングルール（戻り値 `result`、早期リターン、処理コメント、`record` 禁止）の順守
+- [ ] コーディングルール（戻り値 `result`、早期リターン、処理コメント、`record` 禁止、初期化はコンストラクタまたは static 初期化子）の順守
 - [ ] アクセス修飾子の順守（公開しないものは `private`、修飾子なしは原則禁止）
 - [ ] Javadoc の追加 / 更新
 - [ ] 解析ルールを変更した場合、`declaredCount` との食い違いと補完件数のログを確認し、kb002_daily-tasks_doc の仕様を更新
@@ -642,7 +649,7 @@ public class SampleClass {
 - 層を飛び越して参照すること（例: repository → application、domain → presentation、エントリポイント → presentation）
 - 処理の流れと同じ向き（上の層から下の層）に参照すること（例: presentation → application、application → domain、domain → repository）
 - 呼ぶ側の層のインタフェースや受け渡しの型に、呼ばれる側の層の都合（JSON の形の Jackson のアノテーションなど）を持ち込むこと
-- フィールドインジェクション（フィールドへの `@Autowired`）、`@Value` での設定値の個別取得、Bean のフィールドに設定値を持つこと
+- コンストラクタで依存を受け取ること、`@Value` での設定値の個別取得、Bean のフィールドに設定値を持つこと
 - infrastructure に機能固有の値や業務の判断を置くこと、infrastructure から他の層を参照すること
 - kmg-fund にある型を使わずに、同じ役割の型を kmg-core から import すること。kmg-fund に無い型を kmg-core から import することは許す
 - 列挙型から `NONE` を省くこと、`NONE` を「指定無し」以外の意味で使うこと

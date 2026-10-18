@@ -113,8 +113,11 @@ public class CarryoverCommandImplTest {
      */
     private static CarryoverCommandImpl createTarget(final CarryoverService service, final PrintStream out) {
 
-        final CarryoverCommandImpl result = new CarryoverCommandImpl(service, CarryoverCommandImplTest.PROPERTIES,
-            MessageLogicTestUtil.create(), out);
+        final CarryoverCommandImpl result = new CarryoverCommandImpl();
+        ReflectionTestUtil.setField(result, "carryoverService", service);
+        ReflectionTestUtil.setField(result, "properties", CarryoverCommandImplTest.PROPERTIES);
+        ReflectionTestUtil.setField(result, "messageLogic", MessageLogicTestUtil.create());
+        ReflectionTestUtil.setField(result, "out", out);
         return result;
 
     }
@@ -154,7 +157,7 @@ public class CarryoverCommandImplTest {
     }
 
     /**
-     * CarryoverCommandImpl コンストラクタのテスト - 正常系:出力先を指定しない場合は標準出力を使う
+     * CarryoverCommandImpl のテスト - 正常系:出力先を指定しない場合は標準出力を使う
      *
      * @throws Exception
      *                   例外が発生した場合
@@ -170,8 +173,10 @@ public class CarryoverCommandImplTest {
         final StubCarryoverService testService = new StubCarryoverService();
 
         /* テスト対象の実行 */
-        final CarryoverCommandImpl testTarget
-            = new CarryoverCommandImpl(testService, CarryoverCommandImplTest.PROPERTIES, MessageLogicTestUtil.create());
+        final CarryoverCommandImpl testTarget = new CarryoverCommandImpl();
+        ReflectionTestUtil.setField(testTarget, "carryoverService", testService);
+        ReflectionTestUtil.setField(testTarget, "properties", CarryoverCommandImplTest.PROPERTIES);
+        ReflectionTestUtil.setField(testTarget, "messageLogic", MessageLogicTestUtil.create());
 
         /* 検証の準備 */
         final Object      actualService = ReflectionTestUtil.getField(testTarget, "carryoverService");

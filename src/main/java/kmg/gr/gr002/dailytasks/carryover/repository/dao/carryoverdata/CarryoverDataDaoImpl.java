@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Stream;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssueDto;
@@ -41,26 +42,19 @@ import tools.jackson.databind.json.JsonMapper;
 public class CarryoverDataDaoImpl implements CarryoverDataDao {
 
     /** DTO と JSON の形の変換 */
-    private final CarryoverJsonConvertLogic jsonConvertLogic;
+    @Autowired
+    private CarryoverJsonConvertLogic jsonConvertLogic;
 
     /** JSON の変換 */
-    private final JsonMapper jsonMapper;
-
-    /** JSON の出力 */
-    private final ObjectWriter objectWriter;
+    @Autowired
+    private JsonMapper jsonMapper;
 
     /**
-     * コンストラクタ<br>
+     * 改行を LF に統一した整形出力を作る<br>
      *
-     * @param jsonMapper
-     *                         JSON の変換
-     * @param jsonConvertLogic
-     *                         DTO と JSON の形の変換
+     * @return JSON の出力
      */
-    public CarryoverDataDaoImpl(final JsonMapper jsonMapper, final CarryoverJsonConvertLogic jsonConvertLogic) {
-
-        this.jsonMapper = jsonMapper;
-        this.jsonConvertLogic = jsonConvertLogic;
+    private ObjectWriter createObjectWriter() {
 
         /* 改行を LF に統一した整形出力 */
         final DefaultIndenter      indenter = new DefaultIndenter(CarryoverDataFormatTypes.INDENT.getFormat(),
@@ -68,7 +62,8 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
         final DefaultPrettyPrinter printer  = new DefaultPrettyPrinter()
             .withSeparators(Separators.createDefaultInstance().withObjectNameValueSpacing(Separators.Spacing.AFTER))
             .withObjectIndenter(indenter).withArrayIndenter(indenter);
-        this.objectWriter = this.jsonMapper.writer().with(printer);
+        final ObjectWriter        result   = this.jsonMapper.writer().with(printer);
+        return result;
 
     }
 
@@ -202,7 +197,7 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
 
         try {
 
-            json = this.objectWriter.writeValueAsString(value) + CarryoverDataFormatTypes.LINE_FEED.getFormat();
+            json = this.createObjectWriter().writeValueAsString(value) + CarryoverDataFormatTypes.LINE_FEED.getFormat();
 
         } catch (final JacksonException e) {
 

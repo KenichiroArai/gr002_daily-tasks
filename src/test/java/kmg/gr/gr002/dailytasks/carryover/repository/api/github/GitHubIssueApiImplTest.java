@@ -7,6 +7,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -75,8 +76,12 @@ public class GitHubIssueApiImplTest {
      */
     private static GitHubIssueApiImpl createTarget(final HttpClient httpClient) {
 
-        final GitHubIssueApiImpl result = new GitHubIssueApiImpl(() -> httpClient, GitHubIssueApiImplTest.API_BASE_URL,
-            new JsonMapper(), MessageLogicTestUtil.create());
+        final Supplier<HttpClient>  httpClientSupplier = () -> httpClient;
+        final GitHubIssueApiImpl    result             = new GitHubIssueApiImpl();
+        ReflectionTestUtil.setField(result, "httpClientSupplier", httpClientSupplier);
+        ReflectionTestUtil.setField(result, "apiBaseUrl", GitHubIssueApiImplTest.API_BASE_URL);
+        ReflectionTestUtil.setField(result, "jsonMapper", new JsonMapper());
+        ReflectionTestUtil.setField(result, "messageLogic", MessageLogicTestUtil.create());
         return result;
 
     }
@@ -443,7 +448,7 @@ public class GitHubIssueApiImplTest {
     }
 
     /**
-     * GitHubIssueApiImpl コンストラクタのテスト - 正常系:JSON の変換とメッセージの取得だけを指定した場合は GitHub API のベース URL を使う
+     * GitHubIssueApiImpl のテスト - 正常系:API のベース URL を指定しない場合は GitHub API のベース URL を使う
      *
      * @throws Exception
      *                   例外が発生した場合
@@ -458,7 +463,9 @@ public class GitHubIssueApiImplTest {
         final JsonMapper testJsonMapper = new JsonMapper();
 
         /* テスト対象の実行 */
-        final GitHubIssueApiImpl testTarget = new GitHubIssueApiImpl(testJsonMapper, MessageLogicTestUtil.create());
+        final GitHubIssueApiImpl testTarget = new GitHubIssueApiImpl();
+        ReflectionTestUtil.setField(testTarget, "jsonMapper", testJsonMapper);
+        ReflectionTestUtil.setField(testTarget, "messageLogic", MessageLogicTestUtil.create());
 
         /* 検証の準備 */
         final String     actualApiBaseUrl = ReflectionTestUtil.getField(testTarget, "apiBaseUrl");

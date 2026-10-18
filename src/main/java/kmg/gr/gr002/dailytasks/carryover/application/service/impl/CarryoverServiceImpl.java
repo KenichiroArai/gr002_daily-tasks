@@ -8,6 +8,7 @@ import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverAggregateLogic;
@@ -138,39 +139,20 @@ public class CarryoverServiceImpl implements CarryoverService {
     }
 
     /** 日別の集計 */
-    private final CarryoverAggregateLogic carryoverAggregateLogic;
+    @Autowired
+    private CarryoverAggregateLogic carryoverAggregateLogic;
 
     /** 持ち越しのデータの取得・保存 */
-    private final CarryoverIssueLogic carryoverIssueLogic;
+    @Autowired
+    private CarryoverIssueLogic carryoverIssueLogic;
 
     /** Issue 本文の解析 */
-    private final CarryoverParseLogic carryoverParseLogic;
+    @Autowired
+    private CarryoverParseLogic carryoverParseLogic;
 
     /** メッセージの取得 */
-    private final MessageLogic messageLogic;
-
-    /**
-     * コンストラクタ<br>
-     *
-     * @param carryoverIssueLogic
-     *                                持ち越しのデータの取得・保存
-     * @param carryoverParseLogic
-     *                                Issue 本文の解析
-     * @param carryoverAggregateLogic
-     *                                日別の集計
-     * @param messageLogic
-     *                                メッセージの取得
-     */
-    public CarryoverServiceImpl(final CarryoverIssueLogic carryoverIssueLogic,
-        final CarryoverParseLogic carryoverParseLogic, final CarryoverAggregateLogic carryoverAggregateLogic,
-        final MessageLogic messageLogic) {
-
-        this.carryoverIssueLogic = carryoverIssueLogic;
-        this.carryoverParseLogic = carryoverParseLogic;
-        this.carryoverAggregateLogic = carryoverAggregateLogic;
-        this.messageLogic = messageLogic;
-
-    }
+    @Autowired
+    private MessageLogic messageLogic;
 
     /**
      * Issue を取得して解析し、Issue ごとの JSON と画面用の集計を出力する<br>

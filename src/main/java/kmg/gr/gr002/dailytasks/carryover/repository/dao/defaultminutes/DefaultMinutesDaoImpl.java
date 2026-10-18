@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.DefaultMinutesDao;
@@ -42,25 +43,12 @@ public class DefaultMinutesDaoImpl implements DefaultMinutesDao {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultMinutesDaoImpl.class);
 
     /** JSON の変換 */
-    private final JsonMapper jsonMapper;
+    @Autowired
+    private JsonMapper jsonMapper;
 
     /** メッセージの取得 */
-    private final MessageLogic messageLogic;
-
-    /**
-     * コンストラクタ<br>
-     *
-     * @param jsonMapper
-     *                     JSON の変換
-     * @param messageLogic
-     *                     メッセージの取得
-     */
-    public DefaultMinutesDaoImpl(final JsonMapper jsonMapper, final MessageLogic messageLogic) {
-
-        this.jsonMapper = jsonMapper;
-        this.messageLogic = messageLogic;
-
-    }
+    @Autowired
+    private MessageLogic messageLogic;
 
     /**
      * 項目ごとの標準時間を読み込む<br>

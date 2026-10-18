@@ -2,14 +2,21 @@ package kmg.gr.gr002.dailytasks;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
+import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaClasses;
+import com.tngtech.archunit.core.domain.JavaConstructor;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
+import com.tngtech.archunit.lang.ArchCondition;
 import com.tngtech.archunit.lang.ArchRule;
+import com.tngtech.archunit.lang.ConditionEvents;
+import com.tngtech.archunit.lang.SimpleConditionEvent;
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 import com.tngtech.archunit.library.Architectures;
 
@@ -36,6 +43,28 @@ public class ArchitectureTest {
     /** ルートパッケージ */
     private static final String ROOT_PACKAGE = "kmg.gr.gr002.dailytasks";
 
+    /** Bean のコンストラクタが引数を持たないこと */
+    private static final ArchCondition<JavaClass> NO_CONSTRUCTOR_PARAMETERS
+        = new ArchCondition<JavaClass>("not receive dependencies from constructors") {
+
+            @Override
+            public void check(final JavaClass item, final ConditionEvents events) {
+
+                for (final JavaConstructor constructor : item.getConstructors()) {
+
+                    if (!constructor.getRawParameterTypes().isEmpty()) {
+
+                        events.add(SimpleConditionEvent.violated(constructor,
+                            constructor.getFullName() + " receives dependencies"));
+
+                    }
+
+                }
+
+            }
+
+        };
+
     /**
      * 検査対象のクラスを読み込む<br>
      */
@@ -49,15 +78,17 @@ public class ArchitectureTest {
     }
 
     /**
-     * DI のテスト - 正常系:フィールドインジェクションを使っていない場合
+     * DI のテスト - 正常系:Bean のコンストラクタで依存を受け取っていない場合
      */
     @Test
-    public void testInjection_normalNoFieldInjection() {
+    public void testInjection_normalNoConstructorInjection() {
 
         /* 期待値の定義 */
 
         /* 準備 */
-        final ArchRule testRule = ArchRuleDefinition.noFields().should().beAnnotatedWith(Autowired.class);
+        final ArchRule testRule = ArchRuleDefinition.classes().that().areAnnotatedWith(Component.class).or()
+            .areAnnotatedWith(Service.class).or().areAnnotatedWith(Repository.class)
+            .should(ArchitectureTest.NO_CONSTRUCTOR_PARAMETERS);
 
         /* テスト対象の実行 */
         testRule.check(ArchitectureTest.classes);

@@ -2,6 +2,7 @@ package kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.impl;
 
 import java.util.Locale;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
@@ -24,19 +25,8 @@ import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
 public class MessageLogicImpl implements MessageLogic {
 
     /** メッセージの取得元 */
-    private final MessageSource messageSource;
-
-    /**
-     * コンストラクタ<br>
-     *
-     * @param messageSource
-     *                      メッセージの取得元
-     */
-    public MessageLogicImpl(final MessageSource messageSource) {
-
-        this.messageSource = messageSource;
-
-    }
+    @Autowired
+    private MessageSource messageSource;
 
     /**
      * メッセージを取得する<br>

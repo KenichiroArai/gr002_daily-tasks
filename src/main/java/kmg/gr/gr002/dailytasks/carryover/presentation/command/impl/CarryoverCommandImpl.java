@@ -32,57 +32,29 @@ import kmg.gr.gr002.dailytasks.carryover.presentation.types.CommandOptionTypes;
 public class CarryoverCommandImpl implements CarryoverCommand {
 
     /** 持ち越しの収集・集計サービス */
-    private final CarryoverService carryoverService;
+    @Autowired
+    private CarryoverService carryoverService;
 
     /** メッセージの取得 */
-    private final MessageLogic messageLogic;
+    @Autowired
+    private MessageLogic messageLogic;
 
     /** 使い方の出力先 */
-    private final PrintStream out;
+    private PrintStream out;
 
     /** 設定ファイルの値 */
-    private final CarryoverPropertiesModel properties;
+    @Autowired
+    private CarryoverPropertiesModel properties;
 
     /**
      * コンストラクタ<br>
      * <p>
      * 使い方は標準出力に出す。
      * </p>
-     *
-     * @param carryoverService
-     *                         持ち越しの収集・集計サービス
-     * @param properties
-     *                         設定ファイルの値
-     * @param messageLogic
-     *                         メッセージの取得
      */
-    @Autowired
-    public CarryoverCommandImpl(final CarryoverService carryoverService, final CarryoverPropertiesModel properties,
-        final MessageLogic messageLogic) {
+    public CarryoverCommandImpl() {
 
-        this(carryoverService, properties, messageLogic, System.out);
-
-    }
-
-    /**
-     * 使い方の出力先を指定するコンストラクタ<br>
-     *
-     * @param carryoverService
-     *                         持ち越しの収集・集計サービス
-     * @param properties
-     *                         設定ファイルの値
-     * @param messageLogic
-     *                         メッセージの取得
-     * @param out
-     *                         使い方の出力先
-     */
-    public CarryoverCommandImpl(final CarryoverService carryoverService, final CarryoverPropertiesModel properties,
-        final MessageLogic messageLogic, final PrintStream out) {
-
-        this.carryoverService = carryoverService;
-        this.properties = properties;
-        this.messageLogic = messageLogic;
-        this.out = out;
+        this.out = System.out;
 
     }
 

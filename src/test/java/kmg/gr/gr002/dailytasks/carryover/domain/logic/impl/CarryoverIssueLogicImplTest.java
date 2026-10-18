@@ -25,6 +25,7 @@ import kmg.gr.gr002.dailytasks.carryover.domain.repository.api.GitHubIssueApi;
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.CarryoverDataDao;
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.DefaultMinutesDao;
 import kmg.gr.gr002.dailytasks.testutil.MessageLogicTestUtil;
+import kmg.gr.gr002.dailytasks.testutil.ReflectionTestUtil;
 
 /**
  * {@link CarryoverIssueLogicImpl} のテスト<br>
@@ -310,8 +311,13 @@ public class CarryoverIssueLogicImplTest {
     private static CarryoverIssueLogicImpl createTarget(final GitHubIssueApi gitHubIssueApi,
         final CarryoverDataDao carryoverDataDao, final DefaultMinutesDao defaultMinutesDao) {
 
-        final CarryoverIssueLogicImpl result = new CarryoverIssueLogicImpl(gitHubIssueApi, carryoverDataDao,
-            defaultMinutesDao, new CarryoverDtoConvertLogic(MessageLogicTestUtil.create()));
+        final CarryoverDtoConvertLogic dtoConvertLogic = new CarryoverDtoConvertLogic();
+        ReflectionTestUtil.setField(dtoConvertLogic, "messageLogic", MessageLogicTestUtil.create());
+        final CarryoverIssueLogicImpl result = new CarryoverIssueLogicImpl();
+        ReflectionTestUtil.setField(result, "gitHubIssueApi", gitHubIssueApi);
+        ReflectionTestUtil.setField(result, "carryoverDataDao", carryoverDataDao);
+        ReflectionTestUtil.setField(result, "defaultMinutesDao", defaultMinutesDao);
+        ReflectionTestUtil.setField(result, "dtoConvertLogic", dtoConvertLogic);
         return result;
 
     }
