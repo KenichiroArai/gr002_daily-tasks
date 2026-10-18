@@ -17,7 +17,7 @@ Cursor / Codex / Claude Code など複数ツールで共通利用する。
 | [daily-tasks-git](https://github.com/KenichiroArai/daily-tasks-git) | 基軸。Issue、ワークフロー、設定ファイル（`config/`）、出力データ（`docs/data/`） |
 | gr002_daily-tasks（本リポジトリ） | 収集ツール（Java。Issue 取得 → 解析 → JSON 出力） |
 | [mk002_daily-tasks_web-next](https://github.com/KenichiroArai/mk002_daily-tasks_web-next) | 画面（Next.js + TypeScript の静的エクスポート） |
-| [kb002_daily-tasks_doc](https://github.com/KenichiroArai/kb002_daily-tasks_doc) | 設計書と横断的なドキュメント |
+| [kb002_daily-tasks_doc](https://github.com/KenichiroArai/kb002_daily-tasks_doc) | 設計書（収集ツールは `docs/design/backend.md`、画面は `docs/design/frontend.md`）と横断的なドキュメント |
 
 - **GAV**: `kmg.gr.gr002` : `gr002_daily-tasks`
 - **ルートパッケージ**: `kmg.gr.gr002.dailytasks`

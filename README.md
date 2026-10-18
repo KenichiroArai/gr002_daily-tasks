@@ -12,7 +12,7 @@
 | [daily-tasks-git](https://github.com/KenichiroArai/daily-tasks-git)                       | 基軸。Issue、ワークフロー、設定ファイル（`config/`）、出力データ（`docs/data/`） |
 | gr002_daily-tasks（本リポジトリ）                                                         | 収集ツール（Java 25 / Maven / Spring Boot 4 / Jackson 3）                        |
 | [mk002_daily-tasks_web-next](https://github.com/KenichiroArai/mk002_daily-tasks_web-next) | 画面（Next.js + TypeScript + Recharts）                                          |
-| [kb002_daily-tasks_doc](https://github.com/KenichiroArai/kb002_daily-tasks_doc)           | 設計書と横断的なドキュメント（Issue 解析の仕様など）                             |
+| [kb002_daily-tasks_doc](https://github.com/KenichiroArai/kb002_daily-tasks_doc)           | 設計書（[収集ツール](https://github.com/KenichiroArai/kb002_daily-tasks_doc/blob/main/docs/design/backend.md)、[画面](https://github.com/KenichiroArai/kb002_daily-tasks_doc/blob/main/docs/design/frontend.md)）と横断的なドキュメント（Issue 解析の仕様など） |
 
 ## ビルドと実行
 
