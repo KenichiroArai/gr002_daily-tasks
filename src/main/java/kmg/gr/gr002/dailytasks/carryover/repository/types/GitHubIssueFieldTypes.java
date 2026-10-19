@@ -19,31 +19,63 @@ public enum GitHubIssueFieldTypes implements KmgCmnTypes<String> {
 
     /* 定義：開始 */
 
-    /** 指定無し */
+    /**
+     * 指定無し
+     *
+     * @since 0.1.0
+     */
     NONE("指定無し", "None", "指定無し", null),
 
-    /** 本文 */
+    /**
+     * 本文
+     *
+     * @since 0.1.0
+     */
     BODY("本文", "Body", "本文", "body"),
 
-    /** 番号 */
+    /**
+     * 番号
+     *
+     * @since 0.1.0
+     */
     NUMBER("番号", "Number", "番号", "number"),
 
-    /** プルリクエスト */
+    /**
+     * プルリクエスト
+     *
+     * @since 0.1.0
+     */
     PULL_REQUEST("プルリクエスト", "PullRequest", "プルリクエスト", "pull_request"),
 
-    /** 状態 */
+    /**
+     * 状態
+     *
+     * @since 0.1.0
+     */
     STATE("状態", "State", "状態", "state"),
 
-    /** タイトル */
+    /**
+     * タイトル
+     *
+     * @since 0.1.0
+     */
     TITLE("タイトル", "Title", "タイトル", "title"),
 
-    /** 更新日時 */
+    /**
+     * 更新日時
+     *
+     * @since 0.1.0
+     */
     UPDATED_AT("更新日時", "UpdatedAt", "更新日時", "updated_at"),
 
     /* 定義：終了 */
     ;
 
-    /** 種類のマップ */
+    /**
+     * 種類のマップ
+     *
+     * @since 0.1.0
+     */
     private static final Map<String, GitHubIssueFieldTypes> VALUES_MAP = new HashMap<>();
 
     static {
@@ -66,6 +98,8 @@ public enum GitHubIssueFieldTypes implements KmgCmnTypes<String> {
     /**
      * デフォルトの種類を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return デフォルト値
      */
     public static GitHubIssueFieldTypes getDefault() {
@@ -80,6 +114,8 @@ public enum GitHubIssueFieldTypes implements KmgCmnTypes<String> {
      * <p>
      * 但し、キーが存在しない場合は、指定無し（NONE）を返す。
      * </p>
+     *
+     * @since 0.1.0
      *
      * @param key
      *            キー
@@ -102,6 +138,8 @@ public enum GitHubIssueFieldTypes implements KmgCmnTypes<String> {
     /**
      * 初期値の種類を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return 初期値
      */
     public static GitHubIssueFieldTypes getInitValue() {
@@ -111,20 +149,38 @@ public enum GitHubIssueFieldTypes implements KmgCmnTypes<String> {
 
     }
 
-    /** 表示名 */
+    /**
+     * 表示名
+     *
+     * @since 0.1.0
+     */
     private final String displayName;
 
-    /** キー */
+    /**
+     * キー
+     *
+     * @since 0.1.0
+     */
     private final String key;
 
-    /** 詳細情報 */
+    /**
+     * 詳細情報
+     *
+     * @since 0.1.0
+     */
     private final String detail;
 
-    /** 項目名 */
+    /**
+     * 項目名
+     *
+     * @since 0.1.0
+     */
     private final String fieldName;
 
     /**
      * コンストラクタ<br>
+     *
+     * @since 0.1.0
      *
      * @param displayName
      *                    表示名
@@ -147,6 +203,8 @@ public enum GitHubIssueFieldTypes implements KmgCmnTypes<String> {
     /**
      * キーを返す。<br>
      *
+     * @since 0.1.0
+     *
      * @return キー
      *
      * @see #getKey()
@@ -161,6 +219,8 @@ public enum GitHubIssueFieldTypes implements KmgCmnTypes<String> {
 
     /**
      * 詳細情報を返す。<br>
+     *
+     * @since 0.1.0
      *
      * @return 詳細情報
      */
@@ -178,6 +238,8 @@ public enum GitHubIssueFieldTypes implements KmgCmnTypes<String> {
      * 識別するための表示名を返す。
      * </p>
      *
+     * @since 0.1.0
+     *
      * @return 表示名
      */
     @Override
@@ -191,6 +253,8 @@ public enum GitHubIssueFieldTypes implements KmgCmnTypes<String> {
     /**
      * 項目名を返す。<br>
      *
+     * @since 0.1.0
+     *
      * @return 項目名
      */
     public String getFieldName() {
@@ -202,6 +266,8 @@ public enum GitHubIssueFieldTypes implements KmgCmnTypes<String> {
 
     /**
      * キーを返す。<br>
+     *
+     * @since 0.1.0
      *
      * @return キー
      */
@@ -215,6 +281,8 @@ public enum GitHubIssueFieldTypes implements KmgCmnTypes<String> {
 
     /**
      * キーを返す。<br>
+     *
+     * @since 0.1.0
      *
      * @return キー
      *

@@ -19,6 +19,8 @@ public class Gr002LogMsgTypesTest {
 
     /**
      * get メソッドのテスト - 正常系:収集結果のキーを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGet_normalCollectResult() {
@@ -42,6 +44,8 @@ public class Gr002LogMsgTypesTest {
 
     /**
      * getCode メソッドのテスト - 正常系:指定無しのコードを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetCode_normalNone() {
@@ -65,6 +69,8 @@ public class Gr002LogMsgTypesTest {
 
     /**
      * getDefault メソッドのテスト - 正常系:指定無しを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDefault_normalNone() {
@@ -85,6 +91,8 @@ public class Gr002LogMsgTypesTest {
 
     /**
      * getDetail メソッドのテスト - 正常系:差分の文面
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDetail_normalModeDiff() {
@@ -108,6 +116,8 @@ public class Gr002LogMsgTypesTest {
 
     /**
      * getDisplayName メソッドのテスト - 正常系:全件の文面
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDisplayName_normalModeFull() {
@@ -131,6 +141,8 @@ public class Gr002LogMsgTypesTest {
 
     /**
      * getEnum メソッドのテスト - 正常系:定数名から種類を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetEnum_normalFetched() {
@@ -154,6 +166,8 @@ public class Gr002LogMsgTypesTest {
 
     /**
      * getEnum メソッドのテスト - 準正常系:不明なキーの場合は指定無しを返す
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetEnum_semiUnknownKey() {
@@ -177,6 +191,8 @@ public class Gr002LogMsgTypesTest {
 
     /**
      * getInitValue メソッドのテスト - 正常系:指定無しを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetInitValue_normalNone() {
@@ -197,6 +213,8 @@ public class Gr002LogMsgTypesTest {
 
     /**
      * getKey メソッドのテスト - 正常系:設定ファイルがない場合のキー
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetKey_normalFileNotFound() {
@@ -220,6 +238,8 @@ public class Gr002LogMsgTypesTest {
 
     /**
      * getValue メソッドのテスト - 正常系:補完結果の文面
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetValue_normalMinutesSourceResult() {
@@ -243,6 +263,8 @@ public class Gr002LogMsgTypesTest {
 
     /**
      * toString メソッドのテスト - 正常系:想定外の行のキー
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToString_normalUnexpectedLine() {

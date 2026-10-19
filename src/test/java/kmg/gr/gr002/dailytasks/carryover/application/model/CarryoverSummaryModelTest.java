@@ -19,11 +19,17 @@ import org.junit.jupiter.api.Test;
 })
 public class CarryoverSummaryModelTest {
 
-    /** テスト用の日別の集計 */
+    /**
+     * テスト用の日別の集計
+     *
+     * @since 0.1.0
+     */
     private static final DailySummaryModel DAY = new DailySummaryModel("2026-10-06", 371, null);
 
     /**
      * テスト用の集計を作成する<br>
+     *
+     * @since 0.1.0
      *
      * @return 集計
      */
@@ -37,6 +43,8 @@ public class CarryoverSummaryModelTest {
 
     /**
      * getDays メソッドのテスト - 正常系:日別の集計を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDays_normalValue() {
@@ -60,6 +68,8 @@ public class CarryoverSummaryModelTest {
 
     /**
      * getItems メソッドのテスト - 正常系:項目名を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetItems_normalValue() {
@@ -83,6 +93,8 @@ public class CarryoverSummaryModelTest {
 
     /**
      * getLatestIssue メソッドのテスト - 正常系:最新の Issue 番号を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetLatestIssue_normalValue() {

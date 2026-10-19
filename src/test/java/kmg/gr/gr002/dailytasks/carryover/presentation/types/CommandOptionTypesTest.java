@@ -19,6 +19,8 @@ public class CommandOptionTypesTest {
 
     /**
      * get メソッドのテスト - 正常系:全件モードの引数を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGet_normalFull() {
@@ -42,6 +44,8 @@ public class CommandOptionTypesTest {
 
     /**
      * getDefault メソッドのテスト - 正常系:指定無しを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDefault_normalNone() {
@@ -62,6 +66,8 @@ public class CommandOptionTypesTest {
 
     /**
      * getDetail メソッドのテスト - 正常系:使い方の短縮形の詳細
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDetail_normalHelpShort() {
@@ -85,6 +91,8 @@ public class CommandOptionTypesTest {
 
     /**
      * getDisplayName メソッドのテスト - 正常系:使い方の表示名
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDisplayName_normalHelp() {
@@ -108,6 +116,8 @@ public class CommandOptionTypesTest {
 
     /**
      * getEnum メソッドのテスト - 正常系:引数から種類を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetEnum_normalFull() {
@@ -131,6 +141,8 @@ public class CommandOptionTypesTest {
 
     /**
      * getEnum メソッドのテスト - 準正常系:不明な引数の場合は指定無しを返す
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetEnum_semiUnknownKey() {
@@ -154,6 +166,8 @@ public class CommandOptionTypesTest {
 
     /**
      * getInitValue メソッドのテスト - 正常系:指定無しを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetInitValue_normalNone() {
@@ -174,6 +188,8 @@ public class CommandOptionTypesTest {
 
     /**
      * getKey メソッドのテスト - 正常系:使い方の引数
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetKey_normalHelp() {
@@ -197,6 +213,8 @@ public class CommandOptionTypesTest {
 
     /**
      * toString メソッドのテスト - 正常系:短縮形の引数
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToString_normalHelpShort() {

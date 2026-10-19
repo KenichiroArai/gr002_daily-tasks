@@ -42,6 +42,8 @@ public class CarryoverDtoConvertLogicTest {
     /**
      * 持ち越しの解析結果を作成する<br>
      *
+     * @since 0.1.0
+     *
      * @return 持ち越しの解析結果
      */
     private static CarryoverIssueModel createIssue() {
@@ -56,6 +58,8 @@ public class CarryoverDtoConvertLogicTest {
 
     /**
      * 保存済みの解析結果を作成する<br>
+     *
+     * @since 0.1.0
      *
      * @param minutesSource
      *                      残り時間の取得元の値
@@ -75,6 +79,8 @@ public class CarryoverDtoConvertLogicTest {
     /**
      * 画面用の集計を作成する<br>
      *
+     * @since 0.1.0
+     *
      * @return 画面用の集計
      */
     private static CarryoverSummaryModel createSummary() {
@@ -89,6 +95,8 @@ public class CarryoverDtoConvertLogicTest {
     /**
      * テスト対象を作成する<br>
      *
+     * @since 0.1.0
+     *
      * @return テスト対象
      */
     private static CarryoverDtoConvertLogic createTarget() {
@@ -101,6 +109,8 @@ public class CarryoverDtoConvertLogicTest {
 
     /**
      * toCarryoverIssue メソッドのテスト - 正常系:Issue の項目を引き継ぐ場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToCarryoverIssue_normalIssue() {
@@ -124,6 +134,8 @@ public class CarryoverDtoConvertLogicTest {
 
     /**
      * toCarryoverIssue メソッドのテスト - 正常系:残り時間の取得元を値から変換する場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToCarryoverIssue_normalMinutesSource() {
@@ -147,6 +159,8 @@ public class CarryoverDtoConvertLogicTest {
 
     /**
      * toCarryoverIssue メソッドのテスト - 準正常系:残り時間の取得元が不明な場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToCarryoverIssue_semiUnknownMinutesSource() {
@@ -171,6 +185,8 @@ public class CarryoverDtoConvertLogicTest {
 
     /**
      * toCarryoverIssueDto メソッドのテスト - 正常系:件数を集計して引き継ぐ場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToCarryoverIssueDto_normalCount() {
@@ -194,6 +210,8 @@ public class CarryoverDtoConvertLogicTest {
 
     /**
      * toCarryoverIssueDto メソッドのテスト - 正常系:残り時間の取得元を保存するときの値に変換する場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToCarryoverIssueDto_normalMinutesSource() {
@@ -217,6 +235,8 @@ public class CarryoverDtoConvertLogicTest {
 
     /**
      * toCarryoverSummaryDto メソッドのテスト - 正常系:項目ごとの集計を変換する場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToCarryoverSummaryDto_normalByItem() {
@@ -242,6 +262,8 @@ public class CarryoverDtoConvertLogicTest {
 
     /**
      * toCarryoverSummaryDto メソッドのテスト - 正常系:持ち越し元の月ごとの集計を変換する場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToCarryoverSummaryDto_normalByOriginMonth() {
@@ -267,6 +289,8 @@ public class CarryoverDtoConvertLogicTest {
 
     /**
      * toCarryoverSummaryDto メソッドのテスト - 正常系:最新の Issue 番号を引き継ぐ場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToCarryoverSummaryDto_normalLatestIssue() {
@@ -291,6 +315,8 @@ public class CarryoverDtoConvertLogicTest {
 
     /**
      * toCarryoverSummaryDto メソッドのテスト - 正常系:日別の全体の集計を変換する場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToCarryoverSummaryDto_normalTotal() {
@@ -316,6 +342,8 @@ public class CarryoverDtoConvertLogicTest {
 
     /**
      * toDailyTaskIssue メソッドのテスト - 正常系:本文を引き継ぐ場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToDailyTaskIssue_normalBody() {
@@ -339,6 +367,8 @@ public class CarryoverDtoConvertLogicTest {
 
     /**
      * toDailyTaskIssue メソッドのテスト - 正常系:Issue 番号を引き継ぐ場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToDailyTaskIssue_normalNumber() {
@@ -362,6 +392,8 @@ public class CarryoverDtoConvertLogicTest {
 
     /**
      * toDefaultMinutes メソッドのテスト - 正常系:登録済みの標準時間を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToDefaultMinutes_normalFind() {
@@ -386,6 +418,8 @@ public class CarryoverDtoConvertLogicTest {
 
     /**
      * toGitHubSettingsDto メソッドのテスト - 正常系:リポジトリ名を引き継ぐ場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToGitHubSettingsDto_normalRepository() {
@@ -411,6 +445,8 @@ public class CarryoverDtoConvertLogicTest {
 
     /**
      * toGitHubSettingsDto メソッドのテスト - 正常系:トークンを引き継ぐ場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToGitHubSettingsDto_normalToken() {

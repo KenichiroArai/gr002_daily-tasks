@@ -19,22 +19,42 @@ public enum CarryoverDataFileTypes implements KmgCmnTypes<String> {
 
     /* 定義：開始 */
 
-    /** 指定無し */
+    /**
+     * 指定無し
+     *
+     * @since 0.1.0
+     */
     NONE("指定無し", "None", "指定無し", null),
 
-    /** Issue ごとの JSON を置くディレクトリ名 */
+    /**
+     * Issue ごとの JSON を置くディレクトリ名
+     *
+     * @since 0.1.0
+     */
     ISSUES_DIR("Issue ごとの JSON を置くディレクトリ名", "IssuesDir", "Issue ごとの JSON を置くディレクトリ名", "issues"),
 
-    /** JSON ファイルの拡張子 */
+    /**
+     * JSON ファイルの拡張子
+     *
+     * @since 0.1.0
+     */
     JSON_EXTENSION("JSON ファイルの拡張子", "JsonExtension", "JSON ファイルの拡張子", ".json"),
 
-    /** 画面用の集計の JSON ファイル名 */
+    /**
+     * 画面用の集計の JSON ファイル名
+     *
+     * @since 0.1.0
+     */
     SUMMARY_FILE("画面用の集計の JSON ファイル名", "SummaryFile", "画面用の集計の JSON ファイル名", "summary.json"),
 
     /* 定義：終了 */
     ;
 
-    /** 種類のマップ */
+    /**
+     * 種類のマップ
+     *
+     * @since 0.1.0
+     */
     private static final Map<String, CarryoverDataFileTypes> VALUES_MAP = new HashMap<>();
 
     static {
@@ -57,6 +77,8 @@ public enum CarryoverDataFileTypes implements KmgCmnTypes<String> {
     /**
      * デフォルトの種類を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return デフォルト値
      */
     public static CarryoverDataFileTypes getDefault() {
@@ -71,6 +93,8 @@ public enum CarryoverDataFileTypes implements KmgCmnTypes<String> {
      * <p>
      * 但し、キーが存在しない場合は、指定無し（NONE）を返す。
      * </p>
+     *
+     * @since 0.1.0
      *
      * @param key
      *            キー
@@ -93,6 +117,8 @@ public enum CarryoverDataFileTypes implements KmgCmnTypes<String> {
     /**
      * 初期値の種類を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return 初期値
      */
     public static CarryoverDataFileTypes getInitValue() {
@@ -102,20 +128,38 @@ public enum CarryoverDataFileTypes implements KmgCmnTypes<String> {
 
     }
 
-    /** 表示名 */
+    /**
+     * 表示名
+     *
+     * @since 0.1.0
+     */
     private final String displayName;
 
-    /** キー */
+    /**
+     * キー
+     *
+     * @since 0.1.0
+     */
     private final String key;
 
-    /** 詳細情報 */
+    /**
+     * 詳細情報
+     *
+     * @since 0.1.0
+     */
     private final String detail;
 
-    /** ファイル名 */
+    /**
+     * ファイル名
+     *
+     * @since 0.1.0
+     */
     private final String fileName;
 
     /**
      * コンストラクタ<br>
+     *
+     * @since 0.1.0
      *
      * @param displayName
      *                    表示名
@@ -138,6 +182,8 @@ public enum CarryoverDataFileTypes implements KmgCmnTypes<String> {
     /**
      * キーを返す。<br>
      *
+     * @since 0.1.0
+     *
      * @return キー
      *
      * @see #getKey()
@@ -152,6 +198,8 @@ public enum CarryoverDataFileTypes implements KmgCmnTypes<String> {
 
     /**
      * 詳細情報を返す。<br>
+     *
+     * @since 0.1.0
      *
      * @return 詳細情報
      */
@@ -169,6 +217,8 @@ public enum CarryoverDataFileTypes implements KmgCmnTypes<String> {
      * 識別するための表示名を返す。
      * </p>
      *
+     * @since 0.1.0
+     *
      * @return 表示名
      */
     @Override
@@ -182,6 +232,8 @@ public enum CarryoverDataFileTypes implements KmgCmnTypes<String> {
     /**
      * ファイル名を返す。<br>
      *
+     * @since 0.1.0
+     *
      * @return ファイル名
      */
     public String getFileName() {
@@ -193,6 +245,8 @@ public enum CarryoverDataFileTypes implements KmgCmnTypes<String> {
 
     /**
      * キーを返す。<br>
+     *
+     * @since 0.1.0
      *
      * @return キー
      */
@@ -206,6 +260,8 @@ public enum CarryoverDataFileTypes implements KmgCmnTypes<String> {
 
     /**
      * キーを返す。<br>
+     *
+     * @since 0.1.0
      *
      * @return キー
      *

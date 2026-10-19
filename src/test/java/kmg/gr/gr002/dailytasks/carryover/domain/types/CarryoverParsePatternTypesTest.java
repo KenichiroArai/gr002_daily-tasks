@@ -19,6 +19,8 @@ public class CarryoverParsePatternTypesTest {
 
     /**
      * get メソッドのテスト - 正常系:チェックボックスの行
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGet_normalValue() {
@@ -42,6 +44,8 @@ public class CarryoverParsePatternTypesTest {
 
     /**
      * getDefault メソッドのテスト - 正常系:指定無しを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDefault_normalNone() {
@@ -62,6 +66,8 @@ public class CarryoverParsePatternTypesTest {
 
     /**
      * getDetail メソッドのテスト - 正常系:持ち越し元の日付を含む内容
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDetail_normalValue() {
@@ -85,6 +91,8 @@ public class CarryoverParsePatternTypesTest {
 
     /**
      * getDisplayName メソッドのテスト - 正常系:区切り線
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDisplayName_normalValue() {
@@ -108,6 +116,8 @@ public class CarryoverParsePatternTypesTest {
 
     /**
      * getEnum メソッドのテスト - 正常系:チェックボックスの行
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetEnum_normalValue() {
@@ -131,6 +141,8 @@ public class CarryoverParsePatternTypesTest {
 
     /**
      * getEnum メソッドのテスト - 準正常系:不明なキーの場合は指定無しを返す
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetEnum_semiUnknownKey() {
@@ -154,6 +166,8 @@ public class CarryoverParsePatternTypesTest {
 
     /**
      * getInitValue メソッドのテスト - 正常系:指定無しを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetInitValue_normalNone() {
@@ -174,6 +188,8 @@ public class CarryoverParsePatternTypesTest {
 
     /**
      * getKey メソッドのテスト - 正常系:持ち越し元の日付を含む内容
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetKey_normalValue() {
@@ -197,6 +213,8 @@ public class CarryoverParsePatternTypesTest {
 
     /**
      * toString メソッドのテスト - 正常系:区切り線
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToString_normalValue() {

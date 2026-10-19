@@ -24,6 +24,8 @@ public interface CarryoverDataDao {
     /**
      * 保存済みの Issue ごとの解析結果を読み込む<br>
      *
+     * @since 0.1.0
+     *
      * @param dataDir
      *                出力先のディレクトリ（例: docs/data）
      *
@@ -37,6 +39,8 @@ public interface CarryoverDataDao {
     /**
      * Issue ごとの解析結果を保存する<br>
      *
+     * @since 0.1.0
+     *
      * @param dataDir
      *                出力先のディレクトリ（例: docs/data）
      * @param issue
@@ -49,6 +53,8 @@ public interface CarryoverDataDao {
 
     /**
      * 画面用の集計を保存する<br>
+     *
+     * @since 0.1.0
      *
      * @param dataDir
      *                出力先のディレクトリ（例: docs/data）

@@ -28,6 +28,8 @@ public interface CarryoverIssueLogic {
     /**
      * すべての日々のタスク Issue を取得する<br>
      *
+     * @since 0.1.0
+     *
      * @param source
      *               データの取得元と保存先
      *
@@ -40,6 +42,8 @@ public interface CarryoverIssueLogic {
 
     /**
      * 項目ごとの標準時間を読み込む<br>
+     *
+     * @since 0.1.0
      *
      * @param source
      *               データの取得元と保存先
@@ -54,6 +58,8 @@ public interface CarryoverIssueLogic {
     /**
      * 保存済みの持ち越しの解析結果を読み込む<br>
      *
+     * @since 0.1.0
+     *
      * @param source
      *               データの取得元と保存先
      *
@@ -67,6 +73,8 @@ public interface CarryoverIssueLogic {
     /**
      * 持ち越しの解析結果を保存する<br>
      *
+     * @since 0.1.0
+     *
      * @param source
      *               データの取得元と保存先
      * @param issue
@@ -79,6 +87,8 @@ public interface CarryoverIssueLogic {
 
     /**
      * 画面用の集計を保存する<br>
+     *
+     * @since 0.1.0
      *
      * @param source
      *                データの取得元と保存先

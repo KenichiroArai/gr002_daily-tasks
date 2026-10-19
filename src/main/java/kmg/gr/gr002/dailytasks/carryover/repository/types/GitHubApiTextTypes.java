@@ -19,16 +19,28 @@ public enum GitHubApiTextTypes implements KmgCmnTypes<String> {
 
     /* 定義：開始 */
 
-    /** 指定無し */
+    /**
+     * 指定無し
+     *
+     * @since 0.1.0
+     */
     NONE("指定無し", "None", "指定無し", null),
 
-    /** 空文字 */
+    /**
+     * 空文字
+     *
+     * @since 0.1.0
+     */
     EMPTY("空文字", "Empty", "項目がない場合の空文字", ""),
 
     /* 定義：終了 */
     ;
 
-    /** 種類のマップ */
+    /**
+     * 種類のマップ
+     *
+     * @since 0.1.0
+     */
     private static final Map<String, GitHubApiTextTypes> VALUES_MAP = new HashMap<>();
 
     static {
@@ -51,6 +63,8 @@ public enum GitHubApiTextTypes implements KmgCmnTypes<String> {
     /**
      * デフォルトの種類を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return デフォルト値
      */
     public static GitHubApiTextTypes getDefault() {
@@ -65,6 +79,8 @@ public enum GitHubApiTextTypes implements KmgCmnTypes<String> {
      * <p>
      * 但し、キーが存在しない場合は、指定無し（NONE）を返す。
      * </p>
+     *
+     * @since 0.1.0
      *
      * @param key
      *            キー
@@ -87,6 +103,8 @@ public enum GitHubApiTextTypes implements KmgCmnTypes<String> {
     /**
      * 初期値の種類を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return 初期値
      */
     public static GitHubApiTextTypes getInitValue() {
@@ -96,20 +114,38 @@ public enum GitHubApiTextTypes implements KmgCmnTypes<String> {
 
     }
 
-    /** 表示名 */
+    /**
+     * 表示名
+     *
+     * @since 0.1.0
+     */
     private final String displayName;
 
-    /** キー */
+    /**
+     * キー
+     *
+     * @since 0.1.0
+     */
     private final String key;
 
-    /** 詳細情報 */
+    /**
+     * 詳細情報
+     *
+     * @since 0.1.0
+     */
     private final String detail;
 
-    /** 文字列 */
+    /**
+     * 文字列
+     *
+     * @since 0.1.0
+     */
     private final String text;
 
     /**
      * コンストラクタ<br>
+     *
+     * @since 0.1.0
      *
      * @param displayName
      *                    表示名
@@ -132,6 +168,8 @@ public enum GitHubApiTextTypes implements KmgCmnTypes<String> {
     /**
      * キーを返す。<br>
      *
+     * @since 0.1.0
+     *
      * @return キー
      *
      * @see #getKey()
@@ -146,6 +184,8 @@ public enum GitHubApiTextTypes implements KmgCmnTypes<String> {
 
     /**
      * 詳細情報を返す。<br>
+     *
+     * @since 0.1.0
      *
      * @return 詳細情報
      */
@@ -163,6 +203,8 @@ public enum GitHubApiTextTypes implements KmgCmnTypes<String> {
      * 識別するための表示名を返す。
      * </p>
      *
+     * @since 0.1.0
+     *
      * @return 表示名
      */
     @Override
@@ -176,6 +218,8 @@ public enum GitHubApiTextTypes implements KmgCmnTypes<String> {
     /**
      * 文字列を返す。<br>
      *
+     * @since 0.1.0
+     *
      * @return 文字列
      */
     public String getText() {
@@ -187,6 +231,8 @@ public enum GitHubApiTextTypes implements KmgCmnTypes<String> {
 
     /**
      * キーを返す。<br>
+     *
+     * @since 0.1.0
      *
      * @return キー
      */
@@ -200,6 +246,8 @@ public enum GitHubApiTextTypes implements KmgCmnTypes<String> {
 
     /**
      * キーを返す。<br>
+     *
+     * @since 0.1.0
      *
      * @return キー
      *

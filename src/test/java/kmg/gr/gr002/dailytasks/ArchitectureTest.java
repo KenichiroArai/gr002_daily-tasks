@@ -37,13 +37,25 @@ import com.tngtech.archunit.library.Architectures;
 })
 public class ArchitectureTest {
 
-    /** 検査対象のクラス */
+    /**
+     * 検査対象のクラス
+     *
+     * @since 0.1.0
+     */
     private static JavaClasses classes;
 
-    /** ルートパッケージ */
+    /**
+     * ルートパッケージ
+     *
+     * @since 0.1.0
+     */
     private static final String ROOT_PACKAGE = "kmg.gr.gr002.dailytasks";
 
-    /** Bean のコンストラクタが引数を持たないこと */
+    /**
+     * Bean のコンストラクタが引数を持たないこと
+     *
+     * @since 0.1.0
+     */
     private static final ArchCondition<JavaClass> NO_CONSTRUCTOR_PARAMETERS
         = new ArchCondition<JavaClass>("not receive dependencies from constructors") {
 
@@ -67,6 +79,8 @@ public class ArchitectureTest {
 
     /**
      * 検査対象のクラスを読み込む<br>
+     *
+     * @since 0.1.0
      */
     @BeforeAll
     public static void importClasses() {
@@ -79,6 +93,8 @@ public class ArchitectureTest {
 
     /**
      * DI のテスト - 正常系:Bean のコンストラクタで依存を受け取っていない場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testInjection_normalNoConstructorInjection() {
@@ -102,6 +118,8 @@ public class ArchitectureTest {
 
     /**
      * JSON の形のテスト - 正常系:Jackson のアノテーションを repository 層の dto.json パッケージだけで使っている場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testJsonAnnotation_normalOnlyRepositoryJson() {
@@ -125,6 +143,8 @@ public class ArchitectureTest {
 
     /**
      * 層間の参照のテスト - 正常系:すぐ上の層だけを参照し（依存性逆転）、飛び越し・逆向きの参照がない場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testLayerDependencies_normalOnlyNextLayer() {
@@ -155,6 +175,8 @@ public class ArchitectureTest {
 
     /**
      * ロジックの参照のテスト - 正常系:ロジックがサービスを参照していない場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testLogic_normalNoServiceDependency() {
@@ -177,6 +199,8 @@ public class ArchitectureTest {
 
     /**
      * 設定値のテスト - 正常系:@Value で設定値を個別に取得していない場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testSettings_normalNoValueAnnotation() {
@@ -199,6 +223,8 @@ public class ArchitectureTest {
 
     /**
      * 設定値のテスト - 正常系:設定ファイルを受け取るクラスが presentation 層だけにある場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testSettings_normalPropertiesOnlyPresentation() {

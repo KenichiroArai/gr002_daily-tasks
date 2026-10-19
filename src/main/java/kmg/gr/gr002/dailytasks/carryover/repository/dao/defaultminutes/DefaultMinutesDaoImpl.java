@@ -34,24 +34,40 @@ public class DefaultMinutesDaoImpl implements DefaultMinutesDao {
      * <p>
      * 無名クラスが外側のインスタンスを持たないよう、static の定数にする。
      * </p>
+     *
+     * @since 0.1.0
      */
     private static final TypeReference<Map<String, Double>> DEFAULT_MINUTES_TYPE = new TypeReference<>() {
         // 型情報の保持のみ
     };
 
-    /** ロガー */
+    /**
+     * ロガー
+     *
+     * @since 0.1.0
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultMinutesDaoImpl.class);
 
-    /** JSON の変換 */
+    /**
+     * JSON の変換
+     *
+     * @since 0.1.0
+     */
     @Autowired
     private JsonMapper jsonMapper;
 
-    /** メッセージの取得 */
+    /**
+     * メッセージの取得
+     *
+     * @since 0.1.0
+     */
     @Autowired
     private MessageLogic messageLogic;
 
     /**
      * 項目ごとの標準時間を読み込む<br>
+     *
+     * @since 0.1.0
      *
      * @param configFile
      *                   設定ファイルのパス（例: config/default-minutes.json）

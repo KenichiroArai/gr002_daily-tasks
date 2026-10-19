@@ -26,6 +26,8 @@ public interface GitHubIssueApi {
      * プルリクエストは除外する。
      * </p>
      *
+     * @since 0.1.0
+     *
      * @param settings
      *                 GitHub API の接続設定
      *

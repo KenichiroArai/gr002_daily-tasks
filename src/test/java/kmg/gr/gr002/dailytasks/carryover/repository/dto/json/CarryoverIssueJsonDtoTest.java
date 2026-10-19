@@ -22,6 +22,8 @@ public class CarryoverIssueJsonDtoTest {
     /**
      * テスト対象を作成する<br>
      *
+     * @since 0.1.0
+     *
      * @return テスト対象
      */
     private static CarryoverIssueJsonDto createTarget() {
@@ -36,6 +38,8 @@ public class CarryoverIssueJsonDtoTest {
 
     /**
      * getCount メソッドのテスト - 正常系:件数を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetCount_normalValue() {
@@ -59,6 +63,8 @@ public class CarryoverIssueJsonDtoTest {
 
     /**
      * getDate メソッドのテスト - 正常系:その日の日付を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDate_normalValue() {
@@ -82,6 +88,8 @@ public class CarryoverIssueJsonDtoTest {
 
     /**
      * getDeclaredCount メソッドのテスト - 正常系:残数を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDeclaredCount_normalValue() {
@@ -105,6 +113,8 @@ public class CarryoverIssueJsonDtoTest {
 
     /**
      * getItems メソッドのテスト - 正常系:持ち越し項目を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetItems_normalValue() {
@@ -128,6 +138,8 @@ public class CarryoverIssueJsonDtoTest {
 
     /**
      * getMinutes メソッドのテスト - 正常系:残り時間の合計を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetMinutes_normalValue() {
@@ -151,6 +163,8 @@ public class CarryoverIssueJsonDtoTest {
 
     /**
      * getNumber メソッドのテスト - 正常系:Issue 番号を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetNumber_normalValue() {
@@ -174,6 +188,8 @@ public class CarryoverIssueJsonDtoTest {
 
     /**
      * getSections メソッドのテスト - 正常系:対象セクション名を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetSections_normalValue() {
@@ -197,6 +213,8 @@ public class CarryoverIssueJsonDtoTest {
 
     /**
      * getState メソッドのテスト - 正常系:状態を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetState_normalValue() {
@@ -220,6 +238,8 @@ public class CarryoverIssueJsonDtoTest {
 
     /**
      * getTitle メソッドのテスト - 正常系:タイトルを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetTitle_normalValue() {
@@ -243,6 +263,8 @@ public class CarryoverIssueJsonDtoTest {
 
     /**
      * getUpdatedAt メソッドのテスト - 正常系:更新日時を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetUpdatedAt_normalValue() {

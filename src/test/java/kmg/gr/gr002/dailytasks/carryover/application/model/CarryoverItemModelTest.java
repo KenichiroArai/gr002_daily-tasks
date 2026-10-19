@@ -22,6 +22,8 @@ public class CarryoverItemModelTest {
     /**
      * テスト用の持ち越し項目を作成する<br>
      *
+     * @since 0.1.0
+     *
      * @return 持ち越し項目
      */
     private static CarryoverItemModel createItem() {
@@ -34,6 +36,8 @@ public class CarryoverItemModelTest {
 
     /**
      * getMinutes メソッドのテスト - 正常系:残り時間を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetMinutes_normalValue() {
@@ -57,6 +61,8 @@ public class CarryoverItemModelTest {
 
     /**
      * getMinutesSource メソッドのテスト - 正常系:残り時間の取得元を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetMinutesSource_normalValue() {
@@ -80,6 +86,8 @@ public class CarryoverItemModelTest {
 
     /**
      * getName メソッドのテスト - 正常系:項目名を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetName_normalValue() {
@@ -103,6 +111,8 @@ public class CarryoverItemModelTest {
 
     /**
      * getOriginDate メソッドのテスト - 正常系:持ち越し元の日付を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetOriginDate_normalValue() {
@@ -126,6 +136,8 @@ public class CarryoverItemModelTest {
 
     /**
      * getRaw メソッドのテスト - 正常系:元の行を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetRaw_normalValue() {
@@ -149,6 +161,8 @@ public class CarryoverItemModelTest {
 
     /**
      * getSection メソッドのテスト - 正常系:セクション名を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetSection_normalValue() {
@@ -172,6 +186,8 @@ public class CarryoverItemModelTest {
 
     /**
      * isChecked メソッドのテスト - 正常系:チェック済みの場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testIsChecked_normalChecked() {

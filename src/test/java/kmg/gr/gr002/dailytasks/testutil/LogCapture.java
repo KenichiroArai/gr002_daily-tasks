@@ -20,14 +20,24 @@ import ch.qos.logback.core.read.ListAppender;
  */
 public final class LogCapture implements AutoCloseable {
 
-    /** ログの取得先 */
+    /**
+     * ログの取得先
+     *
+     * @since 0.1.0
+     */
     private final ListAppender<ILoggingEvent> listAppender;
 
-    /** 対象のロガー */
+    /**
+     * 対象のロガー
+     *
+     * @since 0.1.0
+     */
     private final Logger logger;
 
     /**
      * コンストラクタ<br>
+     *
+     * @since 0.1.0
      *
      * @param target
      *               ログを取得する対象クラス
@@ -43,6 +53,8 @@ public final class LogCapture implements AutoCloseable {
 
     /**
      * ログの取得を終了する<br>
+     *
+     * @since 0.1.0
      */
     @Override
     public void close() {
@@ -54,6 +66,8 @@ public final class LogCapture implements AutoCloseable {
 
     /**
      * 取得したログメッセージを返す<br>
+     *
+     * @since 0.1.0
      *
      * @return ログメッセージ（出力順）
      */

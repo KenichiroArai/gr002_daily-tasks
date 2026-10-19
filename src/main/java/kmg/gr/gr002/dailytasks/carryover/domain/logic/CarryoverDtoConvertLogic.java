@@ -47,6 +47,8 @@ public class CarryoverDtoConvertLogic {
     /**
      * 持ち越し項目を保存用の DTO に変換する<br>
      *
+     * @since 0.1.0
+     *
      * @param item
      *             持ち越し項目
      *
@@ -62,6 +64,8 @@ public class CarryoverDtoConvertLogic {
 
     /**
      * 日別の集計を保存用の DTO に変換する<br>
+     *
+     * @since 0.1.0
      *
      * @param day
      *            日別の集計
@@ -81,6 +85,8 @@ public class CarryoverDtoConvertLogic {
     /**
      * 集計値を保存用の DTO に変換する<br>
      *
+     * @since 0.1.0
+     *
      * @param stat
      *             集計値
      *
@@ -96,6 +102,8 @@ public class CarryoverDtoConvertLogic {
 
     /**
      * キーごとの集計値を保存用の DTO に変換する<br>
+     *
+     * @since 0.1.0
      *
      * @param stats
      *              キーごとの集計値
@@ -116,12 +124,18 @@ public class CarryoverDtoConvertLogic {
 
     }
 
-    /** メッセージの取得 */
+    /**
+     * メッセージの取得
+     *
+     * @since 0.1.0
+     */
     @Autowired
     private MessageLogic messageLogic;
 
     /**
      * 保存済みの解析結果を持ち越しの解析結果に変換する<br>
+     *
+     * @since 0.1.0
      *
      * @param dto
      *            保存済みの解析結果
@@ -143,6 +157,8 @@ public class CarryoverDtoConvertLogic {
     /**
      * 持ち越しの解析結果を保存用の DTO に変換する<br>
      *
+     * @since 0.1.0
+     *
      * @param issue
      *              持ち越しの解析結果
      *
@@ -161,6 +177,8 @@ public class CarryoverDtoConvertLogic {
 
     /**
      * 保存済みの持ち越し項目を持ち越し項目に変換する<br>
+     *
+     * @since 0.1.0
      *
      * @param dto
      *            保存済みの持ち越し項目
@@ -193,6 +211,8 @@ public class CarryoverDtoConvertLogic {
     /**
      * 画面用の集計を保存用の DTO に変換する<br>
      *
+     * @since 0.1.0
+     *
      * @param summary
      *                画面用の集計
      *
@@ -211,6 +231,8 @@ public class CarryoverDtoConvertLogic {
     /**
      * GitHub API から取得した Issue を日々のタスク Issue に変換する<br>
      *
+     * @since 0.1.0
+     *
      * @param dto
      *            GitHub API から取得した Issue
      *
@@ -227,6 +249,8 @@ public class CarryoverDtoConvertLogic {
     /**
      * 項目名と標準時間の対応を項目ごとの標準時間に変換する<br>
      *
+     * @since 0.1.0
+     *
      * @param minutesByName
      *                      項目名と標準時間（分）の対応
      *
@@ -241,6 +265,8 @@ public class CarryoverDtoConvertLogic {
 
     /**
      * データの取得元から GitHub API の接続設定に変換する<br>
+     *
+     * @since 0.1.0
      *
      * @param source
      *               データの取得元と保存先

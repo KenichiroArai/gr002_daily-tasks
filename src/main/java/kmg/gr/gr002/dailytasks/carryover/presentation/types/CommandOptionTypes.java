@@ -19,22 +19,42 @@ public enum CommandOptionTypes implements KmgCmnTypes<String> {
 
     /* 定義：開始 */
 
-    /** 指定無し */
+    /**
+     * 指定無し
+     *
+     * @since 0.1.0
+     */
     NONE("指定無し", "None", "指定無し", null),
 
-    /** 全件モード */
+    /**
+     * 全件モード
+     *
+     * @since 0.1.0
+     */
     FULL("全件モード", "Full", "全件モード。#1 から最新まで解析し直す", "--full"),
 
-    /** 使い方の表示 */
+    /**
+     * 使い方の表示
+     *
+     * @since 0.1.0
+     */
     HELP("使い方の表示", "Help", "使い方を表示する", "--help"),
 
-    /** 使い方の表示（短縮形） */
+    /**
+     * 使い方の表示（短縮形）
+     *
+     * @since 0.1.0
+     */
     HELP_SHORT("使い方の表示（短縮形）", "HelpShort", "使い方を表示する短縮形", "-h"),
 
     /* 定義：終了 */
     ;
 
-    /** 種類のマップ */
+    /**
+     * 種類のマップ
+     *
+     * @since 0.1.0
+     */
     private static final Map<String, CommandOptionTypes> VALUES_MAP = new HashMap<>();
 
     static {
@@ -57,6 +77,8 @@ public enum CommandOptionTypes implements KmgCmnTypes<String> {
     /**
      * デフォルトの種類を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return デフォルト値
      */
     public static CommandOptionTypes getDefault() {
@@ -71,6 +93,8 @@ public enum CommandOptionTypes implements KmgCmnTypes<String> {
      * <p>
      * 但し、キーが存在しない場合は、指定無し（NONE）を返す。
      * </p>
+     *
+     * @since 0.1.0
      *
      * @param key
      *            キー
@@ -93,6 +117,8 @@ public enum CommandOptionTypes implements KmgCmnTypes<String> {
     /**
      * 初期値の種類を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return 初期値
      */
     public static CommandOptionTypes getInitValue() {
@@ -102,20 +128,38 @@ public enum CommandOptionTypes implements KmgCmnTypes<String> {
 
     }
 
-    /** 詳細情報 */
+    /**
+     * 詳細情報
+     *
+     * @since 0.1.0
+     */
     private final String detail;
 
-    /** 表示名 */
+    /**
+     * 表示名
+     *
+     * @since 0.1.0
+     */
     private final String displayName;
 
-    /** キー */
+    /**
+     * キー
+     *
+     * @since 0.1.0
+     */
     private final String key;
 
-    /** コマンド引数 */
+    /**
+     * コマンド引数
+     *
+     * @since 0.1.0
+     */
     private final String option;
 
     /**
      * コンストラクタ<br>
+     *
+     * @since 0.1.0
      *
      * @param displayName
      *                    表示名
@@ -138,6 +182,8 @@ public enum CommandOptionTypes implements KmgCmnTypes<String> {
     /**
      * キーを返す。<br>
      *
+     * @since 0.1.0
+     *
      * @return キー
      *
      * @see #getKey()
@@ -152,6 +198,8 @@ public enum CommandOptionTypes implements KmgCmnTypes<String> {
 
     /**
      * 詳細情報を返す。<br>
+     *
+     * @since 0.1.0
      *
      * @return 詳細情報
      */
@@ -169,6 +217,8 @@ public enum CommandOptionTypes implements KmgCmnTypes<String> {
      * 識別するための表示名を返す。
      * </p>
      *
+     * @since 0.1.0
+     *
      * @return 表示名
      */
     @Override
@@ -182,6 +232,8 @@ public enum CommandOptionTypes implements KmgCmnTypes<String> {
     /**
      * コマンド引数を返す。<br>
      *
+     * @since 0.1.0
+     *
      * @return コマンド引数
      */
     public String getOption() {
@@ -193,6 +245,8 @@ public enum CommandOptionTypes implements KmgCmnTypes<String> {
 
     /**
      * キーを返す。<br>
+     *
+     * @since 0.1.0
      *
      * @return キー
      */
@@ -206,6 +260,8 @@ public enum CommandOptionTypes implements KmgCmnTypes<String> {
 
     /**
      * キーを返す。<br>
+     *
+     * @since 0.1.0
      *
      * @return キー
      *

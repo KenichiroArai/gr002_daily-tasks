@@ -18,29 +18,59 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 })
 public class CarryoverItemJsonDto {
 
-    /** チェック済みか */
+    /**
+     * チェック済みか
+     *
+     * @since 0.1.0
+     */
     private final boolean checked;
 
-    /** 残り時間（分） */
+    /**
+     * 残り時間（分）
+     *
+     * @since 0.1.0
+     */
     private final double minutes;
 
-    /** 残り時間の取得元（parsed / default / unknown） */
+    /**
+     * 残り時間の取得元（parsed / default / unknown）
+     *
+     * @since 0.1.0
+     */
     private final String minutesSource;
 
-    /** 項目名（正規化済み） */
+    /**
+     * 項目名（正規化済み）
+     *
+     * @since 0.1.0
+     */
     private final String name;
 
-    /** 持ち越し元の日付（yyyy-MM-dd）。日付がない行は null */
+    /**
+     * 持ち越し元の日付（yyyy-MM-dd）。日付がない行は null
+     *
+     * @since 0.1.0
+     */
     private final String originDate;
 
-    /** 元の行 */
+    /**
+     * 元の行
+     *
+     * @since 0.1.0
+     */
     private final String raw;
 
-    /** セクション名 */
+    /**
+     * セクション名
+     *
+     * @since 0.1.0
+     */
     private final String section;
 
     /**
      * コンストラクタ<br>
+     *
+     * @since 0.1.0
      *
      * @param name
      *                      項目名（正規化済み）
@@ -76,6 +106,8 @@ public class CarryoverItemJsonDto {
     /**
      * 残り時間（分）を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return 残り時間（分）
      */
     public double getMinutes() {
@@ -87,6 +119,8 @@ public class CarryoverItemJsonDto {
 
     /**
      * 残り時間の取得元を返す<br>
+     *
+     * @since 0.1.0
      *
      * @return 残り時間の取得元（parsed / default / unknown）
      */
@@ -100,6 +134,8 @@ public class CarryoverItemJsonDto {
     /**
      * 項目名を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return 項目名（正規化済み）
      */
     public String getName() {
@@ -111,6 +147,8 @@ public class CarryoverItemJsonDto {
 
     /**
      * 持ち越し元の日付を返す<br>
+     *
+     * @since 0.1.0
      *
      * @return 持ち越し元の日付（yyyy-MM-dd）。日付がない行は null
      */
@@ -124,6 +162,8 @@ public class CarryoverItemJsonDto {
     /**
      * 元の行を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return 元の行
      */
     public String getRaw() {
@@ -136,6 +176,8 @@ public class CarryoverItemJsonDto {
     /**
      * セクション名を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return セクション名
      */
     public String getSection() {
@@ -147,6 +189,8 @@ public class CarryoverItemJsonDto {
 
     /**
      * チェック済みかを返す<br>
+     *
+     * @since 0.1.0
      *
      * @return true：チェック済み、false：未チェック
      */

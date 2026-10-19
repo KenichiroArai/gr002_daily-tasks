@@ -13,17 +13,31 @@ import java.util.List;
  */
 public class CarryoverSummaryModel {
 
-    /** 日別の集計（日付順） */
+    /**
+     * 日別の集計（日付順）
+     *
+     * @since 0.1.0
+     */
     private final List<DailySummaryModel> days;
 
-    /** 項目名（延べ件数の多い順） */
+    /**
+     * 項目名（延べ件数の多い順）
+     *
+     * @since 0.1.0
+     */
     private final List<String> items;
 
-    /** 集計に含めた最新の Issue 番号。Issue がない場合は 0 */
+    /**
+     * 集計に含めた最新の Issue 番号。Issue がない場合は 0
+     *
+     * @since 0.1.0
+     */
     private final int latestIssue;
 
     /**
      * コンストラクタ<br>
+     *
+     * @since 0.1.0
      *
      * @param latestIssue
      *                    集計に含めた最新の Issue 番号。Issue がない場合は 0
@@ -43,6 +57,8 @@ public class CarryoverSummaryModel {
     /**
      * 日別の集計を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return 日別の集計（日付順）
      */
     public List<DailySummaryModel> getDays() {
@@ -55,6 +71,8 @@ public class CarryoverSummaryModel {
     /**
      * 項目名を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return 項目名（延べ件数の多い順）
      */
     public List<String> getItems() {
@@ -66,6 +84,8 @@ public class CarryoverSummaryModel {
 
     /**
      * 集計に含めた最新の Issue 番号を返す<br>
+     *
+     * @since 0.1.0
      *
      * @return 最新の Issue 番号。Issue がない場合は 0
      */

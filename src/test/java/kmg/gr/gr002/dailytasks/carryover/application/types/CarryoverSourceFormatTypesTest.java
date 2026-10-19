@@ -19,6 +19,8 @@ public class CarryoverSourceFormatTypesTest {
 
     /**
      * get メソッドのテスト - 正常系:文字列表現
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGet_normalValue() {
@@ -42,6 +44,8 @@ public class CarryoverSourceFormatTypesTest {
 
     /**
      * getDefault メソッドのテスト - 正常系:指定無しを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDefault_normalNone() {
@@ -62,6 +66,8 @@ public class CarryoverSourceFormatTypesTest {
 
     /**
      * getDetail メソッドのテスト - 正常系:文字列表現
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDetail_normalValue() {
@@ -85,6 +91,8 @@ public class CarryoverSourceFormatTypesTest {
 
     /**
      * getDisplayName メソッドのテスト - 正常系:文字列表現
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDisplayName_normalValue() {
@@ -108,6 +116,8 @@ public class CarryoverSourceFormatTypesTest {
 
     /**
      * getEnum メソッドのテスト - 正常系:文字列表現
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetEnum_normalValue() {
@@ -131,6 +141,8 @@ public class CarryoverSourceFormatTypesTest {
 
     /**
      * getEnum メソッドのテスト - 準正常系:不明なキーの場合は指定無しを返す
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetEnum_semiUnknownKey() {
@@ -154,6 +166,8 @@ public class CarryoverSourceFormatTypesTest {
 
     /**
      * getInitValue メソッドのテスト - 正常系:指定無しを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetInitValue_normalNone() {
@@ -174,6 +188,8 @@ public class CarryoverSourceFormatTypesTest {
 
     /**
      * getKey メソッドのテスト - 正常系:文字列表現
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetKey_normalValue() {
@@ -197,6 +213,8 @@ public class CarryoverSourceFormatTypesTest {
 
     /**
      * toString メソッドのテスト - 正常系:文字列表現
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToString_normalValue() {

@@ -20,6 +20,8 @@ public class GitHubIssueDtoTest {
     /**
      * テスト対象を作成する<br>
      *
+     * @since 0.1.0
+     *
      * @return テスト対象
      */
     private static GitHubIssueDto createTarget() {
@@ -31,6 +33,8 @@ public class GitHubIssueDtoTest {
 
     /**
      * getBody メソッドのテスト - 正常系:本文を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetBody_normalValue() {
@@ -54,6 +58,8 @@ public class GitHubIssueDtoTest {
 
     /**
      * getNumber メソッドのテスト - 正常系:Issue 番号を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetNumber_normalValue() {
@@ -77,6 +83,8 @@ public class GitHubIssueDtoTest {
 
     /**
      * getState メソッドのテスト - 正常系:状態を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetState_normalValue() {
@@ -100,6 +108,8 @@ public class GitHubIssueDtoTest {
 
     /**
      * getTitle メソッドのテスト - 正常系:タイトルを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetTitle_normalValue() {
@@ -123,6 +133,8 @@ public class GitHubIssueDtoTest {
 
     /**
      * getUpdatedAt メソッドのテスト - 正常系:更新日時を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetUpdatedAt_normalValue() {

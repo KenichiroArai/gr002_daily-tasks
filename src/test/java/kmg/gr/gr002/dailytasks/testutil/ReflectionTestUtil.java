@@ -22,6 +22,8 @@ public final class ReflectionTestUtil {
     /**
      * クラスとその親クラスからメソッドを探し、アクセスできるようにする<br>
      *
+     * @since 0.1.0
+     *
      * @param clazz
      *                       探し始めるクラス
      * @param name
@@ -69,6 +71,8 @@ public final class ReflectionTestUtil {
     /**
      * インスタンスフィールドの値を取得する<br>
      *
+     * @since 0.1.0
+     *
      * @param <T>
      *               値の型
      * @param target
@@ -93,6 +97,8 @@ public final class ReflectionTestUtil {
 
     /**
      * static フィールドの値を取得する<br>
+     *
+     * @since 0.1.0
      *
      * @param <T>
      *              値の型
@@ -122,6 +128,8 @@ public final class ReflectionTestUtil {
      * 呼び出したメソッドが例外を投げた場合は、その例外をそのまま投げ直す。
      * </p>
      *
+     * @since 0.1.0
+     *
      * @param <T>
      *                       戻り値の型
      * @param target
@@ -149,6 +157,8 @@ public final class ReflectionTestUtil {
 
     /**
      * メソッドを呼び出し、呼び出し先の例外を取り出して投げ直す<br>
+     *
+     * @since 0.1.0
      *
      * @param <T>
      *               戻り値の型
@@ -200,6 +210,8 @@ public final class ReflectionTestUtil {
     /**
      * インスタンスフィールドに値を設定する<br>
      *
+     * @since 0.1.0
+     *
      * @param target
      *               フィールドを持つインスタンス
      * @param name
@@ -228,6 +240,8 @@ public final class ReflectionTestUtil {
      * <p>
      * 呼び出したメソッドが例外を投げた場合は、その例外をそのまま投げ直す。
      * </p>
+     *
+     * @since 0.1.0
      *
      * @param <T>
      *                       戻り値の型
@@ -259,6 +273,8 @@ public final class ReflectionTestUtil {
      * <p>
      * インスタンス化しない。
      * </p>
+     *
+     * @since 0.1.0
      */
     private ReflectionTestUtil() {
 

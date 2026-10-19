@@ -33,6 +33,8 @@ public class CarryoverAggregateLogicImpl implements CarryoverAggregateLogic {
     /**
      * 解析結果を集計する<br>
      *
+     * @since 0.1.0
+     *
      * @param issues
      *               持ち越しの解析結果
      *

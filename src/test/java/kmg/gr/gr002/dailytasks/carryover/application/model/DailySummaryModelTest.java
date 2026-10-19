@@ -24,6 +24,8 @@ public class DailySummaryModelTest {
     /**
      * テスト用の持ち越し項目を作成する<br>
      *
+     * @since 0.1.0
+     *
      * @param name
      *                   項目名
      * @param originDate
@@ -42,6 +44,8 @@ public class DailySummaryModelTest {
     /**
      * テスト用の日別の集計（国語 2 件、音楽 1 件）を作成する<br>
      *
+     * @since 0.1.0
+     *
      * @return 日別の集計
      */
     private static DailySummaryModel createSummary() {
@@ -56,6 +60,8 @@ public class DailySummaryModelTest {
 
     /**
      * add メソッドのテスト - 正常系:持ち越し元の日付がある場合は月ごとに集計される
+     *
+     * @since 0.1.0
      */
     @Test
     public void testAdd_normalWithOriginDate() {
@@ -79,6 +85,8 @@ public class DailySummaryModelTest {
 
     /**
      * add メソッドのテスト - 準正常系:持ち越し元の日付がない場合は月ごとに集計されない
+     *
+     * @since 0.1.0
      */
     @Test
     public void testAdd_semiWithoutOriginDate() {
@@ -101,6 +109,8 @@ public class DailySummaryModelTest {
 
     /**
      * getByItem メソッドのテスト - 正常系:項目ごとの件数を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetByItem_normalCount() {
@@ -124,6 +134,8 @@ public class DailySummaryModelTest {
 
     /**
      * getByOriginMonth メソッドのテスト - 正常系:持ち越し元の月を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetByOriginMonth_normalKeys() {
@@ -147,6 +159,8 @@ public class DailySummaryModelTest {
 
     /**
      * getDate メソッドのテスト - 正常系:日付を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDate_normalValue() {
@@ -170,6 +184,8 @@ public class DailySummaryModelTest {
 
     /**
      * getDeclaredCount メソッドのテスト - 正常系:残数を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDeclaredCount_normalValue() {
@@ -193,6 +209,8 @@ public class DailySummaryModelTest {
 
     /**
      * getIssue メソッドのテスト - 正常系:Issue 番号を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetIssue_normalValue() {
@@ -216,6 +234,8 @@ public class DailySummaryModelTest {
 
     /**
      * getTotal メソッドのテスト - 正常系:全体の件数を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetTotal_normalCount() {

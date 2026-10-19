@@ -21,6 +21,8 @@ public interface CarryoverParseLogic {
     /**
      * Issue を解析する<br>
      *
+     * @since 0.1.0
+     *
      * @param issue
      *                       日々のタスク Issue
      * @param defaultMinutes

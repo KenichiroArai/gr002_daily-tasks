@@ -41,18 +41,32 @@ import tools.jackson.databind.json.JsonMapper;
 })
 public class GitHubIssueApiImplTest {
 
-    /** テスト用の API のベース URL */
+    /**
+     * テスト用の API のベース URL
+     *
+     * @since 0.1.0
+     */
     private static final String API_BASE_URL = "https://api.example.com";
 
-    /** 1 ページ目の URL */
+    /**
+     * 1 ページ目の URL
+     *
+     * @since 0.1.0
+     */
     private static final String PAGE1_URI
         = "https://api.example.com/repos/owner/repo/issues?state=all&sort=created&direction=asc&per_page=100&page=1";
 
-    /** テスト用のリポジトリ */
+    /**
+     * テスト用のリポジトリ
+     *
+     * @since 0.1.0
+     */
     private static final String REPOSITORY = "owner/repo";
 
     /**
      * 接続設定を作成する<br>
+     *
+     * @since 0.1.0
      *
      * @param token
      *              トークン
@@ -68,6 +82,8 @@ public class GitHubIssueApiImplTest {
 
     /**
      * スタブの HTTP クライアントを使うテスト対象を作成する<br>
+     *
+     * @since 0.1.0
      *
      * @param httpClient
      *                   HTTP クライアント
@@ -88,6 +104,8 @@ public class GitHubIssueApiImplTest {
 
     /**
      * private の fetchPage メソッドを呼び出す<br>
+     *
+     * @since 0.1.0
      *
      * @param target
      *                   テスト対象
@@ -116,6 +134,8 @@ public class GitHubIssueApiImplTest {
     /**
      * private の hasToken メソッドを呼び出す<br>
      *
+     * @since 0.1.0
+     *
      * @param settings
      *                 接続設定
      *
@@ -137,6 +157,8 @@ public class GitHubIssueApiImplTest {
     /**
      * Issue の JSON を作成する<br>
      *
+     * @since 0.1.0
+     *
      * @param number
      *               Issue 番号
      *
@@ -153,6 +175,8 @@ public class GitHubIssueApiImplTest {
 
     /**
      * private の readTree メソッドを呼び出す<br>
+     *
+     * @since 0.1.0
      *
      * @param target
      *               テスト対象
@@ -175,6 +199,8 @@ public class GitHubIssueApiImplTest {
 
     /**
      * private の send メソッドを呼び出す<br>
+     *
+     * @since 0.1.0
      *
      * @param target
      *                   テスト対象
@@ -201,6 +227,8 @@ public class GitHubIssueApiImplTest {
     /**
      * private の textOrEmpty メソッドを呼び出す<br>
      *
+     * @since 0.1.0
+     *
      * @param node
      *                  API の応答
      * @param fieldName
@@ -223,6 +251,8 @@ public class GitHubIssueApiImplTest {
     /**
      * private の toIssue メソッドを呼び出す<br>
      *
+     * @since 0.1.0
+     *
      * @param node
      *             API の応答の Issue
      *
@@ -243,6 +273,8 @@ public class GitHubIssueApiImplTest {
 
     /**
      * fetchAllIssues メソッドのテスト - 正常系:複数ページを取得する場合
+     *
+     * @since 0.1.0
      *
      * @throws IOException
      *                     入出力エラーが発生した場合
@@ -282,6 +314,8 @@ public class GitHubIssueApiImplTest {
     /**
      * fetchAllIssues メソッドのテスト - 正常系:1 ページでプルリクエストを除外する場合
      *
+     * @since 0.1.0
+     *
      * @throws IOException
      *                     入出力エラーが発生した場合
      */
@@ -320,6 +354,8 @@ public class GitHubIssueApiImplTest {
 
     /**
      * fetchPage メソッドのテスト - 異常系:応答が配列ではない場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testFetchPage_errorNotArray() {
@@ -350,6 +386,8 @@ public class GitHubIssueApiImplTest {
 
     /**
      * fetchPage メソッドのテスト - 異常系:ステータスコードが 200 以外の場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testFetchPage_errorStatus() {
@@ -380,6 +418,8 @@ public class GitHubIssueApiImplTest {
 
     /**
      * fetchPage メソッドのテスト - 正常系:トークンを指定しない場合は認証ヘッダを付けない
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   例外が発生した場合
@@ -413,6 +453,8 @@ public class GitHubIssueApiImplTest {
 
     /**
      * fetchPage メソッドのテスト - 正常系:トークンを指定した場合は認証ヘッダを付ける
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   例外が発生した場合
@@ -450,6 +492,8 @@ public class GitHubIssueApiImplTest {
     /**
      * GitHubIssueApiImpl のテスト - 正常系:API のベース URL を指定しない場合は GitHub API のベース URL を使う
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -480,6 +524,8 @@ public class GitHubIssueApiImplTest {
     /**
      * hasToken メソッドのテスト - 正常系:トークンを指定した場合
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -504,6 +550,8 @@ public class GitHubIssueApiImplTest {
 
     /**
      * hasToken メソッドのテスト - 準正常系:トークンが空白の場合
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   例外が発生した場合
@@ -530,6 +578,8 @@ public class GitHubIssueApiImplTest {
     /**
      * hasToken メソッドのテスト - 準正常系:トークンが null の場合
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -554,6 +604,8 @@ public class GitHubIssueApiImplTest {
 
     /**
      * readTree メソッドのテスト - 異常系:JSON として読み込めない場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testReadTree_errorInvalidJson() {
@@ -577,6 +629,8 @@ public class GitHubIssueApiImplTest {
 
     /**
      * readTree メソッドのテスト - 正常系:JSON を読み込む場合
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   例外が発生した場合
@@ -603,6 +657,8 @@ public class GitHubIssueApiImplTest {
 
     /**
      * send メソッドのテスト - 異常系:通信が中断された場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testSend_errorInterrupted() {
@@ -639,6 +695,8 @@ public class GitHubIssueApiImplTest {
     /**
      * send メソッドのテスト - 正常系:応答を返す場合
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -673,6 +731,8 @@ public class GitHubIssueApiImplTest {
     /**
      * textOrEmpty メソッドのテスト - 正常系:値がある場合
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -698,6 +758,8 @@ public class GitHubIssueApiImplTest {
 
     /**
      * textOrEmpty メソッドのテスト - 準正常系:項目がない場合
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   例外が発生した場合
@@ -725,6 +787,8 @@ public class GitHubIssueApiImplTest {
     /**
      * textOrEmpty メソッドのテスト - 準正常系:値が null の場合
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -750,6 +814,8 @@ public class GitHubIssueApiImplTest {
 
     /**
      * toIssue メソッドのテスト - 正常系:API の応答を Issue に変換する場合
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   例外が発生した場合

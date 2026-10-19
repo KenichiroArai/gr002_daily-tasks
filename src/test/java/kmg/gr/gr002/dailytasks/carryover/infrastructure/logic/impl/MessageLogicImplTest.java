@@ -25,6 +25,8 @@ public class MessageLogicImplTest {
 
     /**
      * get メソッドのテスト - 正常系:書式の埋め込み位置をそのまま返す
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGet_normalPlaceholder() {
@@ -48,6 +50,8 @@ public class MessageLogicImplTest {
 
     /**
      * get メソッドのテスト - 準正常系:キーが見つからない場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGet_semiUnknownKey() {

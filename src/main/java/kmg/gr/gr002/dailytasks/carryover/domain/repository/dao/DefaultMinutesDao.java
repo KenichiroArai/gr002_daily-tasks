@@ -21,6 +21,8 @@ public interface DefaultMinutesDao {
     /**
      * 項目ごとの標準時間を読み込む<br>
      *
+     * @since 0.1.0
+     *
      * @param configFile
      *                   設定ファイルのパス（例: config/default-minutes.json）
      *

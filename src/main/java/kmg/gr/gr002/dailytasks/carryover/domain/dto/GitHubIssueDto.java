@@ -14,23 +14,45 @@ package kmg.gr.gr002.dailytasks.carryover.domain.dto;
  */
 public class GitHubIssueDto {
 
-    /** Issue 本文 */
+    /**
+     * Issue 本文
+     *
+     * @since 0.1.0
+     */
     private final String body;
 
-    /** Issue 番号 */
+    /**
+     * Issue 番号
+     *
+     * @since 0.1.0
+     */
     private final int number;
 
-    /** Issue の状態（open / closed） */
+    /**
+     * Issue の状態（open / closed）
+     *
+     * @since 0.1.0
+     */
     private final String state;
 
-    /** Issue タイトル */
+    /**
+     * Issue タイトル
+     *
+     * @since 0.1.0
+     */
     private final String title;
 
-    /** Issue の更新日時（ISO-8601） */
+    /**
+     * Issue の更新日時（ISO-8601）
+     *
+     * @since 0.1.0
+     */
     private final String updatedAt;
 
     /**
      * コンストラクタ<br>
+     *
+     * @since 0.1.0
      *
      * @param number
      *                  Issue 番号
@@ -57,6 +79,8 @@ public class GitHubIssueDto {
     /**
      * Issue 本文を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return Issue 本文
      */
     public String getBody() {
@@ -68,6 +92,8 @@ public class GitHubIssueDto {
 
     /**
      * Issue 番号を返す<br>
+     *
+     * @since 0.1.0
      *
      * @return Issue 番号
      */
@@ -81,6 +107,8 @@ public class GitHubIssueDto {
     /**
      * Issue の状態を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return Issue の状態（open / closed）
      */
     public String getState() {
@@ -93,6 +121,8 @@ public class GitHubIssueDto {
     /**
      * Issue タイトルを返す<br>
      *
+     * @since 0.1.0
+     *
      * @return Issue タイトル
      */
     public String getTitle() {
@@ -104,6 +134,8 @@ public class GitHubIssueDto {
 
     /**
      * Issue の更新日時を返す<br>
+     *
+     * @since 0.1.0
      *
      * @return Issue の更新日時（ISO-8601）
      */

@@ -20,6 +20,8 @@ public class DailyTaskIssueModelTest {
     /**
      * テスト用の Issue を作成する<br>
      *
+     * @since 0.1.0
+     *
      * @return Issue
      */
     private static DailyTaskIssueModel createIssue() {
@@ -32,6 +34,8 @@ public class DailyTaskIssueModelTest {
 
     /**
      * getBody メソッドのテスト - 正常系:本文を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetBody_normalValue() {
@@ -55,6 +59,8 @@ public class DailyTaskIssueModelTest {
 
     /**
      * getNumber メソッドのテスト - 正常系:Issue 番号を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetNumber_normalValue() {
@@ -78,6 +84,8 @@ public class DailyTaskIssueModelTest {
 
     /**
      * getState メソッドのテスト - 正常系:状態を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetState_normalValue() {
@@ -101,6 +109,8 @@ public class DailyTaskIssueModelTest {
 
     /**
      * getTitle メソッドのテスト - 正常系:タイトルを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetTitle_normalValue() {
@@ -124,6 +134,8 @@ public class DailyTaskIssueModelTest {
 
     /**
      * getUpdatedAt メソッドのテスト - 正常系:更新日時を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetUpdatedAt_normalValue() {

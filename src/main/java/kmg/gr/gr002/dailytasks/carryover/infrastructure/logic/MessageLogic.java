@@ -19,6 +19,8 @@ public interface MessageLogic {
     /**
      * メッセージを取得する<br>
      *
+     * @since 0.1.0
+     *
      * @param type
      *             メッセージの種類
      *

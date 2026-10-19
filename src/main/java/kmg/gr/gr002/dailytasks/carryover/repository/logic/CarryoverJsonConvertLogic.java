@@ -36,6 +36,8 @@ public class CarryoverJsonConvertLogic {
     /**
      * 持ち越し項目を DTO に変換する<br>
      *
+     * @since 0.1.0
+     *
      * @param json
      *             JSON の形の持ち越し項目
      *
@@ -52,6 +54,8 @@ public class CarryoverJsonConvertLogic {
     /**
      * 持ち越し項目を JSON の形に変換する<br>
      *
+     * @since 0.1.0
+     *
      * @param dto
      *            持ち越し項目の DTO
      *
@@ -67,6 +71,8 @@ public class CarryoverJsonConvertLogic {
 
     /**
      * 日別の集計を JSON の形に変換する<br>
+     *
+     * @since 0.1.0
      *
      * @param dto
      *            日別の集計の DTO
@@ -86,6 +92,8 @@ public class CarryoverJsonConvertLogic {
     /**
      * 集計値を JSON の形に変換する<br>
      *
+     * @since 0.1.0
+     *
      * @param dto
      *            集計値の DTO
      *
@@ -101,6 +109,8 @@ public class CarryoverJsonConvertLogic {
 
     /**
      * キーごとの集計値を JSON の形に変換する<br>
+     *
+     * @since 0.1.0
      *
      * @param dtos
      *             キーごとの集計値の DTO
@@ -124,6 +134,8 @@ public class CarryoverJsonConvertLogic {
     /**
      * Issue ごとの解析結果を DTO に変換する<br>
      *
+     * @since 0.1.0
+     *
      * @param json
      *             JSON の形の解析結果
      *
@@ -143,6 +155,8 @@ public class CarryoverJsonConvertLogic {
     /**
      * Issue ごとの解析結果を JSON の形に変換する<br>
      *
+     * @since 0.1.0
+     *
      * @param dto
      *            解析結果の DTO
      *
@@ -161,6 +175,8 @@ public class CarryoverJsonConvertLogic {
 
     /**
      * 画面用の集計を JSON の形に変換する<br>
+     *
+     * @since 0.1.0
      *
      * @param dto
      *            画面用の集計の DTO

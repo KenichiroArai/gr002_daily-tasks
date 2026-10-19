@@ -22,6 +22,8 @@ public class CarryoverPropertiesModelTest {
     /**
      * テスト対象を作成する<br>
      *
+     * @since 0.1.0
+     *
      * @return テスト対象
      */
     private static CarryoverPropertiesModel createTarget() {
@@ -34,6 +36,8 @@ public class CarryoverPropertiesModelTest {
 
     /**
      * getDataDir メソッドのテスト - 正常系:コンストラクタで設定した値をパスで返す
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDataDir_normalValue() {
@@ -57,6 +61,8 @@ public class CarryoverPropertiesModelTest {
 
     /**
      * getDefaultMinutesFile メソッドのテスト - 正常系:コンストラクタで設定した値をパスで返す
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDefaultMinutesFile_normalValue() {
@@ -80,6 +86,8 @@ public class CarryoverPropertiesModelTest {
 
     /**
      * getRecentCount メソッドのテスト - 正常系:コンストラクタで設定した値を返す
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetRecentCount_normalValue() {
@@ -103,6 +111,8 @@ public class CarryoverPropertiesModelTest {
 
     /**
      * getRepository メソッドのテスト - 正常系:コンストラクタで設定した値を返す
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetRepository_normalValue() {
@@ -126,6 +136,8 @@ public class CarryoverPropertiesModelTest {
 
     /**
      * getToken メソッドのテスト - 正常系:コンストラクタで設定した値を返す
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetToken_normalValue() {
@@ -149,6 +161,8 @@ public class CarryoverPropertiesModelTest {
 
     /**
      * toString メソッドのテスト - 正常系:トークンを含まない
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToString_normalNoToken() {
@@ -171,6 +185,8 @@ public class CarryoverPropertiesModelTest {
 
     /**
      * toString メソッドのテスト - 正常系:トークン以外の値を含む
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToString_normalValue() {

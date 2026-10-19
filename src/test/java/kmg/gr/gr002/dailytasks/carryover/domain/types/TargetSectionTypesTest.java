@@ -19,6 +19,8 @@ public class TargetSectionTypesTest {
 
     /**
      * get メソッドのテスト - 正常系:持ち越しのセクション名を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGet_normalCarryover() {
@@ -42,6 +44,8 @@ public class TargetSectionTypesTest {
 
     /**
      * getDefault メソッドのテスト - 正常系:指定無しを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDefault_normalNone() {
@@ -62,6 +66,8 @@ public class TargetSectionTypesTest {
 
     /**
      * getDetail メソッドのテスト - 正常系:負債の詳細
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDetail_normalDebt() {
@@ -85,6 +91,8 @@ public class TargetSectionTypesTest {
 
     /**
      * getDisplayName メソッドのテスト - 正常系:繰り越しの表示名
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDisplayName_normalLegacy() {
@@ -108,6 +116,8 @@ public class TargetSectionTypesTest {
 
     /**
      * getEnum メソッドのテスト - 正常系:セクション名から種類を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetEnum_normalDebt() {
@@ -131,6 +141,8 @@ public class TargetSectionTypesTest {
 
     /**
      * getEnum メソッドのテスト - 準正常系:対象外のセクション名の場合は指定無しを返す
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetEnum_semiUnknownKey() {
@@ -154,6 +166,8 @@ public class TargetSectionTypesTest {
 
     /**
      * getInitValue メソッドのテスト - 正常系:指定無しを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetInitValue_normalNone() {
@@ -174,6 +188,8 @@ public class TargetSectionTypesTest {
 
     /**
      * getKey メソッドのテスト - 正常系:繰り越しのセクション名
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetKey_normalLegacy() {
@@ -197,6 +213,8 @@ public class TargetSectionTypesTest {
 
     /**
      * toString メソッドのテスト - 正常系:持ち越しのセクション名
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToString_normalCarryover() {

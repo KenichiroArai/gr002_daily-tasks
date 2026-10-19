@@ -19,6 +19,8 @@ public class CarryoverOptionsModelTest {
 
     /**
      * CarryoverOptionsModel コンストラクタのテスト - 正常系:全件モードの既定値は false
+     *
+     * @since 0.1.0
      */
     @Test
     public void testCarryoverOptions_normalDefaultFull() {
@@ -40,6 +42,8 @@ public class CarryoverOptionsModelTest {
 
     /**
      * CarryoverOptionsModel コンストラクタのテスト - 正常系:使い方の表示の既定値は false
+     *
+     * @since 0.1.0
      */
     @Test
     public void testCarryoverOptions_normalDefaultHelp() {
@@ -61,6 +65,8 @@ public class CarryoverOptionsModelTest {
 
     /**
      * setFull メソッドのテスト - 正常系:false を設定した場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testSetFull_normalFalse() {
@@ -84,6 +90,8 @@ public class CarryoverOptionsModelTest {
 
     /**
      * setFull メソッドのテスト - 正常系:true を設定した場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testSetFull_normalTrue() {
@@ -106,6 +114,8 @@ public class CarryoverOptionsModelTest {
 
     /**
      * setHelp メソッドのテスト - 正常系:false を設定した場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testSetHelp_normalFalse() {
@@ -129,6 +139,8 @@ public class CarryoverOptionsModelTest {
 
     /**
      * setHelp メソッドのテスト - 正常系:true を設定した場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testSetHelp_normalTrue() {

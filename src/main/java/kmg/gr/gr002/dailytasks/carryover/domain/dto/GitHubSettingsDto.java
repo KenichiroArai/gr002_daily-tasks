@@ -16,14 +16,24 @@ import kmg.gr.gr002.dailytasks.carryover.domain.types.GitHubSettingsFormatTypes;
  */
 public class GitHubSettingsDto {
 
-    /** 対象リポジトリ（owner/name） */
+    /**
+     * 対象リポジトリ（owner/name）
+     *
+     * @since 0.1.0
+     */
     private final String repository;
 
-    /** API トークン。未指定の場合は null */
+    /**
+     * API トークン。未指定の場合は null
+     *
+     * @since 0.1.0
+     */
     private final String token;
 
     /**
      * コンストラクタ<br>
+     *
+     * @since 0.1.0
      *
      * @param repository
      *                   対象リポジトリ（owner/name）
@@ -40,6 +50,8 @@ public class GitHubSettingsDto {
     /**
      * 対象リポジトリを返す<br>
      *
+     * @since 0.1.0
+     *
      * @return 対象リポジトリ（owner/name）
      */
     public String getRepository() {
@@ -51,6 +63,8 @@ public class GitHubSettingsDto {
 
     /**
      * API トークンを返す<br>
+     *
+     * @since 0.1.0
      *
      * @return API トークン。未指定の場合は null
      */
@@ -66,6 +80,8 @@ public class GitHubSettingsDto {
      * <p>
      * トークンは含めない。
      * </p>
+     *
+     * @since 0.1.0
      *
      * @return 文字列表現
      */

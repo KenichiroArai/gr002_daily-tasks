@@ -25,6 +25,8 @@ public final class MessageLogicTestUtil {
     /**
      * messages.properties を読むメッセージの取得を作る<br>
      *
+     * @since 0.1.0
+     *
      * @return メッセージの取得
      */
     public static MessageLogic create() {
@@ -46,6 +48,8 @@ public final class MessageLogicTestUtil {
      * <p>
      * インスタンス化しない。
      * </p>
+     *
+     * @since 0.1.0
      */
     private MessageLogicTestUtil() {
 

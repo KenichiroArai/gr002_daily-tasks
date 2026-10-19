@@ -19,22 +19,42 @@ public enum TargetSectionTypes implements KmgCmnTypes<String> {
 
     /* 定義：開始 */
 
-    /** 指定無し */
+    /**
+     * 指定無し
+     *
+     * @since 0.1.0
+     */
     NONE("指定無し", "None", "指定無し", null),
 
-    /** 持ち越し */
+    /**
+     * 持ち越し
+     *
+     * @since 0.1.0
+     */
     CARRYOVER("持ち越し", "Carryover", "対象セクション", "持ち越し"),
 
-    /** 繰り越し */
+    /**
+     * 繰り越し
+     *
+     * @since 0.1.0
+     */
     CARRYOVER_LEGACY("繰り越し", "CarryoverLegacy", "旧名称の対象セクション", "繰り越し"),
 
-    /** 負債 */
+    /**
+     * 負債
+     *
+     * @since 0.1.0
+     */
     DEBT("負債", "Debt", "旧名称の対象セクション", "負債"),
 
     /* 定義：終了 */
     ;
 
-    /** 種類のマップ */
+    /**
+     * 種類のマップ
+     *
+     * @since 0.1.0
+     */
     private static final Map<String, TargetSectionTypes> VALUES_MAP = new HashMap<>();
 
     static {
@@ -57,6 +77,8 @@ public enum TargetSectionTypes implements KmgCmnTypes<String> {
     /**
      * デフォルトの種類を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return デフォルト値
      */
     public static TargetSectionTypes getDefault() {
@@ -71,6 +93,8 @@ public enum TargetSectionTypes implements KmgCmnTypes<String> {
      * <p>
      * 但し、キーが存在しない場合は、指定無し（NONE）を返す。
      * </p>
+     *
+     * @since 0.1.0
      *
      * @param key
      *            キー
@@ -93,6 +117,8 @@ public enum TargetSectionTypes implements KmgCmnTypes<String> {
     /**
      * 初期値の種類を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return 初期値
      */
     public static TargetSectionTypes getInitValue() {
@@ -102,20 +128,38 @@ public enum TargetSectionTypes implements KmgCmnTypes<String> {
 
     }
 
-    /** 詳細情報 */
+    /**
+     * 詳細情報
+     *
+     * @since 0.1.0
+     */
     private final String detail;
 
-    /** 表示名 */
+    /**
+     * 表示名
+     *
+     * @since 0.1.0
+     */
     private final String displayName;
 
-    /** キー */
+    /**
+     * キー
+     *
+     * @since 0.1.0
+     */
     private final String key;
 
-    /** セクション名 */
+    /**
+     * セクション名
+     *
+     * @since 0.1.0
+     */
     private final String section;
 
     /**
      * コンストラクタ<br>
+     *
+     * @since 0.1.0
      *
      * @param displayName
      *                    表示名
@@ -138,6 +182,8 @@ public enum TargetSectionTypes implements KmgCmnTypes<String> {
     /**
      * キーを返す。<br>
      *
+     * @since 0.1.0
+     *
      * @return キー
      *
      * @see #getKey()
@@ -152,6 +198,8 @@ public enum TargetSectionTypes implements KmgCmnTypes<String> {
 
     /**
      * 詳細情報を返す。<br>
+     *
+     * @since 0.1.0
      *
      * @return 詳細情報
      */
@@ -169,6 +217,8 @@ public enum TargetSectionTypes implements KmgCmnTypes<String> {
      * 識別するための表示名を返す。
      * </p>
      *
+     * @since 0.1.0
+     *
      * @return 表示名
      */
     @Override
@@ -182,6 +232,8 @@ public enum TargetSectionTypes implements KmgCmnTypes<String> {
     /**
      * セクション名を返す。<br>
      *
+     * @since 0.1.0
+     *
      * @return セクション名
      */
     public String getSection() {
@@ -193,6 +245,8 @@ public enum TargetSectionTypes implements KmgCmnTypes<String> {
 
     /**
      * キーを返す。<br>
+     *
+     * @since 0.1.0
      *
      * @return キー
      */
@@ -206,6 +260,8 @@ public enum TargetSectionTypes implements KmgCmnTypes<String> {
 
     /**
      * キーを返す。<br>
+     *
+     * @since 0.1.0
      *
      * @return キー
      *

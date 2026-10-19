@@ -14,10 +14,18 @@ package kmg.gr.gr002.dailytasks.carryover.presentation.model;
  */
 public class CarryoverOptionsModel {
 
-    /** 全件モードか */
+    /**
+     * 全件モードか
+     *
+     * @since 0.1.0
+     */
     private boolean full;
 
-    /** 使い方を表示するか */
+    /**
+     * 使い方を表示するか
+     *
+     * @since 0.1.0
+     */
     private boolean help;
 
     /**
@@ -25,6 +33,8 @@ public class CarryoverOptionsModel {
      * <p>
      * 全件モード・使い方の表示はいずれも false で作成する。
      * </p>
+     *
+     * @since 0.1.0
      */
     public CarryoverOptionsModel() {
 
@@ -35,6 +45,8 @@ public class CarryoverOptionsModel {
 
     /**
      * 全件モードかを返す<br>
+     *
+     * @since 0.1.0
      *
      * @return true：全件モード、false：差分モード
      */
@@ -48,6 +60,8 @@ public class CarryoverOptionsModel {
     /**
      * 使い方を表示するかを返す<br>
      *
+     * @since 0.1.0
+     *
      * @return true：使い方を表示する、false：表示しない
      */
     public boolean isHelp() {
@@ -60,6 +74,8 @@ public class CarryoverOptionsModel {
     /**
      * 全件モードかを設定する<br>
      *
+     * @since 0.1.0
+     *
      * @param full
      *             true：全件モード、false：差分モード
      */
@@ -71,6 +87,8 @@ public class CarryoverOptionsModel {
 
     /**
      * 使い方を表示するかを設定する<br>
+     *
+     * @since 0.1.0
      *
      * @param help
      *             true：使い方を表示する、false：表示しない

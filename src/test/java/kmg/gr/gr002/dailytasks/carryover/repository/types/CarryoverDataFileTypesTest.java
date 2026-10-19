@@ -19,6 +19,8 @@ public class CarryoverDataFileTypesTest {
 
     /**
      * get メソッドのテスト - 正常系:集計ファイル名を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGet_normalSummaryFile() {
@@ -42,6 +44,8 @@ public class CarryoverDataFileTypesTest {
 
     /**
      * getDefault メソッドのテスト - 正常系:指定無しを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDefault_normalNone() {
@@ -62,6 +66,8 @@ public class CarryoverDataFileTypesTest {
 
     /**
      * getDetail メソッドのテスト - 正常系:拡張子の詳細
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDetail_normalJsonExtension() {
@@ -85,6 +91,8 @@ public class CarryoverDataFileTypesTest {
 
     /**
      * getDisplayName メソッドのテスト - 正常系:ディレクトリ名の表示名
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDisplayName_normalIssuesDir() {
@@ -108,6 +116,8 @@ public class CarryoverDataFileTypesTest {
 
     /**
      * getEnum メソッドのテスト - 正常系:ファイル名から種類を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetEnum_normalIssuesDir() {
@@ -131,6 +141,8 @@ public class CarryoverDataFileTypesTest {
 
     /**
      * getEnum メソッドのテスト - 準正常系:不明な名前の場合は指定無しを返す
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetEnum_semiUnknownKey() {
@@ -154,6 +166,8 @@ public class CarryoverDataFileTypesTest {
 
     /**
      * getInitValue メソッドのテスト - 正常系:指定無しを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetInitValue_normalNone() {
@@ -174,6 +188,8 @@ public class CarryoverDataFileTypesTest {
 
     /**
      * getKey メソッドのテスト - 正常系:拡張子
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetKey_normalJsonExtension() {
@@ -197,6 +213,8 @@ public class CarryoverDataFileTypesTest {
 
     /**
      * toString メソッドのテスト - 正常系:集計ファイル名
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToString_normalSummaryFile() {

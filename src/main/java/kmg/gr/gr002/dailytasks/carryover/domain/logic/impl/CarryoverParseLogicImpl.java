@@ -37,46 +37,92 @@ import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTyp
 @Component
 public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
-    /** チェックボックスの行（- [ ] 内容 / - [x] 内容） */
+    /**
+     * チェックボックスの行（- [ ] 内容 / - [x] 内容）
+     *
+     * @since 0.1.0
+     */
     private static final Pattern CHECKBOX = Pattern.compile(CarryoverParsePatternTypes.CHECKBOX.getPattern());
 
-    /** 持ち越し元の日付を含む内容（項目名YYYY/MM/DD残り） */
+    /**
+     * 持ち越し元の日付を含む内容（項目名YYYY/MM/DD残り）
+     *
+     * @since 0.1.0
+     */
     private static final Pattern DATED_CONTENT = Pattern.compile(CarryoverParsePatternTypes.DATED_CONTENT.getPattern());
 
-    /** 残数（残：N） */
+    /**
+     * 残数（残：N）
+     *
+     * @since 0.1.0
+     */
     private static final Pattern DECLARED_COUNT
         = Pattern.compile(CarryoverParsePatternTypes.DECLARED_COUNT.getPattern());
 
-    /** 見出し（## 見出し） */
+    /**
+     * 見出し（## 見出し）
+     *
+     * @since 0.1.0
+     */
     private static final Pattern HEADING = Pattern.compile(CarryoverParsePatternTypes.HEADING.getPattern());
 
-    /** ロガー */
+    /**
+     * ロガー
+     *
+     * @since 0.1.0
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(CarryoverParseLogicImpl.class);
 
-    /** 括弧内の時間表記 */
+    /**
+     * 括弧内の時間表記
+     *
+     * @since 0.1.0
+     */
     private static final Pattern PARENTHESES = Pattern.compile(CarryoverParsePatternTypes.PARENTHESES.getPattern());
 
-    /** 残り時間の表記（残り時間：N分 / 残りN分 / 先行分残りN分） */
+    /**
+     * 残り時間の表記（残り時間：N分 / 残りN分 / 先行分残りN分）
+     *
+     * @since 0.1.0
+     */
     private static final Pattern REMAINING_MINUTES
         = Pattern.compile(CarryoverParsePatternTypes.REMAINING_MINUTES.getPattern());
 
-    /** 時間だけの表記（N分） */
+    /**
+     * 時間だけの表記（N分）
+     *
+     * @since 0.1.0
+     */
     private static final Pattern SIMPLE_MINUTES
         = Pattern.compile(CarryoverParsePatternTypes.SIMPLE_MINUTES.getPattern());
 
-    /** タイトルの日付（YYYY年MM月DD日） */
+    /**
+     * タイトルの日付（YYYY年MM月DD日）
+     *
+     * @since 0.1.0
+     */
     private static final Pattern TITLE_DATE = Pattern.compile(CarryoverParsePatternTypes.TITLE_DATE.getPattern());
 
-    /** 項目名の末尾の開き括弧 */
+    /**
+     * 項目名の末尾の開き括弧
+     *
+     * @since 0.1.0
+     */
     private static final Pattern TRAILING_OPEN_PARENTHESES
         = Pattern.compile(CarryoverParsePatternTypes.TRAILING_OPEN_PARENTHESES.getPattern());
 
-    /** 項目名の末尾の括弧書き */
+    /**
+     * 項目名の末尾の括弧書き
+     *
+     * @since 0.1.0
+     */
     private static final Pattern TRAILING_PARENTHESES
         = Pattern.compile(CarryoverParsePatternTypes.TRAILING_PARENTHESES.getPattern());
 
     /**
      * 対象セクションの場合にセクション名を追加する<br>
+     *
+     * @since 0.1.0
      *
      * @param sections
      *                 対象セクション名の一覧
@@ -104,6 +150,8 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
     /**
      * 年・月・日を yyyy-MM-dd 形式にする<br>
      *
+     * @since 0.1.0
+     *
      * @param year
      *              年
      * @param month
@@ -126,6 +174,8 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
      * <p>
      * 末尾の括弧書き（例: 「（15分）」）や閉じられていない開き括弧を取り除く。
      * </p>
+     *
+     * @since 0.1.0
      *
      * @param name
      *             項目名
@@ -163,6 +213,8 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
      * <p>
      * 括弧内の「残り時間：N分」「残りN分」「先行分残りN分」「N分」を解釈する。
      * </p>
+     *
+     * @since 0.1.0
      *
      * @param text
      *             持ち越し元の日付より後ろの部分
@@ -211,6 +263,8 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
     /**
      * タイトルから日付を取得する<br>
      *
+     * @since 0.1.0
+     *
      * @param title
      *              Issue タイトル
      *
@@ -242,6 +296,8 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
     /**
      * 本文を行に分割する<br>
      *
+     * @since 0.1.0
+     *
      * @param body
      *             Issue 本文。null の場合は空とみなす
      *
@@ -262,12 +318,18 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
     }
 
-    /** メッセージの取得 */
+    /**
+     * メッセージの取得
+     *
+     * @since 0.1.0
+     */
     @Autowired
     private MessageLogic messageLogic;
 
     /**
      * Issue を解析する<br>
+     *
+     * @since 0.1.0
      *
      * @param issue
      *                       日々のタスク Issue
@@ -353,6 +415,8 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
     /**
      * 持ち越し項目の内容を解析する<br>
+     *
+     * @since 0.1.0
      *
      * @param number
      *                       Issue 番号
@@ -442,6 +506,8 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
     /**
      * 本文の残数と解析件数の食い違いを警告する<br>
      *
+     * @since 0.1.0
+     *
      * @param number
      *                      Issue 番号
      * @param declaredCount
@@ -473,6 +539,8 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
      * <p>
      * 空行と区切り線（---）は警告しない。
      * </p>
+     *
+     * @since 0.1.0
      *
      * @param number
      *               Issue 番号

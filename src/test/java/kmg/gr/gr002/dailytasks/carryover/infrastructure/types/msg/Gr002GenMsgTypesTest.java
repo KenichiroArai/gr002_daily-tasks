@@ -19,6 +19,8 @@ public class Gr002GenMsgTypesTest {
 
     /**
      * get メソッドのテスト - 正常系:不明な引数のキーを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGet_normalUnknownArgument() {
@@ -42,6 +44,8 @@ public class Gr002GenMsgTypesTest {
 
     /**
      * getCode メソッドのテスト - 正常系:指定無しのコードを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetCode_normalNone() {
@@ -65,6 +69,8 @@ public class Gr002GenMsgTypesTest {
 
     /**
      * getDefault メソッドのテスト - 正常系:指定無しを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDefault_normalNone() {
@@ -85,6 +91,8 @@ public class Gr002GenMsgTypesTest {
 
     /**
      * getDetail メソッドのテスト - 正常系:指定無しの詳細
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDetail_normalNone() {
@@ -108,6 +116,8 @@ public class Gr002GenMsgTypesTest {
 
     /**
      * getDisplayName メソッドのテスト - 正常系:中断の文面
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDisplayName_normalInterrupted() {
@@ -131,6 +141,8 @@ public class Gr002GenMsgTypesTest {
 
     /**
      * getEnum メソッドのテスト - 正常系:定数名から種類を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetEnum_normalUnknownArgument() {
@@ -154,6 +166,8 @@ public class Gr002GenMsgTypesTest {
 
     /**
      * getEnum メソッドのテスト - 準正常系:不明なキーの場合は指定無しを返す
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetEnum_semiUnknownKey() {
@@ -177,6 +191,8 @@ public class Gr002GenMsgTypesTest {
 
     /**
      * getInitValue メソッドのテスト - 正常系:指定無しを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetInitValue_normalNone() {
@@ -197,6 +213,8 @@ public class Gr002GenMsgTypesTest {
 
     /**
      * getKey メソッドのテスト - 正常系:使い方のキー
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetKey_normalUsage() {
@@ -220,6 +238,8 @@ public class Gr002GenMsgTypesTest {
 
     /**
      * getValue メソッドのテスト - 正常系:不明な取得元の文面
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetValue_normalUnknownMinutesSource() {
@@ -243,6 +263,8 @@ public class Gr002GenMsgTypesTest {
 
     /**
      * toString メソッドのテスト - 正常系:呼び出し失敗のキー
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToString_normalCallFailed() {

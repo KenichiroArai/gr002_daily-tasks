@@ -16,29 +16,59 @@ import kmg.gr.gr002.dailytasks.carryover.application.types.MinutesSourceTypes;
  */
 public class CarryoverItemModel {
 
-    /** チェック済みか */
+    /**
+     * チェック済みか
+     *
+     * @since 0.1.0
+     */
     private final boolean checked;
 
-    /** 残り時間（分） */
+    /**
+     * 残り時間（分）
+     *
+     * @since 0.1.0
+     */
     private final double minutes;
 
-    /** 残り時間の取得元 */
+    /**
+     * 残り時間の取得元
+     *
+     * @since 0.1.0
+     */
     private final MinutesSourceTypes minutesSource;
 
-    /** 項目名（正規化済み） */
+    /**
+     * 項目名（正規化済み）
+     *
+     * @since 0.1.0
+     */
     private final String name;
 
-    /** 持ち越し元の日付（yyyy-MM-dd）。日付がない行は null */
+    /**
+     * 持ち越し元の日付（yyyy-MM-dd）。日付がない行は null
+     *
+     * @since 0.1.0
+     */
     private final String originDate;
 
-    /** 元の行 */
+    /**
+     * 元の行
+     *
+     * @since 0.1.0
+     */
     private final String raw;
 
-    /** セクション名 */
+    /**
+     * セクション名
+     *
+     * @since 0.1.0
+     */
     private final String section;
 
     /**
      * コンストラクタ<br>
+     *
+     * @since 0.1.0
      *
      * @param name
      *                      項目名（正規化済み）
@@ -71,6 +101,8 @@ public class CarryoverItemModel {
     /**
      * 残り時間（分）を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return 残り時間（分）
      */
     public double getMinutes() {
@@ -82,6 +114,8 @@ public class CarryoverItemModel {
 
     /**
      * 残り時間の取得元を返す<br>
+     *
+     * @since 0.1.0
      *
      * @return 残り時間の取得元
      */
@@ -95,6 +129,8 @@ public class CarryoverItemModel {
     /**
      * 項目名（正規化済み）を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return 項目名
      */
     public String getName() {
@@ -106,6 +142,8 @@ public class CarryoverItemModel {
 
     /**
      * 持ち越し元の日付を返す<br>
+     *
+     * @since 0.1.0
      *
      * @return 持ち越し元の日付（yyyy-MM-dd）。日付がない行は null
      */
@@ -119,6 +157,8 @@ public class CarryoverItemModel {
     /**
      * 元の行を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return 元の行
      */
     public String getRaw() {
@@ -131,6 +171,8 @@ public class CarryoverItemModel {
     /**
      * セクション名を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return セクション名
      */
     public String getSection() {
@@ -142,6 +184,8 @@ public class CarryoverItemModel {
 
     /**
      * チェック済みかを返す<br>
+     *
+     * @since 0.1.0
      *
      * @return true：チェック済み、false：未チェック
      */

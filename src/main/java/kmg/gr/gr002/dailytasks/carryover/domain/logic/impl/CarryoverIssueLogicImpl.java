@@ -37,24 +37,42 @@ import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.DefaultMinutesDao
 @Component
 public class CarryoverIssueLogicImpl implements CarryoverIssueLogic {
 
-    /** JSON ファイルの読み書き */
+    /**
+     * JSON ファイルの読み書き
+     *
+     * @since 0.1.0
+     */
     @Autowired
     private CarryoverDataDao carryoverDataDao;
 
-    /** 標準時間の設定の読み込み */
+    /**
+     * 標準時間の設定の読み込み
+     *
+     * @since 0.1.0
+     */
     @Autowired
     private DefaultMinutesDao defaultMinutesDao;
 
-    /** DTO とモデルの変換 */
+    /**
+     * DTO とモデルの変換
+     *
+     * @since 0.1.0
+     */
     @Autowired
     private CarryoverDtoConvertLogic dtoConvertLogic;
 
-    /** GitHub の Issue の取得 */
+    /**
+     * GitHub の Issue の取得
+     *
+     * @since 0.1.0
+     */
     @Autowired
     private GitHubIssueApi gitHubIssueApi;
 
     /**
      * すべての日々のタスク Issue を取得する<br>
+     *
+     * @since 0.1.0
      *
      * @param source
      *               データの取得元と保存先
@@ -77,6 +95,8 @@ public class CarryoverIssueLogicImpl implements CarryoverIssueLogic {
     /**
      * 項目ごとの標準時間を読み込む<br>
      *
+     * @since 0.1.0
+     *
      * @param source
      *               データの取得元と保存先
      *
@@ -96,6 +116,8 @@ public class CarryoverIssueLogicImpl implements CarryoverIssueLogic {
 
     /**
      * 保存済みの持ち越しの解析結果を読み込む<br>
+     *
+     * @since 0.1.0
      *
      * @param source
      *               データの取得元と保存先
@@ -124,6 +146,8 @@ public class CarryoverIssueLogicImpl implements CarryoverIssueLogic {
     /**
      * 持ち越しの解析結果を保存する<br>
      *
+     * @since 0.1.0
+     *
      * @param source
      *               データの取得元と保存先
      * @param issue
@@ -141,6 +165,8 @@ public class CarryoverIssueLogicImpl implements CarryoverIssueLogic {
 
     /**
      * 画面用の集計を保存する<br>
+     *
+     * @since 0.1.0
      *
      * @param source
      *                データの取得元と保存先

@@ -24,6 +24,8 @@ public class DailyTasksApplication {
     /**
      * エントリポイント<br>
      *
+     * @since 0.1.0
+     *
      * @param args
      *             コマンドライン引数（{@code --full}、{@code --help}）
      */
@@ -42,6 +44,8 @@ public class DailyTasksApplication {
      * <p>
      * Spring が設定クラスとして生成する。
      * </p>
+     *
+     * @since 0.1.0
      */
     public DailyTasksApplication() {
 

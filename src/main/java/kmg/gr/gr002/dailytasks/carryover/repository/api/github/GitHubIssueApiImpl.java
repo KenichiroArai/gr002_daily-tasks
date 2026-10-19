@@ -45,20 +45,38 @@ import tools.jackson.databind.json.JsonMapper;
 @Repository
 public class GitHubIssueApiImpl implements GitHubIssueApi {
 
-    /** ロガー */
+    /**
+     * ロガー
+     *
+     * @since 0.1.0
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(GitHubIssueApiImpl.class);
 
-    /** 1 ページあたりの取得件数（GitHub API の上限） */
+    /**
+     * 1 ページあたりの取得件数（GitHub API の上限）
+     *
+     * @since 0.1.0
+     */
     private static final int PER_PAGE = 100;
 
-    /** 正常応答のステータスコード */
+    /**
+     * 正常応答のステータスコード
+     *
+     * @since 0.1.0
+     */
     private static final int STATUS_OK = 200;
 
-    /** リクエストのタイムアウト */
+    /**
+     * リクエストのタイムアウト
+     *
+     * @since 0.1.0
+     */
     private static final Duration TIMEOUT = Duration.ofSeconds(30);
 
     /**
      * トークンが指定されているかを返す<br>
+     *
+     * @since 0.1.0
      *
      * @param settings
      *                 GitHub API の接続設定
@@ -83,6 +101,8 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
 
     /**
      * 文字列の項目を返す<br>
+     *
+     * @since 0.1.0
      *
      * @param node
      *                  JSON
@@ -116,6 +136,8 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
     /**
      * API の応答を Issue の DTO に変換する<br>
      *
+     * @since 0.1.0
+     *
      * @param node
      *             Issue の JSON
      *
@@ -132,22 +154,40 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
 
     }
 
-    /** API のベース URL（例: https://api.github.com） */
+    /**
+     * API のベース URL（例: https://api.github.com）
+     *
+     * @since 0.1.0
+     */
     private String apiBaseUrl = GitHubApiUrlTypes.BASE_URL.getUrl();
 
-    /** HTTP クライアントの生成 */
+    /**
+     * HTTP クライアントの生成
+     *
+     * @since 0.1.0
+     */
     private Supplier<HttpClient> httpClientSupplier;
 
-    /** JSON の変換 */
+    /**
+     * JSON の変換
+     *
+     * @since 0.1.0
+     */
     @Autowired
     private JsonMapper jsonMapper;
 
-    /** メッセージの取得 */
+    /**
+     * メッセージの取得
+     *
+     * @since 0.1.0
+     */
     @Autowired
     private MessageLogic messageLogic;
 
     /**
      * コンストラクタ<br>
+     *
+     * @since 0.1.0
      */
     public GitHubIssueApiImpl() {
 
@@ -160,6 +200,8 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
      * <p>
      * プルリクエストは除外する。
      * </p>
+     *
+     * @since 0.1.0
      *
      * @param settings
      *                 GitHub API の接続設定
@@ -212,6 +254,8 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
 
     /**
      * 1 ページ分の Issue を取得する<br>
+     *
+     * @since 0.1.0
      *
      * @param httpClient
      *                   HTTP クライアント
@@ -273,6 +317,8 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
     /**
      * 応答の本文を JSON として読み込む<br>
      *
+     * @since 0.1.0
+     *
      * @param body
      *             応答の本文
      *
@@ -301,6 +347,8 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
 
     /**
      * リクエストを送信する<br>
+     *
+     * @since 0.1.0
      *
      * @param httpClient
      *                   HTTP クライアント

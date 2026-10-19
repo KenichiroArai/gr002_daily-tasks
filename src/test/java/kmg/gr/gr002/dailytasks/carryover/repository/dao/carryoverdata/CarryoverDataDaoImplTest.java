@@ -54,6 +54,8 @@ public class CarryoverDataDaoImplTest {
         /**
          * 常に例外を投げる<br>
          *
+         * @since 0.1.0
+         *
          * @return 返らない
          *
          * @throws IllegalStateException
@@ -69,6 +71,8 @@ public class CarryoverDataDaoImplTest {
 
     /**
      * テスト用の解析結果を作成する<br>
+     *
+     * @since 0.1.0
      *
      * @param number
      *               Issue 番号
@@ -88,6 +92,8 @@ public class CarryoverDataDaoImplTest {
     /**
      * テスト対象を作成する<br>
      *
+     * @since 0.1.0
+     *
      * @return テスト対象
      */
     private static CarryoverDataDaoImpl createTarget() {
@@ -101,6 +107,8 @@ public class CarryoverDataDaoImplTest {
 
     /**
      * private の write メソッドを呼び出す<br>
+     *
+     * @since 0.1.0
      *
      * @param target
      *               テスト対象
@@ -120,12 +128,18 @@ public class CarryoverDataDaoImplTest {
 
     }
 
-    /** テスト用の一時ディレクトリ */
+    /**
+     * テスト用の一時ディレクトリ
+     *
+     * @since 0.1.0
+     */
     @TempDir
     Path tempDir;
 
     /**
      * loadIssues メソッドのテスト - 異常系:JSON が不正な場合
+     *
+     * @since 0.1.0
      *
      * @throws IOException
      *                     入出力エラーが発生した場合
@@ -154,6 +168,8 @@ public class CarryoverDataDaoImplTest {
 
     /**
      * loadIssues メソッドのテスト - 正常系:保存済みの JSON を読み込む場合
+     *
+     * @since 0.1.0
      *
      * @throws IOException
      *                     入出力エラーが発生した場合
@@ -193,6 +209,8 @@ public class CarryoverDataDaoImplTest {
     /**
      * loadIssues メソッドのテスト - 準正常系:ディレクトリがない場合
      *
+     * @since 0.1.0
+     *
      * @throws IOException
      *                     入出力エラーが発生した場合
      */
@@ -217,6 +235,8 @@ public class CarryoverDataDaoImplTest {
 
     /**
      * saveIssue メソッドのテスト - 正常系:4 桁ゼロ埋めのファイル名で LF 改行の JSON を保存する場合
+     *
+     * @since 0.1.0
      *
      * @throws IOException
      *                     入出力エラーが発生した場合
@@ -249,6 +269,8 @@ public class CarryoverDataDaoImplTest {
 
     /**
      * saveSummary メソッドのテスト - 正常系:日別の集計を指定した順で保存する場合
+     *
+     * @since 0.1.0
      *
      * @throws IOException
      *                     入出力エラーが発生した場合
@@ -315,6 +337,8 @@ public class CarryoverDataDaoImplTest {
     /**
      * saveSummary メソッドのテスト - 正常系:画面用の集計を保存する場合
      *
+     * @since 0.1.0
+     *
      * @throws IOException
      *                     入出力エラーが発生した場合
      */
@@ -341,6 +365,8 @@ public class CarryoverDataDaoImplTest {
 
     /**
      * write メソッドのテスト - 異常系:JSON に変換できない場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testWrite_errorNotSerializable() {
@@ -367,6 +393,8 @@ public class CarryoverDataDaoImplTest {
 
     /**
      * write メソッドのテスト - 正常系:親ディレクトリを作成して書き込む場合
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   例外が発生した場合

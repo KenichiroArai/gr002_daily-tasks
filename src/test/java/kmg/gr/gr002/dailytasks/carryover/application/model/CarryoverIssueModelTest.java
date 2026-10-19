@@ -21,16 +21,26 @@ import kmg.gr.gr002.dailytasks.carryover.application.types.MinutesSourceTypes;
 })
 public class CarryoverIssueModelTest {
 
-    /** テスト用の持ち越し項目（未チェック、15分） */
+    /**
+     * テスト用の持ち越し項目（未チェック、15分）
+     *
+     * @since 0.1.0
+     */
     private static final CarryoverItemModel ITEM1 = new CarryoverItemModel("国語", "2026-06-18", false, 15,
         MinutesSourceTypes.PARSED, "持ち越し", "- [ ] 国語2026/06/18（残り時間：15分）");
 
-    /** テスト用の持ち越し項目（チェック済み、8.5分） */
+    /**
+     * テスト用の持ち越し項目（チェック済み、8.5分）
+     *
+     * @since 0.1.0
+     */
     private static final CarryoverItemModel ITEM2 = new CarryoverItemModel("音楽", "2026-08-18", true, 8.5,
         MinutesSourceTypes.PARSED, "持ち越し", "- [x] 音楽2026/08/18（残り時間：8.5分）");
 
     /**
      * テスト用の解析結果を作成する<br>
+     *
+     * @since 0.1.0
      *
      * @param state
      *                 Issue の状態
@@ -49,6 +59,8 @@ public class CarryoverIssueModelTest {
 
     /**
      * getCount メソッドのテスト - 正常系:持ち越し項目の件数を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetCount_normalValue() {
@@ -72,6 +84,8 @@ public class CarryoverIssueModelTest {
 
     /**
      * getDate メソッドのテスト - 正常系:日付を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDate_normalValue() {
@@ -95,6 +109,8 @@ public class CarryoverIssueModelTest {
 
     /**
      * getDeclaredCount メソッドのテスト - 正常系:残数を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDeclaredCount_normalValue() {
@@ -118,6 +134,8 @@ public class CarryoverIssueModelTest {
 
     /**
      * getItems メソッドのテスト - 正常系:持ち越し項目を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetItems_normalValue() {
@@ -142,6 +160,8 @@ public class CarryoverIssueModelTest {
 
     /**
      * getMinutes メソッドのテスト - 正常系:残り時間の合計を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetMinutes_normalSum() {
@@ -165,6 +185,8 @@ public class CarryoverIssueModelTest {
 
     /**
      * getNumber メソッドのテスト - 正常系:Issue 番号を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetNumber_normalValue() {
@@ -188,6 +210,8 @@ public class CarryoverIssueModelTest {
 
     /**
      * getSections メソッドのテスト - 正常系:対象セクション名を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetSections_normalValue() {
@@ -211,6 +235,8 @@ public class CarryoverIssueModelTest {
 
     /**
      * getState メソッドのテスト - 正常系:状態を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetState_normalValue() {
@@ -234,6 +260,8 @@ public class CarryoverIssueModelTest {
 
     /**
      * getTitle メソッドのテスト - 正常系:タイトルを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetTitle_normalValue() {
@@ -257,6 +285,8 @@ public class CarryoverIssueModelTest {
 
     /**
      * getUpdatedAt メソッドのテスト - 正常系:更新日時を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetUpdatedAt_normalValue() {
@@ -280,6 +310,8 @@ public class CarryoverIssueModelTest {
 
     /**
      * hasSection メソッドのテスト - 正常系:対象セクションがある場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testHasSection_normalExists() {
@@ -302,6 +334,8 @@ public class CarryoverIssueModelTest {
 
     /**
      * hasSection メソッドのテスト - 準正常系:対象セクションがない場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testHasSection_semiNotExists() {
@@ -324,6 +358,8 @@ public class CarryoverIssueModelTest {
 
     /**
      * isOpen メソッドのテスト - 正常系:オープン中の場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testIsOpen_normalOpen() {
@@ -346,6 +382,8 @@ public class CarryoverIssueModelTest {
 
     /**
      * isOpen メソッドのテスト - 準正常系:クローズ済みの場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testIsOpen_semiClosed() {

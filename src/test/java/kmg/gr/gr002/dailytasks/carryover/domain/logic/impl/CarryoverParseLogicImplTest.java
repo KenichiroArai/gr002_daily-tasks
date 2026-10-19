@@ -31,12 +31,18 @@ import kmg.gr.gr002.dailytasks.testutil.ReflectionTestUtil;
 })
 public class CarryoverParseLogicImplTest {
 
-    /** テスト用の標準時間 */
+    /**
+     * テスト用の標準時間
+     *
+     * @since 0.1.0
+     */
     private static final DefaultMinutesModel DEFAULT_MINUTES
         = new DefaultMinutesModel(Map.of("国語", (double) 15, "マラソン日記", (double) 0));
 
     /**
      * private の addSection メソッドを呼び出す<br>
+     *
+     * @since 0.1.0
      *
      * @param sections
      *                 対象セクション名
@@ -57,6 +63,8 @@ public class CarryoverParseLogicImplTest {
     /**
      * テスト用の Issue を作成する<br>
      *
+     * @since 0.1.0
+     *
      * @param title
      *              タイトル
      * @param body
@@ -74,6 +82,8 @@ public class CarryoverParseLogicImplTest {
     /**
      * テスト対象を作成する<br>
      *
+     * @since 0.1.0
+     *
      * @return テスト対象
      */
     private static CarryoverParseLogicImpl createTarget() {
@@ -86,6 +96,8 @@ public class CarryoverParseLogicImplTest {
 
     /**
      * private の formatDate メソッドを呼び出す<br>
+     *
+     * @since 0.1.0
      *
      * @param year
      *              年
@@ -112,6 +124,8 @@ public class CarryoverParseLogicImplTest {
     /**
      * private の normalizeName メソッドを呼び出す<br>
      *
+     * @since 0.1.0
+     *
      * @param name
      *             項目名
      *
@@ -132,6 +146,8 @@ public class CarryoverParseLogicImplTest {
 
     /**
      * private の parseItem メソッドを呼び出す<br>
+     *
+     * @since 0.1.0
      *
      * @param target
      *                テスト対象
@@ -165,6 +181,8 @@ public class CarryoverParseLogicImplTest {
     /**
      * private の parseMinutes メソッドを呼び出す<br>
      *
+     * @since 0.1.0
+     *
      * @param text
      *             時間表記を含む文字列
      *
@@ -185,6 +203,8 @@ public class CarryoverParseLogicImplTest {
 
     /**
      * private の parseTitleDate メソッドを呼び出す<br>
+     *
+     * @since 0.1.0
      *
      * @param title
      *              Issue タイトル
@@ -207,6 +227,8 @@ public class CarryoverParseLogicImplTest {
     /**
      * private の splitLines メソッドを呼び出す<br>
      *
+     * @since 0.1.0
+     *
      * @param body
      *             本文
      *
@@ -227,6 +249,8 @@ public class CarryoverParseLogicImplTest {
 
     /**
      * private の verifyDeclaredCount メソッドを呼び出す<br>
+     *
+     * @since 0.1.0
      *
      * @param number
      *                      Issue 番号
@@ -250,6 +274,8 @@ public class CarryoverParseLogicImplTest {
     /**
      * private の warnUnexpectedLine メソッドを呼び出す<br>
      *
+     * @since 0.1.0
+     *
      * @param number
      *               Issue 番号
      * @param line
@@ -268,6 +294,8 @@ public class CarryoverParseLogicImplTest {
 
     /**
      * addSection メソッドのテスト - 正常系:対象セクションを追加する場合
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   例外が発生した場合
@@ -295,6 +323,8 @@ public class CarryoverParseLogicImplTest {
     /**
      * addSection メソッドのテスト - 準正常系:追加済みのセクションの場合
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -320,6 +350,8 @@ public class CarryoverParseLogicImplTest {
 
     /**
      * addSection メソッドのテスト - 準正常系:対象外のセクションの場合
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   例外が発生した場合
@@ -347,6 +379,8 @@ public class CarryoverParseLogicImplTest {
     /**
      * formatDate メソッドのテスト - 正常系:月・日をゼロ埋めする場合
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -371,6 +405,8 @@ public class CarryoverParseLogicImplTest {
 
     /**
      * normalizeName メソッドのテスト - 正常系:そのままの項目名の場合
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   例外が発生した場合
@@ -398,6 +434,8 @@ public class CarryoverParseLogicImplTest {
     /**
      * normalizeName メソッドのテスト - 正常系:末尾に開き括弧がある場合
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -423,6 +461,8 @@ public class CarryoverParseLogicImplTest {
 
     /**
      * normalizeName メソッドのテスト - 正常系:末尾に括弧書きがある場合
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   例外が発生した場合
@@ -450,6 +490,8 @@ public class CarryoverParseLogicImplTest {
     /**
      * normalizeName メソッドのテスト - 準正常系:空になる場合
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -475,6 +517,8 @@ public class CarryoverParseLogicImplTest {
 
     /**
      * parse メソッドのテスト - 正常系:持ち越しセクションの項目を解析する場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testParse_normalCarryover() {
@@ -525,6 +569,8 @@ public class CarryoverParseLogicImplTest {
 
     /**
      * parse メソッドのテスト - 正常系:対象セクションがない場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testParse_normalNoSection() {
@@ -552,6 +598,8 @@ public class CarryoverParseLogicImplTest {
 
     /**
      * parse メソッドのテスト - 正常系:旧名称（負債・繰り越し）のセクションを解析する場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testParse_normalOldSectionNames() {
@@ -577,6 +625,8 @@ public class CarryoverParseLogicImplTest {
 
     /**
      * parse メソッドのテスト - 準正常系:残数と解析件数が一致しない場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testParse_semiDeclaredCountMismatch() {
@@ -608,6 +658,8 @@ public class CarryoverParseLogicImplTest {
 
     /**
      * parse メソッドのテスト - 準正常系:タイトルに日付がない場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testParse_semiTitleWithoutDate() {
@@ -641,6 +693,8 @@ public class CarryoverParseLogicImplTest {
 
     /**
      * parse メソッドのテスト - 準正常系:対象セクションに想定外の行がある場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testParse_semiUnexpectedLine() {
@@ -676,6 +730,8 @@ public class CarryoverParseLogicImplTest {
 
     /**
      * parseItem メソッドのテスト - 正常系:時間表記がなく標準時間で補完する場合
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   例外が発生した場合
@@ -713,6 +769,8 @@ public class CarryoverParseLogicImplTest {
 
     /**
      * parseItem メソッドのテスト - 正常系:時間表記から残り時間を取得する場合
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   例外が発生した場合
@@ -753,6 +811,8 @@ public class CarryoverParseLogicImplTest {
     /**
      * parseItem メソッドのテスト - 準正常系:項目名がない場合
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -788,6 +848,8 @@ public class CarryoverParseLogicImplTest {
 
     /**
      * parseItem メソッドのテスト - 準正常系:標準時間が未登録の場合
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   例外が発生した場合
@@ -828,6 +890,8 @@ public class CarryoverParseLogicImplTest {
     /**
      * parseItem メソッドのテスト - 準正常系:時間表記を解釈できない場合
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -866,6 +930,8 @@ public class CarryoverParseLogicImplTest {
 
     /**
      * parseItem メソッドのテスト - 準正常系:持ち越し元の日付がない場合
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   例外が発生した場合
@@ -908,6 +974,8 @@ public class CarryoverParseLogicImplTest {
     /**
      * parseMinutes メソッドのテスト - 正常系:「先行分残りN分」の場合
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -933,6 +1001,8 @@ public class CarryoverParseLogicImplTest {
 
     /**
      * parseMinutes メソッドのテスト - 正常系:「残り時間：N分」で小数の場合
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   例外が発生した場合
@@ -960,6 +1030,8 @@ public class CarryoverParseLogicImplTest {
     /**
      * parseMinutes メソッドのテスト - 正常系:半角括弧の場合
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -985,6 +1057,8 @@ public class CarryoverParseLogicImplTest {
 
     /**
      * parseMinutes メソッドのテスト - 正常系:「残りN分」の場合
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   例外が発生した場合
@@ -1012,6 +1086,8 @@ public class CarryoverParseLogicImplTest {
     /**
      * parseMinutes メソッドのテスト - 正常系:「残り時間：N分」の場合
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -1037,6 +1113,8 @@ public class CarryoverParseLogicImplTest {
 
     /**
      * parseMinutes メソッドのテスト - 正常系:「N分」の場合
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   例外が発生した場合
@@ -1064,6 +1142,8 @@ public class CarryoverParseLogicImplTest {
     /**
      * parseMinutes メソッドのテスト - 準正常系:括弧がない場合
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -1089,6 +1169,8 @@ public class CarryoverParseLogicImplTest {
     /**
      * parseMinutes メソッドのテスト - 準正常系:括弧内を解釈できない場合
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -1113,6 +1195,8 @@ public class CarryoverParseLogicImplTest {
 
     /**
      * parseTitleDate メソッドのテスト - 正常系:タイトルに日付がある場合
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   例外が発生した場合
@@ -1140,6 +1224,8 @@ public class CarryoverParseLogicImplTest {
     /**
      * parseTitleDate メソッドのテスト - 準正常系:タイトルに日付がない場合
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -1165,6 +1251,8 @@ public class CarryoverParseLogicImplTest {
     /**
      * parseTitleDate メソッドのテスト - 準正常系:タイトルが null の場合
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -1189,6 +1277,8 @@ public class CarryoverParseLogicImplTest {
 
     /**
      * splitLines メソッドのテスト - 正常系:改行コードが混在する場合
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   例外が発生した場合
@@ -1216,6 +1306,8 @@ public class CarryoverParseLogicImplTest {
     /**
      * splitLines メソッドのテスト - 準正常系:本文が null の場合
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -1241,6 +1333,8 @@ public class CarryoverParseLogicImplTest {
 
     /**
      * verifyDeclaredCount メソッドのテスト - 正常系:残数と解析件数が一致する場合
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   例外が発生した場合
@@ -1271,6 +1365,8 @@ public class CarryoverParseLogicImplTest {
     /**
      * verifyDeclaredCount メソッドのテスト - 正常系:残数の記載がない場合
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -1299,6 +1395,8 @@ public class CarryoverParseLogicImplTest {
 
     /**
      * verifyDeclaredCount メソッドのテスト - 準正常系:残数と解析件数が一致しない場合
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   例外が発生した場合
@@ -1331,6 +1429,8 @@ public class CarryoverParseLogicImplTest {
     /**
      * warnUnexpectedLine メソッドのテスト - 正常系:空行の場合は警告しない
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -1360,6 +1460,8 @@ public class CarryoverParseLogicImplTest {
     /**
      * warnUnexpectedLine メソッドのテスト - 正常系:区切り線の場合は警告しない
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -1388,6 +1490,8 @@ public class CarryoverParseLogicImplTest {
 
     /**
      * warnUnexpectedLine メソッドのテスト - 準正常系:想定外の行の場合は警告する
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   例外が発生した場合

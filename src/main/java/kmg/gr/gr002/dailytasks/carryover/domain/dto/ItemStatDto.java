@@ -14,20 +14,38 @@ package kmg.gr.gr002.dailytasks.carryover.domain.dto;
  */
 public class ItemStatDto {
 
-    /** チェック済みの件数 */
+    /**
+     * チェック済みの件数
+     *
+     * @since 0.1.0
+     */
     private final int checkedCount;
 
-    /** チェック済みの残り時間（分） */
+    /**
+     * チェック済みの残り時間（分）
+     *
+     * @since 0.1.0
+     */
     private final double checkedMinutes;
 
-    /** 件数 */
+    /**
+     * 件数
+     *
+     * @since 0.1.0
+     */
     private final int count;
 
-    /** 残り時間（分） */
+    /**
+     * 残り時間（分）
+     *
+     * @since 0.1.0
+     */
     private final double minutes;
 
     /**
      * コンストラクタ<br>
+     *
+     * @since 0.1.0
      *
      * @param count
      *                       件数
@@ -50,6 +68,8 @@ public class ItemStatDto {
     /**
      * チェック済みの件数を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return チェック済みの件数
      */
     public int getCheckedCount() {
@@ -61,6 +81,8 @@ public class ItemStatDto {
 
     /**
      * チェック済みの残り時間（分）を返す<br>
+     *
+     * @since 0.1.0
      *
      * @return チェック済みの残り時間（分）
      */
@@ -74,6 +96,8 @@ public class ItemStatDto {
     /**
      * 件数を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return 件数
      */
     public int getCount() {
@@ -85,6 +109,8 @@ public class ItemStatDto {
 
     /**
      * 残り時間（分）を返す<br>
+     *
+     * @since 0.1.0
      *
      * @return 残り時間（分）
      */

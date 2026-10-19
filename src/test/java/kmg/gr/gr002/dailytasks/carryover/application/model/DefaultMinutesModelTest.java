@@ -21,6 +21,8 @@ public class DefaultMinutesModelTest {
 
     /**
      * find メソッドのテスト - 正常系:登録済みの項目の場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testFind_normalRegistered() {
@@ -44,6 +46,8 @@ public class DefaultMinutesModelTest {
 
     /**
      * find メソッドのテスト - 準正常系:未登録の項目の場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testFind_semiNotRegistered() {

@@ -22,6 +22,8 @@ public class ItemStatModelTest {
     /**
      * テスト用の持ち越し項目を作成する<br>
      *
+     * @since 0.1.0
+     *
      * @param checked
      *                チェック済みか
      * @param minutes
@@ -40,6 +42,8 @@ public class ItemStatModelTest {
     /**
      * テスト用の集計値（未チェック 15 分とチェック済み 8.5 分）を作成する<br>
      *
+     * @since 0.1.0
+     *
      * @return 集計値
      */
     private static ItemStatModel createStat() {
@@ -53,6 +57,8 @@ public class ItemStatModelTest {
 
     /**
      * add メソッドのテスト - 正常系:チェック済みの項目を加える場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testAdd_normalChecked() {
@@ -76,6 +82,8 @@ public class ItemStatModelTest {
 
     /**
      * add メソッドのテスト - 正常系:未チェックの項目を加える場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testAdd_normalUnchecked() {
@@ -99,6 +107,8 @@ public class ItemStatModelTest {
 
     /**
      * getCheckedCount メソッドのテスト - 正常系:チェック済みの件数を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetCheckedCount_normalValue() {
@@ -122,6 +132,8 @@ public class ItemStatModelTest {
 
     /**
      * getCheckedMinutes メソッドのテスト - 正常系:チェック済みの残り時間を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetCheckedMinutes_normalValue() {
@@ -145,6 +157,8 @@ public class ItemStatModelTest {
 
     /**
      * getCount メソッドのテスト - 正常系:件数を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetCount_normalValue() {
@@ -168,6 +182,8 @@ public class ItemStatModelTest {
 
     /**
      * getMinutes メソッドのテスト - 正常系:残り時間を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetMinutes_normalValue() {

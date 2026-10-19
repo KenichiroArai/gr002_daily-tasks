@@ -20,6 +20,8 @@ public class ItemStatJsonDtoTest {
     /**
      * テスト対象を作成する<br>
      *
+     * @since 0.1.0
+     *
      * @return テスト対象
      */
     private static ItemStatJsonDto createTarget() {
@@ -31,6 +33,8 @@ public class ItemStatJsonDtoTest {
 
     /**
      * getCheckedCount メソッドのテスト - 正常系:チェック済みの件数を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetCheckedCount_normalValue() {
@@ -54,6 +58,8 @@ public class ItemStatJsonDtoTest {
 
     /**
      * getCheckedMinutes メソッドのテスト - 正常系:チェック済みの残り時間を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetCheckedMinutes_normalValue() {
@@ -77,6 +83,8 @@ public class ItemStatJsonDtoTest {
 
     /**
      * getCount メソッドのテスト - 正常系:件数を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetCount_normalValue() {
@@ -100,6 +108,8 @@ public class ItemStatJsonDtoTest {
 
     /**
      * getMinutes メソッドのテスト - 正常系:残り時間を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetMinutes_normalValue() {

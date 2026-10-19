@@ -45,14 +45,24 @@ public class CarryoverCommandImplTest {
      */
     private static final class StubCarryoverService implements CarryoverService {
 
-        /** 呼び出し時のモード */
+        /**
+         * 呼び出し時のモード
+         *
+         * @since 0.1.0
+         */
         private final List<Boolean> calls = new ArrayList<>();
 
-        /** 呼び出し時の設定 */
+        /**
+         * 呼び出し時の設定
+         *
+         * @since 0.1.0
+         */
         private final List<CarryoverPropertiesModel> propertiesList = new ArrayList<>();
 
         /**
          * 呼び出し時のモードと設定を記録し、3 を返す<br>
+         *
+         * @since 0.1.0
          *
          * @param properties
          *                   持ち越しの収集の設定
@@ -74,6 +84,8 @@ public class CarryoverCommandImplTest {
         /**
          * 呼び出し時のモードを返す<br>
          *
+         * @since 0.1.0
+         *
          * @return 呼び出し時のモード
          */
         private List<Boolean> getCalls() {
@@ -86,6 +98,8 @@ public class CarryoverCommandImplTest {
         /**
          * 呼び出し時の設定を返す<br>
          *
+         * @since 0.1.0
+         *
          * @return 呼び出し時の設定
          */
         private List<CarryoverPropertiesModel> getPropertiesList() {
@@ -97,12 +111,18 @@ public class CarryoverCommandImplTest {
 
     }
 
-    /** テスト用の設定ファイルの値 */
+    /**
+     * テスト用の設定ファイルの値
+     *
+     * @since 0.1.0
+     */
     private static final CarryoverPropertiesModel PROPERTIES
         = new CarryoverPropertiesModel("owner/repo", "test-token", "out/data", "conf/minutes.json", 7);
 
     /**
      * テスト対象を作成する<br>
+     *
+     * @since 0.1.0
      *
      * @param service
      *                持ち越しの収集・集計サービス
@@ -124,6 +144,8 @@ public class CarryoverCommandImplTest {
 
     /**
      * private の parseArgs メソッドを呼び出す<br>
+     *
+     * @since 0.1.0
      *
      * @param args
      *             コマンドライン引数
@@ -147,6 +169,8 @@ public class CarryoverCommandImplTest {
     /**
      * 使い方のメッセージを取得する<br>
      *
+     * @since 0.1.0
+     *
      * @return 使い方
      */
     private static String usage() {
@@ -158,6 +182,8 @@ public class CarryoverCommandImplTest {
 
     /**
      * CarryoverCommandImpl のテスト - 正常系:出力先を指定しない場合は標準出力を使う
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   例外が発生した場合
@@ -191,6 +217,8 @@ public class CarryoverCommandImplTest {
     /**
      * parseArgs メソッドのテスト - 正常系:--full がある場合は全件モード
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -216,6 +244,8 @@ public class CarryoverCommandImplTest {
 
     /**
      * parseArgs メソッドのテスト - 正常系:--help がある場合は使い方を表示する
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   例外が発生した場合
@@ -243,6 +273,8 @@ public class CarryoverCommandImplTest {
     /**
      * parseArgs メソッドのテスト - 正常系:引数なしの場合は差分モードで使い方を表示しない
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -269,6 +301,8 @@ public class CarryoverCommandImplTest {
     /**
      * parseArgs メソッドのテスト - 正常系:-h がある場合は使い方を表示する
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -292,6 +326,8 @@ public class CarryoverCommandImplTest {
 
     /**
      * parseArgs メソッドのテスト - 準正常系:不明な引数がある場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testParseArgs_semiUnknownArgument() {
@@ -315,6 +351,8 @@ public class CarryoverCommandImplTest {
 
     /**
      * run メソッドのテスト - 正常系:引数なしの場合は差分モードで実行する
+     *
+     * @since 0.1.0
      *
      * @throws IOException
      *                     入出力エラーが発生した場合
@@ -346,6 +384,8 @@ public class CarryoverCommandImplTest {
     /**
      * run メソッドのテスト - 正常系:--full の場合は全件モードで実行する
      *
+     * @since 0.1.0
+     *
      * @throws IOException
      *                     入出力エラーが発生した場合
      */
@@ -372,6 +412,8 @@ public class CarryoverCommandImplTest {
 
     /**
      * run メソッドのテスト - 正常系:--help の場合は使い方を表示して収集しない
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   例外が発生した場合
@@ -404,6 +446,8 @@ public class CarryoverCommandImplTest {
     /**
      * run メソッドのテスト - 正常系:-h の場合は使い方を表示して収集しない
      *
+     * @since 0.1.0
+     *
      * @throws IOException
      *                     入出力エラーが発生した場合
      */
@@ -431,6 +475,8 @@ public class CarryoverCommandImplTest {
 
     /**
      * run メソッドのテスト - 準正常系:不明な引数の場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testRun_semiUnknownArgument() {

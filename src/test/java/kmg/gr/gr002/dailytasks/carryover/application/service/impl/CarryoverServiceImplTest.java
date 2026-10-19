@@ -55,23 +55,45 @@ public class CarryoverServiceImplTest {
      */
     private static final class StubCarryoverIssueLogic implements CarryoverIssueLogic {
 
-        /** 取得する Issue */
+        /**
+         * 取得する Issue
+         *
+         * @since 0.1.0
+         */
         private final List<DailyTaskIssueModel> remoteIssues;
 
-        /** 保存した Issue 番号 */
+        /**
+         * 保存した Issue 番号
+         *
+         * @since 0.1.0
+         */
         private final List<Integer> savedNumbers = new ArrayList<>();
 
-        /** 保存した集計 */
+        /**
+         * 保存した集計
+         *
+         * @since 0.1.0
+         */
         private CarryoverSummaryModel savedSummary;
 
-        /** 受け取ったデータの取得元と保存先 */
+        /**
+         * 受け取ったデータの取得元と保存先
+         *
+         * @since 0.1.0
+         */
         private final List<CarryoverSourceModel> sources = new ArrayList<>();
 
-        /** 保存済みの解析結果 */
+        /**
+         * 保存済みの解析結果
+         *
+         * @since 0.1.0
+         */
         private final Map<Integer, CarryoverIssueModel> storedIssues = new TreeMap<>();
 
         /**
          * コンストラクタ<br>
+         *
+         * @since 0.1.0
          *
          * @param remoteIssues
          *                     取得する Issue
@@ -84,6 +106,8 @@ public class CarryoverServiceImplTest {
 
         /**
          * 登録した Issue を返す<br>
+         *
+         * @since 0.1.0
          *
          * @param source
          *               データの取得元と保存先
@@ -102,6 +126,8 @@ public class CarryoverServiceImplTest {
         /**
          * 保存した Issue 番号を返す<br>
          *
+         * @since 0.1.0
+         *
          * @return 保存した Issue 番号
          */
         private List<Integer> getSavedNumbers() {
@@ -113,6 +139,8 @@ public class CarryoverServiceImplTest {
 
         /**
          * 保存した集計を返す<br>
+         *
+         * @since 0.1.0
          *
          * @return 保存した集計。保存していない場合は null
          */
@@ -126,6 +154,8 @@ public class CarryoverServiceImplTest {
         /**
          * 受け取ったデータの取得元と保存先を返す<br>
          *
+         * @since 0.1.0
+         *
          * @return 受け取ったデータの取得元と保存先（呼び出し順）
          */
         private List<CarryoverSourceModel> getSources() {
@@ -137,6 +167,8 @@ public class CarryoverServiceImplTest {
 
         /**
          * テスト用の標準時間を返す<br>
+         *
+         * @since 0.1.0
          *
          * @param source
          *               データの取得元と保存先
@@ -155,6 +187,8 @@ public class CarryoverServiceImplTest {
         /**
          * 保存済みの解析結果を返す<br>
          *
+         * @since 0.1.0
+         *
          * @param source
          *               データの取得元と保存先
          *
@@ -172,6 +206,8 @@ public class CarryoverServiceImplTest {
         /**
          * 保存した Issue 番号を記録する<br>
          *
+         * @since 0.1.0
+         *
          * @param source
          *               データの取得元と保存先
          * @param issue
@@ -187,6 +223,8 @@ public class CarryoverServiceImplTest {
 
         /**
          * 保存した集計を記録する<br>
+         *
+         * @since 0.1.0
          *
          * @param source
          *                データの取得元と保存先
@@ -204,6 +242,8 @@ public class CarryoverServiceImplTest {
         /**
          * 保存済みの解析結果を登録する<br>
          *
+         * @since 0.1.0
+         *
          * @param issue
          *              解析結果
          */
@@ -215,26 +255,48 @@ public class CarryoverServiceImplTest {
 
     }
 
-    /** テスト用の標準時間 */
+    /**
+     * テスト用の標準時間
+     *
+     * @since 0.1.0
+     */
     private static final DefaultMinutesModel DEFAULT_MINUTES = new DefaultMinutesModel(Map.of("国語", (double) 15));
 
-    /** テスト用の Issue #1（時間表記なし、更新日時 u1） */
+    /**
+     * テスト用の Issue #1（時間表記なし、更新日時 u1）
+     *
+     * @since 0.1.0
+     */
     private static final DailyTaskIssueModel ISSUE1
         = new DailyTaskIssueModel(1, "2026年03月24日のタスク", "closed", "u1", "## 負債\n- [ ] 国語2026/03/20");
 
-    /** テスト用の Issue #2（時間表記あり、更新日時 u2） */
+    /**
+     * テスト用の Issue #2（時間表記あり、更新日時 u2）
+     *
+     * @since 0.1.0
+     */
     private static final DailyTaskIssueModel ISSUE2
         = new DailyTaskIssueModel(2, "2026年03月25日のタスク", "open", "u2", "## 負債\n- [ ] 英語2026/03/20（残り時間：10分）");
 
-    /** テスト用の Issue 本文の解析 */
+    /**
+     * テスト用の Issue 本文の解析
+     *
+     * @since 0.1.0
+     */
     private static final CarryoverParseLogic PARSE_LOGIC = CarryoverServiceImplTest.createParseLogic();
 
-    /** テスト用の持ち越しの収集の設定 */
+    /**
+     * テスト用の持ち越しの収集の設定
+     *
+     * @since 0.1.0
+     */
     private static final CarryoverPropertiesModel PROPERTIES
         = new CarryoverPropertiesModel("owner/repo", "test-token", "docs/data", "config/default-minutes.json", 10);
 
     /**
      * private の countBySource メソッドを呼び出す<br>
+     *
+     * @since 0.1.0
      *
      * @param issues
      *               解析結果
@@ -263,6 +325,8 @@ public class CarryoverServiceImplTest {
      * Issue #N の日付は 2026年03月N日、更新日時は uN とする。
      * </p>
      *
+     * @since 0.1.0
+     *
      * @param count
      *              件数
      *
@@ -283,6 +347,8 @@ public class CarryoverServiceImplTest {
     /**
      * 解析ロジックを作成する<br>
      *
+     * @since 0.1.0
+     *
      * @return 解析ロジック
      */
     private static CarryoverParseLogic createParseLogic() {
@@ -295,6 +361,8 @@ public class CarryoverServiceImplTest {
 
     /**
      * テスト対象を作成する<br>
+     *
+     * @since 0.1.0
      *
      * @param issueLogic
      *                   持ち越しのデータの取得・保存
@@ -314,6 +382,8 @@ public class CarryoverServiceImplTest {
 
     /**
      * private の needsUpdate メソッドを呼び出す<br>
+     *
+     * @since 0.1.0
      *
      * @param full
      *                    全件モードか
@@ -343,6 +413,8 @@ public class CarryoverServiceImplTest {
     /**
      * テスト用の標準時間で Issue を解析する<br>
      *
+     * @since 0.1.0
+     *
      * @param issue
      *              日々のタスク Issue
      *
@@ -358,6 +430,8 @@ public class CarryoverServiceImplTest {
 
     /**
      * private の recentFrom メソッドを呼び出す<br>
+     *
+     * @since 0.1.0
      *
      * @param issues
      *               取得した Issue
@@ -382,6 +456,8 @@ public class CarryoverServiceImplTest {
     /**
      * private の toSource メソッドを呼び出す<br>
      *
+     * @since 0.1.0
+     *
      * @param properties
      *                   持ち越しの収集の設定
      *
@@ -402,6 +478,8 @@ public class CarryoverServiceImplTest {
 
     /**
      * collect メソッドのテスト - 正常系:差分モードの場合は最新 10 件より前で更新日時が同じ保存済みの Issue を解析しない
+     *
+     * @since 0.1.0
      *
      * @throws IOException
      *                     入出力エラーが発生した場合
@@ -442,6 +520,8 @@ public class CarryoverServiceImplTest {
     /**
      * collect メソッドのテスト - 正常系:差分モードの場合は最新 10 件の保存済みの Issue を更新日時が同じでも解析し直す
      *
+     * @since 0.1.0
+     *
      * @throws IOException
      *                     入出力エラーが発生した場合
      */
@@ -479,6 +559,8 @@ public class CarryoverServiceImplTest {
 
     /**
      * collect メソッドのテスト - 正常系:全件モードの場合はすべての Issue を解析する
+     *
+     * @since 0.1.0
      *
      * @throws IOException
      *                     入出力エラーが発生した場合
@@ -524,6 +606,8 @@ public class CarryoverServiceImplTest {
     /**
      * collect メソッドのテスト - 正常系:設定を application 層のデータの取得元に変換して渡す場合
      *
+     * @since 0.1.0
+     *
      * @throws IOException
      *                     入出力エラーが発生した場合
      */
@@ -559,6 +643,8 @@ public class CarryoverServiceImplTest {
     /**
      * countBySource メソッドのテスト - 正常系:取得元ごとの行数を数える場合
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -587,6 +673,8 @@ public class CarryoverServiceImplTest {
     /**
      * needsUpdate メソッドのテスト - 正常系:全件モードの場合
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -613,6 +701,8 @@ public class CarryoverServiceImplTest {
     /**
      * needsUpdate メソッドのテスト - 正常系:未保存の場合
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -637,6 +727,8 @@ public class CarryoverServiceImplTest {
 
     /**
      * needsUpdate メソッドのテスト - 正常系:最新の Issue の場合は更新日時が同じでも解析し直す
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   例外が発生した場合
@@ -664,6 +756,8 @@ public class CarryoverServiceImplTest {
     /**
      * needsUpdate メソッドのテスト - 正常系:更新日時が変わった場合
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -690,6 +784,8 @@ public class CarryoverServiceImplTest {
     /**
      * needsUpdate メソッドのテスト - 準正常系:更新日時が同じ場合
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -715,6 +811,8 @@ public class CarryoverServiceImplTest {
 
     /**
      * recentFrom メソッドのテスト - 正常系:件数より少ない Issue しかない場合
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   例外が発生した場合
@@ -743,6 +841,8 @@ public class CarryoverServiceImplTest {
     /**
      * recentFrom メソッドのテスト - 正常系:件数より多い Issue がある場合
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -769,6 +869,8 @@ public class CarryoverServiceImplTest {
     /**
      * recentFrom メソッドのテスト - 準正常系:Issue がない場合
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   例外が発生した場合
      */
@@ -794,6 +896,8 @@ public class CarryoverServiceImplTest {
 
     /**
      * toSource メソッドのテスト - 正常系:設定を application 層の取得元に引き継ぐ場合
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   例外が発生した場合

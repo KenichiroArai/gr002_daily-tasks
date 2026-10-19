@@ -19,6 +19,8 @@ public class MinutesSourceTypesTest {
 
     /**
      * get メソッドのテスト - 正常系:保存するときの値を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGet_normalDefault() {
@@ -42,6 +44,8 @@ public class MinutesSourceTypesTest {
 
     /**
      * getDefault メソッドのテスト - 正常系:指定無しを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDefault_normalNone() {
@@ -62,6 +66,8 @@ public class MinutesSourceTypesTest {
 
     /**
      * getDetail メソッドのテスト - 正常系:本文から取得した場合の詳細
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDetail_normalParsed() {
@@ -85,6 +91,8 @@ public class MinutesSourceTypesTest {
 
     /**
      * getDisplayName メソッドのテスト - 正常系:標準時間が未登録の場合の表示名
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDisplayName_normalUnknown() {
@@ -108,6 +116,8 @@ public class MinutesSourceTypesTest {
 
     /**
      * getEnum メソッドのテスト - 正常系:保存するときの値から取得元を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetEnum_normalDefault() {
@@ -131,6 +141,8 @@ public class MinutesSourceTypesTest {
 
     /**
      * getEnum メソッドのテスト - 準正常系:不明なキーの場合は指定無しを返す
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetEnum_semiUnknownKey() {
@@ -154,6 +166,8 @@ public class MinutesSourceTypesTest {
 
     /**
      * getInitValue メソッドのテスト - 正常系:指定無しを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetInitValue_normalNone() {
@@ -174,6 +188,8 @@ public class MinutesSourceTypesTest {
 
     /**
      * getKey メソッドのテスト - 正常系:標準時間で補完した場合のキー
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetKey_normalDefault() {
@@ -197,6 +213,8 @@ public class MinutesSourceTypesTest {
 
     /**
      * toString メソッドのテスト - 正常系:本文から取得した場合のキー
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToString_normalParsed() {

@@ -17,6 +17,8 @@ public final class LogAssertions {
     /**
      * ログメッセージを 1 行ずつ検証し、件数も検証する<br>
      *
+     * @since 0.1.0
+     *
      * @param expectedMsgs
      *                     期待するログメッセージ
      * @param actualMsgs
@@ -43,6 +45,8 @@ public final class LogAssertions {
      * <p>
      * インスタンス化しない。
      * </p>
+     *
+     * @since 0.1.0
      */
     private LogAssertions() {
 

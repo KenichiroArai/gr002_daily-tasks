@@ -24,6 +24,8 @@ public interface CarryoverService {
      * 差分モードでは、Issue 番号が大きい順の最新の指定件数（設定の recentCount）を除き、保存済みの JSON と更新日時が同じ Issue は解析しない。
      * </p>
      *
+     * @since 0.1.0
+     *
      * @param properties
      *                   持ち越しの収集の設定
      * @param full

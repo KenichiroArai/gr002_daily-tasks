@@ -25,31 +25,61 @@ public class CarryoverPropertiesModel {
 
     /* オリジナル */
 
-    /** 出力先のディレクトリ（例: docs/data） */
+    /**
+     * 出力先のディレクトリ（例: docs/data）
+     *
+     * @since 0.1.0
+     */
     private final String dataDir;
 
-    /** 出力先のディレクトリのパス */
+    /**
+     * 出力先のディレクトリのパス
+     *
+     * @since 0.1.0
+     */
     private final Path dataDirPath;
 
-    /** 標準時間の設定ファイル（例: config/default-minutes.json） */
+    /**
+     * 標準時間の設定ファイル（例: config/default-minutes.json）
+     *
+     * @since 0.1.0
+     */
     private final String defaultMinutesFile;
 
-    /** 標準時間の設定ファイルのパス */
+    /**
+     * 標準時間の設定ファイルのパス
+     *
+     * @since 0.1.0
+     */
     private final Path defaultMinutesFilePath;
 
-    /** 差分モードで更新日時に関係なく解析し直す最新の Issue の件数 */
+    /**
+     * 差分モードで更新日時に関係なく解析し直す最新の Issue の件数
+     *
+     * @since 0.1.0
+     */
     private final int recentCount;
 
     /* 変換後 */
 
-    /** 対象リポジトリ（owner/name） */
+    /**
+     * 対象リポジトリ（owner/name）
+     *
+     * @since 0.1.0
+     */
     private final String repository;
 
-    /** GitHub API のトークン。未設定の場合は空文字 */
+    /**
+     * GitHub API のトークン。未設定の場合は空文字
+     *
+     * @since 0.1.0
+     */
     private final String token;
 
     /**
      * コンストラクタ<br>
+     *
+     * @since 0.1.0
      *
      * @param repository
      *                           対象リポジトリ（owner/name）
@@ -81,6 +111,8 @@ public class CarryoverPropertiesModel {
     /**
      * 出力先のディレクトリを返す<br>
      *
+     * @since 0.1.0
+     *
      * @return 出力先のディレクトリ
      */
     public Path getDataDir() {
@@ -92,6 +124,8 @@ public class CarryoverPropertiesModel {
 
     /**
      * 標準時間の設定ファイルを返す<br>
+     *
+     * @since 0.1.0
      *
      * @return 標準時間の設定ファイル
      */
@@ -105,6 +139,8 @@ public class CarryoverPropertiesModel {
     /**
      * 差分モードで更新日時に関係なく解析し直す最新の Issue の件数を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return 差分モードで更新日時に関係なく解析し直す最新の Issue の件数
      */
     public int getRecentCount() {
@@ -117,6 +153,8 @@ public class CarryoverPropertiesModel {
     /**
      * 対象リポジトリを返す<br>
      *
+     * @since 0.1.0
+     *
      * @return 対象リポジトリ（owner/name）
      */
     public String getRepository() {
@@ -128,6 +166,8 @@ public class CarryoverPropertiesModel {
 
     /**
      * GitHub API のトークンを返す<br>
+     *
+     * @since 0.1.0
      *
      * @return GitHub API のトークン。未設定の場合は空文字
      */
@@ -143,6 +183,8 @@ public class CarryoverPropertiesModel {
      * <p>
      * トークンは含めない。
      * </p>
+     *
+     * @since 0.1.0
      *
      * @return 文字列表現
      */

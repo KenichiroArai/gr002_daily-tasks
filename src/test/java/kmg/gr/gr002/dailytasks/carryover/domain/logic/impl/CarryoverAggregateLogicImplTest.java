@@ -28,6 +28,8 @@ public class CarryoverAggregateLogicImplTest {
     /**
      * テスト用の解析結果を作成する<br>
      *
+     * @since 0.1.0
+     *
      * @param number
      *                 Issue 番号
      * @param date
@@ -51,6 +53,8 @@ public class CarryoverAggregateLogicImplTest {
     /**
      * テスト用の持ち越し項目を作成する<br>
      *
+     * @since 0.1.0
+     *
      * @param name
      *             項目名
      *
@@ -66,6 +70,8 @@ public class CarryoverAggregateLogicImplTest {
 
     /**
      * aggregate メソッドのテスト - 正常系:対象セクションが現れた日以降を日付順に集計する場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testAggregate_normalFromFirstSection() {
@@ -108,6 +114,8 @@ public class CarryoverAggregateLogicImplTest {
 
     /**
      * aggregate メソッドのテスト - 準正常系:解析結果がない場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testAggregate_semiEmpty() {

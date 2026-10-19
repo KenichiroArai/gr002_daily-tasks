@@ -19,6 +19,8 @@ public class Gr002ValMsgTypesTest {
 
     /**
      * get メソッドのテスト - 正常系:指定無しのキーを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGet_normalNone() {
@@ -42,6 +44,8 @@ public class Gr002ValMsgTypesTest {
 
     /**
      * getCode メソッドのテスト - 正常系:指定無しのコードを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetCode_normalNone() {
@@ -65,6 +69,8 @@ public class Gr002ValMsgTypesTest {
 
     /**
      * getDefault メソッドのテスト - 正常系:指定無しを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDefault_normalNone() {
@@ -85,6 +91,8 @@ public class Gr002ValMsgTypesTest {
 
     /**
      * getDetail メソッドのテスト - 正常系:指定無しの詳細
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDetail_normalNone() {
@@ -108,6 +116,8 @@ public class Gr002ValMsgTypesTest {
 
     /**
      * getDisplayName メソッドのテスト - 正常系:指定無しの表示名
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDisplayName_normalNone() {
@@ -131,6 +141,8 @@ public class Gr002ValMsgTypesTest {
 
     /**
      * getEnum メソッドのテスト - 正常系:指定無しのキーから種類を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetEnum_normalNone() {
@@ -154,6 +166,8 @@ public class Gr002ValMsgTypesTest {
 
     /**
      * getEnum メソッドのテスト - 準正常系:不明なキーの場合は指定無しを返す
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetEnum_semiUnknownKey() {
@@ -177,6 +191,8 @@ public class Gr002ValMsgTypesTest {
 
     /**
      * getInitValue メソッドのテスト - 正常系:指定無しを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetInitValue_normalNone() {
@@ -197,6 +213,8 @@ public class Gr002ValMsgTypesTest {
 
     /**
      * getKey メソッドのテスト - 正常系:指定無しのキー
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetKey_normalNone() {
@@ -220,6 +238,8 @@ public class Gr002ValMsgTypesTest {
 
     /**
      * getValue メソッドのテスト - 正常系:指定無しの文面
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetValue_normalNone() {
@@ -243,6 +263,8 @@ public class Gr002ValMsgTypesTest {
 
     /**
      * toString メソッドのテスト - 正常系:指定無しのキー
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToString_normalNone() {

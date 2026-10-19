@@ -16,20 +16,38 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 })
 public class ItemStatJsonDto {
 
-    /** チェック済みの件数 */
+    /**
+     * チェック済みの件数
+     *
+     * @since 0.1.0
+     */
     private final int checkedCount;
 
-    /** チェック済みの残り時間（分） */
+    /**
+     * チェック済みの残り時間（分）
+     *
+     * @since 0.1.0
+     */
     private final double checkedMinutes;
 
-    /** 件数 */
+    /**
+     * 件数
+     *
+     * @since 0.1.0
+     */
     private final int count;
 
-    /** 残り時間（分） */
+    /**
+     * 残り時間（分）
+     *
+     * @since 0.1.0
+     */
     private final double minutes;
 
     /**
      * コンストラクタ<br>
+     *
+     * @since 0.1.0
      *
      * @param count
      *                       件数
@@ -52,6 +70,8 @@ public class ItemStatJsonDto {
     /**
      * チェック済みの件数を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return チェック済みの件数
      */
     public int getCheckedCount() {
@@ -63,6 +83,8 @@ public class ItemStatJsonDto {
 
     /**
      * チェック済みの残り時間（分）を返す<br>
+     *
+     * @since 0.1.0
      *
      * @return チェック済みの残り時間（分）
      */
@@ -76,6 +98,8 @@ public class ItemStatJsonDto {
     /**
      * 件数を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return 件数
      */
     public int getCount() {
@@ -87,6 +111,8 @@ public class ItemStatJsonDto {
 
     /**
      * 残り時間（分）を返す<br>
+     *
+     * @since 0.1.0
      *
      * @return 残り時間（分）
      */

@@ -20,6 +20,8 @@ public class CarryoverItemJsonDtoTest {
     /**
      * テスト対象を作成する<br>
      *
+     * @since 0.1.0
+     *
      * @return テスト対象
      */
     private static CarryoverItemJsonDto createTarget() {
@@ -32,6 +34,8 @@ public class CarryoverItemJsonDtoTest {
 
     /**
      * getMinutes メソッドのテスト - 正常系:残り時間を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetMinutes_normalValue() {
@@ -55,6 +59,8 @@ public class CarryoverItemJsonDtoTest {
 
     /**
      * getMinutesSource メソッドのテスト - 正常系:残り時間の取得元を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetMinutesSource_normalValue() {
@@ -78,6 +84,8 @@ public class CarryoverItemJsonDtoTest {
 
     /**
      * getName メソッドのテスト - 正常系:項目名を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetName_normalValue() {
@@ -101,6 +109,8 @@ public class CarryoverItemJsonDtoTest {
 
     /**
      * getOriginDate メソッドのテスト - 正常系:持ち越し元の日付を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetOriginDate_normalValue() {
@@ -124,6 +134,8 @@ public class CarryoverItemJsonDtoTest {
 
     /**
      * getRaw メソッドのテスト - 正常系:元の行を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetRaw_normalValue() {
@@ -147,6 +159,8 @@ public class CarryoverItemJsonDtoTest {
 
     /**
      * getSection メソッドのテスト - 正常系:セクション名を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetSection_normalValue() {
@@ -170,6 +184,8 @@ public class CarryoverItemJsonDtoTest {
 
     /**
      * isChecked メソッドのテスト - 正常系:チェック済みを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testIsChecked_normalChecked() {

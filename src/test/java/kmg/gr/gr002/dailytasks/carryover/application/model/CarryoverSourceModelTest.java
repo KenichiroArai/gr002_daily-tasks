@@ -22,6 +22,8 @@ public class CarryoverSourceModelTest {
     /**
      * テスト対象を作成する<br>
      *
+     * @since 0.1.0
+     *
      * @return テスト対象
      */
     private static CarryoverSourceModel createTarget() {
@@ -34,6 +36,8 @@ public class CarryoverSourceModelTest {
 
     /**
      * getDataDir メソッドのテスト - 正常系:保存先のディレクトリを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDataDir_normalValue() {
@@ -57,6 +61,8 @@ public class CarryoverSourceModelTest {
 
     /**
      * getDefaultMinutesFile メソッドのテスト - 正常系:標準時間の設定ファイルを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDefaultMinutesFile_normalValue() {
@@ -80,6 +86,8 @@ public class CarryoverSourceModelTest {
 
     /**
      * getRepository メソッドのテスト - 正常系:対象リポジトリを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetRepository_normalValue() {
@@ -103,6 +111,8 @@ public class CarryoverSourceModelTest {
 
     /**
      * getToken メソッドのテスト - 正常系:トークンを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetToken_normalValue() {
@@ -126,6 +136,8 @@ public class CarryoverSourceModelTest {
 
     /**
      * toString メソッドのテスト - 正常系:トークンを含めない場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToString_normalWithoutToken() {

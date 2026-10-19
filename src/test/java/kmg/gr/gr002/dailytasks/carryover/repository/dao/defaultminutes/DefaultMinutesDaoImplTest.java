@@ -31,6 +31,8 @@ public class DefaultMinutesDaoImplTest {
     /**
      * テスト対象を作成する<br>
      *
+     * @since 0.1.0
+     *
      * @return テスト対象
      */
     private static DefaultMinutesDaoImpl createTarget() {
@@ -42,12 +44,18 @@ public class DefaultMinutesDaoImplTest {
 
     }
 
-    /** テスト用の一時ディレクトリ */
+    /**
+     * テスト用の一時ディレクトリ
+     *
+     * @since 0.1.0
+     */
     @TempDir
     Path tempDir;
 
     /**
      * load メソッドのテスト - 異常系:設定ファイルが不正な場合
+     *
+     * @since 0.1.0
      *
      * @throws IOException
      *                     入出力エラーが発生した場合
@@ -76,6 +84,8 @@ public class DefaultMinutesDaoImplTest {
     /**
      * load メソッドのテスト - 正常系:設定ファイルを読み込む場合
      *
+     * @since 0.1.0
+     *
      * @throws IOException
      *                     入出力エラーが発生した場合
      */
@@ -103,6 +113,8 @@ public class DefaultMinutesDaoImplTest {
 
     /**
      * load メソッドのテスト - 準正常系:設定ファイルがない場合
+     *
+     * @since 0.1.0
      *
      * @throws IOException
      *                     入出力エラーが発生した場合

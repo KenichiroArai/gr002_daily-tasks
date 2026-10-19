@@ -41,11 +41,17 @@ import kmg.gr.gr002.dailytasks.carryover.presentation.service.CarryoverService;
 @Service
 public class CarryoverServiceImpl implements CarryoverService {
 
-    /** ロガー */
+    /**
+     * ロガー
+     *
+     * @since 0.1.0
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(CarryoverServiceImpl.class);
 
     /**
      * 残り時間の取得元ごとの行数を返す<br>
+     *
+     * @since 0.1.0
      *
      * @param issues
      *               解析結果
@@ -64,6 +70,8 @@ public class CarryoverServiceImpl implements CarryoverService {
 
     /**
      * Issue を解析し直す必要があるかを返す<br>
+     *
+     * @since 0.1.0
      *
      * @param full
      *                    全件モードか
@@ -107,6 +115,8 @@ public class CarryoverServiceImpl implements CarryoverService {
     /**
      * Issue 番号が大きい順に指定件数を選んだときの、最小の Issue 番号を返す<br>
      *
+     * @since 0.1.0
+     *
      * @param issues
      *               取得した Issue
      * @param count
@@ -125,6 +135,8 @@ public class CarryoverServiceImpl implements CarryoverService {
     /**
      * presentation 層から引き継いだ設定を application 層のデータの取得元に変換する<br>
      *
+     * @since 0.1.0
+     *
      * @param properties
      *                   持ち越しの収集の設定
      *
@@ -138,19 +150,35 @@ public class CarryoverServiceImpl implements CarryoverService {
 
     }
 
-    /** 日別の集計 */
+    /**
+     * 日別の集計
+     *
+     * @since 0.1.0
+     */
     @Autowired
     private CarryoverAggregateLogic carryoverAggregateLogic;
 
-    /** 持ち越しのデータの取得・保存 */
+    /**
+     * 持ち越しのデータの取得・保存
+     *
+     * @since 0.1.0
+     */
     @Autowired
     private CarryoverIssueLogic carryoverIssueLogic;
 
-    /** Issue 本文の解析 */
+    /**
+     * Issue 本文の解析
+     *
+     * @since 0.1.0
+     */
     @Autowired
     private CarryoverParseLogic carryoverParseLogic;
 
-    /** メッセージの取得 */
+    /**
+     * メッセージの取得
+     *
+     * @since 0.1.0
+     */
     @Autowired
     private MessageLogic messageLogic;
 
@@ -159,6 +187,8 @@ public class CarryoverServiceImpl implements CarryoverService {
      * <p>
      * 差分モードでは、Issue 番号が大きい順の最新の指定件数（設定の recentCount）を除き、保存済みの JSON と更新日時が同じ Issue は解析しない。
      * </p>
+     *
+     * @since 0.1.0
      *
      * @param properties
      *                   持ち越しの収集の設定
@@ -226,6 +256,8 @@ public class CarryoverServiceImpl implements CarryoverService {
 
     /**
      * ログに出すモードの名前を返す<br>
+     *
+     * @since 0.1.0
      *
      * @param full
      *             全件モードか

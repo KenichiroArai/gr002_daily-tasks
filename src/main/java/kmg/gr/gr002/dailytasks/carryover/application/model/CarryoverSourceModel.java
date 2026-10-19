@@ -18,20 +18,38 @@ import kmg.gr.gr002.dailytasks.carryover.application.types.CarryoverSourceFormat
  */
 public class CarryoverSourceModel {
 
-    /** 解析結果と集計の保存先のディレクトリ（例: docs/data） */
+    /**
+     * 解析結果と集計の保存先のディレクトリ（例: docs/data）
+     *
+     * @since 0.1.0
+     */
     private final Path dataDir;
 
-    /** 標準時間の設定ファイル（例: config/default-minutes.json） */
+    /**
+     * 標準時間の設定ファイル（例: config/default-minutes.json）
+     *
+     * @since 0.1.0
+     */
     private final Path defaultMinutesFile;
 
-    /** Issue を取得するリポジトリ（owner/name） */
+    /**
+     * Issue を取得するリポジトリ（owner/name）
+     *
+     * @since 0.1.0
+     */
     private final String repository;
 
-    /** GitHub API のトークン。未指定の場合は null */
+    /**
+     * GitHub API のトークン。未指定の場合は null
+     *
+     * @since 0.1.0
+     */
     private final String token;
 
     /**
      * コンストラクタ<br>
+     *
+     * @since 0.1.0
      *
      * @param repository
      *                           Issue を取得するリポジトリ（owner/name）
@@ -55,6 +73,8 @@ public class CarryoverSourceModel {
     /**
      * 解析結果と集計の保存先のディレクトリを返す<br>
      *
+     * @since 0.1.0
+     *
      * @return 保存先のディレクトリ
      */
     public Path getDataDir() {
@@ -66,6 +86,8 @@ public class CarryoverSourceModel {
 
     /**
      * 標準時間の設定ファイルを返す<br>
+     *
+     * @since 0.1.0
      *
      * @return 標準時間の設定ファイル
      */
@@ -79,6 +101,8 @@ public class CarryoverSourceModel {
     /**
      * Issue を取得するリポジトリを返す<br>
      *
+     * @since 0.1.0
+     *
      * @return Issue を取得するリポジトリ（owner/name）
      */
     public String getRepository() {
@@ -90,6 +114,8 @@ public class CarryoverSourceModel {
 
     /**
      * GitHub API のトークンを返す<br>
+     *
+     * @since 0.1.0
      *
      * @return GitHub API のトークン。未指定の場合は null
      */
@@ -105,6 +131,8 @@ public class CarryoverSourceModel {
      * <p>
      * トークンは含めない。
      * </p>
+     *
+     * @since 0.1.0
      *
      * @return 文字列表現
      */

@@ -52,20 +52,38 @@ public class CarryoverIssueLogicImplTest {
      */
     private static final class StubCarryoverDataDao implements CarryoverDataDao {
 
-        /** 最後に受け取った出力先のディレクトリ */
+        /**
+         * 最後に受け取った出力先のディレクトリ
+         *
+         * @since 0.1.0
+         */
         private Path dataDir;
 
-        /** 読み込み結果として返す解析結果 */
+        /**
+         * 読み込み結果として返す解析結果
+         *
+         * @since 0.1.0
+         */
         private final Map<Integer, CarryoverIssueDto> issues;
 
-        /** 保存された解析結果 */
+        /**
+         * 保存された解析結果
+         *
+         * @since 0.1.0
+         */
         private final List<CarryoverIssueDto> savedIssues = new ArrayList<>();
 
-        /** 保存された集計 */
+        /**
+         * 保存された集計
+         *
+         * @since 0.1.0
+         */
         private CarryoverSummaryDto savedSummary;
 
         /**
          * コンストラクタ<br>
+         *
+         * @since 0.1.0
          *
          * @param issues
          *               読み込み結果として返す解析結果
@@ -79,6 +97,8 @@ public class CarryoverIssueLogicImplTest {
         /**
          * 最後に受け取った出力先のディレクトリを返す<br>
          *
+         * @since 0.1.0
+         *
          * @return 最後に受け取った出力先のディレクトリ
          */
         private Path getDataDir() {
@@ -90,6 +110,8 @@ public class CarryoverIssueLogicImplTest {
 
         /**
          * 保存された解析結果を返す<br>
+         *
+         * @since 0.1.0
          *
          * @return 保存された解析結果
          */
@@ -103,6 +125,8 @@ public class CarryoverIssueLogicImplTest {
         /**
          * 保存された集計を返す<br>
          *
+         * @since 0.1.0
+         *
          * @return 保存された集計
          */
         private CarryoverSummaryDto getSavedSummary() {
@@ -114,6 +138,8 @@ public class CarryoverIssueLogicImplTest {
 
         /**
          * 出力先のディレクトリを記録し、設定した解析結果を返す<br>
+         *
+         * @since 0.1.0
          *
          * @param targetDir
          *                  出力先のディレクトリ
@@ -132,6 +158,8 @@ public class CarryoverIssueLogicImplTest {
         /**
          * 出力先のディレクトリと解析結果を記録する<br>
          *
+         * @since 0.1.0
+         *
          * @param targetDir
          *                  出力先のディレクトリ
          * @param issue
@@ -147,6 +175,8 @@ public class CarryoverIssueLogicImplTest {
 
         /**
          * 出力先のディレクトリと集計を記録する<br>
+         *
+         * @since 0.1.0
          *
          * @param targetDir
          *                  出力先のディレクトリ
@@ -174,14 +204,24 @@ public class CarryoverIssueLogicImplTest {
      */
     private static final class StubDefaultMinutesDao implements DefaultMinutesDao {
 
-        /** 受け取った設定ファイルのパス */
+        /**
+         * 受け取った設定ファイルのパス
+         *
+         * @since 0.1.0
+         */
         private Path configFile;
 
-        /** 返す標準時間 */
+        /**
+         * 返す標準時間
+         *
+         * @since 0.1.0
+         */
         private final Map<String, Double> minutesByName;
 
         /**
          * コンストラクタ<br>
+         *
+         * @since 0.1.0
          *
          * @param minutesByName
          *                      返す標準時間
@@ -195,6 +235,8 @@ public class CarryoverIssueLogicImplTest {
         /**
          * 受け取った設定ファイルのパスを返す<br>
          *
+         * @since 0.1.0
+         *
          * @return 受け取った設定ファイルのパス
          */
         private Path getConfigFile() {
@@ -206,6 +248,8 @@ public class CarryoverIssueLogicImplTest {
 
         /**
          * 設定ファイルのパスを記録し、設定した標準時間を返す<br>
+         *
+         * @since 0.1.0
          *
          * @param file
          *             設定ファイルのパス
@@ -234,14 +278,24 @@ public class CarryoverIssueLogicImplTest {
      */
     private static final class StubGitHubIssueApi implements GitHubIssueApi {
 
-        /** 返す Issue */
+        /**
+         * 返す Issue
+         *
+         * @since 0.1.0
+         */
         private final List<GitHubIssueDto> issues;
 
-        /** 受け取った接続設定 */
+        /**
+         * 受け取った接続設定
+         *
+         * @since 0.1.0
+         */
         private GitHubSettingsDto settings;
 
         /**
          * コンストラクタ<br>
+         *
+         * @since 0.1.0
          *
          * @param issues
          *               返す Issue
@@ -254,6 +308,8 @@ public class CarryoverIssueLogicImplTest {
 
         /**
          * 接続設定を記録し、設定した Issue を返す<br>
+         *
+         * @since 0.1.0
          *
          * @param gitHubSettings
          *                       接続設定
@@ -272,6 +328,8 @@ public class CarryoverIssueLogicImplTest {
         /**
          * 受け取った接続設定を返す<br>
          *
+         * @since 0.1.0
+         *
          * @return 受け取った接続設定
          */
         private GitHubSettingsDto getSettings() {
@@ -286,6 +344,8 @@ public class CarryoverIssueLogicImplTest {
     /**
      * データの取得元と保存先を作成する<br>
      *
+     * @since 0.1.0
+     *
      * @return データの取得元と保存先
      */
     private static CarryoverSourceModel createSource() {
@@ -298,6 +358,8 @@ public class CarryoverIssueLogicImplTest {
 
     /**
      * テスト対象を作成する<br>
+     *
+     * @since 0.1.0
      *
      * @param gitHubIssueApi
      *                          GitHub の Issue の取得
@@ -324,6 +386,8 @@ public class CarryoverIssueLogicImplTest {
 
     /**
      * fetchAllIssues メソッドのテスト - 正常系:取得した Issue をモデルに変換する場合
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   取得に失敗した場合
@@ -354,6 +418,8 @@ public class CarryoverIssueLogicImplTest {
 
     /**
      * fetchAllIssues メソッドのテスト - 正常系:データの取得元を接続設定に変換して渡す場合
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   取得に失敗した場合
@@ -386,6 +452,8 @@ public class CarryoverIssueLogicImplTest {
     /**
      * loadDefaultMinutes メソッドのテスト - 正常系:標準時間をモデルに変換する場合
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   読み込みに失敗した場合
      */
@@ -417,6 +485,8 @@ public class CarryoverIssueLogicImplTest {
 
     /**
      * loadIssues メソッドのテスト - 正常系:保存済みの解析結果をモデルに変換する場合
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   読み込みに失敗した場合
@@ -454,6 +524,8 @@ public class CarryoverIssueLogicImplTest {
     /**
      * saveIssue メソッドのテスト - 正常系:解析結果を DTO に変換して保存する場合
      *
+     * @since 0.1.0
+     *
      * @throws Exception
      *                   書き込みに失敗した場合
      */
@@ -488,6 +560,8 @@ public class CarryoverIssueLogicImplTest {
 
     /**
      * saveSummary メソッドのテスト - 正常系:集計を DTO に変換して保存する場合
+     *
+     * @since 0.1.0
      *
      * @throws Exception
      *                   書き込みに失敗した場合

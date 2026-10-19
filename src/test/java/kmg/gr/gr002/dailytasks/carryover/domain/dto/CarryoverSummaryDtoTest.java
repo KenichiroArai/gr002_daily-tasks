@@ -23,6 +23,8 @@ public class CarryoverSummaryDtoTest {
     /**
      * テスト対象を作成する<br>
      *
+     * @since 0.1.0
+     *
      * @return テスト対象
      */
     private static CarryoverSummaryDto createTarget() {
@@ -37,6 +39,8 @@ public class CarryoverSummaryDtoTest {
 
     /**
      * getDays メソッドのテスト - 正常系:日別の集計を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDays_normalValue() {
@@ -60,6 +64,8 @@ public class CarryoverSummaryDtoTest {
 
     /**
      * getItems メソッドのテスト - 正常系:項目名を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetItems_normalValue() {
@@ -83,6 +89,8 @@ public class CarryoverSummaryDtoTest {
 
     /**
      * getLatestIssue メソッドのテスト - 正常系:最新の Issue 番号を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetLatestIssue_normalValue() {

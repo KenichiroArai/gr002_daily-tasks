@@ -35,6 +35,8 @@ public class CarryoverJsonConvertLogicTest {
     /**
      * 解析結果の DTO を作成する<br>
      *
+     * @since 0.1.0
+     *
      * @return 解析結果の DTO
      */
     private static CarryoverIssueDto createIssueDto() {
@@ -50,6 +52,8 @@ public class CarryoverJsonConvertLogicTest {
     /**
      * JSON の形の解析結果を作成する<br>
      *
+     * @since 0.1.0
+     *
      * @return JSON の形の解析結果
      */
     private static CarryoverIssueJsonDto createIssueJson() {
@@ -64,6 +68,8 @@ public class CarryoverJsonConvertLogicTest {
 
     /**
      * 画面用の集計の DTO を作成する<br>
+     *
+     * @since 0.1.0
      *
      * @return 画面用の集計の DTO
      */
@@ -83,6 +89,8 @@ public class CarryoverJsonConvertLogicTest {
 
     /**
      * toCarryoverIssueDto メソッドのテスト - 正常系:Issue の項目を引き継ぐ場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToCarryoverIssueDto_normalIssue() {
@@ -106,6 +114,8 @@ public class CarryoverJsonConvertLogicTest {
 
     /**
      * toCarryoverIssueDto メソッドのテスト - 正常系:持ち越し項目を引き継ぐ場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToCarryoverIssueDto_normalItem() {
@@ -129,6 +139,8 @@ public class CarryoverJsonConvertLogicTest {
 
     /**
      * toCarryoverIssueJson メソッドのテスト - 正常系:件数を引き継ぐ場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToCarryoverIssueJson_normalCount() {
@@ -152,6 +164,8 @@ public class CarryoverJsonConvertLogicTest {
 
     /**
      * toCarryoverIssueJson メソッドのテスト - 正常系:持ち越し項目を引き継ぐ場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToCarryoverIssueJson_normalItem() {
@@ -175,6 +189,8 @@ public class CarryoverJsonConvertLogicTest {
 
     /**
      * toCarryoverSummaryJson メソッドのテスト - 正常系:項目ごとの集計を並び順のまま変換する場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToCarryoverSummaryJson_normalByItem() {
@@ -198,6 +214,8 @@ public class CarryoverJsonConvertLogicTest {
 
     /**
      * toCarryoverSummaryJson メソッドのテスト - 正常系:持ち越し元の月ごとの集計を変換する場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToCarryoverSummaryJson_normalByOriginMonth() {
@@ -222,6 +240,8 @@ public class CarryoverJsonConvertLogicTest {
 
     /**
      * toCarryoverSummaryJson メソッドのテスト - 正常系:日別の集計の項目を引き継ぐ場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToCarryoverSummaryJson_normalDay() {
@@ -246,6 +266,8 @@ public class CarryoverJsonConvertLogicTest {
 
     /**
      * toCarryoverSummaryJson メソッドのテスト - 正常系:最新の Issue 番号を引き継ぐ場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToCarryoverSummaryJson_normalLatestIssue() {
@@ -269,6 +291,8 @@ public class CarryoverJsonConvertLogicTest {
 
     /**
      * toCarryoverSummaryJson メソッドのテスト - 正常系:日別の全体の集計を変換する場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToCarryoverSummaryJson_normalTotal() {

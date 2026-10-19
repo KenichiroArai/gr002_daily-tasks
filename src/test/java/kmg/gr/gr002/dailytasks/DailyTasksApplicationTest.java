@@ -26,6 +26,8 @@ public class DailyTasksApplicationTest {
 
     /**
      * main メソッドのテスト - 正常系:--help の場合は Spring Boot を起動して使い方を表示する
+     *
+     * @since 0.1.0
      */
     @Test
     public void testMain_normalHelp() {

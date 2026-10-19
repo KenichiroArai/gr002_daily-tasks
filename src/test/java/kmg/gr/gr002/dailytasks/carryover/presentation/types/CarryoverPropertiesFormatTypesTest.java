@@ -19,6 +19,8 @@ public class CarryoverPropertiesFormatTypesTest {
 
     /**
      * get メソッドのテスト - 正常系:文字列表現
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGet_normalValue() {
@@ -42,6 +44,8 @@ public class CarryoverPropertiesFormatTypesTest {
 
     /**
      * getDefault メソッドのテスト - 正常系:指定無しを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDefault_normalNone() {
@@ -62,6 +66,8 @@ public class CarryoverPropertiesFormatTypesTest {
 
     /**
      * getDetail メソッドのテスト - 正常系:文字列表現
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDetail_normalValue() {
@@ -85,6 +91,8 @@ public class CarryoverPropertiesFormatTypesTest {
 
     /**
      * getDisplayName メソッドのテスト - 正常系:文字列表現
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDisplayName_normalValue() {
@@ -108,6 +116,8 @@ public class CarryoverPropertiesFormatTypesTest {
 
     /**
      * getEnum メソッドのテスト - 正常系:文字列表現
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetEnum_normalValue() {
@@ -132,6 +142,8 @@ public class CarryoverPropertiesFormatTypesTest {
 
     /**
      * getEnum メソッドのテスト - 準正常系:不明なキーの場合は指定無しを返す
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetEnum_semiUnknownKey() {
@@ -155,6 +167,8 @@ public class CarryoverPropertiesFormatTypesTest {
 
     /**
      * getInitValue メソッドのテスト - 正常系:指定無しを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetInitValue_normalNone() {
@@ -175,6 +189,8 @@ public class CarryoverPropertiesFormatTypesTest {
 
     /**
      * getKey メソッドのテスト - 正常系:文字列表現
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetKey_normalValue() {
@@ -198,6 +214,8 @@ public class CarryoverPropertiesFormatTypesTest {
 
     /**
      * toString メソッドのテスト - 正常系:文字列表現
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToString_normalValue() {

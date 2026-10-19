@@ -321,7 +321,13 @@ java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.1.0.jar --full
 
 ### Javadoc
 
-- 修飾子に限らず必須
+- 修飾子に限らず必須。対象は package-info、クラス、インタフェース、enum、フィールド（インスタンス変数・クラス変数）、enum 定数、メソッド、コンストラクタ
+- 必須タグは次のとおり
+  - クラス、インタフェース、enum、package-info: `@author`、`@since`、`@version`
+  - フィールド、enum 定数、メソッド、コンストラクタ: `@since`
+  - メソッドとコンストラクタは、シグネチャに応じて `@param`（引数ごと）、`@return`（void 以外）、`@throws`（throws 句があるとき）も必須
+- `@since` は追加したときのバージョン、`@version` は型を更新したときのバージョンとする。Javadoc の追加だけでは `@version` を上げない
+- タグの間は空行で区切る。メソッドとコンストラクタのタグ順は `@since`、`@param`、`@return`、`@throws`、`@see`
 - 後述の「Javadoc のフォーマットルール」に従う
 
 ### アクセス修飾子
@@ -448,6 +454,8 @@ public boolean someMethod(String input) {
 ```java
 /**
  * targetMethod メソッドのテスト - 正常系:引数が1文字の場合
+ *
+ * @since 0.1.0
  */
 ```
 
@@ -520,25 +528,39 @@ public void testMethod() {
  * 複数行の説明の場合は、このように記述します。
  *
  * @author 作成者名
- * @version バージョン番号
- * @since いつからこのクラスが存在するか（例：0.1.0）
+ *
+ * @since 0.1.0
+ *
+ * @version 0.1.0
  */
 public class SampleClass {
 
-    /** フィールドの説明をここに書きます。 */
+    /**
+     * フィールドの説明をここに書きます。
+     *
+     * @since 0.1.0
+     */
     private String field;
 
     /**
      * メソッドの説明をここに書きます。
      * 処理の詳細や目的を記述します。
      *
-     * @param param1 最初のパラメータの説明
-     * @param param2 2番目のパラメータの説明
+     * @since 0.1.0
+     *
+     * @param param1
+     *                最初のパラメータの説明
+     * @param param2
+     *                2番目のパラメータの説明
+     *
      * @return 戻り値の説明
-     * @throws Exception1 例外が発生する条件の説明
-     * @throws Exception2 別の例外が発生する条件の説明
+     *
+     * @throws Exception1
+     *                    例外が発生する条件の説明
+     * @throws Exception2
+     *                    別の例外が発生する条件の説明
+     *
      * @see 関連するクラスやメソッドへの参照
-     * @deprecated 非推奨となった場合の説明（該当する場合）
      */
     public String sampleMethod(String param1, int param2) throws Exception {
         // メソッドの実装
@@ -566,7 +588,8 @@ public class SampleClass {
 ### 記述ガイドライン
 
 - 最初の文は要約文として簡潔に書く
-- フィールド（インスタンス変数・クラス変数・enum 定数）の Javadoc は `/** 説明 */` の 1 行で書く
+- フィールド（インスタンス変数・クラス変数）と enum 定数の Javadoc は複数行にし、説明と `@since` を書く。`@version` は付けない
+- `@since` にはそのメンバーを追加したバージョンを書く。型の `@version` は、その型の実装を更新したバージョンに上げる
 - 完全な文章で、技術的に正確に記述する
 - 必要な情報を漏れなく記載し、HTML タグを適切に使う
 
@@ -606,22 +629,51 @@ public class SampleClass {
 
 ### チーム統一フォーマット例
 
+クラス、インタフェース、enum、package-info:
+
 ```java
 /**
- * [クラス/メソッド/フィールドの名前]の説明
+ * [型の名前]の説明
  *
  * 詳細な説明（必要な場合）
  *
- * 業務ロジックの説明（必要な場合）
+ * @author KenichiroArai
  *
- * @author      作成者 <email@example.com>
- * @param       [引数名] [引数の説明]
- * @return      [戻り値の説明]
- * @throws      [例外クラス名] [例外の発生条件]
- * @see         [参照すべき他のクラスやメソッド]
- * @since       [追加されたバージョン]
- * @version     [現在のバージョン]
- * @deprecated  [非推奨となった理由と代替手段]（該当する場合）
+ * @since 0.1.0
+ *
+ * @version 0.1.0
+ */
+```
+
+フィールド、enum 定数:
+
+```java
+/**
+ * [フィールドの説明]
+ *
+ * @since 0.1.0
+ */
+```
+
+メソッド、コンストラクタ:
+
+```java
+/**
+ * [メソッドの説明]
+ *
+ * 詳細な説明（必要な場合）
+ *
+ * @since 0.1.0
+ *
+ * @param [引数名]
+ *                [引数の説明]
+ *
+ * @return [戻り値の説明]
+ *
+ * @throws [例外クラス名]
+ *                        [例外の発生条件]
+ *
+ * @see [参照すべき他のクラスやメソッド]
  */
 ```
 

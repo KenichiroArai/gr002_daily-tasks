@@ -20,6 +20,8 @@ public class GitHubSettingsDtoTest {
     /**
      * テスト対象を作成する<br>
      *
+     * @since 0.1.0
+     *
      * @return テスト対象
      */
     private static GitHubSettingsDto createTarget() {
@@ -31,6 +33,8 @@ public class GitHubSettingsDtoTest {
 
     /**
      * getRepository メソッドのテスト - 正常系:対象リポジトリを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetRepository_normalValue() {
@@ -54,6 +58,8 @@ public class GitHubSettingsDtoTest {
 
     /**
      * getToken メソッドのテスト - 正常系:トークンを返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetToken_normalValue() {
@@ -77,6 +83,8 @@ public class GitHubSettingsDtoTest {
 
     /**
      * toString メソッドのテスト - 正常系:トークンを含めない場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testToString_normalWithoutToken() {

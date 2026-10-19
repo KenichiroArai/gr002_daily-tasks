@@ -31,18 +31,34 @@ import kmg.gr.gr002.dailytasks.carryover.presentation.types.CommandOptionTypes;
 @Component
 public class CarryoverCommandImpl implements CarryoverCommand {
 
-    /** 持ち越しの収集・集計サービス */
+    /**
+     * 持ち越しの収集・集計サービス
+     *
+     * @since 0.1.0
+     */
     @Autowired
     private CarryoverService carryoverService;
 
-    /** メッセージの取得 */
+    /**
+     * メッセージの取得
+     *
+     * @since 0.1.0
+     */
     @Autowired
     private MessageLogic messageLogic;
 
-    /** 使い方の出力先 */
+    /**
+     * 使い方の出力先
+     *
+     * @since 0.1.0
+     */
     private PrintStream out;
 
-    /** 設定ファイルの値 */
+    /**
+     * 設定ファイルの値
+     *
+     * @since 0.1.0
+     */
     @Autowired
     private CarryoverPropertiesModel properties;
 
@@ -51,6 +67,8 @@ public class CarryoverCommandImpl implements CarryoverCommand {
      * <p>
      * 使い方は標準出力に出す。
      * </p>
+     *
+     * @since 0.1.0
      */
     public CarryoverCommandImpl() {
 
@@ -60,6 +78,8 @@ public class CarryoverCommandImpl implements CarryoverCommand {
 
     /**
      * コマンドライン引数を解析してオプションを返す<br>
+     *
+     * @since 0.1.0
      *
      * @param args
      *             コマンドライン引数
@@ -103,6 +123,8 @@ public class CarryoverCommandImpl implements CarryoverCommand {
 
     /**
      * Spring Boot の起動後にコマンドを実行する<br>
+     *
+     * @since 0.1.0
      *
      * @param args
      *             コマンドライン引数

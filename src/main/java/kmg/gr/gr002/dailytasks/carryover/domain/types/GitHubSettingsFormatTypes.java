@@ -19,16 +19,28 @@ public enum GitHubSettingsFormatTypes implements KmgCmnTypes<String> {
 
     /* 定義：開始 */
 
-    /** 指定無し */
+    /**
+     * 指定無し
+     *
+     * @since 0.1.0
+     */
     NONE("指定無し", "None", "指定無し", null),
 
-    /** 文字列表現 */
+    /**
+     * 文字列表現
+     *
+     * @since 0.1.0
+     */
     TO_STRING("文字列表現", "ToString", "トークンを含めない文字列表現", "GitHubSettingsDto[repository=%s]"),
 
     /* 定義：終了 */
     ;
 
-    /** 種類のマップ */
+    /**
+     * 種類のマップ
+     *
+     * @since 0.1.0
+     */
     private static final Map<String, GitHubSettingsFormatTypes> VALUES_MAP = new HashMap<>();
 
     static {
@@ -51,6 +63,8 @@ public enum GitHubSettingsFormatTypes implements KmgCmnTypes<String> {
     /**
      * デフォルトの種類を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return デフォルト値
      */
     public static GitHubSettingsFormatTypes getDefault() {
@@ -65,6 +79,8 @@ public enum GitHubSettingsFormatTypes implements KmgCmnTypes<String> {
      * <p>
      * 但し、キーが存在しない場合は、指定無し（NONE）を返す。
      * </p>
+     *
+     * @since 0.1.0
      *
      * @param key
      *            キー
@@ -87,6 +103,8 @@ public enum GitHubSettingsFormatTypes implements KmgCmnTypes<String> {
     /**
      * 初期値の種類を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return 初期値
      */
     public static GitHubSettingsFormatTypes getInitValue() {
@@ -96,20 +114,38 @@ public enum GitHubSettingsFormatTypes implements KmgCmnTypes<String> {
 
     }
 
-    /** 表示名 */
+    /**
+     * 表示名
+     *
+     * @since 0.1.0
+     */
     private final String displayName;
 
-    /** キー */
+    /**
+     * キー
+     *
+     * @since 0.1.0
+     */
     private final String key;
 
-    /** 詳細情報 */
+    /**
+     * 詳細情報
+     *
+     * @since 0.1.0
+     */
     private final String detail;
 
-    /** 書式 */
+    /**
+     * 書式
+     *
+     * @since 0.1.0
+     */
     private final String format;
 
     /**
      * コンストラクタ<br>
+     *
+     * @since 0.1.0
      *
      * @param displayName
      *                    表示名
@@ -132,6 +168,8 @@ public enum GitHubSettingsFormatTypes implements KmgCmnTypes<String> {
     /**
      * キーを返す。<br>
      *
+     * @since 0.1.0
+     *
      * @return キー
      *
      * @see #getKey()
@@ -146,6 +184,8 @@ public enum GitHubSettingsFormatTypes implements KmgCmnTypes<String> {
 
     /**
      * 詳細情報を返す。<br>
+     *
+     * @since 0.1.0
      *
      * @return 詳細情報
      */
@@ -163,6 +203,8 @@ public enum GitHubSettingsFormatTypes implements KmgCmnTypes<String> {
      * 識別するための表示名を返す。
      * </p>
      *
+     * @since 0.1.0
+     *
      * @return 表示名
      */
     @Override
@@ -176,6 +218,8 @@ public enum GitHubSettingsFormatTypes implements KmgCmnTypes<String> {
     /**
      * 書式を返す。<br>
      *
+     * @since 0.1.0
+     *
      * @return 書式
      */
     public String getFormat() {
@@ -187,6 +231,8 @@ public enum GitHubSettingsFormatTypes implements KmgCmnTypes<String> {
 
     /**
      * キーを返す。<br>
+     *
+     * @since 0.1.0
      *
      * @return キー
      */
@@ -200,6 +246,8 @@ public enum GitHubSettingsFormatTypes implements KmgCmnTypes<String> {
 
     /**
      * キーを返す。<br>
+     *
+     * @since 0.1.0
      *
      * @return キー
      *

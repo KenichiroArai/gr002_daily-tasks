@@ -41,16 +41,26 @@ import tools.jackson.databind.json.JsonMapper;
 @Repository
 public class CarryoverDataDaoImpl implements CarryoverDataDao {
 
-    /** DTO と JSON の形の変換 */
+    /**
+     * DTO と JSON の形の変換
+     *
+     * @since 0.1.0
+     */
     @Autowired
     private CarryoverJsonConvertLogic jsonConvertLogic;
 
-    /** JSON の変換 */
+    /**
+     * JSON の変換
+     *
+     * @since 0.1.0
+     */
     @Autowired
     private JsonMapper jsonMapper;
 
     /**
      * 改行を LF に統一した整形出力を作る<br>
+     *
+     * @since 0.1.0
      *
      * @return JSON の出力
      */
@@ -69,6 +79,8 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
 
     /**
      * 保存済みの Issue ごとの解析結果を読み込む<br>
+     *
+     * @since 0.1.0
      *
      * @param dataDir
      *                出力先のディレクトリ（例: docs/data）
@@ -111,6 +123,8 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
     /**
      * Issue ごとの解析結果の JSON ファイルを読み込む<br>
      *
+     * @since 0.1.0
+     *
      * @param path
      *             JSON ファイル
      *
@@ -143,6 +157,8 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
      * ファイル名は Issue 番号を 4 桁でゼロ埋めした名前（例: 0001.json）とする。
      * </p>
      *
+     * @since 0.1.0
+     *
      * @param dataDir
      *                出力先のディレクトリ（例: docs/data）
      * @param issue
@@ -164,6 +180,8 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
     /**
      * 画面用の集計を保存する<br>
      *
+     * @since 0.1.0
+     *
      * @param dataDir
      *                出力先のディレクトリ（例: docs/data）
      * @param summary
@@ -182,6 +200,8 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
 
     /**
      * オブジェクトを JSON ファイルに書き込む<br>
+     *
+     * @since 0.1.0
      *
      * @param path
      *              出力先

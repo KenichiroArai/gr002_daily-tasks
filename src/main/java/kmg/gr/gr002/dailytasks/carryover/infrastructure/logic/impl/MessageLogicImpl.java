@@ -24,12 +24,18 @@ import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
 @Component
 public class MessageLogicImpl implements MessageLogic {
 
-    /** メッセージの取得元 */
+    /**
+     * メッセージの取得元
+     *
+     * @since 0.1.0
+     */
     @Autowired
     private MessageSource messageSource;
 
     /**
      * メッセージを取得する<br>
+     *
+     * @since 0.1.0
      *
      * @param type
      *             メッセージの種類

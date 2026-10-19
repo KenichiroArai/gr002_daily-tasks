@@ -48,17 +48,31 @@ public class StubHttpClient extends HttpClient {
      */
     private static final class StubHttpResponse implements HttpResponse<String> {
 
-        /** 本文 */
+        /**
+         * 本文
+         *
+         * @since 0.1.0
+         */
         private final String body;
 
-        /** リクエスト */
+        /**
+         * リクエスト
+         *
+         * @since 0.1.0
+         */
         private final HttpRequest request;
 
-        /** ステータスコード */
+        /**
+         * ステータスコード
+         *
+         * @since 0.1.0
+         */
         private final int statusCode;
 
         /**
          * コンストラクタ<br>
+         *
+         * @since 0.1.0
          *
          * @param request
          *                   リクエスト
@@ -78,6 +92,8 @@ public class StubHttpClient extends HttpClient {
         /**
          * 本文を返す<br>
          *
+         * @since 0.1.0
+         *
          * @return 本文
          */
         @Override
@@ -90,6 +106,8 @@ public class StubHttpClient extends HttpClient {
 
         /**
          * ヘッダを返す<br>
+         *
+         * @since 0.1.0
          *
          * @return 空のヘッダ
          */
@@ -104,6 +122,8 @@ public class StubHttpClient extends HttpClient {
         /**
          * 前の応答を返す<br>
          *
+         * @since 0.1.0
+         *
          * @return 空
          */
         @Override
@@ -116,6 +136,8 @@ public class StubHttpClient extends HttpClient {
 
         /**
          * リクエストを返す<br>
+         *
+         * @since 0.1.0
          *
          * @return リクエスト
          */
@@ -130,6 +152,8 @@ public class StubHttpClient extends HttpClient {
         /**
          * SSL セッションを返す<br>
          *
+         * @since 0.1.0
+         *
          * @return 空
          */
         @Override
@@ -142,6 +166,8 @@ public class StubHttpClient extends HttpClient {
 
         /**
          * ステータスコードを返す<br>
+         *
+         * @since 0.1.0
          *
          * @return ステータスコード
          */
@@ -156,6 +182,8 @@ public class StubHttpClient extends HttpClient {
         /**
          * URI を返す<br>
          *
+         * @since 0.1.0
+         *
          * @return リクエストの URI
          */
         @Override
@@ -169,6 +197,8 @@ public class StubHttpClient extends HttpClient {
         /**
          * HTTP のバージョンを返す<br>
          *
+         * @since 0.1.0
+         *
          * @return HTTP/1.1
          */
         @Override
@@ -181,17 +211,31 @@ public class StubHttpClient extends HttpClient {
 
     }
 
-    /** send で投げる中断例外。null の場合は投げない */
+    /**
+     * send で投げる中断例外。null の場合は投げない
+     *
+     * @since 0.1.0
+     */
     private InterruptedException interruptedException;
 
-    /** 送信されたリクエスト */
+    /**
+     * 送信されたリクエスト
+     *
+     * @since 0.1.0
+     */
     private final List<HttpRequest> requests = new ArrayList<>();
 
-    /** 返す応答（ステータスコードと本文） */
+    /**
+     * 返す応答（ステータスコードと本文）
+     *
+     * @since 0.1.0
+     */
     private final Deque<Object[]> responses = new ArrayDeque<>();
 
     /**
      * 返す応答を追加する<br>
+     *
+     * @since 0.1.0
      *
      * @param statusCode
      *                   ステータスコード
@@ -213,6 +257,8 @@ public class StubHttpClient extends HttpClient {
     /**
      * 認証を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return 空
      */
     @Override
@@ -228,6 +274,8 @@ public class StubHttpClient extends HttpClient {
      * <p>
      * 通信を行わないため、何もしない。
      * </p>
+     *
+     * @since 0.1.0
      */
     @Override
     public void close() {
@@ -238,6 +286,8 @@ public class StubHttpClient extends HttpClient {
 
     /**
      * 接続タイムアウトを返す<br>
+     *
+     * @since 0.1.0
      *
      * @return 空
      */
@@ -252,6 +302,8 @@ public class StubHttpClient extends HttpClient {
     /**
      * Cookie ハンドラを返す<br>
      *
+     * @since 0.1.0
+     *
      * @return 空
      */
     @Override
@@ -264,6 +316,8 @@ public class StubHttpClient extends HttpClient {
 
     /**
      * エグゼキュータを返す<br>
+     *
+     * @since 0.1.0
      *
      * @return 空
      */
@@ -278,6 +332,8 @@ public class StubHttpClient extends HttpClient {
     /**
      * リダイレクトの方針を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return リダイレクトしない
      */
     @Override
@@ -291,6 +347,8 @@ public class StubHttpClient extends HttpClient {
     /**
      * 送信されたリクエストを返す<br>
      *
+     * @since 0.1.0
+     *
      * @return 送信されたリクエスト
      */
     public List<HttpRequest> getRequests() {
@@ -302,6 +360,8 @@ public class StubHttpClient extends HttpClient {
 
     /**
      * プロキシを返す<br>
+     *
+     * @since 0.1.0
      *
      * @return 空
      */
@@ -315,6 +375,8 @@ public class StubHttpClient extends HttpClient {
 
     /**
      * リクエストを記録し、登録した応答を返す<br>
+     *
+     * @since 0.1.0
      *
      * @param <T>
      *                    本文の型
@@ -353,6 +415,8 @@ public class StubHttpClient extends HttpClient {
     /**
      * 非同期送信（使用しない）<br>
      *
+     * @since 0.1.0
+     *
      * @param <T>
      *                            本文の型
      * @param request
@@ -375,6 +439,8 @@ public class StubHttpClient extends HttpClient {
 
     /**
      * プッシュ対応の非同期送信（使用しない）<br>
+     *
+     * @since 0.1.0
      *
      * @param <T>
      *                            本文の型
@@ -402,6 +468,8 @@ public class StubHttpClient extends HttpClient {
     /**
      * send で中断例外を投げるようにする<br>
      *
+     * @since 0.1.0
+     *
      * @param exception
      *                  中断例外
      */
@@ -413,6 +481,8 @@ public class StubHttpClient extends HttpClient {
 
     /**
      * SSL コンテキストを返す<br>
+     *
+     * @since 0.1.0
      *
      * @return null
      */
@@ -427,6 +497,8 @@ public class StubHttpClient extends HttpClient {
     /**
      * SSL パラメータを返す<br>
      *
+     * @since 0.1.0
+     *
      * @return null
      */
     @Override
@@ -439,6 +511,8 @@ public class StubHttpClient extends HttpClient {
 
     /**
      * HTTP のバージョンを返す<br>
+     *
+     * @since 0.1.0
      *
      * @return HTTP/1.1
      */

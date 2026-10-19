@@ -19,22 +19,42 @@ public enum CarryoverDataFormatTypes implements KmgCmnTypes<String> {
 
     /* 定義：開始 */
 
-    /** 指定無し */
+    /**
+     * 指定無し
+     *
+     * @since 0.1.0
+     */
     NONE("指定無し", "None", "指定無し", null),
 
-    /** インデント */
+    /**
+     * インデント
+     *
+     * @since 0.1.0
+     */
     INDENT("インデント", "Indent", "JSON 整形のインデント", "  "),
 
-    /** 改行 */
+    /**
+     * 改行
+     *
+     * @since 0.1.0
+     */
     LINE_FEED("改行", "LineFeed", "JSON の改行", "\n"),
 
-    /** Issue ファイル名の書式 */
+    /**
+     * Issue ファイル名の書式
+     *
+     * @since 0.1.0
+     */
     ISSUE_FILE_NAME("Issue ファイル名の書式", "IssueFileName", "Issue 番号を 4 桁でゼロ埋めする書式", "%04d%s"),
 
     /* 定義：終了 */
     ;
 
-    /** 種類のマップ */
+    /**
+     * 種類のマップ
+     *
+     * @since 0.1.0
+     */
     private static final Map<String, CarryoverDataFormatTypes> VALUES_MAP = new HashMap<>();
 
     static {
@@ -57,6 +77,8 @@ public enum CarryoverDataFormatTypes implements KmgCmnTypes<String> {
     /**
      * デフォルトの種類を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return デフォルト値
      */
     public static CarryoverDataFormatTypes getDefault() {
@@ -71,6 +93,8 @@ public enum CarryoverDataFormatTypes implements KmgCmnTypes<String> {
      * <p>
      * 但し、キーが存在しない場合は、指定無し（NONE）を返す。
      * </p>
+     *
+     * @since 0.1.0
      *
      * @param key
      *            キー
@@ -93,6 +117,8 @@ public enum CarryoverDataFormatTypes implements KmgCmnTypes<String> {
     /**
      * 初期値の種類を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return 初期値
      */
     public static CarryoverDataFormatTypes getInitValue() {
@@ -102,20 +128,38 @@ public enum CarryoverDataFormatTypes implements KmgCmnTypes<String> {
 
     }
 
-    /** 表示名 */
+    /**
+     * 表示名
+     *
+     * @since 0.1.0
+     */
     private final String displayName;
 
-    /** キー */
+    /**
+     * キー
+     *
+     * @since 0.1.0
+     */
     private final String key;
 
-    /** 詳細情報 */
+    /**
+     * 詳細情報
+     *
+     * @since 0.1.0
+     */
     private final String detail;
 
-    /** 出力書式 */
+    /**
+     * 出力書式
+     *
+     * @since 0.1.0
+     */
     private final String format;
 
     /**
      * コンストラクタ<br>
+     *
+     * @since 0.1.0
      *
      * @param displayName
      *                    表示名
@@ -138,6 +182,8 @@ public enum CarryoverDataFormatTypes implements KmgCmnTypes<String> {
     /**
      * キーを返す。<br>
      *
+     * @since 0.1.0
+     *
      * @return キー
      *
      * @see #getKey()
@@ -152,6 +198,8 @@ public enum CarryoverDataFormatTypes implements KmgCmnTypes<String> {
 
     /**
      * 詳細情報を返す。<br>
+     *
+     * @since 0.1.0
      *
      * @return 詳細情報
      */
@@ -169,6 +217,8 @@ public enum CarryoverDataFormatTypes implements KmgCmnTypes<String> {
      * 識別するための表示名を返す。
      * </p>
      *
+     * @since 0.1.0
+     *
      * @return 表示名
      */
     @Override
@@ -182,6 +232,8 @@ public enum CarryoverDataFormatTypes implements KmgCmnTypes<String> {
     /**
      * 出力書式を返す。<br>
      *
+     * @since 0.1.0
+     *
      * @return 出力書式
      */
     public String getFormat() {
@@ -193,6 +245,8 @@ public enum CarryoverDataFormatTypes implements KmgCmnTypes<String> {
 
     /**
      * キーを返す。<br>
+     *
+     * @since 0.1.0
      *
      * @return キー
      */
@@ -206,6 +260,8 @@ public enum CarryoverDataFormatTypes implements KmgCmnTypes<String> {
 
     /**
      * キーを返す。<br>
+     *
+     * @since 0.1.0
      *
      * @return キー
      *

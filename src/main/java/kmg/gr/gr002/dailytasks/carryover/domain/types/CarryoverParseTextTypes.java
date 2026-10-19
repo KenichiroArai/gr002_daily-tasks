@@ -19,25 +19,49 @@ public enum CarryoverParseTextTypes implements KmgCmnTypes<String> {
 
     /* 定義：開始 */
 
-    /** 指定無し */
+    /**
+     * 指定無し
+     *
+     * @since 0.1.0
+     */
     NONE("指定無し", "None", "指定無し", null),
 
-    /** 空文字 */
+    /**
+     * 空文字
+     *
+     * @since 0.1.0
+     */
     EMPTY("空文字", "Empty", "空文字", ""),
 
-    /** 未チェック */
+    /**
+     * 未チェック
+     *
+     * @since 0.1.0
+     */
     UNCHECKED("未チェック", "Unchecked", "未チェックのチェックボックス", " "),
 
-    /** 不明 */
+    /**
+     * 不明
+     *
+     * @since 0.1.0
+     */
     UNKNOWN("不明", "Unknown", "項目名が空の場合の名前", "不明"),
 
-    /** 日付の書式 */
+    /**
+     * 日付の書式
+     *
+     * @since 0.1.0
+     */
     DATE("日付の書式", "Date", "年・月・日を yyyy-MM-dd にする書式", "%04d-%02d-%02d"),
 
     /* 定義：終了 */
     ;
 
-    /** 種類のマップ */
+    /**
+     * 種類のマップ
+     *
+     * @since 0.1.0
+     */
     private static final Map<String, CarryoverParseTextTypes> VALUES_MAP = new HashMap<>();
 
     static {
@@ -60,6 +84,8 @@ public enum CarryoverParseTextTypes implements KmgCmnTypes<String> {
     /**
      * デフォルトの種類を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return デフォルト値
      */
     public static CarryoverParseTextTypes getDefault() {
@@ -74,6 +100,8 @@ public enum CarryoverParseTextTypes implements KmgCmnTypes<String> {
      * <p>
      * 但し、キーが存在しない場合は、指定無し（NONE）を返す。
      * </p>
+     *
+     * @since 0.1.0
      *
      * @param key
      *            キー
@@ -96,6 +124,8 @@ public enum CarryoverParseTextTypes implements KmgCmnTypes<String> {
     /**
      * 初期値の種類を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return 初期値
      */
     public static CarryoverParseTextTypes getInitValue() {
@@ -105,20 +135,38 @@ public enum CarryoverParseTextTypes implements KmgCmnTypes<String> {
 
     }
 
-    /** 表示名 */
+    /**
+     * 表示名
+     *
+     * @since 0.1.0
+     */
     private final String displayName;
 
-    /** キー */
+    /**
+     * キー
+     *
+     * @since 0.1.0
+     */
     private final String key;
 
-    /** 詳細情報 */
+    /**
+     * 詳細情報
+     *
+     * @since 0.1.0
+     */
     private final String detail;
 
-    /** 解析で使う文字列 */
+    /**
+     * 解析で使う文字列
+     *
+     * @since 0.1.0
+     */
     private final String text;
 
     /**
      * コンストラクタ<br>
+     *
+     * @since 0.1.0
      *
      * @param displayName
      *                    表示名
@@ -141,6 +189,8 @@ public enum CarryoverParseTextTypes implements KmgCmnTypes<String> {
     /**
      * キーを返す。<br>
      *
+     * @since 0.1.0
+     *
      * @return キー
      *
      * @see #getKey()
@@ -155,6 +205,8 @@ public enum CarryoverParseTextTypes implements KmgCmnTypes<String> {
 
     /**
      * 詳細情報を返す。<br>
+     *
+     * @since 0.1.0
      *
      * @return 詳細情報
      */
@@ -172,6 +224,8 @@ public enum CarryoverParseTextTypes implements KmgCmnTypes<String> {
      * 識別するための表示名を返す。
      * </p>
      *
+     * @since 0.1.0
+     *
      * @return 表示名
      */
     @Override
@@ -185,6 +239,8 @@ public enum CarryoverParseTextTypes implements KmgCmnTypes<String> {
     /**
      * 解析で使う文字列を返す。<br>
      *
+     * @since 0.1.0
+     *
      * @return 解析で使う文字列
      */
     public String getText() {
@@ -196,6 +252,8 @@ public enum CarryoverParseTextTypes implements KmgCmnTypes<String> {
 
     /**
      * キーを返す。<br>
+     *
+     * @since 0.1.0
      *
      * @return キー
      */
@@ -209,6 +267,8 @@ public enum CarryoverParseTextTypes implements KmgCmnTypes<String> {
 
     /**
      * キーを返す。<br>
+     *
+     * @since 0.1.0
      *
      * @return キー
      *

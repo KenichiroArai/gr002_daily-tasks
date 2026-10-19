@@ -24,13 +24,21 @@ public enum Gr002ValMsgTypes implements KmgFundCmnValMsgTypes, KmgFundCmnExcMsgT
 
     /* 定義：開始 */
 
-    /** 指定無し */
+    /**
+     * 指定無し
+     *
+     * @since 0.1.0
+     */
     NONE("指定無し", "None", "指定無し", "指定無し"),
 
     /* 定義：終了 */
     ;
 
-    /** 種類のマップ */
+    /**
+     * 種類のマップ
+     *
+     * @since 0.1.0
+     */
     private static final Map<String, Gr002ValMsgTypes> VALUES_MAP = new HashMap<>();
 
     static {
@@ -47,6 +55,8 @@ public enum Gr002ValMsgTypes implements KmgFundCmnValMsgTypes, KmgFundCmnExcMsgT
     /**
      * デフォルトの種類を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return デフォルト値
      */
     public static Gr002ValMsgTypes getDefault() {
@@ -61,6 +71,8 @@ public enum Gr002ValMsgTypes implements KmgFundCmnValMsgTypes, KmgFundCmnExcMsgT
      * <p>
      * 但し、キーが存在しない場合は、指定無し（NONE）を返す。
      * </p>
+     *
+     * @since 0.1.0
      *
      * @param key
      *            キー
@@ -83,6 +95,8 @@ public enum Gr002ValMsgTypes implements KmgFundCmnValMsgTypes, KmgFundCmnExcMsgT
     /**
      * 初期値の種類を返す<br>
      *
+     * @since 0.1.0
+     *
      * @return 初期値
      */
     public static Gr002ValMsgTypes getInitValue() {
@@ -92,20 +106,38 @@ public enum Gr002ValMsgTypes implements KmgFundCmnValMsgTypes, KmgFundCmnExcMsgT
 
     }
 
-    /** 詳細情報 */
+    /**
+     * 詳細情報
+     *
+     * @since 0.1.0
+     */
     private final String detail;
 
-    /** 表示名 */
+    /**
+     * 表示名
+     *
+     * @since 0.1.0
+     */
     private final String displayName;
 
-    /** メッセージのキー */
+    /**
+     * メッセージのキー
+     *
+     * @since 0.1.0
+     */
     private final String key;
 
-    /** メッセージの値 */
+    /**
+     * メッセージの値
+     *
+     * @since 0.1.0
+     */
     private final String value;
 
     /**
      * コンストラクタ<br>
+     *
+     * @since 0.1.0
      *
      * @param displayName
      *                    表示名
@@ -128,6 +160,8 @@ public enum Gr002ValMsgTypes implements KmgFundCmnValMsgTypes, KmgFundCmnExcMsgT
     /**
      * メッセージのキーを返す。<br>
      *
+     * @since 0.1.0
+     *
      * @return メッセージのキー
      *
      * @see #getKey()
@@ -143,6 +177,8 @@ public enum Gr002ValMsgTypes implements KmgFundCmnValMsgTypes, KmgFundCmnExcMsgT
     /**
      * メッセージのキーを返す。<br>
      *
+     * @since 0.1.0
+     *
      * @return メッセージのキー
      *
      * @see #getKey()
@@ -157,6 +193,8 @@ public enum Gr002ValMsgTypes implements KmgFundCmnValMsgTypes, KmgFundCmnExcMsgT
 
     /**
      * 詳細情報を返す。<br>
+     *
+     * @since 0.1.0
      *
      * @return 詳細情報
      */
@@ -174,6 +212,8 @@ public enum Gr002ValMsgTypes implements KmgFundCmnValMsgTypes, KmgFundCmnExcMsgT
      * 識別するための表示名を返す。
      * </p>
      *
+     * @since 0.1.0
+     *
      * @return 表示名
      */
     @Override
@@ -186,6 +226,8 @@ public enum Gr002ValMsgTypes implements KmgFundCmnValMsgTypes, KmgFundCmnExcMsgT
 
     /**
      * メッセージのキーを返す。<br>
+     *
+     * @since 0.1.0
      *
      * @return メッセージのキー
      */
@@ -200,6 +242,8 @@ public enum Gr002ValMsgTypes implements KmgFundCmnValMsgTypes, KmgFundCmnExcMsgT
     /**
      * メッセージの値を返す。
      *
+     * @since 0.1.0
+     *
      * @return メッセージの値
      */
     @Override
@@ -212,6 +256,8 @@ public enum Gr002ValMsgTypes implements KmgFundCmnValMsgTypes, KmgFundCmnExcMsgT
 
     /**
      * メッセージのキーを返す。<br>
+     *
+     * @since 0.1.0
      *
      * @return メッセージのキー
      *

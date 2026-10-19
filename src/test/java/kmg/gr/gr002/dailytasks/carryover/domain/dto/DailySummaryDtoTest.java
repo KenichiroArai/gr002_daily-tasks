@@ -25,6 +25,8 @@ public class DailySummaryDtoTest {
     /**
      * テスト対象を作成する<br>
      *
+     * @since 0.1.0
+     *
      * @return テスト対象
      */
     private static DailySummaryDto createTarget() {
@@ -40,6 +42,8 @@ public class DailySummaryDtoTest {
 
     /**
      * getByItem メソッドのテスト - 正常系:項目ごとの集計を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetByItem_normalValue() {
@@ -63,6 +67,8 @@ public class DailySummaryDtoTest {
 
     /**
      * getByOriginMonth メソッドのテスト - 正常系:持ち越し元の月ごとの集計を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetByOriginMonth_normalValue() {
@@ -86,6 +92,8 @@ public class DailySummaryDtoTest {
 
     /**
      * getDate メソッドのテスト - 正常系:その日の日付を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDate_normalValue() {
@@ -109,6 +117,8 @@ public class DailySummaryDtoTest {
 
     /**
      * getDeclaredCount メソッドのテスト - 正常系:残数を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetDeclaredCount_normalValue() {
@@ -132,6 +142,8 @@ public class DailySummaryDtoTest {
 
     /**
      * getIssue メソッドのテスト - 正常系:Issue 番号を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetIssue_normalValue() {
@@ -155,6 +167,8 @@ public class DailySummaryDtoTest {
 
     /**
      * getTotal メソッドのテスト - 正常系:全体の集計を返す場合
+     *
+     * @since 0.1.0
      */
     @Test
     public void testGetTotal_normalValue() {

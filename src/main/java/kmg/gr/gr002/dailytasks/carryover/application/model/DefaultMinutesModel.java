@@ -16,11 +16,17 @@ import java.util.Map;
  */
 public class DefaultMinutesModel {
 
-    /** 項目名と標準時間（分）の対応 */
+    /**
+     * 項目名と標準時間（分）の対応
+     *
+     * @since 0.1.0
+     */
     private final Map<String, Double> minutesByName;
 
     /**
      * コンストラクタ<br>
+     *
+     * @since 0.1.0
      *
      * @param minutesByName
      *                      項目名と標準時間（分）の対応
@@ -33,6 +39,8 @@ public class DefaultMinutesModel {
 
     /**
      * 項目の標準時間を返す<br>
+     *
+     * @since 0.1.0
      *
      * @param name
      *             項目名
