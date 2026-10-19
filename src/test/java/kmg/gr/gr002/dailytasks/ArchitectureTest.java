@@ -57,7 +57,7 @@ public class ArchitectureTest {
      * @since 0.1.0
      */
     private static final ArchCondition<JavaClass> NO_CONSTRUCTOR_PARAMETERS
-        = new ArchCondition<JavaClass>("not receive dependencies from constructors") {
+        = new ArchCondition<>("not receive dependencies from constructors") {
 
             @Override
             public void check(final JavaClass item, final ConditionEvents events) {
@@ -102,9 +102,9 @@ public class ArchitectureTest {
         /* 期待値の定義 */
 
         /* 準備 */
-        final ArchRule testRule = ArchRuleDefinition.classes().that().areAnnotatedWith(Component.class).or()
-            .areAnnotatedWith(Service.class).or().areAnnotatedWith(Repository.class)
-            .should(ArchitectureTest.NO_CONSTRUCTOR_PARAMETERS);
+        final ArchRule testRule
+            = ArchRuleDefinition.classes().that().areAnnotatedWith(Component.class).or().areAnnotatedWith(Service.class)
+                .or().areAnnotatedWith(Repository.class).should(ArchitectureTest.NO_CONSTRUCTOR_PARAMETERS);
 
         /* テスト対象の実行 */
         testRule.check(ArchitectureTest.classes);
