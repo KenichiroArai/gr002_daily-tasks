@@ -230,20 +230,6 @@ public enum CommandOptionTypes implements KmgCmnTypes<String> {
     }
 
     /**
-     * コマンド引数を返す。<br>
-     *
-     * @since 0.1.0
-     *
-     * @return コマンド引数
-     */
-    public String getOption() {
-
-        final String result = this.option;
-        return result;
-
-    }
-
-    /**
      * キーを返す。<br>
      *
      * @since 0.1.0
@@ -254,6 +240,20 @@ public enum CommandOptionTypes implements KmgCmnTypes<String> {
     public String getKey() {
 
         final String result = this.key;
+        return result;
+
+    }
+
+    /**
+     * コマンド引数を返す。<br>
+     *
+     * @since 0.1.0
+     *
+     * @return コマンド引数
+     */
+    public String getOption() {
+
+        final String result = this.option;
         return result;
 
     }

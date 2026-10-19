@@ -52,7 +52,7 @@ public class CarryoverCommandImpl implements CarryoverCommand {
      *
      * @since 0.1.0
      */
-    private PrintStream out;
+    private final PrintStream out;
 
     /**
      * 設定ファイルの値

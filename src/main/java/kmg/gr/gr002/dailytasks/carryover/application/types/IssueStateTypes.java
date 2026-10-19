@@ -223,20 +223,6 @@ public enum IssueStateTypes implements KmgCmnTypes<String> {
     }
 
     /**
-     * 状態を返す。<br>
-     *
-     * @since 0.1.0
-     *
-     * @return 状態
-     */
-    public String getState() {
-
-        final String result = this.state;
-        return result;
-
-    }
-
-    /**
      * キーを返す。<br>
      *
      * @since 0.1.0
@@ -247,6 +233,20 @@ public enum IssueStateTypes implements KmgCmnTypes<String> {
     public String getKey() {
 
         final String result = this.key;
+        return result;
+
+    }
+
+    /**
+     * 状態を返す。<br>
+     *
+     * @since 0.1.0
+     *
+     * @return 状態
+     */
+    public String getState() {
+
+        final String result = this.state;
         return result;
 
     }

@@ -230,20 +230,6 @@ public enum MinutesSourceTypes implements KmgCmnTypes<String> {
     }
 
     /**
-     * 取得元を返す。<br>
-     *
-     * @since 0.1.0
-     *
-     * @return 取得元
-     */
-    public String getSource() {
-
-        final String result = this.source;
-        return result;
-
-    }
-
-    /**
      * キーを返す。<br>
      *
      * @since 0.1.0
@@ -254,6 +240,20 @@ public enum MinutesSourceTypes implements KmgCmnTypes<String> {
     public String getKey() {
 
         final String result = this.key;
+        return result;
+
+    }
+
+    /**
+     * 取得元を返す。<br>
+     *
+     * @since 0.1.0
+     *
+     * @return 取得元
+     */
+    public String getSource() {
+
+        final String result = this.source;
         return result;
 
     }

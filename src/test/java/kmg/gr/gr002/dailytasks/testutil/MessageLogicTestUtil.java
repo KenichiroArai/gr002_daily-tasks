@@ -36,9 +36,9 @@ public final class MessageLogicTestUtil {
         messageSource.setDefaultEncoding(StandardCharsets.UTF_8.name());
         messageSource.setFallbackToSystemLocale(false);
 
-        final MessageLogicImpl impl   = new MessageLogicImpl();
+        final MessageLogicImpl impl = new MessageLogicImpl();
         ReflectionTestUtil.setField(impl, "messageSource", messageSource);
-        final MessageLogic      result = impl;
+        final MessageLogic result = impl;
         return result;
 
     }

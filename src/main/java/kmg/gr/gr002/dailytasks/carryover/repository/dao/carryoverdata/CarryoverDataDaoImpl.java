@@ -72,7 +72,7 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
         final DefaultPrettyPrinter printer  = new DefaultPrettyPrinter()
             .withSeparators(Separators.createDefaultInstance().withObjectNameValueSpacing(Separators.Spacing.AFTER))
             .withObjectIndenter(indenter).withArrayIndenter(indenter);
-        final ObjectWriter        result   = this.jsonMapper.writer().with(printer);
+        final ObjectWriter         result   = this.jsonMapper.writer().with(printer);
         return result;
 
     }
@@ -94,8 +94,8 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
     public Map<Integer, CarryoverIssueDto> loadIssues(final Path dataDir) throws IOException {
 
         final Map<Integer, CarryoverIssueDto> result    = new TreeMap<>();
-        final Path                            issuesDir
-            = dataDir.resolve(CarryoverDataFileTypes.ISSUES_DIR.getFileName());
+        final Path                            issuesDir = dataDir
+            .resolve(CarryoverDataFileTypes.ISSUES_DIR.getFileName());
 
         if (!Files.isDirectory(issuesDir)) {
 

@@ -230,20 +230,6 @@ public enum TargetSectionTypes implements KmgCmnTypes<String> {
     }
 
     /**
-     * セクション名を返す。<br>
-     *
-     * @since 0.1.0
-     *
-     * @return セクション名
-     */
-    public String getSection() {
-
-        final String result = this.section;
-        return result;
-
-    }
-
-    /**
      * キーを返す。<br>
      *
      * @since 0.1.0
@@ -254,6 +240,20 @@ public enum TargetSectionTypes implements KmgCmnTypes<String> {
     public String getKey() {
 
         final String result = this.key;
+        return result;
+
+    }
+
+    /**
+     * セクション名を返す。<br>
+     *
+     * @since 0.1.0
+     *
+     * @return セクション名
+     */
+    public String getSection() {
+
+        final String result = this.section;
         return result;
 
     }

@@ -159,14 +159,14 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
      *
      * @since 0.1.0
      */
-    private String apiBaseUrl = GitHubApiUrlTypes.BASE_URL.getUrl();
+    private final String apiBaseUrl = GitHubApiUrlTypes.BASE_URL.getUrl();
 
     /**
      * HTTP クライアントの生成
      *
      * @since 0.1.0
      */
-    private Supplier<HttpClient> httpClientSupplier;
+    private final Supplier<HttpClient> httpClientSupplier;
 
     /**
      * JSON の変換

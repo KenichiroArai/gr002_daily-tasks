@@ -237,20 +237,6 @@ public enum CarryoverParseTextTypes implements KmgCmnTypes<String> {
     }
 
     /**
-     * 解析で使う文字列を返す。<br>
-     *
-     * @since 0.1.0
-     *
-     * @return 解析で使う文字列
-     */
-    public String getText() {
-
-        final String result = this.text;
-        return result;
-
-    }
-
-    /**
      * キーを返す。<br>
      *
      * @since 0.1.0
@@ -261,6 +247,20 @@ public enum CarryoverParseTextTypes implements KmgCmnTypes<String> {
     public String getKey() {
 
         final String result = this.key;
+        return result;
+
+    }
+
+    /**
+     * 解析で使う文字列を返す。<br>
+     *
+     * @since 0.1.0
+     *
+     * @return 解析で使う文字列
+     */
+    public String getText() {
+
+        final String result = this.text;
         return result;
 
     }

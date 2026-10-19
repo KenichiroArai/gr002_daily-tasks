@@ -92,8 +92,8 @@ public class GitHubIssueApiImplTest {
      */
     private static GitHubIssueApiImpl createTarget(final HttpClient httpClient) {
 
-        final Supplier<HttpClient>  httpClientSupplier = () -> httpClient;
-        final GitHubIssueApiImpl    result             = new GitHubIssueApiImpl();
+        final Supplier<HttpClient> httpClientSupplier = () -> httpClient;
+        final GitHubIssueApiImpl   result             = new GitHubIssueApiImpl();
         ReflectionTestUtil.setField(result, "httpClientSupplier", httpClientSupplier);
         ReflectionTestUtil.setField(result, "apiBaseUrl", GitHubIssueApiImplTest.API_BASE_URL);
         ReflectionTestUtil.setField(result, "jsonMapper", new JsonMapper());

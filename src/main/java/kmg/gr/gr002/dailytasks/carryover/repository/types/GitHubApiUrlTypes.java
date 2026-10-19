@@ -224,20 +224,6 @@ public enum GitHubApiUrlTypes implements KmgCmnTypes<String> {
     }
 
     /**
-     * URLを返す。<br>
-     *
-     * @since 0.1.0
-     *
-     * @return URL
-     */
-    public String getUrl() {
-
-        final String result = this.url;
-        return result;
-
-    }
-
-    /**
      * キーを返す。<br>
      *
      * @since 0.1.0
@@ -248,6 +234,20 @@ public enum GitHubApiUrlTypes implements KmgCmnTypes<String> {
     public String getKey() {
 
         final String result = this.key;
+        return result;
+
+    }
+
+    /**
+     * URLを返す。<br>
+     *
+     * @since 0.1.0
+     *
+     * @return URL
+     */
+    public String getUrl() {
+
+        final String result = this.url;
         return result;
 
     }

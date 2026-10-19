@@ -293,20 +293,6 @@ public enum CarryoverParsePatternTypes implements KmgCmnTypes<String> {
     }
 
     /**
-     * 正規表現を返す。<br>
-     *
-     * @since 0.1.0
-     *
-     * @return 正規表現
-     */
-    public String getPattern() {
-
-        final String result = this.pattern;
-        return result;
-
-    }
-
-    /**
      * キーを返す。<br>
      *
      * @since 0.1.0
@@ -317,6 +303,20 @@ public enum CarryoverParsePatternTypes implements KmgCmnTypes<String> {
     public String getKey() {
 
         final String result = this.key;
+        return result;
+
+    }
+
+    /**
+     * 正規表現を返す。<br>
+     *
+     * @since 0.1.0
+     *
+     * @return 正規表現
+     */
+    public String getPattern() {
+
+        final String result = this.pattern;
         return result;
 
     }
