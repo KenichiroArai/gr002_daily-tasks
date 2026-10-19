@@ -155,8 +155,8 @@ public class CarryoverDataDaoImplTest {
         final CarryoverDataDaoImpl testTarget = CarryoverDataDaoImplTest.createTarget();
 
         /* テスト対象の実行 */
-        final IOException testException
-            = Assertions.assertThrows(IOException.class, () -> testTarget.loadIssues(this.tempDir));
+        testTarget.initialize(this.tempDir);
+        final IOException testException = Assertions.assertThrows(IOException.class, testTarget::loadIssues);
 
         /* 検証の準備 */
         final Throwable actualCause = testException.getCause();
@@ -184,12 +184,13 @@ public class CarryoverDataDaoImplTest {
 
         /* 準備 */
         final CarryoverDataDaoImpl testTarget = CarryoverDataDaoImplTest.createTarget();
-        testTarget.saveIssue(this.tempDir, CarryoverDataDaoImplTest.createIssue(1));
-        testTarget.saveIssue(this.tempDir, CarryoverDataDaoImplTest.createIssue(371));
+        testTarget.initialize(this.tempDir);
+        testTarget.saveIssue(CarryoverDataDaoImplTest.createIssue(1));
+        testTarget.saveIssue(CarryoverDataDaoImplTest.createIssue(371));
         Files.writeString(this.tempDir.resolve("issues").resolve("memo.txt"), "対象外");
 
         /* テスト対象の実行 */
-        final Map<Integer, CarryoverIssueDto> testResult = testTarget.loadIssues(this.tempDir);
+        final Map<Integer, CarryoverIssueDto> testResult = testTarget.loadIssues();
 
         /* 検証の準備 */
         final Set<Integer>     actualNumbers       = testResult.keySet();
@@ -223,7 +224,8 @@ public class CarryoverDataDaoImplTest {
         final CarryoverDataDaoImpl testTarget = CarryoverDataDaoImplTest.createTarget();
 
         /* テスト対象の実行 */
-        final Map<Integer, CarryoverIssueDto> testResult = testTarget.loadIssues(this.tempDir.resolve("none"));
+        testTarget.initialize(this.tempDir.resolve("none"));
+        final Map<Integer, CarryoverIssueDto> testResult = testTarget.loadIssues();
 
         /* 検証の準備 */
         final boolean actualEmpty = testResult.isEmpty();
@@ -251,7 +253,8 @@ public class CarryoverDataDaoImplTest {
         final CarryoverDataDaoImpl testTarget = CarryoverDataDaoImplTest.createTarget();
 
         /* テスト対象の実行 */
-        testTarget.saveIssue(this.tempDir, CarryoverDataDaoImplTest.createIssue(7));
+        testTarget.initialize(this.tempDir);
+        testTarget.saveIssue(CarryoverDataDaoImplTest.createIssue(7));
 
         /* 検証の準備 */
         final String  actualJson       = Files.readString(this.tempDir.resolve("issues").resolve("0007.json"),
@@ -324,7 +327,8 @@ public class CarryoverDataDaoImplTest {
         final DailySummaryDto testDay = new DailySummaryDto("2026-03-24", 175, null, testStat, testByItem, Map.of());
 
         /* テスト対象の実行 */
-        testTarget.saveSummary(this.tempDir, new CarryoverSummaryDto(175, List.of(), List.of(testDay)));
+        testTarget.initialize(this.tempDir);
+        testTarget.saveSummary(new CarryoverSummaryDto(175, List.of(), List.of(testDay)));
 
         /* 検証の準備 */
         final String actualJson = Files.readString(this.tempDir.resolve("summary.json"), StandardCharsets.UTF_8);
@@ -353,7 +357,8 @@ public class CarryoverDataDaoImplTest {
         final CarryoverDataDaoImpl testTarget = CarryoverDataDaoImplTest.createTarget();
 
         /* テスト対象の実行 */
-        testTarget.saveSummary(this.tempDir, new CarryoverSummaryDto(371, List.of("国語"), List.of()));
+        testTarget.initialize(this.tempDir);
+        testTarget.saveSummary(new CarryoverSummaryDto(371, List.of("国語"), List.of()));
 
         /* 検証の準備 */
         final String actualJson = Files.readString(this.tempDir.resolve("summary.json"), StandardCharsets.UTF_8);

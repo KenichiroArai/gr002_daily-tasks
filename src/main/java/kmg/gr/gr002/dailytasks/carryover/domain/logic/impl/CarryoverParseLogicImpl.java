@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverParseLogic;
@@ -35,6 +36,7 @@ import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTyp
  * @version 0.1.0
  */
 @Component
+@Scope("prototype")
 public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
     /**
@@ -327,19 +329,40 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
     private MessageLogic messageLogic;
 
     /**
+     * 時間表記がない行を補完する項目ごとの標準時間
+     *
+     * @since 0.1.0
+     */
+    private DefaultMinutesModel defaultMinutes;
+
+    /**
+     * 標準時間を受け取り、フィールドに保持する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param defaultMinutes
+     *                       時間表記がない行を補完する項目ごとの標準時間
+     */
+    @SuppressWarnings("hiding")
+    @Override
+    public void initialize(final DefaultMinutesModel defaultMinutes) {
+
+        this.defaultMinutes = defaultMinutes;
+
+    }
+
+    /**
      * Issue を解析する<br>
      *
      * @since 0.1.0
      *
      * @param issue
-     *                       日々のタスク Issue
-     * @param defaultMinutes
-     *                       時間表記がない行を補完する項目ごとの標準時間
+     *              日々のタスク Issue
      *
      * @return 持ち越しの解析結果
      */
     @Override
-    public CarryoverIssueModel parse(final DailyTaskIssueModel issue, final DefaultMinutesModel defaultMinutes) {
+    public CarryoverIssueModel parse(final DailyTaskIssueModel issue) {
 
         CarryoverIssueModel result = null;
 
@@ -399,8 +422,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
             }
 
             final boolean checked = !CarryoverParseTextTypes.UNCHECKED.getText().equals(checkboxMatcher.group(1));
-            items.add(this.parseItem(issue.getNumber(), currentSection, checked, checkboxMatcher.group(2), line,
-                defaultMinutes));
+            items.add(this.parseItem(issue.getNumber(), currentSection, checked, checkboxMatcher.group(2), line));
 
         }
 
@@ -419,22 +441,20 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
      * @since 0.1.0
      *
      * @param number
-     *                       Issue 番号
+     *                Issue 番号
      * @param section
-     *                       セクション名
+     *                セクション名
      * @param checked
-     *                       チェック済みか
+     *                チェック済みか
      * @param content
-     *                       チェックボックスの後ろの内容
+     *                チェックボックスの後ろの内容
      * @param raw
-     *                       元の行
-     * @param defaultMinutes
-     *                       時間表記がない行を補完する項目ごとの標準時間
+     *                元の行
      *
      * @return 持ち越し項目
      */
     private CarryoverItemModel parseItem(final int number, final String section, final boolean checked,
-        final String content, final String raw, final DefaultMinutesModel defaultMinutes) {
+        final String content, final String raw) {
 
         CarryoverItemModel result = null;
 
@@ -486,7 +506,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
         }
 
         /* 標準時間での補完 */
-        final Double defaultValue = defaultMinutes.find(name);
+        final Double defaultValue = this.defaultMinutes.find(name);
 
         if (defaultValue == null) {
 

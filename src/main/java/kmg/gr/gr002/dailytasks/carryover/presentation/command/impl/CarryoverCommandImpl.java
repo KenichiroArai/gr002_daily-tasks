@@ -3,6 +3,7 @@ package kmg.gr.gr002.dailytasks.carryover.presentation.command.impl;
 import java.io.IOException;
 import java.io.PrintStream;
 
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -33,11 +34,14 @@ public class CarryoverCommandImpl implements CarryoverCommand {
 
     /**
      * 持ち越しの収集・集計サービス
+     * <p>
+     * 実行のたびに新しいインスタンスを取る。サービスは収集の設定をフィールドに保持するためである。
+     * </p>
      *
      * @since 0.1.0
      */
     @Autowired
-    private CarryoverService carryoverService;
+    private ObjectProvider<CarryoverService> carryoverService;
 
     /**
      * メッセージの取得
@@ -150,7 +154,9 @@ public class CarryoverCommandImpl implements CarryoverCommand {
         }
 
         /* 収集の実行 */
-        this.carryoverService.collect(this.properties, options.isFull());
+        final CarryoverService service = this.carryoverService.getObject();
+        service.initialize(this.properties, options.isFull());
+        service.collect();
 
     }
 

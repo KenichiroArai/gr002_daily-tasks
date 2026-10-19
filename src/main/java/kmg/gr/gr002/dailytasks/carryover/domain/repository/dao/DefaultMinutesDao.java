@@ -19,18 +19,25 @@ import java.util.Map;
 public interface DefaultMinutesDao {
 
     /**
-     * 項目ごとの標準時間を読み込む<br>
+     * 設定ファイルのパスを受け取り、フィールドに保持する<br>
      *
      * @since 0.1.0
      *
      * @param configFile
      *                   設定ファイルのパス（例: config/default-minutes.json）
+     */
+    void initialize(Path configFile);
+
+    /**
+     * 項目ごとの標準時間を読み込む<br>
+     *
+     * @since 0.1.0
      *
      * @return 項目名と標準時間（分）の対応。設定がない場合は空
      *
      * @throws IOException
      *                     読み込みに失敗した場合
      */
-    Map<String, Double> load(Path configFile) throws IOException;
+    Map<String, Double> load() throws IOException;
 
 }

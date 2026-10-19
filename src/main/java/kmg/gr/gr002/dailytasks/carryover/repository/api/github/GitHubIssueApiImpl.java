@@ -14,6 +14,7 @@ import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubIssueDto;
@@ -43,6 +44,7 @@ import tools.jackson.databind.json.JsonMapper;
  * @version 0.1.0
  */
 @Repository
+@Scope("prototype")
 public class GitHubIssueApiImpl implements GitHubIssueApi {
 
     /**
@@ -72,32 +74,6 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
      * @since 0.1.0
      */
     private static final Duration TIMEOUT = Duration.ofSeconds(30);
-
-    /**
-     * トークンが指定されているかを返す<br>
-     *
-     * @since 0.1.0
-     *
-     * @param settings
-     *                 GitHub API の接続設定
-     *
-     * @return true：指定されている、false：指定されていない
-     */
-    private static boolean hasToken(final GitHubSettingsDto settings) {
-
-        boolean      result = false;
-        final String token  = settings.getToken();
-
-        if (token == null) {
-
-            return result;
-
-        }
-
-        result = !token.isBlank();
-        return result;
-
-    }
 
     /**
      * 文字列の項目を返す<br>
@@ -185,6 +161,13 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
     private MessageLogic messageLogic;
 
     /**
+     * GitHub API の接続設定
+     *
+     * @since 0.1.0
+     */
+    private GitHubSettingsDto settings;
+
+    /**
      * コンストラクタ<br>
      *
      * @since 0.1.0
@@ -203,16 +186,13 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
      *
      * @since 0.1.0
      *
-     * @param settings
-     *                 GitHub API の接続設定
-     *
      * @return Issue（作成順）
      *
      * @throws IOException
      *                     通信に失敗した場合、または応答が不正な場合
      */
     @Override
-    public List<GitHubIssueDto> fetchAllIssues(final GitHubSettingsDto settings) throws IOException {
+    public List<GitHubIssueDto> fetchAllIssues() throws IOException {
 
         final List<GitHubIssueDto> result = new ArrayList<>();
 
@@ -224,7 +204,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
             do {
 
                 /* 1 ページ分の取得 */
-                final JsonNode issues = this.fetchPage(httpClient, settings, page);
+                final JsonNode issues = this.fetchPage(httpClient, page);
                 pageSize = issues.size();
 
                 for (final JsonNode node : issues) {
@@ -259,8 +239,6 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
      *
      * @param httpClient
      *                   HTTP クライアント
-     * @param settings
-     *                   GitHub API の接続設定
      * @param page
      *                   ページ番号（1 始まり）
      *
@@ -269,23 +247,22 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
      * @throws IOException
      *                     通信に失敗した場合、または応答が不正な場合
      */
-    private JsonNode fetchPage(final HttpClient httpClient, final GitHubSettingsDto settings, final int page)
-        throws IOException {
+    private JsonNode fetchPage(final HttpClient httpClient, final int page) throws IOException {
 
         JsonNode result = null;
 
         /* リクエストの作成 */
         final URI                 uri     = URI.create(String.format(GitHubApiUrlTypes.ISSUES_QUERY.getUrl(),
-            this.apiBaseUrl, settings.getRepository(), GitHubIssueApiImpl.PER_PAGE, page));
+            this.apiBaseUrl, this.settings.getRepository(), GitHubIssueApiImpl.PER_PAGE, page));
         final HttpRequest.Builder builder = HttpRequest.newBuilder(uri).timeout(GitHubIssueApiImpl.TIMEOUT)
             .header(GitHubApiHeaderTypes.ACCEPT.get(), GitHubApiHeaderTypes.GITHUB_JSON.getHeader())
             .header(GitHubApiHeaderTypes.API_VERSION.getHeader(), GitHubApiHeaderTypes.API_VERSION_VALUE.getHeader())
             .GET();
 
-        if (GitHubIssueApiImpl.hasToken(settings)) {
+        if (this.hasToken()) {
 
             builder.header(GitHubApiHeaderTypes.AUTHORIZATION.get(),
-                GitHubApiHeaderTypes.BEARER.getHeader() + settings.getToken());
+                GitHubApiHeaderTypes.BEARER.getHeader() + this.settings.getToken());
 
         }
 
@@ -311,6 +288,45 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
         }
 
         return result;
+
+    }
+
+    /**
+     * トークンが指定されているかを返す<br>
+     *
+     * @since 0.1.0
+     *
+     * @return true：指定されている、false：指定されていない
+     */
+    private boolean hasToken() {
+
+        boolean      result = false;
+        final String token  = this.settings.getToken();
+
+        if (token == null) {
+
+            return result;
+
+        }
+
+        result = !token.isBlank();
+        return result;
+
+    }
+
+    /**
+     * GitHub API の接続設定を受け取り、フィールドに保持する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param settings
+     *                 GitHub API の接続設定
+     */
+    @SuppressWarnings("hiding")
+    @Override
+    public void initialize(final GitHubSettingsDto settings) {
+
+        this.settings = settings;
 
     }
 

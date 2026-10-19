@@ -143,13 +143,24 @@ public class CarryoverIssueLogicImplTest {
          *
          * @param targetDir
          *                  出力先のディレクトリ
+         */
+        @Override
+        public void initialize(final Path targetDir) {
+
+            this.dataDir = targetDir;
+
+        }
+
+        /**
+         * 設定した解析結果を返す<br>
+         *
+         * @since 0.1.0
          *
          * @return 設定した解析結果
          */
         @Override
-        public Map<Integer, CarryoverIssueDto> loadIssues(final Path targetDir) {
+        public Map<Integer, CarryoverIssueDto> loadIssues() {
 
-            this.dataDir = targetDir;
             final Map<Integer, CarryoverIssueDto> result = this.issues;
             return result;
 
@@ -160,15 +171,12 @@ public class CarryoverIssueLogicImplTest {
          *
          * @since 0.1.0
          *
-         * @param targetDir
-         *                  出力先のディレクトリ
          * @param issue
-         *                  解析結果
+         *              解析結果
          */
         @Override
-        public void saveIssue(final Path targetDir, final CarryoverIssueDto issue) {
+        public void saveIssue(final CarryoverIssueDto issue) {
 
-            this.dataDir = targetDir;
             this.savedIssues.add(issue);
 
         }
@@ -178,15 +186,12 @@ public class CarryoverIssueLogicImplTest {
          *
          * @since 0.1.0
          *
-         * @param targetDir
-         *                  出力先のディレクトリ
          * @param summary
-         *                  集計
+         *                集計
          */
         @Override
-        public void saveSummary(final Path targetDir, final CarryoverSummaryDto summary) {
+        public void saveSummary(final CarryoverSummaryDto summary) {
 
-            this.dataDir = targetDir;
             this.savedSummary = summary;
 
         }
@@ -253,13 +258,24 @@ public class CarryoverIssueLogicImplTest {
          *
          * @param file
          *             設定ファイルのパス
+         */
+        @Override
+        public void initialize(final Path file) {
+
+            this.configFile = file;
+
+        }
+
+        /**
+         * 設定した標準時間を返す<br>
+         *
+         * @since 0.1.0
          *
          * @return 設定した標準時間
          */
         @Override
-        public Map<String, Double> load(final Path file) {
+        public Map<String, Double> load() {
 
-            this.configFile = file;
             final Map<String, Double> result = this.minutesByName;
             return result;
 
@@ -307,19 +323,15 @@ public class CarryoverIssueLogicImplTest {
         }
 
         /**
-         * 接続設定を記録し、設定した Issue を返す<br>
+         * 設定した Issue を返す<br>
          *
          * @since 0.1.0
-         *
-         * @param gitHubSettings
-         *                       接続設定
          *
          * @return 設定した Issue
          */
         @Override
-        public List<GitHubIssueDto> fetchAllIssues(final GitHubSettingsDto gitHubSettings) {
+        public List<GitHubIssueDto> fetchAllIssues() {
 
-            this.settings = gitHubSettings;
             final List<GitHubIssueDto> result = this.issues;
             return result;
 
@@ -336,6 +348,21 @@ public class CarryoverIssueLogicImplTest {
 
             final GitHubSettingsDto result = this.settings;
             return result;
+
+        }
+
+        /**
+         * 接続設定を記録する<br>
+         *
+         * @since 0.1.0
+         *
+         * @param gitHubSettings
+         *                       接続設定
+         */
+        @Override
+        public void initialize(final GitHubSettingsDto gitHubSettings) {
+
+            this.settings = gitHubSettings;
 
         }
 
@@ -405,8 +432,8 @@ public class CarryoverIssueLogicImplTest {
             new StubCarryoverDataDao(Map.of()), new StubDefaultMinutesDao(Map.of()));
 
         /* テスト対象の実行 */
-        final List<DailyTaskIssueModel> testResult
-            = testTarget.fetchAllIssues(CarryoverIssueLogicImplTest.createSource());
+        testTarget.initialize(CarryoverIssueLogicImplTest.createSource());
+        final List<DailyTaskIssueModel> testResult = testTarget.fetchAllIssues();
 
         /* 検証の準備 */
         final String actualTitle = testResult.get(0).getTitle();
@@ -437,7 +464,8 @@ public class CarryoverIssueLogicImplTest {
             new StubCarryoverDataDao(Map.of()), new StubDefaultMinutesDao(Map.of()));
 
         /* テスト対象の実行 */
-        testTarget.fetchAllIssues(CarryoverIssueLogicImplTest.createSource());
+        testTarget.initialize(CarryoverIssueLogicImplTest.createSource());
+        testTarget.fetchAllIssues();
 
         /* 検証の準備 */
         final String actualRepository = testGitHub.getSettings().getRepository();
@@ -470,8 +498,8 @@ public class CarryoverIssueLogicImplTest {
             .createTarget(new StubGitHubIssueApi(List.of()), new StubCarryoverDataDao(Map.of()), testDefaultMinutes);
 
         /* テスト対象の実行 */
-        final DefaultMinutesModel testResult
-            = testTarget.loadDefaultMinutes(CarryoverIssueLogicImplTest.createSource());
+        testTarget.initialize(CarryoverIssueLogicImplTest.createSource());
+        final DefaultMinutesModel testResult = testTarget.loadDefaultMinutes();
 
         /* 検証の準備 */
         final Double actualMinutes    = testResult.find("音楽");
@@ -508,8 +536,8 @@ public class CarryoverIssueLogicImplTest {
             .createTarget(new StubGitHubIssueApi(List.of()), testData, new StubDefaultMinutesDao(Map.of()));
 
         /* テスト対象の実行 */
-        final Map<Integer, CarryoverIssueModel> testResult
-            = testTarget.loadIssues(CarryoverIssueLogicImplTest.createSource());
+        testTarget.initialize(CarryoverIssueLogicImplTest.createSource());
+        final Map<Integer, CarryoverIssueModel> testResult = testTarget.loadIssues();
 
         /* 検証の準備 */
         final MinutesSourceTypes actualMinutesSource = testResult.get(371).getItems().get(0).getMinutesSource();
@@ -546,7 +574,8 @@ public class CarryoverIssueLogicImplTest {
             "2026-10-06T14:23:08Z", List.of("持ち越し"), 1, List.of(testItem));
 
         /* テスト対象の実行 */
-        testTarget.saveIssue(CarryoverIssueLogicImplTest.createSource(), testIssue);
+        testTarget.initialize(CarryoverIssueLogicImplTest.createSource());
+        testTarget.saveIssue(testIssue);
 
         /* 検証の準備 */
         final String actualMinutesSource = testData.getSavedIssues().get(0).getItems().get(0).getMinutesSource();
@@ -580,7 +609,8 @@ public class CarryoverIssueLogicImplTest {
         final CarryoverSummaryModel   testSummary = new CarryoverSummaryModel(371, List.of(), List.of());
 
         /* テスト対象の実行 */
-        testTarget.saveSummary(CarryoverIssueLogicImplTest.createSource(), testSummary);
+        testTarget.initialize(CarryoverIssueLogicImplTest.createSource());
+        testTarget.saveSummary(testSummary);
 
         /* 検証の準備 */
         final int  actualLatestIssue = testData.getSavedSummary().getLatestIssue();

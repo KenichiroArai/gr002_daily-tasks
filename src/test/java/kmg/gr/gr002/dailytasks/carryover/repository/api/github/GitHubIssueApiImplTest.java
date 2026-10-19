@@ -124,9 +124,10 @@ public class GitHubIssueApiImplTest {
     private static JsonNode fetchPage(final GitHubIssueApiImpl target, final HttpClient httpClient,
         final GitHubSettingsDto settings, final int page) throws Exception {
 
+        target.initialize(settings);
         final JsonNode result = ReflectionTestUtil.invoke(target, "fetchPage", new Class<?>[] {
-            HttpClient.class, GitHubSettingsDto.class, int.class
-        }, httpClient, settings, Integer.valueOf(page));
+            HttpClient.class, int.class
+        }, httpClient, Integer.valueOf(page));
         return result;
 
     }
@@ -146,10 +147,9 @@ public class GitHubIssueApiImplTest {
      */
     private static boolean hasToken(final GitHubSettingsDto settings) throws Exception {
 
-        final boolean result
-            = ReflectionTestUtil.<Boolean>invokeStatic(GitHubIssueApiImpl.class, "hasToken", new Class<?>[] {
-                GitHubSettingsDto.class
-            }, settings);
+        final GitHubIssueApiImpl target = new GitHubIssueApiImpl();
+        target.initialize(settings);
+        final boolean result = ReflectionTestUtil.<Boolean>invoke(target, "hasToken", new Class<?>[] {});
         return result;
 
     }
@@ -294,10 +294,10 @@ public class GitHubIssueApiImplTest {
 
             testHttpClient.addResponse(200, testPage1).addResponse(200, "[]");
             final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
+            testTarget.initialize(GitHubIssueApiImplTest.createSettings(null));
 
             /* テスト対象の実行 */
-            final List<GitHubIssueDto> testResult
-                = testTarget.fetchAllIssues(GitHubIssueApiImplTest.createSettings(null));
+            final List<GitHubIssueDto> testResult = testTarget.fetchAllIssues();
 
             /* 検証の準備 */
             final int actualSize         = testResult.size();
@@ -335,10 +335,10 @@ public class GitHubIssueApiImplTest {
             testHttpClient.addResponse(200,
                 "[" + GitHubIssueApiImplTest.issueJson(1) + ",{\"number\":2,\"pull_request\":{}}]");
             final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
+            testTarget.initialize(GitHubIssueApiImplTest.createSettings(null));
 
             /* テスト対象の実行 */
-            final List<GitHubIssueDto> testResult
-                = testTarget.fetchAllIssues(GitHubIssueApiImplTest.createSettings(null));
+            final List<GitHubIssueDto> testResult = testTarget.fetchAllIssues();
 
             /* 検証の準備 */
             final String[]      actualMsgs    = testLog.getMessages();

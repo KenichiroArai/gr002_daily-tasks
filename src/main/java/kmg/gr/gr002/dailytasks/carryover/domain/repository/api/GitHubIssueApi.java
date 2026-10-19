@@ -23,19 +23,26 @@ public interface GitHubIssueApi {
     /**
      * すべての Issue（オープン・クローズ済み）を取得する<br>
      * <p>
-     * プルリクエストは除外する。
+     * プルリクエストは除外する。{@link #initialize(GitHubSettingsDto)} のあとで呼ぶ。
      * </p>
      *
      * @since 0.1.0
-     *
-     * @param settings
-     *                 GitHub API の接続設定
      *
      * @return Issue（作成順）
      *
      * @throws IOException
      *                     通信に失敗した場合、または応答が不正な場合
      */
-    List<GitHubIssueDto> fetchAllIssues(GitHubSettingsDto settings) throws IOException;
+    List<GitHubIssueDto> fetchAllIssues() throws IOException;
+
+    /**
+     * GitHub API の接続設定を受け取り、フィールドに保持する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param settings
+     *                 GitHub API の接続設定
+     */
+    void initialize(GitHubSettingsDto settings);
 
 }

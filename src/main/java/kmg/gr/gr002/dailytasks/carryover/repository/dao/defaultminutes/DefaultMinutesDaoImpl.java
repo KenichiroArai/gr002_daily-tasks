@@ -8,6 +8,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.DefaultMinutesDao;
@@ -27,6 +28,7 @@ import tools.jackson.databind.json.JsonMapper;
  * @version 0.1.0
  */
 @Repository
+@Scope("prototype")
 public class DefaultMinutesDaoImpl implements DefaultMinutesDao {
 
     /**
@@ -65,12 +67,32 @@ public class DefaultMinutesDaoImpl implements DefaultMinutesDao {
     private MessageLogic messageLogic;
 
     /**
-     * 項目ごとの標準時間を読み込む<br>
+     * 設定ファイルのパス（例: config/default-minutes.json）
+     *
+     * @since 0.1.0
+     */
+    private Path configFile;
+
+    /**
+     * 設定ファイルのパスを受け取り、フィールドに保持する<br>
      *
      * @since 0.1.0
      *
      * @param configFile
      *                   設定ファイルのパス（例: config/default-minutes.json）
+     */
+    @SuppressWarnings("hiding")
+    @Override
+    public void initialize(final Path configFile) {
+
+        this.configFile = configFile;
+
+    }
+
+    /**
+     * 項目ごとの標準時間を読み込む<br>
+     *
+     * @since 0.1.0
      *
      * @return 項目名と標準時間（分）の対応。設定ファイルがない場合は空
      *
@@ -78,21 +100,21 @@ public class DefaultMinutesDaoImpl implements DefaultMinutesDao {
      *                     読み込みに失敗した場合
      */
     @Override
-    public Map<String, Double> load(final Path configFile) throws IOException {
+    public Map<String, Double> load() throws IOException {
 
         Map<String, Double> result = Map.of();
 
-        if (!Files.isRegularFile(configFile)) {
+        if (!Files.isRegularFile(this.configFile)) {
 
             final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12009);
-            DefaultMinutesDaoImpl.LOGGER.warn(message, configFile);
+            DefaultMinutesDaoImpl.LOGGER.warn(message, this.configFile);
             return result;
 
         }
 
         try {
 
-            result = this.jsonMapper.readValue(configFile.toFile(), DefaultMinutesDaoImpl.DEFAULT_MINUTES_TYPE);
+            result = this.jsonMapper.readValue(this.configFile.toFile(), DefaultMinutesDaoImpl.DEFAULT_MINUTES_TYPE);
 
         } catch (final JacksonException e) {
 

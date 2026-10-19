@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssueDto;
@@ -39,6 +40,7 @@ import tools.jackson.databind.json.JsonMapper;
  * @version 0.1.0
  */
 @Repository
+@Scope("prototype")
 public class CarryoverDataDaoImpl implements CarryoverDataDao {
 
     /**
@@ -56,6 +58,13 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
      */
     @Autowired
     private JsonMapper jsonMapper;
+
+    /**
+     * 出力先のディレクトリ（例: docs/data）
+     *
+     * @since 0.1.0
+     */
+    private Path dataDir;
 
     /**
      * 改行を LF に統一した整形出力を作る<br>
@@ -78,12 +87,25 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
     }
 
     /**
-     * 保存済みの Issue ごとの解析結果を読み込む<br>
+     * 出力先のディレクトリを受け取り、フィールドに保持する<br>
      *
      * @since 0.1.0
      *
      * @param dataDir
      *                出力先のディレクトリ（例: docs/data）
+     */
+    @SuppressWarnings("hiding")
+    @Override
+    public void initialize(final Path dataDir) {
+
+        this.dataDir = dataDir;
+
+    }
+
+    /**
+     * 保存済みの Issue ごとの解析結果を読み込む<br>
+     *
+     * @since 0.1.0
      *
      * @return Issue 番号と解析結果の対応。ディレクトリがない場合は空
      *
@@ -91,10 +113,10 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
      *                     読み込みに失敗した場合
      */
     @Override
-    public Map<Integer, CarryoverIssueDto> loadIssues(final Path dataDir) throws IOException {
+    public Map<Integer, CarryoverIssueDto> loadIssues() throws IOException {
 
         final Map<Integer, CarryoverIssueDto> result    = new TreeMap<>();
-        final Path                            issuesDir = dataDir
+        final Path                            issuesDir = this.dataDir
             .resolve(CarryoverDataFileTypes.ISSUES_DIR.getFileName());
 
         if (!Files.isDirectory(issuesDir)) {
@@ -159,18 +181,16 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
      *
      * @since 0.1.0
      *
-     * @param dataDir
-     *                出力先のディレクトリ（例: docs/data）
      * @param issue
-     *                解析結果
+     *              解析結果
      *
      * @throws IOException
      *                     書き込みに失敗した場合
      */
     @Override
-    public void saveIssue(final Path dataDir, final CarryoverIssueDto issue) throws IOException {
+    public void saveIssue(final CarryoverIssueDto issue) throws IOException {
 
-        final Path path = dataDir.resolve(CarryoverDataFileTypes.ISSUES_DIR.getFileName())
+        final Path path = this.dataDir.resolve(CarryoverDataFileTypes.ISSUES_DIR.getFileName())
             .resolve(String.format(CarryoverDataFormatTypes.ISSUE_FILE_NAME.getFormat(), issue.getNumber(),
                 CarryoverDataFileTypes.JSON_EXTENSION.getFileName()));
         this.write(path, this.jsonConvertLogic.toCarryoverIssueJson(issue));
@@ -182,8 +202,6 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
      *
      * @since 0.1.0
      *
-     * @param dataDir
-     *                出力先のディレクトリ（例: docs/data）
      * @param summary
      *                画面用の集計
      *
@@ -191,9 +209,9 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
      *                     書き込みに失敗した場合
      */
     @Override
-    public void saveSummary(final Path dataDir, final CarryoverSummaryDto summary) throws IOException {
+    public void saveSummary(final CarryoverSummaryDto summary) throws IOException {
 
-        final Path path = dataDir.resolve(CarryoverDataFileTypes.SUMMARY_FILE.getFileName());
+        final Path path = this.dataDir.resolve(CarryoverDataFileTypes.SUMMARY_FILE.getFileName());
         this.write(path, this.jsonConvertLogic.toCarryoverSummaryJson(summary));
 
     }

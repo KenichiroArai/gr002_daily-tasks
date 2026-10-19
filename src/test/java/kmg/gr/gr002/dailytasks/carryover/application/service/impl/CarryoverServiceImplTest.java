@@ -109,15 +109,11 @@ public class CarryoverServiceImplTest {
          *
          * @since 0.1.0
          *
-         * @param source
-         *               データの取得元と保存先
-         *
          * @return 登録した Issue
          */
         @Override
-        public List<DailyTaskIssueModel> fetchAllIssues(final CarryoverSourceModel source) {
+        public List<DailyTaskIssueModel> fetchAllIssues() {
 
-            this.sources.add(source);
             final List<DailyTaskIssueModel> result = this.remoteIssues;
             return result;
 
@@ -156,7 +152,7 @@ public class CarryoverServiceImplTest {
          *
          * @since 0.1.0
          *
-         * @return 受け取ったデータの取得元と保存先（呼び出し順）
+         * @return 受け取ったデータの取得元と保存先
          */
         private List<CarryoverSourceModel> getSources() {
 
@@ -166,19 +162,30 @@ public class CarryoverServiceImplTest {
         }
 
         /**
-         * テスト用の標準時間を返す<br>
+         * データの取得元と保存先を記録する<br>
          *
          * @since 0.1.0
          *
          * @param source
          *               データの取得元と保存先
+         */
+        @Override
+        public void initialize(final CarryoverSourceModel source) {
+
+            this.sources.add(source);
+
+        }
+
+        /**
+         * テスト用の標準時間を返す<br>
+         *
+         * @since 0.1.0
          *
          * @return テスト用の標準時間
          */
         @Override
-        public DefaultMinutesModel loadDefaultMinutes(final CarryoverSourceModel source) {
+        public DefaultMinutesModel loadDefaultMinutes() {
 
-            this.sources.add(source);
             final DefaultMinutesModel result = CarryoverServiceImplTest.DEFAULT_MINUTES;
             return result;
 
@@ -189,15 +196,11 @@ public class CarryoverServiceImplTest {
          *
          * @since 0.1.0
          *
-         * @param source
-         *               データの取得元と保存先
-         *
          * @return 保存済みの解析結果
          */
         @Override
-        public Map<Integer, CarryoverIssueModel> loadIssues(final CarryoverSourceModel source) {
+        public Map<Integer, CarryoverIssueModel> loadIssues() {
 
-            this.sources.add(source);
             final Map<Integer, CarryoverIssueModel> result = new TreeMap<>(this.storedIssues);
             return result;
 
@@ -208,15 +211,12 @@ public class CarryoverServiceImplTest {
          *
          * @since 0.1.0
          *
-         * @param source
-         *               データの取得元と保存先
          * @param issue
-         *               解析結果
+         *              解析結果
          */
         @Override
-        public void saveIssue(final CarryoverSourceModel source, final CarryoverIssueModel issue) {
+        public void saveIssue(final CarryoverIssueModel issue) {
 
-            this.sources.add(source);
             this.savedNumbers.add(issue.getNumber());
 
         }
@@ -226,15 +226,12 @@ public class CarryoverServiceImplTest {
          *
          * @since 0.1.0
          *
-         * @param source
-         *                データの取得元と保存先
          * @param summary
          *                画面用の集計
          */
         @Override
-        public void saveSummary(final CarryoverSourceModel source, final CarryoverSummaryModel summary) {
+        public void saveSummary(final CarryoverSummaryModel summary) {
 
-            this.sources.add(source);
             this.savedSummary = summary;
 
         }
@@ -402,10 +399,11 @@ public class CarryoverServiceImplTest {
     private static boolean needsUpdate(final boolean full, final CarryoverIssueModel stored,
         final DailyTaskIssueModel remoteIssue, final int recentFrom) throws Exception {
 
-        final boolean result
-            = ReflectionTestUtil.<Boolean>invokeStatic(CarryoverServiceImpl.class, "needsUpdate", new Class<?>[] {
-                boolean.class, CarryoverIssueModel.class, DailyTaskIssueModel.class, int.class
-            }, Boolean.valueOf(full), stored, remoteIssue, Integer.valueOf(recentFrom));
+        final CarryoverServiceImpl target = new CarryoverServiceImpl();
+        ReflectionTestUtil.setField(target, "full", Boolean.valueOf(full));
+        final boolean result = ReflectionTestUtil.<Boolean>invoke(target, "needsUpdate", new Class<?>[] {
+            CarryoverIssueModel.class, DailyTaskIssueModel.class, int.class
+        }, stored, remoteIssue, Integer.valueOf(recentFrom));
         return result;
 
     }
@@ -422,8 +420,8 @@ public class CarryoverServiceImplTest {
      */
     private static CarryoverIssueModel parse(final DailyTaskIssueModel issue) {
 
-        final CarryoverIssueModel result
-            = CarryoverServiceImplTest.PARSE_LOGIC.parse(issue, CarryoverServiceImplTest.DEFAULT_MINUTES);
+        CarryoverServiceImplTest.PARSE_LOGIC.initialize(CarryoverServiceImplTest.DEFAULT_MINUTES);
+        final CarryoverIssueModel result = CarryoverServiceImplTest.PARSE_LOGIC.parse(issue);
         return result;
 
     }
@@ -503,7 +501,8 @@ public class CarryoverServiceImplTest {
         /* テスト対象の実行 */
         try (LogCapture testLog = new LogCapture(CarryoverServiceImpl.class)) {
 
-            final int testResult = testTarget.collect(CarryoverServiceImplTest.PROPERTIES, false);
+            testTarget.initialize(CarryoverServiceImplTest.PROPERTIES, false);
+            final int testResult = testTarget.collect();
 
             /* 検証の準備 */
             final String[] actualMsgs  = testLog.getMessages();
@@ -543,7 +542,8 @@ public class CarryoverServiceImplTest {
         /* テスト対象の実行 */
         try (LogCapture testLog = new LogCapture(CarryoverServiceImpl.class)) {
 
-            final int testResult = testTarget.collect(CarryoverServiceImplTest.PROPERTIES, false);
+            testTarget.initialize(CarryoverServiceImplTest.PROPERTIES, false);
+            final int testResult = testTarget.collect();
 
             /* 検証の準備 */
             final String[] actualMsgs  = testLog.getMessages();
@@ -585,7 +585,8 @@ public class CarryoverServiceImplTest {
         /* テスト対象の実行 */
         try (LogCapture testLog = new LogCapture(CarryoverServiceImpl.class)) {
 
-            final int testResult = testTarget.collect(CarryoverServiceImplTest.PROPERTIES, true);
+            testTarget.initialize(CarryoverServiceImplTest.PROPERTIES, true);
+            final int testResult = testTarget.collect();
 
             /* 検証の準備 */
             final String[]      actualMsgs         = testLog.getMessages();
@@ -615,7 +616,7 @@ public class CarryoverServiceImplTest {
     public void testCollect_normalSource() throws IOException {
 
         /* 期待値の定義 */
-        final int    expectedSourceCount = 5;
+        final int    expectedSourceCount = 1;
         final String expectedRepository  = "owner/repo";
         final Path   expectedDataDir     = Path.of("docs", "data");
 
@@ -625,7 +626,8 @@ public class CarryoverServiceImplTest {
         final CarryoverServiceImpl    testTarget     = CarryoverServiceImplTest.createTarget(testIssueLogic);
 
         /* テスト対象の実行 */
-        testTarget.collect(CarryoverServiceImplTest.PROPERTIES, true);
+        testTarget.initialize(CarryoverServiceImplTest.PROPERTIES, true);
+        testTarget.collect();
 
         /* 検証の準備 */
         final List<CarryoverSourceModel> actualSources     = testIssueLogic.getSources();

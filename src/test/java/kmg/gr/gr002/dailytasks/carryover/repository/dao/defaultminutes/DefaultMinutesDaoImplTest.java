@@ -71,7 +71,8 @@ public class DefaultMinutesDaoImplTest {
         final DefaultMinutesDaoImpl testTarget = DefaultMinutesDaoImplTest.createTarget();
 
         /* テスト対象の実行 */
-        final IOException testException = Assertions.assertThrows(IOException.class, () -> testTarget.load(testConfig));
+        testTarget.initialize(testConfig);
+        final IOException testException = Assertions.assertThrows(IOException.class, testTarget::load);
 
         /* 検証の準備 */
         final Throwable actualCause = testException.getCause();
@@ -101,7 +102,8 @@ public class DefaultMinutesDaoImplTest {
         final DefaultMinutesDaoImpl testTarget = DefaultMinutesDaoImplTest.createTarget();
 
         /* テスト対象の実行 */
-        final Map<String, Double> testResult = testTarget.load(testConfig);
+        testTarget.initialize(testConfig);
+        final Map<String, Double> testResult = testTarget.load();
 
         /* 検証の準備 */
         final Double actualMinutes = testResult.get("高校数学");
@@ -134,7 +136,8 @@ public class DefaultMinutesDaoImplTest {
         /* テスト対象の実行 */
         try (LogCapture testLog = new LogCapture(DefaultMinutesDaoImpl.class)) {
 
-            final Map<String, Double> testResult = testTarget.load(testConfig);
+            testTarget.initialize(testConfig);
+            final Map<String, Double> testResult = testTarget.load();
 
             /* 検証の準備 */
             final String[] actualMsgs    = testLog.getMessages();

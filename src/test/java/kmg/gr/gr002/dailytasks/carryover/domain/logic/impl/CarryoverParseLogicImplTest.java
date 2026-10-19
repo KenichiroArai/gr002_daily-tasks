@@ -90,6 +90,7 @@ public class CarryoverParseLogicImplTest {
 
         final CarryoverParseLogicImpl result = new CarryoverParseLogicImpl();
         ReflectionTestUtil.setField(result, "messageLogic", MessageLogicTestUtil.create());
+        result.initialize(CarryoverParseLogicImplTest.DEFAULT_MINUTES);
         return result;
 
     }
@@ -171,9 +172,8 @@ public class CarryoverParseLogicImplTest {
         final String section, final boolean checked, final String content, final String raw) throws Exception {
 
         final CarryoverItemModel result = ReflectionTestUtil.invoke(target, "parseItem", new Class<?>[] {
-            int.class, String.class, boolean.class, String.class, String.class, DefaultMinutesModel.class
-        }, Integer.valueOf(number), section, Boolean.valueOf(checked), content, raw,
-            CarryoverParseLogicImplTest.DEFAULT_MINUTES);
+            int.class, String.class, boolean.class, String.class, String.class
+        }, Integer.valueOf(number), section, Boolean.valueOf(checked), content, raw);
         return result;
 
     }
@@ -543,7 +543,7 @@ public class CarryoverParseLogicImplTest {
 
         try (LogCapture testLog = new LogCapture(CarryoverParseLogicImpl.class)) {
 
-            testResult = testTarget.parse(testIssue, CarryoverParseLogicImplTest.DEFAULT_MINUTES);
+            testResult = testTarget.parse(testIssue);
 
             /* 検証の準備 */
             final String[]     actualMsgs          = testLog.getMessages();
@@ -584,7 +584,7 @@ public class CarryoverParseLogicImplTest {
             "## ルーティン\n- [ ] 国語（15分）\n## 追加");
 
         /* テスト対象の実行 */
-        final CarryoverIssueModel testResult = testTarget.parse(testIssue, CarryoverParseLogicImplTest.DEFAULT_MINUTES);
+        final CarryoverIssueModel testResult = testTarget.parse(testIssue);
 
         /* 検証の準備 */
         final int     actualCount      = testResult.getCount();
@@ -613,7 +613,7 @@ public class CarryoverParseLogicImplTest {
             "## 負債\n- [ ] 国語2026/03/30\n## 繰り越し\n- [ ] 国語2026/03/31（残り9分）");
 
         /* テスト対象の実行 */
-        final CarryoverIssueModel testResult = testTarget.parse(testIssue, CarryoverParseLogicImplTest.DEFAULT_MINUTES);
+        final CarryoverIssueModel testResult = testTarget.parse(testIssue);
 
         /* 検証の準備 */
         final List<String> actualSections = testResult.getSections();
@@ -644,7 +644,7 @@ public class CarryoverParseLogicImplTest {
         /* テスト対象の実行 */
         try (LogCapture testLog = new LogCapture(CarryoverParseLogicImpl.class)) {
 
-            testTarget.parse(testIssue, CarryoverParseLogicImplTest.DEFAULT_MINUTES);
+            testTarget.parse(testIssue);
 
             /* 検証の準備 */
             final String[] actualMsgs = testLog.getMessages();
@@ -676,8 +676,7 @@ public class CarryoverParseLogicImplTest {
         /* テスト対象の実行 */
         try (LogCapture testLog = new LogCapture(CarryoverParseLogicImpl.class)) {
 
-            final CarryoverIssueModel testResult
-                = testTarget.parse(testIssue, CarryoverParseLogicImplTest.DEFAULT_MINUTES);
+            final CarryoverIssueModel testResult = testTarget.parse(testIssue);
 
             /* 検証の準備 */
             final String[] actualMsgs = testLog.getMessages();
@@ -713,8 +712,7 @@ public class CarryoverParseLogicImplTest {
         /* テスト対象の実行 */
         try (LogCapture testLog = new LogCapture(CarryoverParseLogicImpl.class)) {
 
-            final CarryoverIssueModel testResult
-                = testTarget.parse(testIssue, CarryoverParseLogicImplTest.DEFAULT_MINUTES);
+            final CarryoverIssueModel testResult = testTarget.parse(testIssue);
 
             /* 検証の準備 */
             final String[] actualMsgs  = testLog.getMessages();

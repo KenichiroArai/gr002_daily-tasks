@@ -19,17 +19,28 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.DefaultMinutesModel;
 public interface CarryoverParseLogic {
 
     /**
+     * 標準時間を受け取り、フィールドに保持する<br>
+     * <p>
+     * {@link #parse(DailyTaskIssueModel)} より前に呼ぶ。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @param defaultMinutes
+     *                       時間表記がない行を補完する項目ごとの標準時間
+     */
+    void initialize(DefaultMinutesModel defaultMinutes);
+
+    /**
      * Issue を解析する<br>
      *
      * @since 0.1.0
      *
      * @param issue
-     *                       日々のタスク Issue
-     * @param defaultMinutes
-     *                       時間表記がない行を補完する項目ごとの標準時間
+     *              日々のタスク Issue
      *
      * @return 持ち越しの解析結果
      */
-    CarryoverIssueModel parse(DailyTaskIssueModel issue, DefaultMinutesModel defaultMinutes);
+    CarryoverIssueModel parse(DailyTaskIssueModel issue);
 
 }

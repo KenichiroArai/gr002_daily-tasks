@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.ObjectProvider;
 
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002GenMsgTypes;
 import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverOptionsModel;
@@ -60,22 +61,15 @@ public class CarryoverCommandImplTest {
         private final List<CarryoverPropertiesModel> propertiesList = new ArrayList<>();
 
         /**
-         * 呼び出し時のモードと設定を記録し、3 を返す<br>
+         * 3 を返す<br>
          *
          * @since 0.1.0
-         *
-         * @param properties
-         *                   持ち越しの収集の設定
-         * @param full
-         *                   全件モードか
          *
          * @return 3
          */
         @Override
-        public int collect(final CarryoverPropertiesModel properties, final boolean full) {
+        public int collect() {
 
-            this.propertiesList.add(properties);
-            this.calls.add(full);
             final int result = 3;
             return result;
 
@@ -109,6 +103,121 @@ public class CarryoverCommandImplTest {
 
         }
 
+        /**
+         * 呼び出し時のモードと設定を記録する<br>
+         *
+         * @since 0.1.0
+         *
+         * @param properties
+         *                   持ち越しの収集の設定
+         * @param full
+         *                   全件モードか
+         */
+        @Override
+        public void initialize(final CarryoverPropertiesModel properties, final boolean full) {
+
+            this.propertiesList.add(properties);
+            this.calls.add(full);
+
+        }
+
+    }
+
+    /**
+     * テスト用のサービスの取得<br>
+     *
+     * @author KenichiroArai
+     *
+     * @since 0.1.0
+     *
+     * @version 0.1.0
+     */
+    private static final class StubServiceProvider implements ObjectProvider<CarryoverService> {
+
+        /**
+         * 返すサービス
+         *
+         * @since 0.1.0
+         */
+        private final CarryoverService service;
+
+        /**
+         * コンストラクタ<br>
+         *
+         * @since 0.1.0
+         *
+         * @param service
+         *                返すサービス
+         */
+        private StubServiceProvider(final CarryoverService service) {
+
+            this.service = service;
+
+        }
+
+        /**
+         * サービスを返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @return サービス
+         */
+        @Override
+        public CarryoverService getIfAvailable() {
+
+            final CarryoverService result = this.service;
+            return result;
+
+        }
+
+        /**
+         * サービスを返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @return サービス
+         */
+        @Override
+        public CarryoverService getIfUnique() {
+
+            final CarryoverService result = this.service;
+            return result;
+
+        }
+
+        /**
+         * サービスを返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @return サービス
+         */
+        @Override
+        public CarryoverService getObject() {
+
+            final CarryoverService result = this.service;
+            return result;
+
+        }
+
+        /**
+         * サービスを返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @param args
+         *             引数
+         *
+         * @return サービス
+         */
+        @Override
+        public CarryoverService getObject(final Object... args) {
+
+            final CarryoverService result = this.service;
+            return result;
+
+        }
+
     }
 
     /**
@@ -134,7 +243,7 @@ public class CarryoverCommandImplTest {
     private static CarryoverCommandImpl createTarget(final CarryoverService service, final PrintStream out) {
 
         final CarryoverCommandImpl result = new CarryoverCommandImpl();
-        ReflectionTestUtil.setField(result, "carryoverService", service);
+        ReflectionTestUtil.setField(result, "carryoverService", new StubServiceProvider(service));
         ReflectionTestUtil.setField(result, "properties", CarryoverCommandImplTest.PROPERTIES);
         ReflectionTestUtil.setField(result, "messageLogic", MessageLogicTestUtil.create());
         ReflectionTestUtil.setField(result, "out", out);
@@ -200,13 +309,15 @@ public class CarryoverCommandImplTest {
 
         /* テスト対象の実行 */
         final CarryoverCommandImpl testTarget = new CarryoverCommandImpl();
-        ReflectionTestUtil.setField(testTarget, "carryoverService", testService);
+        ReflectionTestUtil.setField(testTarget, "carryoverService", new StubServiceProvider(testService));
         ReflectionTestUtil.setField(testTarget, "properties", CarryoverCommandImplTest.PROPERTIES);
         ReflectionTestUtil.setField(testTarget, "messageLogic", MessageLogicTestUtil.create());
 
         /* 検証の準備 */
-        final Object      actualService = ReflectionTestUtil.getField(testTarget, "carryoverService");
-        final PrintStream actualOut     = ReflectionTestUtil.getField(testTarget, "out");
+        final ObjectProvider<CarryoverService> actualProvider = ReflectionTestUtil.getField(testTarget,
+            "carryoverService");
+        final CarryoverService                 actualService  = actualProvider.getObject();
+        final PrintStream                      actualOut      = ReflectionTestUtil.getField(testTarget, "out");
 
         /* 検証の実施 */
         Assertions.assertEquals(testService, actualService, "サービスが一致しません");

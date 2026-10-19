@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverIssueLogic;
@@ -15,7 +16,6 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSummaryModel
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DefaultMinutesModel;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssueDto;
-import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubSettingsDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.logic.CarryoverDtoConvertLogic;
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.api.GitHubIssueApi;
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.CarryoverDataDao;
@@ -25,7 +25,8 @@ import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.DefaultMinutesDao
  * 持ち越しのデータの取得・保存ロジックの実装<br>
  * <p>
  * application 層のデータの取得・保存ロジックを実装する。application 層のモデルと domain 層の DTO を {@link CarryoverDtoConvertLogic} で変換し、domain 層の外部
- * API・DAO（実装は repository 層）に渡す。データの取得元と保存先は、domain 層の型（接続設定の DTO・パス）に変換して渡す。
+ * API・DAO（実装は repository 層）に渡す。データの取得元と保存先は {@link #initialize(CarryoverSourceModel)} で受け取り、domain 層の型（接続設定の
+ * DTO・パス）に変換して外部 API と DAO を初期化する。
  * </p>
  *
  * @author KenichiroArai
@@ -35,6 +36,7 @@ import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.DefaultMinutesDao
  * @version 0.1.0
  */
 @Component
+@Scope("prototype")
 public class CarryoverIssueLogicImpl implements CarryoverIssueLogic {
 
     /**
@@ -70,12 +72,16 @@ public class CarryoverIssueLogicImpl implements CarryoverIssueLogic {
     private GitHubIssueApi gitHubIssueApi;
 
     /**
+     * データの取得元と保存先
+     *
+     * @since 0.1.0
+     */
+    private CarryoverSourceModel source;
+
+    /**
      * すべての日々のタスク Issue を取得する<br>
      *
      * @since 0.1.0
-     *
-     * @param source
-     *               データの取得元と保存先
      *
      * @return 日々のタスク Issue（作成順）
      *
@@ -83,12 +89,33 @@ public class CarryoverIssueLogicImpl implements CarryoverIssueLogic {
      *                     取得に失敗した場合
      */
     @Override
-    public List<DailyTaskIssueModel> fetchAllIssues(final CarryoverSourceModel source) throws IOException {
+    public List<DailyTaskIssueModel> fetchAllIssues() throws IOException {
 
-        final GitHubSettingsDto         settings = this.dtoConvertLogic.toGitHubSettingsDto(source);
-        final List<DailyTaskIssueModel> result   = this.gitHubIssueApi.fetchAllIssues(settings).stream()
-            .map(this.dtoConvertLogic::toDailyTaskIssue).toList();
+        final List<DailyTaskIssueModel> result
+            = this.gitHubIssueApi.fetchAllIssues().stream().map(this.dtoConvertLogic::toDailyTaskIssue).toList();
         return result;
+
+    }
+
+    /**
+     * データの取得元と保存先を受け取り、フィールドに保持する<br>
+     * <p>
+     * 外部 API と DAO も同じ取得元と保存先で初期化する。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @param source
+     *               データの取得元と保存先
+     */
+    @SuppressWarnings("hiding")
+    @Override
+    public void initialize(final CarryoverSourceModel source) {
+
+        this.source = source;
+        this.gitHubIssueApi.initialize(this.dtoConvertLogic.toGitHubSettingsDto(this.source));
+        this.defaultMinutesDao.initialize(this.source.getDefaultMinutesFile());
+        this.carryoverDataDao.initialize(this.source.getDataDir());
 
     }
 
@@ -97,18 +124,15 @@ public class CarryoverIssueLogicImpl implements CarryoverIssueLogic {
      *
      * @since 0.1.0
      *
-     * @param source
-     *               データの取得元と保存先
-     *
      * @return 項目ごとの標準時間。設定がない場合は空
      *
      * @throws IOException
      *                     読み込みに失敗した場合
      */
     @Override
-    public DefaultMinutesModel loadDefaultMinutes(final CarryoverSourceModel source) throws IOException {
+    public DefaultMinutesModel loadDefaultMinutes() throws IOException {
 
-        final Map<String, Double> minutesByName = this.defaultMinutesDao.load(source.getDefaultMinutesFile());
+        final Map<String, Double> minutesByName = this.defaultMinutesDao.load();
         final DefaultMinutesModel result        = this.dtoConvertLogic.toDefaultMinutes(minutesByName);
         return result;
 
@@ -119,21 +143,17 @@ public class CarryoverIssueLogicImpl implements CarryoverIssueLogic {
      *
      * @since 0.1.0
      *
-     * @param source
-     *               データの取得元と保存先
-     *
      * @return Issue 番号と解析結果の対応。保存されていない場合は空
      *
      * @throws IOException
      *                     読み込みに失敗した場合
      */
     @Override
-    public Map<Integer, CarryoverIssueModel> loadIssues(final CarryoverSourceModel source) throws IOException {
+    public Map<Integer, CarryoverIssueModel> loadIssues() throws IOException {
 
         final Map<Integer, CarryoverIssueModel> result = new TreeMap<>();
 
-        for (final Map.Entry<Integer, CarryoverIssueDto> entry : this.carryoverDataDao.loadIssues(source.getDataDir())
-            .entrySet()) {
+        for (final Map.Entry<Integer, CarryoverIssueDto> entry : this.carryoverDataDao.loadIssues().entrySet()) {
 
             result.put(entry.getKey(), this.dtoConvertLogic.toCarryoverIssue(entry.getValue()));
 
@@ -148,18 +168,16 @@ public class CarryoverIssueLogicImpl implements CarryoverIssueLogic {
      *
      * @since 0.1.0
      *
-     * @param source
-     *               データの取得元と保存先
      * @param issue
-     *               持ち越しの解析結果
+     *              持ち越しの解析結果
      *
      * @throws IOException
      *                     書き込みに失敗した場合
      */
     @Override
-    public void saveIssue(final CarryoverSourceModel source, final CarryoverIssueModel issue) throws IOException {
+    public void saveIssue(final CarryoverIssueModel issue) throws IOException {
 
-        this.carryoverDataDao.saveIssue(source.getDataDir(), this.dtoConvertLogic.toCarryoverIssueDto(issue));
+        this.carryoverDataDao.saveIssue(this.dtoConvertLogic.toCarryoverIssueDto(issue));
 
     }
 
@@ -168,8 +186,6 @@ public class CarryoverIssueLogicImpl implements CarryoverIssueLogic {
      *
      * @since 0.1.0
      *
-     * @param source
-     *                データの取得元と保存先
      * @param summary
      *                画面用の集計
      *
@@ -177,9 +193,9 @@ public class CarryoverIssueLogicImpl implements CarryoverIssueLogic {
      *                     書き込みに失敗した場合
      */
     @Override
-    public void saveSummary(final CarryoverSourceModel source, final CarryoverSummaryModel summary) throws IOException {
+    public void saveSummary(final CarryoverSummaryModel summary) throws IOException {
 
-        this.carryoverDataDao.saveSummary(source.getDataDir(), this.dtoConvertLogic.toCarryoverSummaryDto(summary));
+        this.carryoverDataDao.saveSummary(this.dtoConvertLogic.toCarryoverSummaryDto(summary));
 
     }
 
