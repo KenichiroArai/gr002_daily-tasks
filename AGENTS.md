@@ -46,7 +46,7 @@ src/main/java/kmg/gr/gr002/dailytasks/
     presentation/            # CLI などの入出力層
       command/               # コマンドのインタフェース（CommandLineRunner を継承）
       command/impl/          # コマンドの実装（run で引数の解析、設定の引き継ぎ）
-      model/                 # 設定ファイルの値で application にもそのまま引き継ぐ設定（@ConfigurationProperties の CarryoverPropertiesModel）、引数を解析したオプション（CarryoverOptionsModel）
+      model/                 # 設定ファイルの値で application にもそのまま引き継ぐ設定（@ConfigurationProperties の CarryoverPropertiesModel）
       types/                 # 列挙型（コマンド引数 CommandOptionTypes、設定の文字列表現 CarryoverPropertiesFormatTypes）
       service/               # application に求めるサービス（CarryoverService。実装は application）
     application/             # ユースケースや業務ロジック層
@@ -415,6 +415,38 @@ public boolean someMethod(String input) {
 
     return result;  // 統一された形式で return
 }
+```
+
+### 列挙型の分岐
+
+- 分岐の材料が列挙型の定数だけなら、if の連続ではなく switch を使う
+- switch は式にする。文にすると、列挙型の全定数を case にしてもコンパイラが到達不能な default を足し、分岐網羅が 100% にならない。式ではその default が `MatchException` になり、計測から除かれる。定数を足したときはコンパイルエラーになる
+- 同じ処理になる定数は統合せず、1 つの case に並べる（例: `HELP` と `HELP_SHORT`）
+- 列挙型の `isXxx()` と if でまとめるのは、switch の case では表せない判定のときだけとする
+
+```java
+this.help = switch (option) {
+
+    case FULL -> {
+
+        this.full = true;
+        yield this.help;
+
+    }
+
+    case HELP, HELP_SHORT -> {
+
+        yield true;
+
+    }
+
+    case NONE -> {
+
+        throw new IllegalArgumentException(arg);
+
+    }
+
+};
 ```
 
 ## テストのコーディングルール

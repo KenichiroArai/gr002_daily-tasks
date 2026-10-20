@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002GenMsgTypes;
 import kmg.gr.gr002.dailytasks.carryover.presentation.command.CarryoverCommand;
-import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverOptionsModel;
 import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel;
 import kmg.gr.gr002.dailytasks.carryover.presentation.service.CarryoverService;
 import kmg.gr.gr002.dailytasks.carryover.presentation.types.CommandOptionTypes;
@@ -59,6 +58,20 @@ public class CarryoverCommandImpl implements CarryoverCommand {
     private final PrintStream out;
 
     /**
+     * 全件モードか
+     *
+     * @since 0.1.0
+     */
+    private boolean full;
+
+    /**
+     * 使い方を表示するか
+     *
+     * @since 0.1.0
+     */
+    private boolean help;
+
+    /**
      * 設定ファイルの値
      *
      * @since 0.1.0
@@ -69,7 +82,7 @@ public class CarryoverCommandImpl implements CarryoverCommand {
     /**
      * コンストラクタ<br>
      * <p>
-     * 使い方は標準出力に出す。
+     * 使い方は標準出力に出す。全件モードと使い方の表示は false にする。
      * </p>
      *
      * @since 0.1.0
@@ -77,51 +90,58 @@ public class CarryoverCommandImpl implements CarryoverCommand {
     public CarryoverCommandImpl() {
 
         this.out = System.out;
+        this.full = false;
+        this.help = false;
 
     }
 
     /**
-     * コマンドライン引数を解析してオプションを返す<br>
+     * コマンドライン引数を解析してオプションをフィールドに設定する<br>
      *
      * @since 0.1.0
      *
      * @param args
      *             コマンドライン引数
      *
-     * @return 持ち越しの収集コマンドのオプション
-     *
      * @throws IllegalArgumentException
      *                                  不明な引数が指定された場合
      */
-    private CarryoverOptionsModel parseArgs(final String[] args) {
+    private void parseArgs(final String[] args) {
 
-        final CarryoverOptionsModel result = new CarryoverOptionsModel();
+        this.full = false;
+        this.help = false;
 
         for (final String arg : args) {
 
             final CommandOptionTypes option = CommandOptionTypes.getEnum(arg);
 
-            if (option == CommandOptionTypes.FULL) {
+            /* 全件モード以外では、使い方の表示だけを更新する */
+            this.help = switch (option) {
 
-                result.setFull(true);
-                continue;
+                case FULL -> {
 
-            }
+                    this.full = true;
+                    yield this.help;
 
-            if ((option == CommandOptionTypes.HELP) || (option == CommandOptionTypes.HELP_SHORT)) {
+                }
 
-                result.setHelp(true);
-                continue;
+                case HELP, HELP_SHORT -> {
 
-            }
+                    yield true;
 
-            final String template = this.messageLogic.get(Gr002GenMsgTypes.GR002_GEN11101);
-            final String message  = String.format(template, arg);
-            throw new IllegalArgumentException(message);
+                }
+
+                case NONE -> {
+
+                    final String template = this.messageLogic.get(Gr002GenMsgTypes.GR002_GEN11101);
+                    final String message  = String.format(template, arg);
+                    throw new IllegalArgumentException(message);
+
+                }
+
+            };
 
         }
-
-        return result;
 
     }
 
@@ -142,10 +162,10 @@ public class CarryoverCommandImpl implements CarryoverCommand {
     public void run(final String... args) throws IOException {
 
         /* 引数の解析 */
-        final CarryoverOptionsModel options = this.parseArgs(args);
+        this.parseArgs(args);
 
         /* 使い方の表示 */
-        if (options.isHelp()) {
+        if (this.help) {
 
             final String usage = this.messageLogic.get(Gr002GenMsgTypes.GR002_GEN11100);
             this.out.println(usage);
@@ -155,7 +175,7 @@ public class CarryoverCommandImpl implements CarryoverCommand {
 
         /* 収集の実行 */
         final CarryoverService service = this.carryoverService.getObject();
-        service.initialize(this.properties, options.isFull());
+        service.initialize(this.properties, this.full);
         service.collect();
 
     }

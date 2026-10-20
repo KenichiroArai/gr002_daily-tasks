@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.ObjectProvider;
 
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002GenMsgTypes;
-import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverOptionsModel;
 import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel;
 import kmg.gr.gr002.dailytasks.carryover.presentation.service.CarryoverService;
 import kmg.gr.gr002.dailytasks.testutil.MessageLogicTestUtil;
@@ -259,16 +258,16 @@ public class CarryoverCommandImplTest {
      * @param args
      *             コマンドライン引数
      *
-     * @return 持ち越しの収集コマンドのオプション
+     * @return 引数を解析したコマンド
      *
      * @throws Exception
      *                   例外が発生した場合
      */
-    private static CarryoverOptionsModel parseArgs(final String... args) throws Exception {
+    private static CarryoverCommandImpl parseArgs(final String... args) throws Exception {
 
-        final CarryoverCommandImpl  target = CarryoverCommandImplTest.createTarget(new StubCarryoverService(),
+        final CarryoverCommandImpl result = CarryoverCommandImplTest.createTarget(new StubCarryoverService(),
             System.out);
-        final CarryoverOptionsModel result = ReflectionTestUtil.invoke(target, "parseArgs", new Class<?>[] {
+        ReflectionTestUtil.invoke(result, "parseArgs", new Class<?>[] {
             String[].class
         }, (Object) args);
         return result;
@@ -341,11 +340,11 @@ public class CarryoverCommandImplTest {
         /* 準備 */
 
         /* テスト対象の実行 */
-        final CarryoverOptionsModel testResult = CarryoverCommandImplTest.parseArgs("--full");
+        final CarryoverCommandImpl testTarget = CarryoverCommandImplTest.parseArgs("--full");
 
         /* 検証の準備 */
-        final boolean actualFull = testResult.isFull();
-        final boolean actualHelp = testResult.isHelp();
+        final boolean actualFull = ReflectionTestUtil.getField(testTarget, "full");
+        final boolean actualHelp = ReflectionTestUtil.getField(testTarget, "help");
 
         /* 検証の実施 */
         Assertions.assertTrue(actualFull, "全件モードと判定される必要があります");
@@ -369,11 +368,11 @@ public class CarryoverCommandImplTest {
         /* 準備 */
 
         /* テスト対象の実行 */
-        final CarryoverOptionsModel testResult = CarryoverCommandImplTest.parseArgs("--help");
+        final CarryoverCommandImpl testTarget = CarryoverCommandImplTest.parseArgs("--help");
 
         /* 検証の準備 */
-        final boolean actualFull = testResult.isFull();
-        final boolean actualHelp = testResult.isHelp();
+        final boolean actualFull = ReflectionTestUtil.getField(testTarget, "full");
+        final boolean actualHelp = ReflectionTestUtil.getField(testTarget, "help");
 
         /* 検証の実施 */
         Assertions.assertFalse(actualFull, "差分モードと判定される必要があります");
@@ -397,11 +396,11 @@ public class CarryoverCommandImplTest {
         /* 準備 */
 
         /* テスト対象の実行 */
-        final CarryoverOptionsModel testResult = CarryoverCommandImplTest.parseArgs();
+        final CarryoverCommandImpl testTarget = CarryoverCommandImplTest.parseArgs();
 
         /* 検証の準備 */
-        final boolean actualFull = testResult.isFull();
-        final boolean actualHelp = testResult.isHelp();
+        final boolean actualFull = ReflectionTestUtil.getField(testTarget, "full");
+        final boolean actualHelp = ReflectionTestUtil.getField(testTarget, "help");
 
         /* 検証の実施 */
         Assertions.assertFalse(actualFull, "差分モードと判定される必要があります");
@@ -425,10 +424,10 @@ public class CarryoverCommandImplTest {
         /* 準備 */
 
         /* テスト対象の実行 */
-        final CarryoverOptionsModel testResult = CarryoverCommandImplTest.parseArgs("-h");
+        final CarryoverCommandImpl testTarget = CarryoverCommandImplTest.parseArgs("-h");
 
         /* 検証の準備 */
-        final boolean actualHelp = testResult.isHelp();
+        final boolean actualHelp = ReflectionTestUtil.getField(testTarget, "help");
 
         /* 検証の実施 */
         Assertions.assertTrue(actualHelp, "使い方を表示すると判定される必要があります");
