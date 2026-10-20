@@ -53,6 +53,13 @@ public class CarryoverCommandImplTest {
         private final List<Boolean> calls = new ArrayList<>();
 
         /**
+         * 呼び出しの順
+         *
+         * @since 0.1.0
+         */
+        private final List<String> steps = new ArrayList<>();
+
+        /**
          * 呼び出し時の設定
          *
          * @since 0.1.0
@@ -60,7 +67,19 @@ public class CarryoverCommandImplTest {
         private final List<CarryoverPropertiesModel> propertiesList = new ArrayList<>();
 
         /**
-         * 3 を返す<br>
+         * 呼び出しを記録する<br>
+         *
+         * @since 0.1.0
+         */
+        @Override
+        public void aggregate() {
+
+            this.steps.add("aggregate");
+
+        }
+
+        /**
+         * 3 を返し、呼び出しを記録する<br>
          *
          * @since 0.1.0
          *
@@ -69,6 +88,7 @@ public class CarryoverCommandImplTest {
         @Override
         public int collect() {
 
+            this.steps.add("collect");
             final int result = 3;
             return result;
 
@@ -103,6 +123,20 @@ public class CarryoverCommandImplTest {
         }
 
         /**
+         * 呼び出しの順を返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @return 呼び出しの順
+         */
+        private List<String> getSteps() {
+
+            final List<String> result = this.steps;
+            return result;
+
+        }
+
+        /**
          * 呼び出し時のモードと設定を記録する<br>
          *
          * @since 0.1.0
@@ -117,6 +151,7 @@ public class CarryoverCommandImplTest {
 
             this.propertiesList.add(properties);
             this.calls.add(full);
+            this.steps.add("initialize");
 
         }
 
@@ -472,6 +507,7 @@ public class CarryoverCommandImplTest {
 
         /* 期待値の定義 */
         final List<Boolean>            expectedCalls      = List.of(Boolean.FALSE);
+        final List<String>             expectedSteps      = List.of("initialize", "collect", "aggregate");
         final CarryoverPropertiesModel expectedProperties = CarryoverCommandImplTest.PROPERTIES;
 
         /* 準備 */
@@ -483,10 +519,12 @@ public class CarryoverCommandImplTest {
 
         /* 検証の準備 */
         final List<Boolean>            actualCalls      = testService.getCalls();
+        final List<String>             actualSteps      = testService.getSteps();
         final CarryoverPropertiesModel actualProperties = testService.getPropertiesList().get(0);
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedCalls, actualCalls, "呼び出し時のモードが一致しません");
+        Assertions.assertEquals(expectedSteps, actualSteps, "呼び出しの順が一致しません");
         Assertions.assertEquals(expectedProperties, actualProperties, "引き継いだ設定が一致しません");
 
     }
@@ -504,6 +542,7 @@ public class CarryoverCommandImplTest {
 
         /* 期待値の定義 */
         final List<Boolean> expectedCalls = List.of(Boolean.TRUE);
+        final List<String>  expectedSteps = List.of("initialize", "collect", "aggregate");
 
         /* 準備 */
         final StubCarryoverService testService = new StubCarryoverService();
@@ -514,9 +553,11 @@ public class CarryoverCommandImplTest {
 
         /* 検証の準備 */
         final List<Boolean> actualCalls = testService.getCalls();
+        final List<String>  actualSteps = testService.getSteps();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedCalls, actualCalls, "呼び出し時のモードが一致しません");
+        Assertions.assertEquals(expectedSteps, actualSteps, "呼び出しの順が一致しません");
 
     }
 

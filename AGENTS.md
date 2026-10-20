@@ -50,7 +50,8 @@ src/main/java/kmg/gr/gr002/dailytasks/
       types/                 # 列挙型（コマンド引数 CommandOptionTypes、設定の文字列表現 CarryoverPropertiesFormatTypes）
       service/               # application に求めるサービス（CarryoverService。実装は application）
     application/             # ユースケースや業務ロジック層
-      service/impl/          # presentation のサービスの実装（収集・解析・集計の流れ）
+      service/               # 役割ごとのサービス（CarryoverCollectService、CarryoverAggregateService。実装は impl）
+      service/impl/          # presentation のサービスと役割ごとのサービスの実装（収集と集計）
       logic/                 # domain に求めるロジック（Issue の取得 DailyTaskIssueLogic、標準時間 DefaultMinutesLogic、解析結果と集計の読み書き CarryoverDataLogic、解析 CarryoverParseLogic、集計 CarryoverAggregateLogic。実装は domain）
       model/                 # 業務モデル（Issue、持ち越し項目、日別集計、標準時間、domain に引き継ぐ設定 CarryoverSourceModel）
       types/                 # 列挙型（残り時間の取得元 MinutesSourceTypes、Issue の状態 IssueStateTypes、取得元の文字列表現 CarryoverSourceFormatTypes。KmgCmnTypes を実装）
@@ -153,7 +154,7 @@ repository 層のデータアクセスは、取得元によって次の 2 つに
 | サービス | `service/` | `XxxService` / `XxxServiceImpl` | `@Service` | 一連の流れを行う |
 | ロジック | `logic/` | `XxxLogic` / `XxxLogicImpl` | `@Component` | 個々の処理を行い、何度も呼ばれる |
 
-- **サービス**: サービス・ロジック・ユーティリティ・モデルなどを使い、一連の流れを行う。初期化、主処理、サブ処理、終了処理のように、処理（メソッド）の流れがはっきりしている（例: `CarryoverServiceImpl#collect` は取得、解析、保存、集計を順に行う）
+- **サービス**: サービス・ロジック・ユーティリティ・モデルなどを使い、一連の流れを行う。初期化、主処理、サブ処理、終了処理のように、処理（メソッド）の流れがはっきりしている。役割が複数あるときは統合サービスを残し、役割ごとのサービスに分ける（例: `CarryoverServiceImpl#collect` は収集サービスの取得、解析、保存を順に呼び、`aggregate` は集計サービスの集計と保存を順に呼ぶ）。呼び出し元（コマンド）が呼ぶのは役割までとする
 - **ロジック**: ロジック・ユーティリティ・モデルなどを使うが、サービスは呼ばない。メソッドごとに論理のまとまりになっており、各メソッドは基本的に互いに依存せず、サービス・ロジック・ユーティリティなどから何度も呼ばれる（例: get、read、write、exists、parse、aggregate、変換）。メソッド同士の依存は薄く、共通のパラメータだけをフィールドで共有する。インスタンス変数を共有する点がユーティリティとは異なる
 - インタフェースと実装に分ける場合は、ほかの型と同じく、インタフェースを呼ぶ側の層の `logic/`、実装を呼ばれる側の層の `logic/impl/` に置く。自層の中だけで使う部品（変換など）は、インタフェースを作らずに `logic/` に具象クラスを置いてよい
 - 名前に `Parser`、`Aggregator`、`Converter`、`Provider` などは使わず、`XxxLogic`（例: `CarryoverParseLogic`、`CarryoverAggregateLogic`、`MessageLogic`）とする

@@ -1,8 +1,6 @@
 package kmg.gr.gr002.dailytasks.carryover.application.service.impl;
 
 import java.io.IOException;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -12,16 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverAggregateLogic;
-import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverDataLogic;
-import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverParseLogic;
-import kmg.gr.gr002.dailytasks.carryover.application.logic.DailyTaskIssueLogic;
-import kmg.gr.gr002.dailytasks.carryover.application.logic.DefaultMinutesLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSourceModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSummaryModel;
-import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueModel;
-import kmg.gr.gr002.dailytasks.carryover.application.model.DefaultMinutesModel;
+import kmg.gr.gr002.dailytasks.carryover.application.service.CarryoverAggregateService;
+import kmg.gr.gr002.dailytasks.carryover.application.service.CarryoverCollectService;
 import kmg.gr.gr002.dailytasks.carryover.application.types.MinutesSourceTypes;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTypes;
@@ -29,11 +22,9 @@ import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesM
 import kmg.gr.gr002.dailytasks.carryover.presentation.service.CarryoverService;
 
 /**
- * 持ち越しの収集・集計サービスの実装<br>
+ * 持ち越しの収集・集計を統合するサービスの実装<br>
  * <p>
- * presentation 層のサービスを実装する。application 層のインタフェース（実装は domain 層）だけを使って、取得・解析・保存・集計の流れを組み立てる。設定とモードは
- * {@link #initialize(CarryoverPropertiesModel, boolean)} で受け取り、データの取得元と収集のモードをフィールドに保持する。取得元は役割ごとのロジックへ、
- * それぞれが必要とする値だけを渡す。
+ * presentation 層のサービスを実装する。収集と集計は役割ごとのサービスへ分け、{@link #collect()} と {@link #aggregate()} から決まった順で呼ぶ。
  * </p>
  *
  * @author KenichiroArai
@@ -74,64 +65,20 @@ public class CarryoverServiceImpl implements CarryoverService {
     }
 
     /**
-     * Issue 番号が大きい順に指定件数を選んだときの、最小の Issue 番号を返す<br>
-     *
-     * @since 0.1.0
-     *
-     * @param issues
-     *               取得した Issue
-     * @param count
-     *               件数
-     *
-     * @return 最小の Issue 番号。Issue がない場合は 0
-     */
-    private static int recentFrom(final List<DailyTaskIssueModel> issues, final int count) {
-
-        final int result = issues.stream().map(DailyTaskIssueModel::getNumber).sorted(Comparator.reverseOrder())
-            .limit(count).min(Comparator.naturalOrder()).orElse(0);
-        return result;
-
-    }
-
-    /**
-     * 日別の集計
+     * 持ち越しの集計
      *
      * @since 0.1.0
      */
     @Autowired
-    private CarryoverAggregateLogic carryoverAggregateLogic;
+    private CarryoverAggregateService carryoverAggregateService;
 
     /**
-     * 持ち越しの解析結果と画面用の集計の読み書き
+     * 持ち越しの収集
      *
      * @since 0.1.0
      */
     @Autowired
-    private CarryoverDataLogic carryoverDataLogic;
-
-    /**
-     * Issue 本文の解析
-     *
-     * @since 0.1.0
-     */
-    @Autowired
-    private CarryoverParseLogic carryoverParseLogic;
-
-    /**
-     * 日々のタスク Issue の取得
-     *
-     * @since 0.1.0
-     */
-    @Autowired
-    private DailyTaskIssueLogic dailyTaskIssueLogic;
-
-    /**
-     * 項目ごとの標準時間の読み込み
-     *
-     * @since 0.1.0
-     */
-    @Autowired
-    private DefaultMinutesLogic defaultMinutesLogic;
+    private CarryoverCollectService carryoverCollectService;
 
     /**
      * メッセージの取得
@@ -149,108 +96,101 @@ public class CarryoverServiceImpl implements CarryoverService {
     private boolean full;
 
     /**
-     * 差分モードで更新日時に関係なく解析し直す最新の Issue の件数
+     * 保存済みと今回解析した Issue
      *
      * @since 0.1.0
      */
-    private int recentCount;
+    private Map<Integer, CarryoverIssueModel> issues;
 
     /**
-     * データの取得元と保存先
+     * 取得したリモートの Issue の件数
      *
      * @since 0.1.0
      */
-    private CarryoverSourceModel source;
+    private int remoteCount;
 
     /**
-     * Issue を取得して解析し、Issue ごとの JSON と画面用の集計を出力する<br>
+     * 解析して保存した Issue の件数
+     *
+     * @since 0.1.0
+     */
+    private int savedCount;
+
+    /**
+     * コンストラクタ<br>
      * <p>
-     * 差分モードでは、Issue 番号が大きい順の最新の指定件数（設定の recentCount）を除き、保存済みの JSON と更新日時が同じ Issue は解析しない。
+     * 解析結果は空にする。
      * </p>
      *
      * @since 0.1.0
-     *
-     * @return 解析して保存した Issue の件数
-     *
-     * @throws IOException
-     *                     取得、読み込みまたは書き込みに失敗した場合
+     */
+    public CarryoverServiceImpl() {
+
+        this.issues = new TreeMap<>();
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void aggregate() throws IOException {
+
+        final CarryoverSummaryModel summary = this.carryoverAggregateService.aggregate(this.issues.values());
+        this.carryoverAggregateService.saveSummary(summary);
+        this.logResult(summary);
+
+    }
+
+    /**
+     * {@inheritDoc}
      */
     @Override
     public int collect() throws IOException {
 
-        int result = 0;
-
-        /* 標準時間の読み込み */
-        final DefaultMinutesModel defaultMinutes = this.defaultMinutesLogic.loadDefaultMinutes();
-        this.carryoverParseLogic.initialize(defaultMinutes);
-
-        /* 保存済みの解析結果の読み込み */
-        final Map<Integer, CarryoverIssueModel> stored = this.carryoverDataLogic.loadIssues();
-        final Map<Integer, CarryoverIssueModel> all    = new TreeMap<>(stored);
-
-        /* Issue の取得と解析 */
-        final List<DailyTaskIssueModel> remoteIssues = this.dailyTaskIssueLogic.fetchAllIssues();
-        final int                       recentFrom   = CarryoverServiceImpl.recentFrom(remoteIssues, this.recentCount);
-
-        for (final DailyTaskIssueModel remoteIssue : remoteIssues) {
-
-            final Integer number = remoteIssue.getNumber();
-
-            if (!this.needsUpdate(stored.get(number), remoteIssue, recentFrom)) {
-
-                continue;
-
-            }
-
-            final CarryoverIssueModel parsed = this.carryoverParseLogic.parse(remoteIssue);
-            this.carryoverDataLogic.saveIssue(parsed);
-            all.put(number, parsed);
-            result++;
-
-        }
-
-        /* 画面用の集計の出力 */
-        final CarryoverSummaryModel summary = this.carryoverAggregateLogic.aggregate(all.values());
-        this.carryoverDataLogic.saveSummary(summary);
-
-        /* 結果のログ */
-        final String collectMessage = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12000);
-        final String modeName       = this.modeName();
-        CarryoverServiceImpl.LOGGER.info(collectMessage, modeName, remoteIssues.size(), result,
-            summary.getDays().size());
-
-        final String minutesSourceMessage = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12001);
-        final long   defaultCount         = CarryoverServiceImpl.countBySource(all, MinutesSourceTypes.DEFAULT);
-        final long   unknownCount         = CarryoverServiceImpl.countBySource(all, MinutesSourceTypes.UNKNOWN);
-        CarryoverServiceImpl.LOGGER.info(minutesSourceMessage, defaultCount, unknownCount);
-
+        this.carryoverCollectService.fetch();
+        final int result = this.carryoverCollectService.analyze();
+        this.carryoverCollectService.saveIssues();
+        this.issues = new TreeMap<>(this.carryoverCollectService.getIssues());
+        this.savedCount = result;
+        this.remoteCount = this.carryoverCollectService.getRemoteCount();
         return result;
 
     }
 
     /**
-     * 収集の設定とモードを受け取り、フィールドに保持する<br>
-     * <p>
-     * 設定はデータの取得元と保存先に変換する。Issue の取得、標準時間の読み込み、解析結果と集計の読み書きは、それぞれが必要とする値で初期化する。
-     * </p>
-     *
-     * @since 0.1.0
-     *
-     * @param properties
-     *                   持ち越しの収集の設定
-     * @param full
-     *                   true：全件モード（すべての Issue を解析し直す）、false：差分モード
+     * {@inheritDoc}
      */
     @SuppressWarnings("hiding")
     @Override
     public void initialize(final CarryoverPropertiesModel properties, final boolean full) {
 
-        this.source = new CarryoverSourceModel(properties);
-        this.recentCount = properties.getRecentCount();
+        final CarryoverSourceModel source = new CarryoverSourceModel(properties);
         this.full = full;
-        this.dailyTaskIssueLogic.initialize(this.source.getRepository(), this.source.getToken());
-        this.defaultMinutesLogic.initialize(this.source.getDefaultMinutesFile());
-        this.carryoverDataLogic.initialize(this.source.getDataDir());
+        this.carryoverCollectService.initialize(source, properties.getRecentCount(), full);
+        this.carryoverAggregateService.initialize(source.getDataDir());
+
+    }
+
+    /**
+     * 収集と集計の結果をログに出す<br>
+     *
+     * @since 0.1.0
+     *
+     * @param summary
+     *                画面用の集計
+     */
+    private void logResult(final CarryoverSummaryModel summary) {
+
+        final String collectMessage = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12000);
+        final String modeName       = this.modeName();
+        CarryoverServiceImpl.LOGGER.info(collectMessage, modeName, this.remoteCount, this.savedCount,
+            summary.getDays().size());
+
+        final String minutesSourceMessage = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12001);
+        final long   defaultCount         = CarryoverServiceImpl.countBySource(this.issues, MinutesSourceTypes.DEFAULT);
+        final long   unknownCount         = CarryoverServiceImpl.countBySource(this.issues, MinutesSourceTypes.UNKNOWN);
+        CarryoverServiceImpl.LOGGER.info(minutesSourceMessage, defaultCount, unknownCount);
 
     }
 
@@ -272,48 +212,6 @@ public class CarryoverServiceImpl implements CarryoverService {
         }
 
         result = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12011);
-        return result;
-
-    }
-
-    /**
-     * Issue を解析し直す必要があるかを返す<br>
-     *
-     * @since 0.1.0
-     *
-     * @param stored
-     *                    保存済みの解析結果。未保存の場合は null
-     * @param remoteIssue
-     *                    取得した Issue
-     * @param recentFrom
-     *                    更新日時に関係なく解析し直す Issue 番号の下限
-     *
-     * @return true：解析し直す、false：保存済みの解析結果を使う
-     */
-    private boolean needsUpdate(final CarryoverIssueModel stored, final DailyTaskIssueModel remoteIssue,
-        final int recentFrom) {
-
-        boolean result = true;
-
-        if (this.full) {
-
-            return result;
-
-        }
-
-        if (stored == null) {
-
-            return result;
-
-        }
-
-        if (remoteIssue.getNumber() >= recentFrom) {
-
-            return result;
-
-        }
-
-        result = !remoteIssue.getUpdatedAt().equals(stored.getUpdatedAt());
         return result;
 
     }

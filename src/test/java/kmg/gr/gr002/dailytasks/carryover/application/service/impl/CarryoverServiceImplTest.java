@@ -3,6 +3,7 @@ package kmg.gr.gr002.dailytasks.carryover.application.service.impl;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -16,9 +17,12 @@ import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverParseLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.logic.DailyTaskIssueLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.logic.DefaultMinutesLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
+import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSourceModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSummaryModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DefaultMinutesModel;
+import kmg.gr.gr002.dailytasks.carryover.application.service.CarryoverAggregateService;
+import kmg.gr.gr002.dailytasks.carryover.application.service.CarryoverCollectService;
 import kmg.gr.gr002.dailytasks.carryover.application.types.MinutesSourceTypes;
 import kmg.gr.gr002.dailytasks.carryover.domain.logic.impl.CarryoverAggregateLogicImpl;
 import kmg.gr.gr002.dailytasks.carryover.domain.logic.impl.CarryoverParseLogicImpl;
@@ -376,6 +380,212 @@ public class CarryoverServiceImplTest {
     }
 
     /**
+     * 呼び出し順を記録する集計サービス<br>
+     *
+     * @author KenichiroArai
+     *
+     * @since 0.1.0
+     *
+     * @version 0.1.0
+     */
+    private static final class RecordingAggregateService implements CarryoverAggregateService {
+
+        /**
+         * 呼び出しの順
+         *
+         * @since 0.1.0
+         */
+        private final List<String> steps;
+
+        /**
+         * コンストラクタ<br>
+         *
+         * @since 0.1.0
+         *
+         * @param steps
+         *              呼び出しの順
+         */
+        private RecordingAggregateService(final List<String> steps) {
+
+            this.steps = steps;
+
+        }
+
+        /**
+         * 呼び出しを記録し、空の集計を返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @param issues
+         *               持ち越しの解析結果
+         *
+         * @return 空の集計
+         */
+        @Override
+        public CarryoverSummaryModel aggregate(final Collection<CarryoverIssueModel> issues) {
+
+            this.steps.add("aggregate");
+            final CarryoverSummaryModel result = new CarryoverSummaryModel(0, List.of(), List.of());
+            return result;
+
+        }
+
+        /**
+         * 呼び出しを記録する<br>
+         *
+         * @since 0.1.0
+         *
+         * @param dataDir
+         *                保存先のディレクトリ
+         */
+        @Override
+        public void initialize(final Path dataDir) {
+
+            this.steps.add("aggregate.initialize");
+
+        }
+
+        /**
+         * 呼び出しを記録する<br>
+         *
+         * @since 0.1.0
+         *
+         * @param summary
+         *                画面用の集計
+         */
+        @Override
+        public void saveSummary(final CarryoverSummaryModel summary) {
+
+            this.steps.add("saveSummary");
+
+        }
+
+    }
+
+    /**
+     * 呼び出し順を記録する収集サービス<br>
+     *
+     * @author KenichiroArai
+     *
+     * @since 0.1.0
+     *
+     * @version 0.1.0
+     */
+    private static final class RecordingCollectService implements CarryoverCollectService {
+
+        /**
+         * 呼び出しの順
+         *
+         * @since 0.1.0
+         */
+        private final List<String> steps;
+
+        /**
+         * コンストラクタ<br>
+         *
+         * @since 0.1.0
+         *
+         * @param steps
+         *              呼び出しの順
+         */
+        private RecordingCollectService(final List<String> steps) {
+
+            this.steps = steps;
+
+        }
+
+        /**
+         * 呼び出しを記録する<br>
+         *
+         * @since 0.1.0
+         *
+         * @return 1
+         */
+        @Override
+        public int analyze() {
+
+            this.steps.add("analyze");
+            final int result = 1;
+            return result;
+
+        }
+
+        /**
+         * 呼び出しを記録する<br>
+         *
+         * @since 0.1.0
+         */
+        @Override
+        public void fetch() {
+
+            this.steps.add("fetch");
+
+        }
+
+        /**
+         * 空の解析結果を返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @return 空の解析結果
+         */
+        @Override
+        public Map<Integer, CarryoverIssueModel> getIssues() {
+
+            final Map<Integer, CarryoverIssueModel> result = new TreeMap<>();
+            return result;
+
+        }
+
+        /**
+         * 0 を返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @return 0
+         */
+        @Override
+        public int getRemoteCount() {
+
+            final int result = 0;
+            return result;
+
+        }
+
+        /**
+         * 呼び出しを記録する<br>
+         *
+         * @since 0.1.0
+         *
+         * @param source
+         *                   データの取得元と保存先
+         * @param recentCount
+         *                   差分モードで解析し直す最新の件数
+         * @param full
+         *                   全件モードか
+         */
+        @Override
+        public void initialize(final CarryoverSourceModel source, final int recentCount, final boolean full) {
+
+            this.steps.add("collect.initialize");
+
+        }
+
+        /**
+         * 呼び出しを記録する<br>
+         *
+         * @since 0.1.0
+         */
+        @Override
+        public void saveIssues() {
+
+            this.steps.add("saveIssues");
+
+        }
+
+    }
+
+    /**
      * テスト用の標準時間
      *
      * @since 0.1.0
@@ -496,44 +706,18 @@ public class CarryoverServiceImplTest {
     private static CarryoverServiceImpl createTarget(final DailyTaskIssueLogic issueLogic,
         final DefaultMinutesLogic minutesLogic, final CarryoverDataLogic dataLogic) {
 
+        final CarryoverCollectServiceImpl collectService = new CarryoverCollectServiceImpl();
+        ReflectionTestUtil.setField(collectService, "dailyTaskIssueLogic", issueLogic);
+        ReflectionTestUtil.setField(collectService, "defaultMinutesLogic", minutesLogic);
+        ReflectionTestUtil.setField(collectService, "carryoverDataLogic", dataLogic);
+        ReflectionTestUtil.setField(collectService, "carryoverParseLogic", CarryoverServiceImplTest.PARSE_LOGIC);
+        final CarryoverAggregateServiceImpl aggregateService = new CarryoverAggregateServiceImpl();
+        ReflectionTestUtil.setField(aggregateService, "carryoverAggregateLogic", new CarryoverAggregateLogicImpl());
+        ReflectionTestUtil.setField(aggregateService, "carryoverDataLogic", dataLogic);
         final CarryoverServiceImpl result = new CarryoverServiceImpl();
-        ReflectionTestUtil.setField(result, "dailyTaskIssueLogic", issueLogic);
-        ReflectionTestUtil.setField(result, "defaultMinutesLogic", minutesLogic);
-        ReflectionTestUtil.setField(result, "carryoverDataLogic", dataLogic);
-        ReflectionTestUtil.setField(result, "carryoverParseLogic", CarryoverServiceImplTest.PARSE_LOGIC);
-        ReflectionTestUtil.setField(result, "carryoverAggregateLogic", new CarryoverAggregateLogicImpl());
+        ReflectionTestUtil.setField(result, "carryoverCollectService", collectService);
+        ReflectionTestUtil.setField(result, "carryoverAggregateService", aggregateService);
         ReflectionTestUtil.setField(result, "messageLogic", MessageLogicTestUtil.create());
-        return result;
-
-    }
-
-    /**
-     * private の needsUpdate メソッドを呼び出す<br>
-     *
-     * @since 0.1.0
-     *
-     * @param full
-     *                    全件モードか
-     * @param stored
-     *                    保存済みの解析結果
-     * @param remoteIssue
-     *                    取得した Issue
-     * @param recentFrom
-     *                    毎回解析し直す Issue 番号の下限
-     *
-     * @return 解析し直す場合は true
-     *
-     * @throws Exception
-     *                   例外が発生した場合
-     */
-    private static boolean needsUpdate(final boolean full, final CarryoverIssueModel stored,
-        final DailyTaskIssueModel remoteIssue, final int recentFrom) throws Exception {
-
-        final CarryoverServiceImpl target = new CarryoverServiceImpl();
-        ReflectionTestUtil.setField(target, "full", Boolean.valueOf(full));
-        final boolean result = ReflectionTestUtil.<Boolean>invoke(target, "needsUpdate", new Class<?>[] {
-            CarryoverIssueModel.class, DailyTaskIssueModel.class, int.class
-        }, stored, remoteIssue, Integer.valueOf(recentFrom));
         return result;
 
     }
@@ -552,31 +736,6 @@ public class CarryoverServiceImplTest {
 
         CarryoverServiceImplTest.PARSE_LOGIC.initialize(CarryoverServiceImplTest.DEFAULT_MINUTES);
         final CarryoverIssueModel result = CarryoverServiceImplTest.PARSE_LOGIC.parse(issue);
-        return result;
-
-    }
-
-    /**
-     * private の recentFrom メソッドを呼び出す<br>
-     *
-     * @since 0.1.0
-     *
-     * @param issues
-     *               取得した Issue
-     * @param count
-     *               件数
-     *
-     * @return 毎回解析し直す Issue 番号の下限
-     *
-     * @throws Exception
-     *                   例外が発生した場合
-     */
-    private static int recentFrom(final List<DailyTaskIssueModel> issues, final int count) throws Exception {
-
-        final int result
-            = ReflectionTestUtil.<Integer>invokeStatic(CarryoverServiceImpl.class, "recentFrom", new Class<?>[] {
-                List.class, int.class
-            }, issues, Integer.valueOf(count));
         return result;
 
     }
@@ -612,6 +771,7 @@ public class CarryoverServiceImplTest {
 
             testTarget.initialize(CarryoverServiceImplTest.PROPERTIES, false);
             final int testResult = testTarget.collect();
+            testTarget.aggregate();
 
             /* 検証の準備 */
             final String[] actualMsgs  = testLog.getMessages();
@@ -655,6 +815,7 @@ public class CarryoverServiceImplTest {
 
             testTarget.initialize(CarryoverServiceImplTest.PROPERTIES, false);
             final int testResult = testTarget.collect();
+            testTarget.aggregate();
 
             /* 検証の準備 */
             final String[] actualMsgs  = testLog.getMessages();
@@ -700,6 +861,7 @@ public class CarryoverServiceImplTest {
 
             testTarget.initialize(CarryoverServiceImplTest.PROPERTIES, true);
             final int testResult = testTarget.collect();
+            testTarget.aggregate();
 
             /* 検証の準備 */
             final String[]      actualMsgs         = testLog.getMessages();
@@ -761,6 +923,43 @@ public class CarryoverServiceImplTest {
     }
 
     /**
+     * collect と aggregate のテスト - 正常系:取得、解析、保存、集計、集計の保存の順で呼ぶ場合
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     入出力エラーが発生した場合
+     */
+    @Test
+    public void testCollect_normalOrder() throws IOException {
+
+        /* 期待値の定義 */
+        final List<String> expectedSteps = List.of("collect.initialize", "aggregate.initialize", "fetch", "analyze",
+            "saveIssues", "aggregate", "saveSummary");
+
+        /* 準備 */
+        final List<String>         testSteps  = new ArrayList<>();
+        final CarryoverServiceImpl testTarget = new CarryoverServiceImpl();
+        ReflectionTestUtil.setField(testTarget, "carryoverCollectService",
+            new CarryoverServiceImplTest.RecordingCollectService(testSteps));
+        ReflectionTestUtil.setField(testTarget, "carryoverAggregateService",
+            new CarryoverServiceImplTest.RecordingAggregateService(testSteps));
+        ReflectionTestUtil.setField(testTarget, "messageLogic", MessageLogicTestUtil.create());
+
+        /* テスト対象の実行 */
+        testTarget.initialize(CarryoverServiceImplTest.PROPERTIES, false);
+        testTarget.collect();
+        testTarget.aggregate();
+
+        /* 検証の準備 */
+        final List<String> actualSteps = testSteps;
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedSteps, actualSteps, "呼び出しの順が一致しません");
+
+    }
+
+    /**
      * countBySource メソッドのテスト - 正常系:取得元ごとの行数を数える場合
      *
      * @since 0.1.0
@@ -787,230 +986,6 @@ public class CarryoverServiceImplTest {
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedCount, actualCount, "行数が一致しません");
-
-    }
-
-    /**
-     * needsUpdate メソッドのテスト - 正常系:全件モードの場合
-     *
-     * @since 0.1.0
-     *
-     * @throws Exception
-     *                   例外が発生した場合
-     */
-    @Test
-    public void testNeedsUpdate_normalFull() throws Exception {
-
-        /* 期待値の定義 */
-
-        /* 準備 */
-        final CarryoverIssueModel testStored = CarryoverServiceImplTest.parse(CarryoverServiceImplTest.ISSUE1);
-
-        /* テスト対象の実行 */
-        final boolean testResult
-            = CarryoverServiceImplTest.needsUpdate(true, testStored, CarryoverServiceImplTest.ISSUE1, 2);
-
-        /* 検証の準備 */
-        final boolean actualNeedsUpdate = testResult;
-
-        /* 検証の実施 */
-        Assertions.assertTrue(actualNeedsUpdate, "解析し直すと判定される必要があります");
-
-    }
-
-    /**
-     * needsUpdate メソッドのテスト - 正常系:未保存の場合
-     *
-     * @since 0.1.0
-     *
-     * @throws Exception
-     *                   例外が発生した場合
-     */
-    @Test
-    public void testNeedsUpdate_normalNotStored() throws Exception {
-
-        /* 期待値の定義 */
-
-        /* 準備 */
-
-        /* テスト対象の実行 */
-        final boolean testResult
-            = CarryoverServiceImplTest.needsUpdate(false, null, CarryoverServiceImplTest.ISSUE1, 2);
-
-        /* 検証の準備 */
-        final boolean actualNeedsUpdate = testResult;
-
-        /* 検証の実施 */
-        Assertions.assertTrue(actualNeedsUpdate, "解析し直すと判定される必要があります");
-
-    }
-
-    /**
-     * needsUpdate メソッドのテスト - 正常系:最新の Issue の場合は更新日時が同じでも解析し直す
-     *
-     * @since 0.1.0
-     *
-     * @throws Exception
-     *                   例外が発生した場合
-     */
-    @Test
-    public void testNeedsUpdate_normalRecent() throws Exception {
-
-        /* 期待値の定義 */
-
-        /* 準備 */
-        final CarryoverIssueModel testStored = CarryoverServiceImplTest.parse(CarryoverServiceImplTest.ISSUE1);
-
-        /* テスト対象の実行 */
-        final boolean testResult
-            = CarryoverServiceImplTest.needsUpdate(false, testStored, CarryoverServiceImplTest.ISSUE1, 1);
-
-        /* 検証の準備 */
-        final boolean actualNeedsUpdate = testResult;
-
-        /* 検証の実施 */
-        Assertions.assertTrue(actualNeedsUpdate, "解析し直すと判定される必要があります");
-
-    }
-
-    /**
-     * needsUpdate メソッドのテスト - 正常系:更新日時が変わった場合
-     *
-     * @since 0.1.0
-     *
-     * @throws Exception
-     *                   例外が発生した場合
-     */
-    @Test
-    public void testNeedsUpdate_normalUpdated() throws Exception {
-
-        /* 期待値の定義 */
-
-        /* 準備 */
-        final CarryoverIssueModel testStored = CarryoverServiceImplTest.parse(CarryoverServiceImplTest.ISSUE1);
-        final DailyTaskIssueModel testRemote = new DailyTaskIssueModel(1, "2026年03月24日のタスク", "closed", "u9", "");
-
-        /* テスト対象の実行 */
-        final boolean testResult = CarryoverServiceImplTest.needsUpdate(false, testStored, testRemote, 2);
-
-        /* 検証の準備 */
-        final boolean actualNeedsUpdate = testResult;
-
-        /* 検証の実施 */
-        Assertions.assertTrue(actualNeedsUpdate, "解析し直すと判定される必要があります");
-
-    }
-
-    /**
-     * needsUpdate メソッドのテスト - 準正常系:更新日時が同じ場合
-     *
-     * @since 0.1.0
-     *
-     * @throws Exception
-     *                   例外が発生した場合
-     */
-    @Test
-    public void testNeedsUpdate_semiNotUpdated() throws Exception {
-
-        /* 期待値の定義 */
-
-        /* 準備 */
-        final CarryoverIssueModel testStored = CarryoverServiceImplTest.parse(CarryoverServiceImplTest.ISSUE1);
-
-        /* テスト対象の実行 */
-        final boolean testResult
-            = CarryoverServiceImplTest.needsUpdate(false, testStored, CarryoverServiceImplTest.ISSUE1, 2);
-
-        /* 検証の準備 */
-        final boolean actualNeedsUpdate = testResult;
-
-        /* 検証の実施 */
-        Assertions.assertFalse(actualNeedsUpdate, "解析し直さないと判定される必要があります");
-
-    }
-
-    /**
-     * recentFrom メソッドのテスト - 正常系:件数より少ない Issue しかない場合
-     *
-     * @since 0.1.0
-     *
-     * @throws Exception
-     *                   例外が発生した場合
-     */
-    @Test
-    public void testRecentFrom_normalLessThanCount() throws Exception {
-
-        /* 期待値の定義 */
-        final int expectedRecentFrom = 1;
-
-        /* 準備 */
-        final List<DailyTaskIssueModel> testIssues
-            = List.of(CarryoverServiceImplTest.ISSUE2, CarryoverServiceImplTest.ISSUE1);
-
-        /* テスト対象の実行 */
-        final int testResult = CarryoverServiceImplTest.recentFrom(testIssues, 10);
-
-        /* 検証の準備 */
-        final int actualRecentFrom = testResult;
-
-        /* 検証の実施 */
-        Assertions.assertEquals(expectedRecentFrom, actualRecentFrom, "Issue 番号の下限が一致しません");
-
-    }
-
-    /**
-     * recentFrom メソッドのテスト - 正常系:件数より多い Issue がある場合
-     *
-     * @since 0.1.0
-     *
-     * @throws Exception
-     *                   例外が発生した場合
-     */
-    @Test
-    public void testRecentFrom_normalMoreThanCount() throws Exception {
-
-        /* 期待値の定義 */
-        final int expectedRecentFrom = 3;
-
-        /* 準備 */
-        final List<DailyTaskIssueModel> testIssues = CarryoverServiceImplTest.createIssues(12);
-
-        /* テスト対象の実行 */
-        final int testResult = CarryoverServiceImplTest.recentFrom(testIssues, 10);
-
-        /* 検証の準備 */
-        final int actualRecentFrom = testResult;
-
-        /* 検証の実施 */
-        Assertions.assertEquals(expectedRecentFrom, actualRecentFrom, "Issue 番号の下限が一致しません");
-
-    }
-
-    /**
-     * recentFrom メソッドのテスト - 準正常系:Issue がない場合
-     *
-     * @since 0.1.0
-     *
-     * @throws Exception
-     *                   例外が発生した場合
-     */
-    @Test
-    public void testRecentFrom_semiEmpty() throws Exception {
-
-        /* 期待値の定義 */
-        final int expectedRecentFrom = 0;
-
-        /* 準備 */
-        final List<DailyTaskIssueModel> testIssues = List.of();
-
-        /* テスト対象の実行 */
-        final int testResult = CarryoverServiceImplTest.recentFrom(testIssues, 10);
-
-        /* 検証の準備 */
-        final int actualRecentFrom = testResult;
-
-        /* 検証の実施 */
-        Assertions.assertEquals(expectedRecentFrom, actualRecentFrom, "Issue 番号の下限が一致しません");
 
     }
 

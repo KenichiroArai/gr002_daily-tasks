@@ -1,7 +1,7 @@
 /**
  * 持ち越し機能のサービス<br>
  * <p>
- * presentation 層のサービスの実装を impl パッケージに置く。
+ * presentation 層のサービスの実装と、統合サービスが呼ぶ役割ごとのサービスのインタフェースを置く。実装は impl パッケージに置く。
  * </p>
  *
  * @author KenichiroArai

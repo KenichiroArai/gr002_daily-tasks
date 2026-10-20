@@ -19,10 +19,23 @@ import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesM
 public interface CarryoverService {
 
     /**
-     * Issue を取得して解析し、Issue ごとの JSON と画面用の集計を出力する<br>
+     * 保存済みと今回解析した Issue から日別の集計を作り、保存する<br>
+     * <p>
+     * {@link #collect()} のあとで呼ぶ。結果のログも出す。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     書き込みに失敗した場合
+     */
+    void aggregate() throws IOException;
+
+    /**
+     * Issue を取得して解析し、Issue ごとの JSON を出力する<br>
      * <p>
      * {@link #initialize(CarryoverPropertiesModel, boolean)} のあとで呼ぶ。差分モードでは、Issue 番号が大きい順の最新の指定件数（設定の
-     * recentCount）を除き、保存済みの JSON と更新日時が同じ Issue は解析しない。
+     * recentCount）を除き、保存済みの JSON と更新日時が同じ Issue は解析しない。集計は {@link #aggregate()} で行う。
      * </p>
      *
      * @since 0.1.0
@@ -37,7 +50,7 @@ public interface CarryoverService {
     /**
      * 収集の設定とモードを受け取り、フィールドに保持する<br>
      * <p>
-     * 設定はデータの取得元と保存先に変換して保持する。
+     * 設定はデータの取得元と保存先に変換し、収集と集計のサービスへ渡す。
      * </p>
      *
      * @since 0.1.0
