@@ -13,8 +13,10 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverAggregateLogic;
-import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverIssueLogic;
+import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverDataLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverParseLogic;
+import kmg.gr.gr002.dailytasks.carryover.application.logic.DailyTaskIssueLogic;
+import kmg.gr.gr002.dailytasks.carryover.application.logic.DefaultMinutesLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSourceModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSummaryModel;
@@ -30,7 +32,8 @@ import kmg.gr.gr002.dailytasks.carryover.presentation.service.CarryoverService;
  * 持ち越しの収集・集計サービスの実装<br>
  * <p>
  * presentation 層のサービスを実装する。application 層のインタフェース（実装は domain 層）だけを使って、取得・解析・保存・集計の流れを組み立てる。設定とモードは
- * {@link #initialize(CarryoverPropertiesModel, boolean)} で受け取り、データの取得元と収集のモードをフィールドに保持する。
+ * {@link #initialize(CarryoverPropertiesModel, boolean)} で受け取り、データの取得元と収集のモードをフィールドに保持する。取得元は役割ごとのロジックへ、
+ * それぞれが必要とする値だけを渡す。
  * </p>
  *
  * @author KenichiroArai
@@ -99,12 +102,12 @@ public class CarryoverServiceImpl implements CarryoverService {
     private CarryoverAggregateLogic carryoverAggregateLogic;
 
     /**
-     * 持ち越しのデータの取得・保存
+     * 持ち越しの解析結果と画面用の集計の読み書き
      *
      * @since 0.1.0
      */
     @Autowired
-    private CarryoverIssueLogic carryoverIssueLogic;
+    private CarryoverDataLogic carryoverDataLogic;
 
     /**
      * Issue 本文の解析
@@ -113,6 +116,22 @@ public class CarryoverServiceImpl implements CarryoverService {
      */
     @Autowired
     private CarryoverParseLogic carryoverParseLogic;
+
+    /**
+     * 日々のタスク Issue の取得
+     *
+     * @since 0.1.0
+     */
+    @Autowired
+    private DailyTaskIssueLogic dailyTaskIssueLogic;
+
+    /**
+     * 項目ごとの標準時間の読み込み
+     *
+     * @since 0.1.0
+     */
+    @Autowired
+    private DefaultMinutesLogic defaultMinutesLogic;
 
     /**
      * メッセージの取得
@@ -162,15 +181,15 @@ public class CarryoverServiceImpl implements CarryoverService {
         int result = 0;
 
         /* 標準時間の読み込み */
-        final DefaultMinutesModel defaultMinutes = this.carryoverIssueLogic.loadDefaultMinutes();
+        final DefaultMinutesModel defaultMinutes = this.defaultMinutesLogic.loadDefaultMinutes();
         this.carryoverParseLogic.initialize(defaultMinutes);
 
         /* 保存済みの解析結果の読み込み */
-        final Map<Integer, CarryoverIssueModel> stored = this.carryoverIssueLogic.loadIssues();
+        final Map<Integer, CarryoverIssueModel> stored = this.carryoverDataLogic.loadIssues();
         final Map<Integer, CarryoverIssueModel> all    = new TreeMap<>(stored);
 
         /* Issue の取得と解析 */
-        final List<DailyTaskIssueModel> remoteIssues = this.carryoverIssueLogic.fetchAllIssues();
+        final List<DailyTaskIssueModel> remoteIssues = this.dailyTaskIssueLogic.fetchAllIssues();
         final int                       recentFrom   = CarryoverServiceImpl.recentFrom(remoteIssues, this.recentCount);
 
         for (final DailyTaskIssueModel remoteIssue : remoteIssues) {
@@ -184,7 +203,7 @@ public class CarryoverServiceImpl implements CarryoverService {
             }
 
             final CarryoverIssueModel parsed = this.carryoverParseLogic.parse(remoteIssue);
-            this.carryoverIssueLogic.saveIssue(parsed);
+            this.carryoverDataLogic.saveIssue(parsed);
             all.put(number, parsed);
             result++;
 
@@ -192,7 +211,7 @@ public class CarryoverServiceImpl implements CarryoverService {
 
         /* 画面用の集計の出力 */
         final CarryoverSummaryModel summary = this.carryoverAggregateLogic.aggregate(all.values());
-        this.carryoverIssueLogic.saveSummary(summary);
+        this.carryoverDataLogic.saveSummary(summary);
 
         /* 結果のログ */
         final String collectMessage = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12000);
@@ -212,7 +231,7 @@ public class CarryoverServiceImpl implements CarryoverService {
     /**
      * 収集の設定とモードを受け取り、フィールドに保持する<br>
      * <p>
-     * 設定はデータの取得元と保存先に変換する。取得・保存ロジックも同じ取得元で初期化する。
+     * 設定はデータの取得元と保存先に変換する。Issue の取得、標準時間の読み込み、解析結果と集計の読み書きは、それぞれが必要とする値で初期化する。
      * </p>
      *
      * @since 0.1.0
@@ -229,7 +248,9 @@ public class CarryoverServiceImpl implements CarryoverService {
         this.source = new CarryoverSourceModel(properties);
         this.recentCount = properties.getRecentCount();
         this.full = full;
-        this.carryoverIssueLogic.initialize(this.source);
+        this.dailyTaskIssueLogic.initialize(this.source.getRepository(), this.source.getToken());
+        this.defaultMinutesLogic.initialize(this.source.getDefaultMinutesFile());
+        this.carryoverDataLogic.initialize(this.source.getDataDir());
 
     }
 

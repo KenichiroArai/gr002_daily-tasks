@@ -11,10 +11,11 @@ import java.util.stream.IntStream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverIssueLogic;
+import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverDataLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverParseLogic;
+import kmg.gr.gr002.dailytasks.carryover.application.logic.DailyTaskIssueLogic;
+import kmg.gr.gr002.dailytasks.carryover.application.logic.DefaultMinutesLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
-import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSourceModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSummaryModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DefaultMinutesModel;
@@ -42,9 +43,9 @@ import kmg.gr.gr002.dailytasks.testutil.ReflectionTestUtil;
 public class CarryoverServiceImplTest {
 
     /**
-     * テスト用の持ち越しのデータの取得・保存ロジック<br>
+     * テスト用の解析結果と集計の読み書き<br>
      * <p>
-     * 通信やファイルの入出力をせず、登録した Issue と保存済みの解析結果をメモリ上で扱う。
+     * ファイルの入出力をせず、保存済みの解析結果をメモリ上で扱う。
      * </p>
      *
      * @author KenichiroArai
@@ -53,14 +54,14 @@ public class CarryoverServiceImplTest {
      *
      * @version 0.1.0
      */
-    private static final class StubCarryoverIssueLogic implements CarryoverIssueLogic {
+    private static final class StubCarryoverDataLogic implements CarryoverDataLogic {
 
         /**
-         * 取得する Issue
+         * 受け取った保存先のディレクトリ
          *
          * @since 0.1.0
          */
-        private final List<DailyTaskIssueModel> remoteIssues;
+        private Path dataDir;
 
         /**
          * 保存した Issue 番号
@@ -77,13 +78,6 @@ public class CarryoverServiceImplTest {
         private CarryoverSummaryModel savedSummary;
 
         /**
-         * 受け取ったデータの取得元と保存先
-         *
-         * @since 0.1.0
-         */
-        private final List<CarryoverSourceModel> sources = new ArrayList<>();
-
-        /**
          * 保存済みの解析結果
          *
          * @since 0.1.0
@@ -91,30 +85,15 @@ public class CarryoverServiceImplTest {
         private final Map<Integer, CarryoverIssueModel> storedIssues = new TreeMap<>();
 
         /**
-         * コンストラクタ<br>
+         * 受け取った保存先のディレクトリを返す<br>
          *
          * @since 0.1.0
          *
-         * @param remoteIssues
-         *                     取得する Issue
+         * @return 受け取った保存先のディレクトリ
          */
-        private StubCarryoverIssueLogic(final List<DailyTaskIssueModel> remoteIssues) {
+        private Path getDataDir() {
 
-            this.remoteIssues = remoteIssues;
-
-        }
-
-        /**
-         * 登録した Issue を返す<br>
-         *
-         * @since 0.1.0
-         *
-         * @return 登録した Issue
-         */
-        @Override
-        public List<DailyTaskIssueModel> fetchAllIssues() {
-
-            final List<DailyTaskIssueModel> result = this.remoteIssues;
+            final Path result = this.dataDir;
             return result;
 
         }
@@ -148,46 +127,17 @@ public class CarryoverServiceImplTest {
         }
 
         /**
-         * 受け取ったデータの取得元と保存先を返す<br>
+         * 保存先のディレクトリを記録する<br>
          *
          * @since 0.1.0
          *
-         * @return 受け取ったデータの取得元と保存先
-         */
-        private List<CarryoverSourceModel> getSources() {
-
-            final List<CarryoverSourceModel> result = this.sources;
-            return result;
-
-        }
-
-        /**
-         * データの取得元と保存先を記録する<br>
-         *
-         * @since 0.1.0
-         *
-         * @param source
-         *               データの取得元と保存先
+         * @param dataDir
+         *                保存先のディレクトリ
          */
         @Override
-        public void initialize(final CarryoverSourceModel source) {
+        public void initialize(final Path dataDir) {
 
-            this.sources.add(source);
-
-        }
-
-        /**
-         * テスト用の標準時間を返す<br>
-         *
-         * @since 0.1.0
-         *
-         * @return テスト用の標準時間
-         */
-        @Override
-        public DefaultMinutesModel loadDefaultMinutes() {
-
-            final DefaultMinutesModel result = CarryoverServiceImplTest.DEFAULT_MINUTES;
-            return result;
+            this.dataDir = dataDir;
 
         }
 
@@ -247,6 +197,179 @@ public class CarryoverServiceImplTest {
         private void store(final CarryoverIssueModel issue) {
 
             this.storedIssues.put(issue.getNumber(), issue);
+
+        }
+
+    }
+
+    /**
+     * テスト用の日々のタスク Issue の取得<br>
+     *
+     * @author KenichiroArai
+     *
+     * @since 0.1.0
+     *
+     * @version 0.1.0
+     */
+    private static final class StubDailyTaskIssueLogic implements DailyTaskIssueLogic {
+
+        /**
+         * 受け取った対象リポジトリ
+         *
+         * @since 0.1.0
+         */
+        private String repository;
+
+        /**
+         * 取得する Issue
+         *
+         * @since 0.1.0
+         */
+        private final List<DailyTaskIssueModel> remoteIssues;
+
+        /**
+         * 受け取ったトークン
+         *
+         * @since 0.1.0
+         */
+        private String token;
+
+        /**
+         * コンストラクタ<br>
+         *
+         * @since 0.1.0
+         *
+         * @param remoteIssues
+         *                     取得する Issue
+         */
+        private StubDailyTaskIssueLogic(final List<DailyTaskIssueModel> remoteIssues) {
+
+            this.remoteIssues = remoteIssues;
+
+        }
+
+        /**
+         * 登録した Issue を返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @return 登録した Issue
+         */
+        @Override
+        public List<DailyTaskIssueModel> fetchAllIssues() {
+
+            final List<DailyTaskIssueModel> result = this.remoteIssues;
+            return result;
+
+        }
+
+        /**
+         * 受け取った対象リポジトリを返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @return 受け取った対象リポジトリ
+         */
+        private String getRepository() {
+
+            final String result = this.repository;
+            return result;
+
+        }
+
+        /**
+         * 受け取ったトークンを返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @return 受け取ったトークン
+         */
+        private String getToken() {
+
+            final String result = this.token;
+            return result;
+
+        }
+
+        /**
+         * 対象リポジトリとトークンを記録する<br>
+         *
+         * @since 0.1.0
+         *
+         * @param repository
+         *                   Issue を取得するリポジトリ（owner/name）
+         * @param token
+         *                   GitHub API のトークン
+         */
+        @Override
+        public void initialize(final String repository, final String token) {
+
+            this.repository = repository;
+            this.token = token;
+
+        }
+
+    }
+
+    /**
+     * テスト用の標準時間の読み込み<br>
+     *
+     * @author KenichiroArai
+     *
+     * @since 0.1.0
+     *
+     * @version 0.1.0
+     */
+    private static final class StubDefaultMinutesLogic implements DefaultMinutesLogic {
+
+        /**
+         * 受け取った設定ファイル
+         *
+         * @since 0.1.0
+         */
+        private Path defaultMinutesFile;
+
+        /**
+         * 受け取った設定ファイルを返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @return 受け取った設定ファイル
+         */
+        private Path getDefaultMinutesFile() {
+
+            final Path result = this.defaultMinutesFile;
+            return result;
+
+        }
+
+        /**
+         * 設定ファイルを記録する<br>
+         *
+         * @since 0.1.0
+         *
+         * @param defaultMinutesFile
+         *                           標準時間の設定ファイル
+         */
+        @Override
+        public void initialize(final Path defaultMinutesFile) {
+
+            this.defaultMinutesFile = defaultMinutesFile;
+
+        }
+
+        /**
+         * テスト用の標準時間を返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @return テスト用の標準時間
+         */
+        @Override
+        public DefaultMinutesModel loadDefaultMinutes() {
+
+            final DefaultMinutesModel result = CarryoverServiceImplTest.DEFAULT_MINUTES;
+            return result;
 
         }
 
@@ -362,14 +485,21 @@ public class CarryoverServiceImplTest {
      * @since 0.1.0
      *
      * @param issueLogic
-     *                   持ち越しのデータの取得・保存
+     *                   日々のタスク Issue の取得
+     * @param minutesLogic
+     *                   標準時間の読み込み
+     * @param dataLogic
+     *                   解析結果と集計の読み書き
      *
      * @return テスト対象
      */
-    private static CarryoverServiceImpl createTarget(final CarryoverIssueLogic issueLogic) {
+    private static CarryoverServiceImpl createTarget(final DailyTaskIssueLogic issueLogic,
+        final DefaultMinutesLogic minutesLogic, final CarryoverDataLogic dataLogic) {
 
         final CarryoverServiceImpl result = new CarryoverServiceImpl();
-        ReflectionTestUtil.setField(result, "carryoverIssueLogic", issueLogic);
+        ReflectionTestUtil.setField(result, "dailyTaskIssueLogic", issueLogic);
+        ReflectionTestUtil.setField(result, "defaultMinutesLogic", minutesLogic);
+        ReflectionTestUtil.setField(result, "carryoverDataLogic", dataLogic);
         ReflectionTestUtil.setField(result, "carryoverParseLogic", CarryoverServiceImplTest.PARSE_LOGIC);
         ReflectionTestUtil.setField(result, "carryoverAggregateLogic", new CarryoverAggregateLogicImpl());
         ReflectionTestUtil.setField(result, "messageLogic", MessageLogicTestUtil.create());
@@ -470,10 +600,12 @@ public class CarryoverServiceImplTest {
 
         /* 準備 */
         final List<DailyTaskIssueModel> testIssues     = CarryoverServiceImplTest.createIssues(12);
-        final StubCarryoverIssueLogic   testIssueLogic = new StubCarryoverIssueLogic(testIssues);
-        testIssueLogic.store(CarryoverServiceImplTest.parse(testIssues.get(0)));
-        testIssueLogic.store(CarryoverServiceImplTest.parse(testIssues.get(1)));
-        final CarryoverServiceImpl testTarget = CarryoverServiceImplTest.createTarget(testIssueLogic);
+        final StubDailyTaskIssueLogic   testIssueLogic = new StubDailyTaskIssueLogic(testIssues);
+        final StubCarryoverDataLogic    testDataLogic  = new StubCarryoverDataLogic();
+        testDataLogic.store(CarryoverServiceImplTest.parse(testIssues.get(0)));
+        testDataLogic.store(CarryoverServiceImplTest.parse(testIssues.get(1)));
+        final CarryoverServiceImpl testTarget = CarryoverServiceImplTest.createTarget(testIssueLogic,
+            new StubDefaultMinutesLogic(), testDataLogic);
 
         /* テスト対象の実行 */
         try (LogCapture testLog = new LogCapture(CarryoverServiceImpl.class)) {
@@ -511,10 +643,12 @@ public class CarryoverServiceImplTest {
         };
 
         /* 準備 */
-        final StubCarryoverIssueLogic testIssueLogic
-            = new StubCarryoverIssueLogic(List.of(CarryoverServiceImplTest.ISSUE1, CarryoverServiceImplTest.ISSUE2));
-        testIssueLogic.store(CarryoverServiceImplTest.parse(CarryoverServiceImplTest.ISSUE1));
-        final CarryoverServiceImpl testTarget = CarryoverServiceImplTest.createTarget(testIssueLogic);
+        final StubDailyTaskIssueLogic testIssueLogic = new StubDailyTaskIssueLogic(
+            List.of(CarryoverServiceImplTest.ISSUE1, CarryoverServiceImplTest.ISSUE2));
+        final StubCarryoverDataLogic  testDataLogic  = new StubCarryoverDataLogic();
+        testDataLogic.store(CarryoverServiceImplTest.parse(CarryoverServiceImplTest.ISSUE1));
+        final CarryoverServiceImpl testTarget = CarryoverServiceImplTest.createTarget(testIssueLogic,
+            new StubDefaultMinutesLogic(), testDataLogic);
 
         /* テスト対象の実行 */
         try (LogCapture testLog = new LogCapture(CarryoverServiceImpl.class)) {
@@ -554,10 +688,12 @@ public class CarryoverServiceImplTest {
         };
 
         /* 準備 */
-        final StubCarryoverIssueLogic testIssueLogic
-            = new StubCarryoverIssueLogic(List.of(CarryoverServiceImplTest.ISSUE1, CarryoverServiceImplTest.ISSUE2));
-        testIssueLogic.store(CarryoverServiceImplTest.parse(CarryoverServiceImplTest.ISSUE1));
-        final CarryoverServiceImpl testTarget = CarryoverServiceImplTest.createTarget(testIssueLogic);
+        final StubDailyTaskIssueLogic testIssueLogic = new StubDailyTaskIssueLogic(
+            List.of(CarryoverServiceImplTest.ISSUE1, CarryoverServiceImplTest.ISSUE2));
+        final StubCarryoverDataLogic  testDataLogic  = new StubCarryoverDataLogic();
+        testDataLogic.store(CarryoverServiceImplTest.parse(CarryoverServiceImplTest.ISSUE1));
+        final CarryoverServiceImpl testTarget = CarryoverServiceImplTest.createTarget(testIssueLogic,
+            new StubDefaultMinutesLogic(), testDataLogic);
 
         /* テスト対象の実行 */
         try (LogCapture testLog = new LogCapture(CarryoverServiceImpl.class)) {
@@ -568,8 +704,8 @@ public class CarryoverServiceImplTest {
             /* 検証の準備 */
             final String[]      actualMsgs         = testLog.getMessages();
             final int           actualCount        = testResult;
-            final List<Integer> actualSavedNumbers = testIssueLogic.getSavedNumbers();
-            final int           actualDays         = testIssueLogic.getSavedSummary().getDays().size();
+            final List<Integer> actualSavedNumbers = testDataLogic.getSavedNumbers();
+            final int           actualDays         = testDataLogic.getSavedSummary().getDays().size();
 
             /* 検証の実施 */
             Assertions.assertEquals(expectedCount, actualCount, "解析件数が一致しません");
@@ -582,7 +718,7 @@ public class CarryoverServiceImplTest {
     }
 
     /**
-     * collect メソッドのテスト - 正常系:設定を application 層のデータの取得元に変換して渡す場合
+     * collect メソッドのテスト - 正常系:設定を役割ごとのロジックが必要とする値に分けて渡す場合
      *
      * @since 0.1.0
      *
@@ -593,28 +729,33 @@ public class CarryoverServiceImplTest {
     public void testCollect_normalSource() throws IOException {
 
         /* 期待値の定義 */
-        final int    expectedSourceCount = 1;
         final String expectedRepository  = "owner/repo";
+        final String expectedToken       = "test-token";
+        final Path   expectedMinutesFile = Path.of("config", "default-minutes.json");
         final Path   expectedDataDir     = Path.of("docs", "data");
 
         /* 準備 */
-        final StubCarryoverIssueLogic testIssueLogic = new StubCarryoverIssueLogic(
+        final StubDailyTaskIssueLogic testIssueLogic   = new StubDailyTaskIssueLogic(
             List.of(CarryoverServiceImplTest.ISSUE1));
-        final CarryoverServiceImpl    testTarget     = CarryoverServiceImplTest.createTarget(testIssueLogic);
+        final StubDefaultMinutesLogic testMinutesLogic = new StubDefaultMinutesLogic();
+        final StubCarryoverDataLogic  testDataLogic    = new StubCarryoverDataLogic();
+        final CarryoverServiceImpl    testTarget       = CarryoverServiceImplTest.createTarget(testIssueLogic,
+            testMinutesLogic, testDataLogic);
 
         /* テスト対象の実行 */
         testTarget.initialize(CarryoverServiceImplTest.PROPERTIES, true);
         testTarget.collect();
 
         /* 検証の準備 */
-        final List<CarryoverSourceModel> actualSources     = testIssueLogic.getSources();
-        final int                        actualSourceCount = actualSources.size();
-        final String                     actualRepository  = actualSources.get(0).getRepository();
-        final Path                       actualDataDir     = actualSources.get(0).getDataDir();
+        final String actualRepository  = testIssueLogic.getRepository();
+        final String actualToken       = testIssueLogic.getToken();
+        final Path   actualMinutesFile = testMinutesLogic.getDefaultMinutesFile();
+        final Path   actualDataDir     = testDataLogic.getDataDir();
 
         /* 検証の実施 */
-        Assertions.assertEquals(expectedSourceCount, actualSourceCount, "取得元を受け取った回数が一致しません");
         Assertions.assertEquals(expectedRepository, actualRepository, "リポジトリが一致しません");
+        Assertions.assertEquals(expectedToken, actualToken, "トークンが一致しません");
+        Assertions.assertEquals(expectedMinutesFile, actualMinutesFile, "標準時間の設定ファイルが一致しません");
         Assertions.assertEquals(expectedDataDir, actualDataDir, "保存先が一致しません");
 
     }
