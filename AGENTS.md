@@ -55,11 +55,10 @@ src/main/java/kmg/gr/gr002/dailytasks/
       model/                 # 業務モデル（Issue、持ち越し項目、日別集計、標準時間、domain に引き継ぐ設定 CarryoverSourceModel）
       types/                 # 列挙型（残り時間の取得元 MinutesSourceTypes、Issue の状態 IssueStateTypes、取得元の文字列表現 CarryoverSourceFormatTypes。KmgCmnTypes を実装）
     domain/                  # 共通ロジック層
-      logic/                 # application のモデルと domain の DTO の変換（CarryoverDtoConvertLogic）
       logic/impl/            # application のロジックの実装（データの取得・保存、Issue 本文の解析ルール、日別の集計）
       repository/api/        # repository に求める外部 API（GitHubIssueApi。実装は repository/api）
       repository/dao/        # repository に求める DAO（JSON ファイル CarryoverDataDao、標準時間 DefaultMinutesDao。実装は repository/dao）
-      dto/                   # repository と受け渡す DTO（解析結果、集計、GitHub の Issue、接続設定 GitHubSettingsDto）
+      dto/                   # repository と受け渡す DTO。変換先が変換元を受け取って作る（解析結果、集計、GitHub の Issue、接続設定 GitHubSettingsDto）
       types/                 # 列挙型（対象セクション TargetSectionTypes、解析の正規表現 CarryoverParsePatternTypes、解析の固定文字列 CarryoverParseTextTypes、接続設定の文字列表現 GitHubSettingsFormatTypes）
     infrastructure/          # 業務を知らない汎用ユーティリティ
       types/msg/             # メッセージの種類（Gr002GenMsgTypes、Gr002LogMsgTypes、Gr002ValMsgTypes）
@@ -157,7 +156,7 @@ repository 層のデータアクセスは、取得元によって次の 2 つに
 - **サービス**: サービス・ロジック・ユーティリティ・モデルなどを使い、一連の流れを行う。初期化、主処理、サブ処理、終了処理のように、処理（メソッド）の流れがはっきりしている（例: `CarryoverServiceImpl#collect` は取得、解析、保存、集計を順に行う）
 - **ロジック**: ロジック・ユーティリティ・モデルなどを使うが、サービスは呼ばない。メソッドごとに論理のまとまりになっており、各メソッドは基本的に互いに依存せず、サービス・ロジック・ユーティリティなどから何度も呼ばれる（例: get、read、write、exists、parse、aggregate、変換）。メソッド同士の依存は薄く、共通のパラメータだけをフィールドで共有する。インスタンス変数を共有する点がユーティリティとは異なる
 - インタフェースと実装に分ける場合は、ほかの型と同じく、インタフェースを呼ぶ側の層の `logic/`、実装を呼ばれる側の層の `logic/impl/` に置く。自層の中だけで使う部品（変換など）は、インタフェースを作らずに `logic/` に具象クラスを置いてよい
-- 名前に `Parser`、`Aggregator`、`Converter`、`Provider` などは使わず、`XxxLogic`（例: `CarryoverParseLogic`、`CarryoverDtoConvertLogic`、`MessageLogic`）とする
+- 名前に `Parser`、`Aggregator`、`Converter`、`Provider` などは使わず、`XxxLogic`（例: `CarryoverParseLogic`、`CarryoverAggregateLogic`、`MessageLogic`）とする
 
 ## 層間のルール
 
@@ -227,7 +226,7 @@ flowchart LR
 - 境界で受け渡すデータ型は、呼ぶ側の層が持つもの（`model/`、`dto/`）を使う。変換は呼ぶ側の層で、自層の型に行ってから渡す。呼ばれる側の層は、受け取った型を必要に応じて自層の内部の型に変換する
   - presentation は設定ファイルの値（`presentation/model/CarryoverPropertiesModel`）とコマンドライン引数の値を application に渡し、application からは件数などの結果だけを受け取る
   - application は業務モデル（`application/model/`）を使って処理の流れを組み立てる。domain はこのモデルを使って解析・集計する
-  - domain は application のモデルと自層の DTO（`domain/dto/`）を相互に変換し（`domain/logic/CarryoverDtoConvertLogic`）、DTO で repository とやり取りする
+  - domain は application のモデルを自層の DTO（`domain/dto/`）に、変換先のコンストラクタで変換して repository とやり取りする。DTO からモデルへ戻すときは DTO のメソッドで行う
   - repository は domain の DTO を入出力に使い、JSON の形の型（`repository/dto/json/`）との変換を自層で行う（`repository/logic/CarryoverJsonConvertLogic`）
 - JSON の形（Jackson のアノテーション）は `repository/dto/json/` だけが持つ。domain の DTO には付けない
 - GitHub API の応答のように、JSON の形の型を作らずに読み取れるものは、外部 API の実装が domain の DTO を直接作ってよい

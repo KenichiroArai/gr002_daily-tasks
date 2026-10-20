@@ -1,5 +1,10 @@
 package kmg.gr.gr002.dailytasks.carryover.domain.dto;
 
+import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverItemModel;
+import kmg.gr.gr002.dailytasks.carryover.application.types.MinutesSourceTypes;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002GenMsgTypes;
+
 /**
  * 持ち越し項目の DTO（Issue ごとの解析結果の 1 行分）<br>
  * <p>
@@ -97,6 +102,21 @@ public class CarryoverItemDto {
     }
 
     /**
+     * 持ち越し項目から保存用の DTO を作る<br>
+     *
+     * @since 0.1.0
+     *
+     * @param item
+     *             持ち越し項目
+     */
+    public CarryoverItemDto(final CarryoverItemModel item) {
+
+        this(item.getName(), item.getOriginDate(), item.isChecked(), item.getMinutes(),
+            item.getMinutesSource().getSource(), item.getSection(), item.getRaw());
+
+    }
+
+    /**
      * 残り時間（分）を返す<br>
      *
      * @since 0.1.0
@@ -190,6 +210,39 @@ public class CarryoverItemDto {
     public boolean isChecked() {
 
         final boolean result = this.checked;
+        return result;
+
+    }
+
+    /**
+     * 保存済みの持ち越し項目を持ち越し項目に変換する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param messageLogic
+     *                     メッセージの取得
+     *
+     * @return 持ち越し項目
+     *
+     * @throws IllegalArgumentException
+     *                                  残り時間の取得元が不明な場合
+     */
+    public CarryoverItemModel toCarryoverItemModel(final MessageLogic messageLogic) {
+
+        CarryoverItemModel result = null;
+
+        final MinutesSourceTypes minutesSource = MinutesSourceTypes.getEnum(this.minutesSource);
+
+        if (minutesSource == MinutesSourceTypes.NONE) {
+
+            final String template = messageLogic.get(Gr002GenMsgTypes.GR002_GEN11102);
+            final String message  = String.format(template, this.minutesSource);
+            throw new IllegalArgumentException(message);
+
+        }
+
+        result = new CarryoverItemModel(this.name, this.originDate, this.checked, this.minutes, minutesSource,
+            this.section, this.raw);
         return result;
 
     }

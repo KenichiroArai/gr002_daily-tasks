@@ -6,6 +6,12 @@ import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
+import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverItemModel;
+import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSummaryModel;
+import kmg.gr.gr002.dailytasks.carryover.application.model.DailySummaryModel;
+import kmg.gr.gr002.dailytasks.carryover.application.types.MinutesSourceTypes;
+
 /**
  * {@link CarryoverSummaryDto} のテスト<br>
  *
@@ -21,6 +27,26 @@ import org.junit.jupiter.api.Test;
 public class CarryoverSummaryDtoTest {
 
     /**
+     * 画面用の集計を作成する<br>
+     *
+     * @since 0.1.0
+     *
+     * @return 画面用の集計
+     */
+    private static CarryoverSummaryModel createSummary() {
+
+        final CarryoverItemModel item = new CarryoverItemModel("音楽", "2026-08-18", true, 11.5, MinutesSourceTypes.PARSED,
+            "持ち越し", "- [x] 音楽2026/08/18（残り時間：11.5分）");
+        final CarryoverIssueModel issue = new CarryoverIssueModel(371, "2026年10月06日のタスク", "2026-10-06", "open",
+            "2026-10-06T14:23:08Z", List.of("持ち越し"), 1, List.of(item));
+        final DailySummaryModel  day   = new DailySummaryModel("2026-10-06", 371, 1);
+        day.add(issue.getItems().get(0));
+        final CarryoverSummaryModel result = new CarryoverSummaryModel(371, List.of("音楽"), List.of(day));
+        return result;
+
+    }
+
+    /**
      * テスト対象を作成する<br>
      *
      * @since 0.1.0
@@ -34,6 +60,109 @@ public class CarryoverSummaryDtoTest {
             Map.of());
         final CarryoverSummaryDto result = new CarryoverSummaryDto(374, List.of("英語"), List.of(day));
         return result;
+
+    }
+
+    /**
+     * コンストラクタのテスト - 正常系:項目ごとの集計を変換する場合
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testConstructor_normalByItem() {
+
+        /* 期待値の定義 */
+        final int expectedCheckedCount = 1;
+
+        /* 準備 */
+        final CarryoverSummaryModel testSummary = CarryoverSummaryDtoTest.createSummary();
+
+        /* テスト対象の実行 */
+        final CarryoverSummaryDto testResult = new CarryoverSummaryDto(testSummary);
+
+        /* 検証の準備 */
+        final DailySummaryDto actualDay          = testResult.getDays().get(0);
+        final int             actualCheckedCount = actualDay.getByItem().get("音楽").getCheckedCount();
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedCheckedCount, actualCheckedCount, "項目ごとのチェック済み件数が一致しません");
+
+    }
+
+    /**
+     * コンストラクタのテスト - 正常系:持ち越し元の月ごとの集計を変換する場合
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testConstructor_normalByOriginMonth() {
+
+        /* 期待値の定義 */
+        final int expectedCount = 1;
+
+        /* 準備 */
+        final CarryoverSummaryModel testSummary = CarryoverSummaryDtoTest.createSummary();
+
+        /* テスト対象の実行 */
+        final CarryoverSummaryDto testResult = new CarryoverSummaryDto(testSummary);
+
+        /* 検証の準備 */
+        final DailySummaryDto actualDay   = testResult.getDays().get(0);
+        final int             actualCount = actualDay.getByOriginMonth().get("2026-08").getCount();
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedCount, actualCount, "持ち越し元の月ごとの件数が一致しません");
+
+    }
+
+    /**
+     * コンストラクタのテスト - 正常系:最新の Issue 番号を引き継ぐ場合
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testConstructor_normalLatestIssue() {
+
+        /* 期待値の定義 */
+        final int expectedLatestIssue = 371;
+
+        /* 準備 */
+        final CarryoverSummaryModel testSummary = CarryoverSummaryDtoTest.createSummary();
+
+        /* テスト対象の実行 */
+        final CarryoverSummaryDto testResult = new CarryoverSummaryDto(testSummary);
+
+        /* 検証の準備 */
+        final int actualLatestIssue = testResult.getLatestIssue();
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedLatestIssue, actualLatestIssue, "最新の Issue 番号が一致しません");
+
+    }
+
+    /**
+     * コンストラクタのテスト - 正常系:日別の全体の集計を変換する場合
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testConstructor_normalTotal() {
+
+        /* 期待値の定義 */
+        final double expectedMinutes = 11.5;
+
+        /* 準備 */
+        final CarryoverSummaryModel testSummary = CarryoverSummaryDtoTest.createSummary();
+
+        /* テスト対象の実行 */
+        final CarryoverSummaryDto testResult = new CarryoverSummaryDto(testSummary);
+
+        /* 検証の準備 */
+        final ItemStatDto actualTotal   = testResult.getDays().get(0).getTotal();
+        final double      actualMinutes = actualTotal.getMinutes();
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedMinutes, actualMinutes, "全体の残り時間が一致しません");
 
     }
 

@@ -1,7 +1,11 @@
 package kmg.gr.gr002.dailytasks.carryover.domain.dto;
 
+import java.nio.file.Path;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSourceModel;
 
 /**
  * {@link GitHubSettingsDto} のテスト<br>
@@ -28,6 +32,58 @@ public class GitHubSettingsDtoTest {
 
         final GitHubSettingsDto result = new GitHubSettingsDto("owner/repo", "test-token");
         return result;
+
+    }
+
+    /**
+     * コンストラクタのテスト - 正常系:リポジトリ名を引き継ぐ場合
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testConstructor_normalRepository() {
+
+        /* 期待値の定義 */
+        final String expectedRepository = "owner/repo";
+
+        /* 準備 */
+        final CarryoverSourceModel testSource = new CarryoverSourceModel("owner/repo", "test-token",
+            Path.of("docs", "data"), Path.of("config", "default-minutes.json"));
+
+        /* テスト対象の実行 */
+        final GitHubSettingsDto testResult = new GitHubSettingsDto(testSource);
+
+        /* 検証の準備 */
+        final String actualRepository = testResult.getRepository();
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedRepository, actualRepository, "リポジトリ名が一致しません");
+
+    }
+
+    /**
+     * コンストラクタのテスト - 正常系:トークンを引き継ぐ場合
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testConstructor_normalToken() {
+
+        /* 期待値の定義 */
+        final String expectedToken = "test-token";
+
+        /* 準備 */
+        final CarryoverSourceModel testSource = new CarryoverSourceModel("owner/repo", "test-token",
+            Path.of("docs", "data"), Path.of("config", "default-minutes.json"));
+
+        /* テスト対象の実行 */
+        final GitHubSettingsDto testResult = new GitHubSettingsDto(testSource);
+
+        /* 検証の準備 */
+        final String actualToken = testResult.getToken();
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedToken, actualToken, "トークンが一致しません");
 
     }
 

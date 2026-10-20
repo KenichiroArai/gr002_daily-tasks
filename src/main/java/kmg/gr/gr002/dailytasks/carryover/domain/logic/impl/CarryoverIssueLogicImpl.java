@@ -16,17 +16,20 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSummaryModel
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DefaultMinutesModel;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssueDto;
-import kmg.gr.gr002.dailytasks.carryover.domain.logic.CarryoverDtoConvertLogic;
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverSummaryDto;
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubIssueDto;
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubSettingsDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.api.GitHubIssueApi;
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.CarryoverDataDao;
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.DefaultMinutesDao;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
 
 /**
  * 持ち越しのデータの取得・保存ロジックの実装<br>
  * <p>
- * application 層のデータの取得・保存ロジックを実装する。application 層のモデルと domain 層の DTO を {@link CarryoverDtoConvertLogic} で変換し、domain 層の外部
- * API・DAO（実装は repository 層）に渡す。データの取得元と保存先は {@link #initialize(CarryoverSourceModel)} で受け取り、domain 層の型（接続設定の
- * DTO・パス）に変換して外部 API と DAO を初期化する。
+ * application 層のデータの取得・保存ロジックを実装する。application 層のモデルと domain 層の DTO は、変換先の型が変換元を受け取って作る。domain
+ * 層の外部 API・DAO（実装は repository 層）には DTO を渡す。データの取得元と保存先は {@link #initialize(CarryoverSourceModel)}
+ * で受け取り、domain 層の型（接続設定の DTO・パス）に変換して外部 API と DAO を初期化する。
  * </p>
  *
  * @author KenichiroArai
@@ -56,20 +59,20 @@ public class CarryoverIssueLogicImpl implements CarryoverIssueLogic {
     private DefaultMinutesDao defaultMinutesDao;
 
     /**
-     * DTO とモデルの変換
-     *
-     * @since 0.1.0
-     */
-    @Autowired
-    private CarryoverDtoConvertLogic dtoConvertLogic;
-
-    /**
      * GitHub の Issue の取得
      *
      * @since 0.1.0
      */
     @Autowired
     private GitHubIssueApi gitHubIssueApi;
+
+    /**
+     * メッセージの取得
+     *
+     * @since 0.1.0
+     */
+    @Autowired
+    private MessageLogic messageLogic;
 
     /**
      * データの取得元と保存先
@@ -91,8 +94,8 @@ public class CarryoverIssueLogicImpl implements CarryoverIssueLogic {
     @Override
     public List<DailyTaskIssueModel> fetchAllIssues() throws IOException {
 
-        final List<DailyTaskIssueModel> result
-            = this.gitHubIssueApi.fetchAllIssues().stream().map(this.dtoConvertLogic::toDailyTaskIssue).toList();
+        final List<DailyTaskIssueModel> result = this.gitHubIssueApi.fetchAllIssues().stream()
+            .map(GitHubIssueDto::toDailyTaskIssueModel).toList();
         return result;
 
     }
@@ -113,7 +116,7 @@ public class CarryoverIssueLogicImpl implements CarryoverIssueLogic {
     public void initialize(final CarryoverSourceModel source) {
 
         this.source = source;
-        this.gitHubIssueApi.initialize(this.dtoConvertLogic.toGitHubSettingsDto(this.source));
+        this.gitHubIssueApi.initialize(new GitHubSettingsDto(this.source));
         this.defaultMinutesDao.initialize(this.source.getDefaultMinutesFile());
         this.carryoverDataDao.initialize(this.source.getDataDir());
 
@@ -133,7 +136,7 @@ public class CarryoverIssueLogicImpl implements CarryoverIssueLogic {
     public DefaultMinutesModel loadDefaultMinutes() throws IOException {
 
         final Map<String, Double> minutesByName = this.defaultMinutesDao.load();
-        final DefaultMinutesModel result        = this.dtoConvertLogic.toDefaultMinutes(minutesByName);
+        final DefaultMinutesModel result        = new DefaultMinutesModel(minutesByName);
         return result;
 
     }
@@ -155,7 +158,7 @@ public class CarryoverIssueLogicImpl implements CarryoverIssueLogic {
 
         for (final Map.Entry<Integer, CarryoverIssueDto> entry : this.carryoverDataDao.loadIssues().entrySet()) {
 
-            result.put(entry.getKey(), this.dtoConvertLogic.toCarryoverIssue(entry.getValue()));
+            result.put(entry.getKey(), entry.getValue().toCarryoverIssueModel(this.messageLogic));
 
         }
 
@@ -177,7 +180,7 @@ public class CarryoverIssueLogicImpl implements CarryoverIssueLogic {
     @Override
     public void saveIssue(final CarryoverIssueModel issue) throws IOException {
 
-        this.carryoverDataDao.saveIssue(this.dtoConvertLogic.toCarryoverIssueDto(issue));
+        this.carryoverDataDao.saveIssue(new CarryoverIssueDto(issue));
 
     }
 
@@ -195,7 +198,7 @@ public class CarryoverIssueLogicImpl implements CarryoverIssueLogic {
     @Override
     public void saveSummary(final CarryoverSummaryModel summary) throws IOException {
 
-        this.carryoverDataDao.saveSummary(this.dtoConvertLogic.toCarryoverSummaryDto(summary));
+        this.carryoverDataDao.saveSummary(new CarryoverSummaryDto(summary));
 
     }
 

@@ -4,6 +4,9 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import kmg.gr.gr002.dailytasks.carryover.application.model.DailySummaryModel;
+import kmg.gr.gr002.dailytasks.carryover.application.model.ItemStatModel;
+
 /**
  * 日別の持ち越しの集計の DTO<br>
  * <p>
@@ -90,6 +93,48 @@ public class DailySummaryDto {
         this.total = total;
         this.byItem = Collections.unmodifiableMap(new LinkedHashMap<>(byItem));
         this.byOriginMonth = Collections.unmodifiableMap(new LinkedHashMap<>(byOriginMonth));
+
+    }
+
+    /**
+     * 日別の集計から保存用の DTO を作る<br>
+     * <p>
+     * 集計の並び順は元のままにする。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @param day
+     *            日別の集計
+     */
+    public DailySummaryDto(final DailySummaryModel day) {
+
+        this(day.getDate(), day.getIssue(), day.getDeclaredCount(), new ItemStatDto(day.getTotal()),
+            DailySummaryDto.toItemStatDtos(day.getByItem()), DailySummaryDto.toItemStatDtos(day.getByOriginMonth()));
+
+    }
+
+    /**
+     * キーごとの集計値を保存用の DTO に変換する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param stats
+     *              キーごとの集計値
+     *
+     * @return キーごとの保存用の DTO（並び順は元のまま）
+     */
+    private static Map<String, ItemStatDto> toItemStatDtos(final Map<String, ItemStatModel> stats) {
+
+        final Map<String, ItemStatDto> result = new LinkedHashMap<>();
+
+        for (final Map.Entry<String, ItemStatModel> entry : stats.entrySet()) {
+
+            result.put(entry.getKey(), new ItemStatDto(entry.getValue()));
+
+        }
+
+        return result;
 
     }
 

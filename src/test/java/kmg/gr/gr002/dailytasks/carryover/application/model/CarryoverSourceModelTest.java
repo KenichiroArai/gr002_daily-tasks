@@ -5,6 +5,8 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel;
+
 /**
  * {@link CarryoverSourceModel} のテスト<br>
  *
@@ -31,6 +33,41 @@ public class CarryoverSourceModelTest {
         final CarryoverSourceModel result = new CarryoverSourceModel("owner/repo", "test-token",
             Path.of("docs", "data"), Path.of("config", "default-minutes.json"));
         return result;
+
+    }
+
+    /**
+     * コンストラクタのテスト - 正常系:設定を application 層の取得元に引き継ぐ場合
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testConstructor_normalConvert() {
+
+        /* 期待値の定義 */
+        final String expectedRepository         = "owner/repo";
+        final String expectedToken              = "test-token";
+        final Path   expectedDataDir            = Path.of("docs", "data");
+        final Path   expectedDefaultMinutesFile = Path.of("config", "default-minutes.json");
+
+        /* 準備 */
+        final CarryoverPropertiesModel testProperties = new CarryoverPropertiesModel(expectedRepository, expectedToken,
+            "docs/data", "config/default-minutes.json", 10);
+
+        /* テスト対象の実行 */
+        final CarryoverSourceModel testResult = new CarryoverSourceModel(testProperties);
+
+        /* 検証の準備 */
+        final String actualRepository         = testResult.getRepository();
+        final String actualToken              = testResult.getToken();
+        final Path   actualDataDir            = testResult.getDataDir();
+        final Path   actualDefaultMinutesFile = testResult.getDefaultMinutesFile();
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedRepository, actualRepository, "リポジトリが一致しません");
+        Assertions.assertEquals(expectedToken, actualToken, "トークンが一致しません");
+        Assertions.assertEquals(expectedDataDir, actualDataDir, "保存先が一致しません");
+        Assertions.assertEquals(expectedDefaultMinutesFile, actualDefaultMinutesFile, "標準時間の設定ファイルが一致しません");
 
     }
 

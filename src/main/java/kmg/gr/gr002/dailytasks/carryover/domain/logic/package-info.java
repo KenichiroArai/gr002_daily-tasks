@@ -1,7 +1,7 @@
 /**
  * 持ち越し機能の domain 層のロジック<br>
  * <p>
- * application 層のモデルと domain 層の DTO の変換を置く。application 層のロジックの実装は impl パッケージに置く。
+ * application 層のロジックの実装は impl パッケージに置く。
  * </p>
  *
  * @author KenichiroArai

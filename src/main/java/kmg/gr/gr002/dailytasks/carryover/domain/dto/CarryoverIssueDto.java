@@ -2,6 +2,10 @@ package kmg.gr.gr002.dailytasks.carryover.domain.dto;
 
 import java.util.List;
 
+import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
+import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverItemModel;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
+
 /**
  * 持ち越しの解析結果（Issue 単位）の DTO<br>
  * <p>
@@ -126,6 +130,25 @@ public class CarryoverIssueDto {
         this.count = count;
         this.minutes = minutes;
         this.items = List.copyOf(items);
+
+    }
+
+    /**
+     * 持ち越しの解析結果から保存用の DTO を作る<br>
+     * <p>
+     * 件数と残り時間の合計は、項目のリストから求める。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @param issue
+     *              持ち越しの解析結果
+     */
+    public CarryoverIssueDto(final CarryoverIssueModel issue) {
+
+        this(issue.getNumber(), issue.getTitle(), issue.getDate(), issue.getState(), issue.getUpdatedAt(),
+            issue.getSections(), issue.getDeclaredCount(), issue.getCount(), issue.getMinutes(),
+            issue.getItems().stream().map(CarryoverItemDto::new).toList());
 
     }
 
@@ -265,6 +288,31 @@ public class CarryoverIssueDto {
     public String getUpdatedAt() {
 
         final String result = this.updatedAt;
+        return result;
+
+    }
+
+    /**
+     * 保存済みの解析結果を持ち越しの解析結果に変換する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param messageLogic
+     *                     メッセージの取得
+     *
+     * @return 持ち越しの解析結果
+     *
+     * @throws IllegalArgumentException
+     *                                  残り時間の取得元が不明な場合
+     */
+    public CarryoverIssueModel toCarryoverIssueModel(final MessageLogic messageLogic) {
+
+        final CarryoverIssueModel result;
+
+        final List<CarryoverItemModel> items
+            = this.items.stream().map(item -> item.toCarryoverItemModel(messageLogic)).toList();
+        result = new CarryoverIssueModel(this.number, this.title, this.date, this.state, this.updatedAt, this.sections,
+            this.declaredCount, items);
         return result;
 
     }

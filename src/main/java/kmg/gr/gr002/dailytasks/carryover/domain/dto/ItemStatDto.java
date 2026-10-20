@@ -1,5 +1,7 @@
 package kmg.gr.gr002.dailytasks.carryover.domain.dto;
 
+import kmg.gr.gr002.dailytasks.carryover.application.model.ItemStatModel;
+
 /**
  * 持ち越し項目の件数と残り時間の集計値の DTO<br>
  * <p>
@@ -62,6 +64,20 @@ public class ItemStatDto {
         this.minutes = minutes;
         this.checkedCount = checkedCount;
         this.checkedMinutes = checkedMinutes;
+
+    }
+
+    /**
+     * 集計値から保存用の DTO を作る<br>
+     *
+     * @since 0.1.0
+     *
+     * @param stat
+     *             集計値
+     */
+    public ItemStatDto(final ItemStatModel stat) {
+
+        this(stat.getCount(), stat.getMinutes(), stat.getCheckedCount(), stat.getCheckedMinutes());
 
     }
 

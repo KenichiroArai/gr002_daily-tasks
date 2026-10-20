@@ -3,6 +3,8 @@ package kmg.gr.gr002.dailytasks.carryover.domain.dto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueModel;
+
 /**
  * {@link GitHubIssueDto} のテスト<br>
  *
@@ -153,6 +155,56 @@ public class GitHubIssueDtoTest {
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedUpdatedAt, actualUpdatedAt, "更新日時が一致しません");
+
+    }
+
+    /**
+     * toDailyTaskIssueModel メソッドのテスト - 正常系:本文を引き継ぐ場合
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testToDailyTaskIssueModel_normalBody() {
+
+        /* 期待値の定義 */
+        final String expectedBody = "本文";
+
+        /* 準備 */
+        final GitHubIssueDto testDto = new GitHubIssueDto(371, "2026年10月06日のタスク", "open", "2026-10-06T14:23:08Z", "本文");
+
+        /* テスト対象の実行 */
+        final DailyTaskIssueModel testResult = testDto.toDailyTaskIssueModel();
+
+        /* 検証の準備 */
+        final String actualBody = testResult.getBody();
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedBody, actualBody, "本文が一致しません");
+
+    }
+
+    /**
+     * toDailyTaskIssueModel メソッドのテスト - 正常系:Issue 番号を引き継ぐ場合
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testToDailyTaskIssueModel_normalNumber() {
+
+        /* 期待値の定義 */
+        final int expectedNumber = 371;
+
+        /* 準備 */
+        final GitHubIssueDto testDto = new GitHubIssueDto(371, "2026年10月06日のタスク", "open", "2026-10-06T14:23:08Z", "本文");
+
+        /* テスト対象の実行 */
+        final DailyTaskIssueModel testResult = testDto.toDailyTaskIssueModel();
+
+        /* 検証の準備 */
+        final int actualNumber = testResult.getNumber();
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedNumber, actualNumber, "Issue 番号が一致しません");
 
     }
 

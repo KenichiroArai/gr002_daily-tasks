@@ -452,29 +452,6 @@ public class CarryoverServiceImplTest {
     }
 
     /**
-     * private の toSource メソッドを呼び出す<br>
-     *
-     * @since 0.1.0
-     *
-     * @param properties
-     *                   持ち越しの収集の設定
-     *
-     * @return データの取得元と保存先
-     *
-     * @throws Exception
-     *                   例外が発生した場合
-     */
-    private static CarryoverSourceModel toSource(final CarryoverPropertiesModel properties) throws Exception {
-
-        final CarryoverSourceModel result
-            = ReflectionTestUtil.invokeStatic(CarryoverServiceImpl.class, "toSource", new Class<?>[] {
-                CarryoverPropertiesModel.class
-            }, properties);
-        return result;
-
-    }
-
-    /**
      * collect メソッドのテスト - 正常系:差分モードの場合は最新 10 件より前で更新日時が同じ保存済みの Issue を解析しない
      *
      * @since 0.1.0
@@ -893,44 +870,6 @@ public class CarryoverServiceImplTest {
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedRecentFrom, actualRecentFrom, "Issue 番号の下限が一致しません");
-
-    }
-
-    /**
-     * toSource メソッドのテスト - 正常系:設定を application 層の取得元に引き継ぐ場合
-     *
-     * @since 0.1.0
-     *
-     * @throws Exception
-     *                   例外が発生した場合
-     */
-    @Test
-    public void testToSource_normalConvert() throws Exception {
-
-        /* 期待値の定義 */
-        final String expectedRepository         = "owner/repo";
-        final String expectedToken              = "test-token";
-        final Path   expectedDataDir            = Path.of("docs", "data");
-        final Path   expectedDefaultMinutesFile = Path.of("config", "default-minutes.json");
-
-        /* 準備 */
-        final CarryoverPropertiesModel testProperties = new CarryoverPropertiesModel(expectedRepository, expectedToken,
-            "docs/data", "config/default-minutes.json", 10);
-
-        /* テスト対象の実行 */
-        final CarryoverSourceModel testResult = CarryoverServiceImplTest.toSource(testProperties);
-
-        /* 検証の準備 */
-        final String actualRepository         = testResult.getRepository();
-        final String actualToken              = testResult.getToken();
-        final Path   actualDataDir            = testResult.getDataDir();
-        final Path   actualDefaultMinutesFile = testResult.getDefaultMinutesFile();
-
-        /* 検証の実施 */
-        Assertions.assertEquals(expectedRepository, actualRepository, "リポジトリが一致しません");
-        Assertions.assertEquals(expectedToken, actualToken, "トークンが一致しません");
-        Assertions.assertEquals(expectedDataDir, actualDataDir, "保存先が一致しません");
-        Assertions.assertEquals(expectedDefaultMinutesFile, actualDefaultMinutesFile, "標準時間の設定ファイルが一致しません");
 
     }
 

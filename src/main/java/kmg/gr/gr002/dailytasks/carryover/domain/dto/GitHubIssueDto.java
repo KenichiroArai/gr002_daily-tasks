@@ -1,5 +1,7 @@
 package kmg.gr.gr002.dailytasks.carryover.domain.dto;
 
+import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueModel;
+
 /**
  * GitHub API から取得した Issue の DTO<br>
  * <p>
@@ -142,6 +144,21 @@ public class GitHubIssueDto {
     public String getUpdatedAt() {
 
         final String result = this.updatedAt;
+        return result;
+
+    }
+
+    /**
+     * GitHub API から取得した Issue を日々のタスク Issue に変換する<br>
+     *
+     * @since 0.1.0
+     *
+     * @return 日々のタスク Issue
+     */
+    public DailyTaskIssueModel toDailyTaskIssueModel() {
+
+        final DailyTaskIssueModel result
+            = new DailyTaskIssueModel(this.number, this.title, this.state, this.updatedAt, this.body);
         return result;
 
     }

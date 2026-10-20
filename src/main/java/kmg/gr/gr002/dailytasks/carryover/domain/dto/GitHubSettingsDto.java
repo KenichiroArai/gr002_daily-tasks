@@ -1,5 +1,6 @@
 package kmg.gr.gr002.dailytasks.carryover.domain.dto;
 
+import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSourceModel;
 import kmg.gr.gr002.dailytasks.carryover.domain.types.GitHubSettingsFormatTypes;
 
 /**
@@ -44,6 +45,20 @@ public class GitHubSettingsDto {
 
         this.repository = repository;
         this.token = token;
+
+    }
+
+    /**
+     * データの取得元から GitHub API の接続設定を作る<br>
+     *
+     * @since 0.1.0
+     *
+     * @param source
+     *               データの取得元と保存先
+     */
+    public GitHubSettingsDto(final CarryoverSourceModel source) {
+
+        this(source.getRepository(), source.getToken());
 
     }
 

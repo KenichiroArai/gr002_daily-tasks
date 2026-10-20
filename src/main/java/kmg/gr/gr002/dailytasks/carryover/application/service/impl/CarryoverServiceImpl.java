@@ -91,24 +91,6 @@ public class CarryoverServiceImpl implements CarryoverService {
     }
 
     /**
-     * presentation 層から引き継いだ設定を application 層のデータの取得元に変換する<br>
-     *
-     * @since 0.1.0
-     *
-     * @param properties
-     *                   持ち越しの収集の設定
-     *
-     * @return データの取得元と保存先
-     */
-    private static CarryoverSourceModel toSource(final CarryoverPropertiesModel properties) {
-
-        final CarryoverSourceModel result = new CarryoverSourceModel(properties.getRepository(), properties.getToken(),
-            properties.getDataDir(), properties.getDefaultMinutesFile());
-        return result;
-
-    }
-
-    /**
      * 日別の集計
      *
      * @since 0.1.0
@@ -244,7 +226,7 @@ public class CarryoverServiceImpl implements CarryoverService {
     @Override
     public void initialize(final CarryoverPropertiesModel properties, final boolean full) {
 
-        this.source = CarryoverServiceImpl.toSource(properties);
+        this.source = new CarryoverSourceModel(properties);
         this.recentCount = properties.getRecentCount();
         this.full = full;
         this.carryoverIssueLogic.initialize(this.source);
