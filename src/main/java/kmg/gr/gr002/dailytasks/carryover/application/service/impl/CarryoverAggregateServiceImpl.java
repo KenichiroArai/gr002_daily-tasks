@@ -47,7 +47,17 @@ public class CarryoverAggregateServiceImpl implements CarryoverAggregateService 
     private CarryoverDataLogic carryoverDataLogic;
 
     /**
-     * {@inheritDoc}
+     * 解析結果から日別の集計を作る<br>
+     * <p>
+     * 保存はしない。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @param issues
+     *               持ち越しの解析結果
+     *
+     * @return 画面用の集計
      */
     @Override
     public CarryoverSummaryModel aggregate(final Collection<CarryoverIssueModel> issues) {
@@ -58,7 +68,12 @@ public class CarryoverAggregateServiceImpl implements CarryoverAggregateService 
     }
 
     /**
-     * {@inheritDoc}
+     * 集計の保存先を受け取り、フィールドに保持する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param dataDir
+     *                保存先のディレクトリ（例: docs/data）
      */
     @Override
     public void initialize(final Path dataDir) {
@@ -68,7 +83,15 @@ public class CarryoverAggregateServiceImpl implements CarryoverAggregateService 
     }
 
     /**
-     * {@inheritDoc}
+     * 画面用の集計を保存する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param summary
+     *                画面用の集計
+     *
+     * @throws IOException
+     *                     書き込みに失敗した場合
      */
     @Override
     public void saveSummary(final CarryoverSummaryModel summary) throws IOException {

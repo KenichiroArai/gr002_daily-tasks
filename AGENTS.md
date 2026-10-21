@@ -336,6 +336,7 @@ java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.1.0.jar --full
   - メソッドとコンストラクタは、シグネチャに応じて `@param`（引数ごと）、`@return`（void 以外）、`@throws`（throws 句があるとき）も必須
 - `@since` は追加したときのバージョン、`@version` は型を更新したときのバージョンとする。Javadoc の追加だけでは `@version` を上げない
 - タグの間は空行で区切る。メソッドとコンストラクタのタグ順は `@since`、`@param`、`@return`、`@throws`、`@see`
+- `{@inheritDoc}` は使わない。オーバーライドやインタフェースの実装でも、メソッドの説明と必須タグをそのメソッドに書く。説明は、実装するインタフェースの Javadoc に合わせる
 - 後述の「Javadoc のフォーマットルール」に従う
 
 ### アクセス修飾子
@@ -730,7 +731,7 @@ public class SampleClass {
 - [ ] `mvn test` で JaCoCo カバレッジ 100% を維持
 - [ ] コーディングルール（戻り値 `result`、早期リターン、処理コメント、`record` 禁止、生成時の初期化はコンストラクタまたは static 初期化子、共通の情報は `initialize`）の順守
 - [ ] アクセス修飾子の順守（公開しないものは `private`、修飾子なしは原則禁止）
-- [ ] Javadoc の追加 / 更新
+- [ ] Javadoc の追加 / 更新（`{@inheritDoc}` は使わない）
 - [ ] 解析ルールを変更した場合、`declaredCount` との食い違いと補完件数のログを確認し、kb002_daily-tasks_doc の仕様を更新
 - [ ] JSON の形式を変えた場合、mk002_daily-tasks_web-next の画面（zod スキーマ）と kb002_daily-tasks_doc の設計書への影響を確認
 - [ ] README の更新
@@ -750,6 +751,7 @@ public class SampleClass {
 - daily-tasks-git の `docs/data/` の JSON を手で編集すること（必ず収集ツールで生成する）
 - 本リポジトリに画面のソースコードや出力データを置くこと（画面は mk002_daily-tasks_web-next、データは daily-tasks-git に置く）
 - `record` を使うこと（ブレークポイントを設定できずデバッグ・トレースの妨げになるため。通常の `class` とゲッターで実装する）
+- Javadoc に `{@inheritDoc}` を使うこと。オーバーライドしたメソッドにも説明と必須タグを書く
 - 外部に公開しないメンバーを修飾子なし（パッケージプライベート）にすること（テストのためだけに公開範囲を広げない）
 - 深いネストのままガード節を使わずに実装すること
 - テストメソッドに複数ケースを詰め込むこと
