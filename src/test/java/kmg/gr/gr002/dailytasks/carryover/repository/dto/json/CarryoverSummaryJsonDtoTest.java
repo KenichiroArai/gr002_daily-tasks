@@ -55,6 +55,7 @@ public class CarryoverSummaryJsonDtoTest {
         final List<DailySummaryJsonDto> testResult = testTarget.getDays();
 
         /* 検証の準備 */
+        @SuppressWarnings("null")
         final List<String> actualDays = testResult.stream().map(DailySummaryJsonDto::getDate).toList();
 
         /* 検証の実施 */

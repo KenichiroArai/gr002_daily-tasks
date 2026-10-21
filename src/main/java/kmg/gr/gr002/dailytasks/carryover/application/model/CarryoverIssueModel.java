@@ -173,6 +173,7 @@ public class CarryoverIssueModel {
      */
     public double getMinutes() {
 
+        @SuppressWarnings("null")
         final double result = this.items.stream().mapToDouble(CarryoverItemModel::getMinutes).sum();
         return result;
 

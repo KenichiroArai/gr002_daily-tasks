@@ -63,6 +63,7 @@ public class DailyTaskIssueLogicImpl implements DailyTaskIssueLogic {
     @Override
     public List<DailyTaskIssueModel> fetchAllIssues() throws IOException {
 
+        @SuppressWarnings("null")
         final List<DailyTaskIssueModel> result
             = this.gitHubIssueApi.fetchAllIssues().stream().map(GitHubIssueDto::toDailyTaskIssueModel).toList();
         return result;

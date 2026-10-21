@@ -98,6 +98,7 @@ public class CarryoverAggregateLogicImplTest {
         final CarryoverSummaryModel testResult = testTarget.aggregate(testIssues);
 
         /* 検証の準備 */
+        @SuppressWarnings("null")
         final List<String>  actualDates       = testResult.getDays().stream().map(DailySummaryModel::getDate).toList();
         final List<Integer> actualCounts      = testResult.getDays().stream().map(day -> day.getTotal().getCount())
             .toList();

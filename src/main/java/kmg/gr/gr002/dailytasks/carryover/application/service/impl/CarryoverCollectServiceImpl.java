@@ -50,6 +50,7 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
      */
     private static int recentFrom(final List<DailyTaskIssueModel> issues, final int count) {
 
+        @SuppressWarnings("null")
         final int result = issues.stream().map(DailyTaskIssueModel::getNumber).sorted(Comparator.reverseOrder())
             .limit(count).min(Comparator.naturalOrder()).orElse(0);
         return result;

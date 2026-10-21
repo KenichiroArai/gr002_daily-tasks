@@ -35,11 +35,11 @@ public class CarryoverSummaryDtoTest {
      */
     private static CarryoverSummaryModel createSummary() {
 
-        final CarryoverItemModel item = new CarryoverItemModel("音楽", "2026-08-18", true, 11.5, MinutesSourceTypes.PARSED,
-            "持ち越し", "- [x] 音楽2026/08/18（残り時間：11.5分）");
+        final CarryoverItemModel  item  = new CarryoverItemModel("音楽", "2026-08-18", true, 11.5,
+            MinutesSourceTypes.PARSED, "持ち越し", "- [x] 音楽2026/08/18（残り時間：11.5分）");
         final CarryoverIssueModel issue = new CarryoverIssueModel(371, "2026年10月06日のタスク", "2026-10-06", "open",
             "2026-10-06T14:23:08Z", List.of("持ち越し"), 1, List.of(item));
-        final DailySummaryModel  day   = new DailySummaryModel("2026-10-06", 371, 1);
+        final DailySummaryModel   day   = new DailySummaryModel("2026-10-06", 371, 1);
         day.add(issue.getItems().get(0));
         final CarryoverSummaryModel result = new CarryoverSummaryModel(371, List.of("音楽"), List.of(day));
         return result;
@@ -184,6 +184,7 @@ public class CarryoverSummaryDtoTest {
         final List<DailySummaryDto> testResult = testTarget.getDays();
 
         /* 検証の準備 */
+        @SuppressWarnings("null")
         final List<String> actualDays = testResult.stream().map(DailySummaryDto::getDate).toList();
 
         /* 検証の実施 */

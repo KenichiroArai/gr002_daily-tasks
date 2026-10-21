@@ -341,6 +341,7 @@ public class GitHubIssueApiImplTest {
 
             /* 検証の準備 */
             final String[]      actualMsgs    = testLog.getMessages();
+            @SuppressWarnings("null")
             final List<Integer> actualNumbers = testResult.stream().map(GitHubIssueDto::getNumber).toList();
 
             /* 検証の実施 */

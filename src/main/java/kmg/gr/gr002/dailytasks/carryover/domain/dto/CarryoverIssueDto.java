@@ -309,10 +309,10 @@ public class CarryoverIssueDto {
 
         final CarryoverIssueModel result;
 
-        final List<CarryoverItemModel> items
+        final List<CarryoverItemModel> itemModels
             = this.items.stream().map(item -> item.toCarryoverItemModel(messageLogic)).toList();
         result = new CarryoverIssueModel(this.number, this.title, this.date, this.state, this.updatedAt, this.sections,
-            this.declaredCount, items);
+            this.declaredCount, itemModels);
         return result;
 
     }

@@ -231,9 +231,9 @@ public class CarryoverItemDto {
 
         CarryoverItemModel result = null;
 
-        final MinutesSourceTypes minutesSource = MinutesSourceTypes.getEnum(this.minutesSource);
+        final MinutesSourceTypes minutesSourceType = MinutesSourceTypes.getEnum(this.minutesSource);
 
-        if (minutesSource == MinutesSourceTypes.NONE) {
+        if (minutesSourceType == MinutesSourceTypes.NONE) {
 
             final String template = messageLogic.get(Gr002GenMsgTypes.GR002_GEN11102);
             final String message  = String.format(template, this.minutesSource);
@@ -241,7 +241,7 @@ public class CarryoverItemDto {
 
         }
 
-        result = new CarryoverItemModel(this.name, this.originDate, this.checked, this.minutes, minutesSource,
+        result = new CarryoverItemModel(this.name, this.originDate, this.checked, this.minutes, minutesSourceType,
             this.section, this.raw);
         return result;
 

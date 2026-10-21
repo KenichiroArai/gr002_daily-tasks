@@ -73,6 +73,7 @@ public final class LogCapture implements AutoCloseable {
      */
     public String[] getMessages() {
 
+        @SuppressWarnings("null")
         final String[] result
             = this.listAppender.list.stream().map(ILoggingEvent::getFormattedMessage).toArray(String[]::new);
         return result;

@@ -129,6 +129,7 @@ public class CarryoverIssueJsonDtoTest {
         final List<CarryoverItemJsonDto> testResult = testTarget.getItems();
 
         /* 検証の準備 */
+        @SuppressWarnings("null")
         final List<String> actualItems = testResult.stream().map(CarryoverItemJsonDto::getName).toList();
 
         /* 検証の実施 */

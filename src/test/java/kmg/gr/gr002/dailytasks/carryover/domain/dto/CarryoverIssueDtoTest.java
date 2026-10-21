@@ -221,6 +221,7 @@ public class CarryoverIssueDtoTest {
         final List<CarryoverItemDto> testResult = testTarget.getItems();
 
         /* 検証の準備 */
+        @SuppressWarnings("null")
         final List<String> actualItems = testResult.stream().map(CarryoverItemDto::getName).toList();
 
         /* 検証の実施 */
