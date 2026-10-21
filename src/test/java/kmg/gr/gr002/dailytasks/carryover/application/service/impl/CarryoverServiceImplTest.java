@@ -683,8 +683,7 @@ public class CarryoverServiceImplTest {
      */
     private static CarryoverParseLogic createParseLogic() {
 
-        final CarryoverParseLogicImpl result = new CarryoverParseLogicImpl();
-        ReflectionTestUtil.setField(result, "messageLogic", MessageLogicTestUtil.create());
+        final CarryoverParseLogicImpl result = new CarryoverParseLogicImpl(MessageLogicTestUtil.create());
         return result;
 
     }
@@ -706,18 +705,12 @@ public class CarryoverServiceImplTest {
     private static CarryoverServiceImpl createTarget(final DailyTaskIssueLogic issueLogic,
         final DefaultMinutesLogic minutesLogic, final CarryoverDataLogic dataLogic) {
 
-        final CarryoverCollectServiceImpl collectService = new CarryoverCollectServiceImpl();
-        ReflectionTestUtil.setField(collectService, "dailyTaskIssueLogic", issueLogic);
-        ReflectionTestUtil.setField(collectService, "defaultMinutesLogic", minutesLogic);
-        ReflectionTestUtil.setField(collectService, "carryoverDataLogic", dataLogic);
-        ReflectionTestUtil.setField(collectService, "carryoverParseLogic", CarryoverServiceImplTest.PARSE_LOGIC);
-        final CarryoverAggregateServiceImpl aggregateService = new CarryoverAggregateServiceImpl();
-        ReflectionTestUtil.setField(aggregateService, "carryoverAggregateLogic", new CarryoverAggregateLogicImpl());
-        ReflectionTestUtil.setField(aggregateService, "carryoverDataLogic", dataLogic);
-        final CarryoverServiceImpl result = new CarryoverServiceImpl();
-        ReflectionTestUtil.setField(result, "carryoverCollectService", collectService);
-        ReflectionTestUtil.setField(result, "carryoverAggregateService", aggregateService);
-        ReflectionTestUtil.setField(result, "messageLogic", MessageLogicTestUtil.create());
+        final CarryoverCollectServiceImpl collectService = new CarryoverCollectServiceImpl(dataLogic,
+            CarryoverServiceImplTest.PARSE_LOGIC, issueLogic, minutesLogic);
+        final CarryoverAggregateServiceImpl aggregateService
+            = new CarryoverAggregateServiceImpl(new CarryoverAggregateLogicImpl(), dataLogic);
+        final CarryoverServiceImpl result
+            = new CarryoverServiceImpl(aggregateService, collectService, MessageLogicTestUtil.create());
         return result;
 
     }
@@ -939,12 +932,9 @@ public class CarryoverServiceImplTest {
 
         /* 準備 */
         final List<String>         testSteps  = new ArrayList<>();
-        final CarryoverServiceImpl testTarget = new CarryoverServiceImpl();
-        ReflectionTestUtil.setField(testTarget, "carryoverCollectService",
-            new CarryoverServiceImplTest.RecordingCollectService(testSteps));
-        ReflectionTestUtil.setField(testTarget, "carryoverAggregateService",
-            new CarryoverServiceImplTest.RecordingAggregateService(testSteps));
-        ReflectionTestUtil.setField(testTarget, "messageLogic", MessageLogicTestUtil.create());
+        final CarryoverServiceImpl testTarget = new CarryoverServiceImpl(
+            new CarryoverServiceImplTest.RecordingAggregateService(testSteps),
+            new CarryoverServiceImplTest.RecordingCollectService(testSteps), MessageLogicTestUtil.create());
 
         /* テスト対象の実行 */
         testTarget.initialize(CarryoverServiceImplTest.PROPERTIES, false);

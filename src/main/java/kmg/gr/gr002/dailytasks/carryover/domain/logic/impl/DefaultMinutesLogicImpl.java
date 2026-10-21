@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -15,8 +14,7 @@ import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.DefaultMinutesDao
 /**
  * 項目ごとの標準時間を読み込むロジックの実装<br>
  * <p>
- * application 層の読み込みロジックを実装する。読み込んだ対応はモデルが受け取る。設定ファイルは {@link #initialize(Path)} で受け取り、DAO
- * を初期化する。
+ * application 層の読み込みロジックを実装する。読み込んだ対応はモデルが受け取る。設定ファイルは {@link #initialize(Path)} で受け取り、DAO を初期化する。
  * </p>
  *
  * @author KenichiroArai
@@ -34,8 +32,21 @@ public class DefaultMinutesLogicImpl implements DefaultMinutesLogic {
      *
      * @since 0.1.0
      */
-    @Autowired
-    private DefaultMinutesDao defaultMinutesDao;
+    private final DefaultMinutesDao defaultMinutesDao;
+
+    /**
+     * コンストラクタ<br>
+     *
+     * @since 0.1.0
+     *
+     * @param defaultMinutesDao
+     *                          標準時間の設定の読み込み
+     */
+    public DefaultMinutesLogicImpl(final DefaultMinutesDao defaultMinutesDao) {
+
+        this.defaultMinutesDao = defaultMinutesDao;
+
+    }
 
     /**
      * 標準時間の設定ファイルを受け取り、読み込み先を初期化する<br>

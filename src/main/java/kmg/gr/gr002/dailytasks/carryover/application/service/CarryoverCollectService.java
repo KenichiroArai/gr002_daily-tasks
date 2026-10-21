@@ -72,11 +72,11 @@ public interface CarryoverCollectService {
      * @since 0.1.0
      *
      * @param source
-     *                   データの取得元と保存先
+     *                    データの取得元と保存先
      * @param recentCount
-     *                   差分モードで更新日時に関係なく解析し直す最新の Issue の件数
+     *                    差分モードで更新日時に関係なく解析し直す最新の Issue の件数
      * @param full
-     *                   true：全件モード（すべての Issue を解析し直す）、false：差分モード
+     *                    true：全件モード（すべての Issue を解析し直す）、false：差分モード
      */
     void initialize(CarryoverSourceModel source, int recentCount, boolean full);
 

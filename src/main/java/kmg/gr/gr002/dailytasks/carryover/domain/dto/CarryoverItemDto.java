@@ -69,6 +69,21 @@ public class CarryoverItemDto {
     private final String section;
 
     /**
+     * 持ち越し項目から保存用の DTO を作る<br>
+     *
+     * @since 0.1.0
+     *
+     * @param item
+     *             持ち越し項目
+     */
+    public CarryoverItemDto(final CarryoverItemModel item) {
+
+        this(item.getName(), item.getOriginDate(), item.isChecked(), item.getMinutes(),
+            item.getMinutesSource().getSource(), item.getSection(), item.getRaw());
+
+    }
+
+    /**
      * コンストラクタ<br>
      *
      * @since 0.1.0
@@ -98,21 +113,6 @@ public class CarryoverItemDto {
         this.minutesSource = minutesSource;
         this.section = section;
         this.raw = raw;
-
-    }
-
-    /**
-     * 持ち越し項目から保存用の DTO を作る<br>
-     *
-     * @since 0.1.0
-     *
-     * @param item
-     *             持ち越し項目
-     */
-    public CarryoverItemDto(final CarryoverItemModel item) {
-
-        this(item.getName(), item.getOriginDate(), item.isChecked(), item.getMinutes(),
-            item.getMinutesSource().getSource(), item.getSection(), item.getRaw());
 
     }
 

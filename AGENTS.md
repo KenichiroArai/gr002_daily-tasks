@@ -210,16 +210,16 @@ flowchart LR
   - presentation のコマンド・各層のロジック（`logic/`、`logic/impl/`）: `@Component`
   - サービス（`service/impl/`）: `@Service`
   - repository の外部 API と DAO の実装: `@Repository`
-- 注入はインスタンス変数への `@Autowired` で行う。コンストラクタでは依存を受け取らない
-- 注入するインスタンス変数は `private` とし、`final` にはしない。Spring が生成後に代入するためである
+- 注入はコンストラクタの引数で行う。コンストラクタが1つのときは `@Autowired` を付けない。コンストラクタが2つ以上あるときは、Spring が使うコンストラクタにだけ `@Autowired` を付ける。フィールドには `@Autowired` を付けない
+- 注入するインスタンス変数は `private final` とし、コンストラクタで代入する。Lombok の `@RequiredArgsConstructor` は使わない。ブレークポイントを置けるようにするためである
 - 受け取るのは「自層のインタフェース」（と自層の部品、infrastructure のインタフェース、`JsonMapper` などのフレームワークの部品）とする。実装は Spring が下の層から注入する
-- Spring が注入しないインスタンス変数のうち、生成時に決まるもの（出力先や `HttpClient` など）は、コンストラクタで初期化する。テストからフィールドを差し替える。列挙型からの取得はフィールドの初期値にしてよい
-- インスタンスの生存期間で共通な情報（複数メソッドで同じ値を使う値、そのオブジェクトが何に対する処理かを決める値）は、`initialize` で受け取りフィールドに保持する。コンストラクタでは受け取らない。依存の注入は `@Autowired` のままとする。`initialize` の戻り値は `void` とし、失敗は例外で表す
-  - 共同作業者（ロジック、DAO、API、`MessageLogic`）は `@Autowired` のフィールドとし、`initialize` の引数にしない
+- Spring が注入しないインスタンス変数のうち、生成時に決まるもの（出力先や `HttpClient` など）は、同じコンストラクタで初期化する。テストからフィールドを差し替える。列挙型からの取得はフィールドの初期値にしてよい
+- インスタンスの生存期間で共通な情報（複数メソッドで同じ値を使う値、そのオブジェクトが何に対する処理かを決める値）は、`initialize` で受け取りフィールドに保持する。コンストラクタでは受け取らない。依存の注入はコンストラクタのままとする。`initialize` の戻り値は `void` とし、失敗は例外で表す
+  - 共同作業者（ロジック、DAO、API、`MessageLogic`）はコンストラクタの引数とし、`initialize` の引数にしない
   - メソッドごとに変わる入力（1 件の Issue、保存する解析結果、集計そのもの）はメソッドの引数のままにする
   - 1 メソッドの中だけで使う計算結果はローカル変数のままにする
 - 状態を持つ Bean（`initialize` でフィールドを持つサービス、ロジック、外部 API、DAO）は `@Scope("prototype")` にする。シングルトンのままフィールドへ書くと、次の実行が前の設定を上書きする
-- シングルトンが prototype を使うときは `ObjectProvider` で実行のたびに新しいインスタンスを取り、`initialize` してから処理する。prototype を prototype へ `@Autowired` する場合は、親が生成されるときに子も 1 つ作られるので、`ObjectProvider` にしない
+- シングルトンが prototype を使うときは `ObjectProvider` で実行のたびに新しいインスタンスを取り、`initialize` してから処理する。`ObjectProvider` 自体はコンストラクタの引数とする。prototype を prototype のコンストラクタ引数にする場合は、親が生成されるときに子も 1 つ作られるので、`ObjectProvider` にしない
 - 呼び出し元が持っている情報は `initialize` で渡す。処理の途中で得て以降の呼び出しで共通になる情報は、その時点で下位の `initialize` に渡す
 - コマンドは `CommandLineRunner` として Spring Boot の起動後に実行する。起動クラスは `SpringApplication.run` を呼ぶだけとする
 
@@ -262,7 +262,7 @@ flowchart LR
 
 ### ルールの検査
 
-- 層間のルール（依存はすぐ上の層だけ。飛び越しと処理の流れと同じ向きの参照の禁止）、コンストラクタによる依存の注入の禁止、`@Value` の禁止、`@ConfigurationProperties` を presentation にだけ置くこと、Jackson のアノテーションを `repository/dto/json/` にだけ置くこと、ロジック（`logic/`）がサービス（`service/`）を参照しないことは `ArchitectureTest`（ArchUnit）で検査する。違反があると `mvn test` は失敗する
+- 層間のルール（依存はすぐ上の層だけ。飛び越しと処理の流れと同じ向きの参照の禁止）、フィールドへの `@Autowired` の禁止、コンストラクタが1つのときは `@Autowired` を付けないこと、コンストラクタが2つ以上あるときは使うコンストラクタにだけ `@Autowired` があること、`@Value` の禁止、`@ConfigurationProperties` を presentation にだけ置くこと、Jackson のアノテーションを `repository/dto/json/` にだけ置くこと、ロジック（`logic/`）がサービス（`service/`）を参照しないことは `ArchitectureTest`（ArchUnit）で検査する。違反があると `mvn test` は失敗する
 
 ## Issue 解析の仕様と収集のモード
 
@@ -317,7 +317,7 @@ java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.1.0.jar --full
 
 ### 初期化
 
-- 生成時に決まるインスタンス変数の初期化はコンストラクタで行う。ブレークポイントを置いてデバッグしやすくするためである。依存の注入はインスタンス変数の `@Autowired` のままとし、コンストラクタでは依存を受け取らない
+- 生成時に決まるインスタンス変数の初期化はコンストラクタで行う。ブレークポイントを置いてデバッグしやすくするためである。依存も同じコンストラクタの引数で受け、`private final` のフィールドへ代入する。コンストラクタが1つのときは `@Autowired` を付けない。フィールドには `@Autowired` を付けない
 - インスタンスの生存期間で共通な情報は `initialize` でフィールドに代入する。コンストラクタではこの情報を受け取らない
 - ロガー（`LoggerFactory.getLogger`）はフィールドの初期値にしてよい
 - 値が変動しないクラス変数（リテラル、`Duration.ofSeconds`、`Pattern.compile`、列挙型からの取得など）はフィールドの初期値にしてよい。クラス変数へインスタンスを入れるだけのもの（列挙型の `VALUES_MAP = new HashMap<>()` など）もフィールドの初期値にしてよい。ハッシュ値の算出のように計算結果を求めるものは static 初期化子で代入する
@@ -725,7 +725,7 @@ public class SampleClass {
 - [ ] データ系の型（`model/`、`dto/`、`types/`）と、データアクセス（外部 API は `api/<提供元>/`、ファイル・DB は `dao/<用途>/`）の置き場所の順守。値の種類は `KmgCmnTypes`、メッセージは `KmgFundCmn*MsgTypes` を実装していること。列挙型は予約語の `NONE` を先頭に持つこと
 - [ ] 層間のルール（依存性逆転：依存はすぐ上の層だけ、飛び越し・処理の流れと同じ向きの参照なし、データ・設定値は呼ぶ側の層で自層の型に変換）の順守（`ArchitectureTest` が通ること）
 - [ ] 下の層を差し替える場合、上の層のインタフェースを実装した `impl/` を追加し、上の層のコードを変更していないこと
-- [ ] DI のルール（Bean として登録、インスタンス変数への `@Autowired`、コンストラクタでは依存を受け取らない、共通の情報は `initialize` でフィールドに保持し状態を持つ Bean は prototype、メソッドごとの対象は引数）の順守
+- [ ] DI のルール（Bean として登録、コンストラクタで依存を受け `private final` に代入する、コンストラクタが1つのときは `@Autowired` を付けない、2つ以上あるときは使うコンストラクタにだけ付ける、フィールドには `@Autowired` を付けない、共通の情報は `initialize` でフィールドに保持し状態を持つ Bean は prototype、メソッドごとの対象は引数）の順守
 - [ ] JSON 形式の後方互換の確認（変更時は全件モードで再生成）
 - [ ] テストの追加 / 更新（命名・実装順序・検証方法を含む）
 - [ ] `mvn test` で JaCoCo カバレッジ 100% を維持
@@ -742,7 +742,7 @@ public class SampleClass {
 - 層を飛び越して参照すること（例: repository → application、domain → presentation、エントリポイント → presentation）
 - 処理の流れと同じ向き（上の層から下の層）に参照すること（例: presentation → application、application → domain、domain → repository）
 - 呼ぶ側の層のインタフェースや受け渡しの型に、呼ばれる側の層の都合（JSON の形の Jackson のアノテーションなど）を持ち込むこと
-- コンストラクタで依存を受け取ること、`@Value` での設定値の個別取得、インスタンスの文脈をメソッド引数で渡し続けること、状態を持つ Bean をシングルトンのままにすること
+- フィールドへ `@Autowired` すること、コンストラクタが1つのときに `@Autowired` を付けること、コンストラクタが2つ以上あるときに使うコンストラクタへ `@Autowired` を付けないこと、コンストラクタ以外で依存を注入すること、`@Value` での設定値の個別取得、インスタンスの文脈をメソッド引数で渡し続けること、状態を持つ Bean をシングルトンのままにすること
 - infrastructure に機能固有の値や業務の判断を置くこと、infrastructure から他の層を参照すること
 - kmg-fund にある型を使わずに、同じ役割の型を kmg-core から import すること。kmg-fund に無い型を kmg-core から import することは許す
 - 列挙型から `NONE` を省くこと、`NONE` を「指定無し」以外の意味で使うこと

@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 
 import kmg.gr.gr002.dailytasks.carryover.application.model.DefaultMinutesModel;
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.DefaultMinutesDao;
-import kmg.gr.gr002.dailytasks.testutil.ReflectionTestUtil;
 
 /**
  * {@link DefaultMinutesLogicImpl} のテスト<br>
@@ -121,8 +120,7 @@ public class DefaultMinutesLogicImplTest {
      */
     private static DefaultMinutesLogicImpl createTarget(final DefaultMinutesDao defaultMinutesDao) {
 
-        final DefaultMinutesLogicImpl result = new DefaultMinutesLogicImpl();
-        ReflectionTestUtil.setField(result, "defaultMinutesDao", defaultMinutesDao);
+        final DefaultMinutesLogicImpl result = new DefaultMinutesLogicImpl(defaultMinutesDao);
         return result;
 
     }

@@ -9,7 +9,6 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubIssueDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubSettingsDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.api.GitHubIssueApi;
-import kmg.gr.gr002.dailytasks.testutil.ReflectionTestUtil;
 
 /**
  * {@link DailyTaskIssueLogicImpl} のテスト<br>
@@ -122,8 +121,7 @@ public class DailyTaskIssueLogicImplTest {
      */
     private static DailyTaskIssueLogicImpl createTarget(final GitHubIssueApi gitHubIssueApi) {
 
-        final DailyTaskIssueLogicImpl result = new DailyTaskIssueLogicImpl();
-        ReflectionTestUtil.setField(result, "gitHubIssueApi", gitHubIssueApi);
+        final DailyTaskIssueLogicImpl result = new DailyTaskIssueLogicImpl(gitHubIssueApi);
         return result;
 
     }

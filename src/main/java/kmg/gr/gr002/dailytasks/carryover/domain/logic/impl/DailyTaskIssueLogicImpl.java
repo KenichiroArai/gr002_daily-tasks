@@ -3,7 +3,6 @@ package kmg.gr.gr002.dailytasks.carryover.domain.logic.impl;
 import java.io.IOException;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -16,8 +15,8 @@ import kmg.gr.gr002.dailytasks.carryover.domain.repository.api.GitHubIssueApi;
 /**
  * 日々のタスク Issue を取得するロジックの実装<br>
  * <p>
- * application 層の取得ロジックを実装する。取得した Issue は DTO がモデルへ変換する。接続設定は
- * {@link #initialize(String, String)} で受け取り、domain 層の DTO に変換して外部 API を初期化する。
+ * application 層の取得ロジックを実装する。取得した Issue は DTO がモデルへ変換する。接続設定は {@link #initialize(String, String)} で受け取り、domain 層の DTO
+ * に変換して外部 API を初期化する。
  * </p>
  *
  * @author KenichiroArai
@@ -35,8 +34,21 @@ public class DailyTaskIssueLogicImpl implements DailyTaskIssueLogic {
      *
      * @since 0.1.0
      */
-    @Autowired
-    private GitHubIssueApi gitHubIssueApi;
+    private final GitHubIssueApi gitHubIssueApi;
+
+    /**
+     * コンストラクタ<br>
+     *
+     * @since 0.1.0
+     *
+     * @param gitHubIssueApi
+     *                       GitHub の Issue の取得
+     */
+    public DailyTaskIssueLogicImpl(final GitHubIssueApi gitHubIssueApi) {
+
+        this.gitHubIssueApi = gitHubIssueApi;
+
+    }
 
     /**
      * すべての日々のタスク Issue を取得する<br>
@@ -51,8 +63,8 @@ public class DailyTaskIssueLogicImpl implements DailyTaskIssueLogic {
     @Override
     public List<DailyTaskIssueModel> fetchAllIssues() throws IOException {
 
-        final List<DailyTaskIssueModel> result = this.gitHubIssueApi.fetchAllIssues().stream()
-            .map(GitHubIssueDto::toDailyTaskIssueModel).toList();
+        final List<DailyTaskIssueModel> result
+            = this.gitHubIssueApi.fetchAllIssues().stream().map(GitHubIssueDto::toDailyTaskIssueModel).toList();
         return result;
 
     }

@@ -48,6 +48,24 @@ public class CarryoverSourceModel {
     private final String token;
 
     /**
+     * presentation 層の設定からデータの取得元と保存先を作る<br>
+     * <p>
+     * 差分判定の件数は application 層に残すため、引き継がない。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @param properties
+     *                   持ち越しの収集の設定
+     */
+    public CarryoverSourceModel(final CarryoverPropertiesModel properties) {
+
+        this(properties.getRepository(), properties.getToken(), properties.getDataDir(),
+            properties.getDefaultMinutesFile());
+
+    }
+
+    /**
      * コンストラクタ<br>
      *
      * @since 0.1.0
@@ -68,24 +86,6 @@ public class CarryoverSourceModel {
         this.token = token;
         this.dataDir = dataDir;
         this.defaultMinutesFile = defaultMinutesFile;
-
-    }
-
-    /**
-     * presentation 層の設定からデータの取得元と保存先を作る<br>
-     * <p>
-     * 差分判定の件数は application 層に残すため、引き継がない。
-     * </p>
-     *
-     * @since 0.1.0
-     *
-     * @param properties
-     *                   持ち越しの収集の設定
-     */
-    public CarryoverSourceModel(final CarryoverPropertiesModel properties) {
-
-        this(properties.getRepository(), properties.getToken(), properties.getDataDir(),
-            properties.getDefaultMinutesFile());
 
     }
 

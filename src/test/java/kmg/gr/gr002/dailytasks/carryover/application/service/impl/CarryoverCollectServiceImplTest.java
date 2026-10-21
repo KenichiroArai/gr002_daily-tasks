@@ -323,8 +323,7 @@ public class CarryoverCollectServiceImplTest {
      */
     private static CarryoverParseLogic createParseLogic() {
 
-        final CarryoverParseLogicImpl result = new CarryoverParseLogicImpl();
-        ReflectionTestUtil.setField(result, "messageLogic", MessageLogicTestUtil.create());
+        final CarryoverParseLogicImpl result = new CarryoverParseLogicImpl(MessageLogicTestUtil.create());
         return result;
 
     }
@@ -344,11 +343,8 @@ public class CarryoverCollectServiceImplTest {
     private static CarryoverCollectServiceImpl createTarget(final DailyTaskIssueLogic issueLogic,
         final CarryoverDataLogic dataLogic) {
 
-        final CarryoverCollectServiceImpl result = new CarryoverCollectServiceImpl();
-        ReflectionTestUtil.setField(result, "dailyTaskIssueLogic", issueLogic);
-        ReflectionTestUtil.setField(result, "defaultMinutesLogic", new StubDefaultMinutesLogic());
-        ReflectionTestUtil.setField(result, "carryoverDataLogic", dataLogic);
-        ReflectionTestUtil.setField(result, "carryoverParseLogic", CarryoverCollectServiceImplTest.PARSE_LOGIC);
+        final CarryoverCollectServiceImpl result = new CarryoverCollectServiceImpl(dataLogic,
+            CarryoverCollectServiceImplTest.PARSE_LOGIC, issueLogic, new StubDefaultMinutesLogic());
         return result;
 
     }
@@ -375,7 +371,7 @@ public class CarryoverCollectServiceImplTest {
     private static boolean needsUpdate(final boolean full, final CarryoverIssueModel stored,
         final DailyTaskIssueModel remoteIssue, final int recentFrom) throws Exception {
 
-        final CarryoverCollectServiceImpl target = new CarryoverCollectServiceImpl();
+        final CarryoverCollectServiceImpl target = new CarryoverCollectServiceImpl(null, null, null, null);
         ReflectionTestUtil.setField(target, "full", Boolean.valueOf(full));
         final boolean result = ReflectionTestUtil.<Boolean>invoke(target, "needsUpdate", new Class<?>[] {
             CarryoverIssueModel.class, DailyTaskIssueModel.class, int.class

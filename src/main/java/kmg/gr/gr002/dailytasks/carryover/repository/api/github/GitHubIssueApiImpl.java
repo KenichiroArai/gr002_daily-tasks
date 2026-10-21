@@ -13,7 +13,6 @@ import java.util.function.Supplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
@@ -149,16 +148,14 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
      *
      * @since 0.1.0
      */
-    @Autowired
-    private JsonMapper jsonMapper;
+    private final JsonMapper jsonMapper;
 
     /**
      * メッセージの取得
      *
      * @since 0.1.0
      */
-    @Autowired
-    private MessageLogic messageLogic;
+    private final MessageLogic messageLogic;
 
     /**
      * GitHub API の接続設定
@@ -171,9 +168,16 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
      * コンストラクタ<br>
      *
      * @since 0.1.0
+     *
+     * @param jsonMapper
+     *                     JSON の変換
+     * @param messageLogic
+     *                     メッセージの取得
      */
-    public GitHubIssueApiImpl() {
+    public GitHubIssueApiImpl(final JsonMapper jsonMapper, final MessageLogic messageLogic) {
 
+        this.jsonMapper = jsonMapper;
+        this.messageLogic = messageLogic;
         this.httpClientSupplier = HttpClient::newHttpClient;
 
     }

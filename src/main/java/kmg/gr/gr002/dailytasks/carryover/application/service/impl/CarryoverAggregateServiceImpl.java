@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -35,16 +34,32 @@ public class CarryoverAggregateServiceImpl implements CarryoverAggregateService 
      *
      * @since 0.1.0
      */
-    @Autowired
-    private CarryoverAggregateLogic carryoverAggregateLogic;
+    private final CarryoverAggregateLogic carryoverAggregateLogic;
 
     /**
      * 画面用の集計の保存
      *
      * @since 0.1.0
      */
-    @Autowired
-    private CarryoverDataLogic carryoverDataLogic;
+    private final CarryoverDataLogic carryoverDataLogic;
+
+    /**
+     * コンストラクタ<br>
+     *
+     * @since 0.1.0
+     *
+     * @param carryoverAggregateLogic
+     *                                日別の集計
+     * @param carryoverDataLogic
+     *                                画面用の集計の保存
+     */
+    public CarryoverAggregateServiceImpl(final CarryoverAggregateLogic carryoverAggregateLogic,
+        final CarryoverDataLogic carryoverDataLogic) {
+
+        this.carryoverAggregateLogic = carryoverAggregateLogic;
+        this.carryoverDataLogic = carryoverDataLogic;
+
+    }
 
     /**
      * 解析結果から日別の集計を作る<br>

@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -325,8 +324,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
      *
      * @since 0.1.0
      */
-    @Autowired
-    private MessageLogic messageLogic;
+    private final MessageLogic messageLogic;
 
     /**
      * 時間表記がない行を補完する項目ごとの標準時間
@@ -334,6 +332,20 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
      * @since 0.1.0
      */
     private DefaultMinutesModel defaultMinutes;
+
+    /**
+     * コンストラクタ<br>
+     *
+     * @since 0.1.0
+     *
+     * @param messageLogic
+     *                     メッセージの取得
+     */
+    public CarryoverParseLogicImpl(final MessageLogic messageLogic) {
+
+        this.messageLogic = messageLogic;
+
+    }
 
     /**
      * 標準時間を受け取り、フィールドに保持する<br>

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -62,32 +61,28 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
      *
      * @since 0.1.0
      */
-    @Autowired
-    private CarryoverDataLogic carryoverDataLogic;
+    private final CarryoverDataLogic carryoverDataLogic;
 
     /**
      * Issue 本文の解析
      *
      * @since 0.1.0
      */
-    @Autowired
-    private CarryoverParseLogic carryoverParseLogic;
+    private final CarryoverParseLogic carryoverParseLogic;
 
     /**
      * 日々のタスク Issue の取得
      *
      * @since 0.1.0
      */
-    @Autowired
-    private DailyTaskIssueLogic dailyTaskIssueLogic;
+    private final DailyTaskIssueLogic dailyTaskIssueLogic;
 
     /**
      * 項目ごとの標準時間の読み込み
      *
      * @since 0.1.0
      */
-    @Autowired
-    private DefaultMinutesLogic defaultMinutesLogic;
+    private final DefaultMinutesLogic defaultMinutesLogic;
 
     /**
      * 全件モードか
@@ -138,9 +133,24 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
      * </p>
      *
      * @since 0.1.0
+     *
+     * @param carryoverDataLogic
+     *                            持ち越しの解析結果の読み書き
+     * @param carryoverParseLogic
+     *                            Issue 本文の解析
+     * @param dailyTaskIssueLogic
+     *                            日々のタスク Issue の取得
+     * @param defaultMinutesLogic
+     *                            項目ごとの標準時間の読み込み
      */
-    public CarryoverCollectServiceImpl() {
+    public CarryoverCollectServiceImpl(final CarryoverDataLogic carryoverDataLogic,
+        final CarryoverParseLogic carryoverParseLogic, final DailyTaskIssueLogic dailyTaskIssueLogic,
+        final DefaultMinutesLogic defaultMinutesLogic) {
 
+        this.carryoverDataLogic = carryoverDataLogic;
+        this.carryoverParseLogic = carryoverParseLogic;
+        this.dailyTaskIssueLogic = dailyTaskIssueLogic;
+        this.defaultMinutesLogic = defaultMinutesLogic;
         this.issues = new TreeMap<>();
         this.pendingSaves = new ArrayList<>();
         this.remoteIssues = List.of();
@@ -252,11 +262,11 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
      * @since 0.1.0
      *
      * @param source
-     *                   データの取得元と保存先
+     *                    データの取得元と保存先
      * @param recentCount
-     *                   差分モードで更新日時に関係なく解析し直す最新の Issue の件数
+     *                    差分モードで更新日時に関係なく解析し直す最新の Issue の件数
      * @param full
-     *                   true：全件モード（すべての Issue を解析し直す）、false：差分モード
+     *                    true：全件モード（すべての Issue を解析し直す）、false：差分モード
      */
     @SuppressWarnings("hiding")
     @Override
@@ -267,28 +277,6 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
         this.dailyTaskIssueLogic.initialize(source.getRepository(), source.getToken());
         this.defaultMinutesLogic.initialize(source.getDefaultMinutesFile());
         this.carryoverDataLogic.initialize(source.getDataDir());
-
-    }
-
-    /**
-     * 今回解析した Issue を保存する<br>
-     * <p>
-     * {@link #analyze()} のあとで呼ぶ。
-     * </p>
-     *
-     * @since 0.1.0
-     *
-     * @throws IOException
-     *                     書き込みに失敗した場合
-     */
-    @Override
-    public void saveIssues() throws IOException {
-
-        for (final CarryoverIssueModel parsed : this.pendingSaves) {
-
-            this.carryoverDataLogic.saveIssue(parsed);
-
-        }
 
     }
 
@@ -332,6 +320,28 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
 
         result = !remoteIssue.getUpdatedAt().equals(stored.getUpdatedAt());
         return result;
+
+    }
+
+    /**
+     * 今回解析した Issue を保存する<br>
+     * <p>
+     * {@link #analyze()} のあとで呼ぶ。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     書き込みに失敗した場合
+     */
+    @Override
+    public void saveIssues() throws IOException {
+
+        for (final CarryoverIssueModel parsed : this.pendingSaves) {
+
+            this.carryoverDataLogic.saveIssue(parsed);
+
+        }
 
     }
 

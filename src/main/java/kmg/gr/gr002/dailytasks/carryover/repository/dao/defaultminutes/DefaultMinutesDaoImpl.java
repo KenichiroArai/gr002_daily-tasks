@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
@@ -55,16 +54,14 @@ public class DefaultMinutesDaoImpl implements DefaultMinutesDao {
      *
      * @since 0.1.0
      */
-    @Autowired
-    private JsonMapper jsonMapper;
+    private final JsonMapper jsonMapper;
 
     /**
      * メッセージの取得
      *
      * @since 0.1.0
      */
-    @Autowired
-    private MessageLogic messageLogic;
+    private final MessageLogic messageLogic;
 
     /**
      * 設定ファイルのパス（例: config/default-minutes.json）
@@ -72,6 +69,23 @@ public class DefaultMinutesDaoImpl implements DefaultMinutesDao {
      * @since 0.1.0
      */
     private Path configFile;
+
+    /**
+     * コンストラクタ<br>
+     *
+     * @since 0.1.0
+     *
+     * @param jsonMapper
+     *                     JSON の変換
+     * @param messageLogic
+     *                     メッセージの取得
+     */
+    public DefaultMinutesDaoImpl(final JsonMapper jsonMapper, final MessageLogic messageLogic) {
+
+        this.jsonMapper = jsonMapper;
+        this.messageLogic = messageLogic;
+
+    }
 
     /**
      * 設定ファイルのパスを受け取り、フィールドに保持する<br>

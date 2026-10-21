@@ -6,7 +6,6 @@ import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -69,24 +68,21 @@ public class CarryoverServiceImpl implements CarryoverService {
      *
      * @since 0.1.0
      */
-    @Autowired
-    private CarryoverAggregateService carryoverAggregateService;
+    private final CarryoverAggregateService carryoverAggregateService;
 
     /**
      * 持ち越しの収集
      *
      * @since 0.1.0
      */
-    @Autowired
-    private CarryoverCollectService carryoverCollectService;
+    private final CarryoverCollectService carryoverCollectService;
 
     /**
      * メッセージの取得
      *
      * @since 0.1.0
      */
-    @Autowired
-    private MessageLogic messageLogic;
+    private final MessageLogic messageLogic;
 
     /**
      * 全件モードか
@@ -123,9 +119,20 @@ public class CarryoverServiceImpl implements CarryoverService {
      * </p>
      *
      * @since 0.1.0
+     *
+     * @param carryoverAggregateService
+     *                                  持ち越しの集計
+     * @param carryoverCollectService
+     *                                  持ち越しの収集
+     * @param messageLogic
+     *                                  メッセージの取得
      */
-    public CarryoverServiceImpl() {
+    public CarryoverServiceImpl(final CarryoverAggregateService carryoverAggregateService,
+        final CarryoverCollectService carryoverCollectService, final MessageLogic messageLogic) {
 
+        this.carryoverAggregateService = carryoverAggregateService;
+        this.carryoverCollectService = carryoverCollectService;
+        this.messageLogic = messageLogic;
         this.issues = new TreeMap<>();
 
     }

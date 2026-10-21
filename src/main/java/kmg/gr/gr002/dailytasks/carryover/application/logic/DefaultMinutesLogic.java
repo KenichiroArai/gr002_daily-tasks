@@ -8,8 +8,7 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.DefaultMinutesModel;
 /**
  * 項目ごとの標準時間を読み込むロジック<br>
  * <p>
- * application 層が domain 層に求めるインタフェース。実装は domain 層に置く。設定ファイルは
- * {@link #initialize(Path)} で受け取る。
+ * application 層が domain 層に求めるインタフェース。実装は domain 層に置く。設定ファイルは {@link #initialize(Path)} で受け取る。
  * </p>
  *
  * @author KenichiroArai

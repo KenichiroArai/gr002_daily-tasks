@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Stream;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
@@ -48,16 +47,14 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
      *
      * @since 0.1.0
      */
-    @Autowired
-    private CarryoverJsonConvertLogic jsonConvertLogic;
+    private final CarryoverJsonConvertLogic jsonConvertLogic;
 
     /**
      * JSON の変換
      *
      * @since 0.1.0
      */
-    @Autowired
-    private JsonMapper jsonMapper;
+    private final JsonMapper jsonMapper;
 
     /**
      * 出力先のディレクトリ（例: docs/data）
@@ -65,6 +62,23 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
      * @since 0.1.0
      */
     private Path dataDir;
+
+    /**
+     * コンストラクタ<br>
+     *
+     * @since 0.1.0
+     *
+     * @param jsonConvertLogic
+     *                         DTO と JSON の形の変換
+     * @param jsonMapper
+     *                         JSON の変換
+     */
+    public CarryoverDataDaoImpl(final CarryoverJsonConvertLogic jsonConvertLogic, final JsonMapper jsonMapper) {
+
+        this.jsonConvertLogic = jsonConvertLogic;
+        this.jsonMapper = jsonMapper;
+
+    }
 
     /**
      * 改行を LF に統一した整形出力を作る<br>

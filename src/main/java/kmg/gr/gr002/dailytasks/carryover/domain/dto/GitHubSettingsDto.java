@@ -32,6 +32,20 @@ public class GitHubSettingsDto {
     private final String token;
 
     /**
+     * データの取得元から GitHub API の接続設定を作る<br>
+     *
+     * @since 0.1.0
+     *
+     * @param source
+     *               データの取得元と保存先
+     */
+    public GitHubSettingsDto(final CarryoverSourceModel source) {
+
+        this(source.getRepository(), source.getToken());
+
+    }
+
+    /**
      * コンストラクタ<br>
      *
      * @since 0.1.0
@@ -45,20 +59,6 @@ public class GitHubSettingsDto {
 
         this.repository = repository;
         this.token = token;
-
-    }
-
-    /**
-     * データの取得元から GitHub API の接続設定を作る<br>
-     *
-     * @since 0.1.0
-     *
-     * @param source
-     *               データの取得元と保存先
-     */
-    public GitHubSettingsDto(final CarryoverSourceModel source) {
-
-        this(source.getRepository(), source.getToken());
 
     }
 

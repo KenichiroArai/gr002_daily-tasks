@@ -93,11 +93,10 @@ public class GitHubIssueApiImplTest {
     private static GitHubIssueApiImpl createTarget(final HttpClient httpClient) {
 
         final Supplier<HttpClient> httpClientSupplier = () -> httpClient;
-        final GitHubIssueApiImpl   result             = new GitHubIssueApiImpl();
+        final GitHubIssueApiImpl   result             = new GitHubIssueApiImpl(new JsonMapper(),
+            MessageLogicTestUtil.create());
         ReflectionTestUtil.setField(result, "httpClientSupplier", httpClientSupplier);
         ReflectionTestUtil.setField(result, "apiBaseUrl", GitHubIssueApiImplTest.API_BASE_URL);
-        ReflectionTestUtil.setField(result, "jsonMapper", new JsonMapper());
-        ReflectionTestUtil.setField(result, "messageLogic", MessageLogicTestUtil.create());
         return result;
 
     }
@@ -147,7 +146,7 @@ public class GitHubIssueApiImplTest {
      */
     private static boolean hasToken(final GitHubSettingsDto settings) throws Exception {
 
-        final GitHubIssueApiImpl target = new GitHubIssueApiImpl();
+        final GitHubIssueApiImpl target = new GitHubIssueApiImpl(new JsonMapper(), MessageLogicTestUtil.create());
         target.initialize(settings);
         final boolean result = ReflectionTestUtil.<Boolean>invoke(target, "hasToken", new Class<?>[] {});
         return result;
@@ -507,9 +506,7 @@ public class GitHubIssueApiImplTest {
         final JsonMapper testJsonMapper = new JsonMapper();
 
         /* テスト対象の実行 */
-        final GitHubIssueApiImpl testTarget = new GitHubIssueApiImpl();
-        ReflectionTestUtil.setField(testTarget, "jsonMapper", testJsonMapper);
-        ReflectionTestUtil.setField(testTarget, "messageLogic", MessageLogicTestUtil.create());
+        final GitHubIssueApiImpl testTarget = new GitHubIssueApiImpl(testJsonMapper, MessageLogicTestUtil.create());
 
         /* 検証の準備 */
         final String     actualApiBaseUrl = ReflectionTestUtil.getField(testTarget, "apiBaseUrl");

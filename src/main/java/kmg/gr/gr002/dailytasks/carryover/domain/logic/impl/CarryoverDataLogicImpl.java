@@ -5,7 +5,6 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -20,8 +19,8 @@ import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
 /**
  * 持ち越しの解析結果と画面用の集計を読み書きするロジックの実装<br>
  * <p>
- * application 層の読み書きロジックを実装する。application 層のモデルと domain 層の DTO は、変換先の型が変換元を受け取って作る。保存先は
- * {@link #initialize(Path)} で受け取り、DAO を初期化する。
+ * application 層の読み書きロジックを実装する。application 層のモデルと domain 層の DTO は、変換先の型が変換元を受け取って作る。保存先は {@link #initialize(Path)}
+ * で受け取り、DAO を初期化する。
  * </p>
  *
  * @author KenichiroArai
@@ -39,16 +38,31 @@ public class CarryoverDataLogicImpl implements CarryoverDataLogic {
      *
      * @since 0.1.0
      */
-    @Autowired
-    private CarryoverDataDao carryoverDataDao;
+    private final CarryoverDataDao carryoverDataDao;
 
     /**
      * メッセージの取得
      *
      * @since 0.1.0
      */
-    @Autowired
-    private MessageLogic messageLogic;
+    private final MessageLogic messageLogic;
+
+    /**
+     * コンストラクタ<br>
+     *
+     * @since 0.1.0
+     *
+     * @param carryoverDataDao
+     *                         JSON ファイルの読み書き
+     * @param messageLogic
+     *                         メッセージの取得
+     */
+    public CarryoverDataLogicImpl(final CarryoverDataDao carryoverDataDao, final MessageLogic messageLogic) {
+
+        this.carryoverDataDao = carryoverDataDao;
+        this.messageLogic = messageLogic;
+
+    }
 
     /**
      * 解析結果と集計の保存先を受け取り、読み書き先を初期化する<br>

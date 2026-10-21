@@ -2,6 +2,7 @@ package kmg.gr.gr002.dailytasks;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.domain.JavaConstructor;
+import com.tngtech.archunit.core.domain.JavaField;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.lang.ArchCondition;
@@ -52,24 +54,68 @@ public class ArchitectureTest {
     private static final String ROOT_PACKAGE = "kmg.gr.gr002.dailytasks";
 
     /**
-     * Bean のコンストラクタが引数を持たないこと
+     * コンストラクタが1つのときは {@link Autowired} を付けず、2つ以上あるときは使うコンストラクタにだけ付けること
      *
      * @since 0.1.0
      */
-    private static final ArchCondition<JavaClass> NO_CONSTRUCTOR_PARAMETERS
-        = new ArchCondition<>("not receive dependencies from constructors") {
+    private static final ArchCondition<JavaClass> CONSTRUCTOR_AUTOWIRED_MATCHES_COUNT
+        = new ArchCondition<>("omit Autowired on a single constructor and require one when there are multiple") {
 
             @Override
             public void check(final JavaClass item, final ConditionEvents events) {
 
+                final int constructorCount = item.getConstructors().size();
+                int autowiredCount = 0;
+
                 for (final JavaConstructor constructor : item.getConstructors()) {
 
-                    if (!constructor.getRawParameterTypes().isEmpty()) {
+                    if (constructor.isAnnotatedWith(Autowired.class)) {
 
-                        events.add(SimpleConditionEvent.violated(constructor,
-                            constructor.getFullName() + " receives dependencies"));
+                        autowiredCount++;
 
                     }
+
+                }
+
+                if (constructorCount <= 1 && autowiredCount > 0) {
+
+                    events.add(SimpleConditionEvent.violated(item,
+                        item.getFullName() + " has a single constructor annotated with Autowired"));
+
+                }
+
+                if (constructorCount >= 2 && autowiredCount != 1) {
+
+                    events.add(SimpleConditionEvent.violated(item,
+                        item.getFullName() + " must annotate exactly one constructor with Autowired"));
+
+                }
+
+            }
+
+        };
+
+    /**
+     * フィールドに {@link Autowired} が無いこと
+     *
+     * @since 0.1.0
+     */
+    private static final ArchCondition<JavaClass> NO_AUTOWIRED_FIELDS
+        = new ArchCondition<>("not annotate fields with Autowired") {
+
+            @Override
+            public void check(final JavaClass item, final ConditionEvents events) {
+
+                for (final JavaField field : item.getFields()) {
+
+                    if (!field.isAnnotatedWith(Autowired.class)) {
+
+                        continue;
+
+                    }
+
+                    events.add(SimpleConditionEvent.violated(field,
+                        field.getFullName() + " is annotated with Autowired"));
 
                 }
 
@@ -92,22 +138,26 @@ public class ArchitectureTest {
     }
 
     /**
-     * DI のテスト - 正常系:Bean のコンストラクタで依存を受け取っていない場合
+     * DI のテスト - 正常系:コンストラクタが1つのときは {@link Autowired} を付けず、2つ以上あるときは使うコンストラクタにだけ付け、フィールドには付けない場合
      *
      * @since 0.1.0
      */
     @Test
-    public void testInjection_normalNoConstructorInjection() {
+    public void testInjection_normalConstructorInjection() {
 
         /* 期待値の定義 */
 
         /* 準備 */
-        final ArchRule testRule
-            = ArchRuleDefinition.classes().that().areAnnotatedWith(Component.class).or().areAnnotatedWith(Service.class)
-                .or().areAnnotatedWith(Repository.class).should(ArchitectureTest.NO_CONSTRUCTOR_PARAMETERS);
+        final ArchRule noAutowiredFields = ArchRuleDefinition.classes().that().areAnnotatedWith(Component.class).or()
+            .areAnnotatedWith(Service.class).or().areAnnotatedWith(Repository.class)
+            .should(ArchitectureTest.NO_AUTOWIRED_FIELDS);
+        final ArchRule constructorAutowiredMatchesCount = ArchRuleDefinition.classes().that()
+            .areAnnotatedWith(Component.class).or().areAnnotatedWith(Service.class).or()
+            .areAnnotatedWith(Repository.class).should(ArchitectureTest.CONSTRUCTOR_AUTOWIRED_MATCHES_COUNT);
 
         /* テスト対象の実行 */
-        testRule.check(ArchitectureTest.classes);
+        noAutowiredFields.check(ArchitectureTest.classes);
+        constructorAutowiredMatchesCount.check(ArchitectureTest.classes);
 
         /* 検証の準備 */
 

@@ -276,10 +276,8 @@ public class CarryoverCommandImplTest {
      */
     private static CarryoverCommandImpl createTarget(final CarryoverService service, final PrintStream out) {
 
-        final CarryoverCommandImpl result = new CarryoverCommandImpl();
-        ReflectionTestUtil.setField(result, "carryoverService", new StubServiceProvider(service));
-        ReflectionTestUtil.setField(result, "properties", CarryoverCommandImplTest.PROPERTIES);
-        ReflectionTestUtil.setField(result, "messageLogic", MessageLogicTestUtil.create());
+        final CarryoverCommandImpl result = new CarryoverCommandImpl(new StubServiceProvider(service),
+            MessageLogicTestUtil.create(), CarryoverCommandImplTest.PROPERTIES);
         ReflectionTestUtil.setField(result, "out", out);
         return result;
 
@@ -342,10 +340,8 @@ public class CarryoverCommandImplTest {
         final StubCarryoverService testService = new StubCarryoverService();
 
         /* テスト対象の実行 */
-        final CarryoverCommandImpl testTarget = new CarryoverCommandImpl();
-        ReflectionTestUtil.setField(testTarget, "carryoverService", new StubServiceProvider(testService));
-        ReflectionTestUtil.setField(testTarget, "properties", CarryoverCommandImplTest.PROPERTIES);
-        ReflectionTestUtil.setField(testTarget, "messageLogic", MessageLogicTestUtil.create());
+        final CarryoverCommandImpl testTarget = new CarryoverCommandImpl(new StubServiceProvider(testService),
+            MessageLogicTestUtil.create(), CarryoverCommandImplTest.PROPERTIES);
 
         /* 検証の準備 */
         final ObjectProvider<CarryoverService> actualProvider = ReflectionTestUtil.getField(testTarget,

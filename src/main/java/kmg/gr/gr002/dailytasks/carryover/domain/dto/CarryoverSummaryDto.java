@@ -40,6 +40,21 @@ public class CarryoverSummaryDto {
     private final int latestIssue;
 
     /**
+     * 画面用の集計から保存用の DTO を作る<br>
+     *
+     * @since 0.1.0
+     *
+     * @param summary
+     *                画面用の集計
+     */
+    public CarryoverSummaryDto(final CarryoverSummaryModel summary) {
+
+        this(summary.getLatestIssue(), summary.getItems(),
+            summary.getDays().stream().map(DailySummaryDto::new).toList());
+
+    }
+
+    /**
      * コンストラクタ<br>
      *
      * @since 0.1.0
@@ -56,21 +71,6 @@ public class CarryoverSummaryDto {
         this.latestIssue = latestIssue;
         this.items = List.copyOf(items);
         this.days = List.copyOf(days);
-
-    }
-
-    /**
-     * 画面用の集計から保存用の DTO を作る<br>
-     *
-     * @since 0.1.0
-     *
-     * @param summary
-     *                画面用の集計
-     */
-    public CarryoverSummaryDto(final CarryoverSummaryModel summary) {
-
-        this(summary.getLatestIssue(), summary.getItems(),
-            summary.getDays().stream().map(DailySummaryDto::new).toList());
 
     }
 

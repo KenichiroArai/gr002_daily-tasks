@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -39,16 +38,14 @@ public class CarryoverCommandImpl implements CarryoverCommand {
      *
      * @since 0.1.0
      */
-    @Autowired
-    private ObjectProvider<CarryoverService> carryoverService;
+    private final ObjectProvider<CarryoverService> carryoverService;
 
     /**
      * メッセージの取得
      *
      * @since 0.1.0
      */
-    @Autowired
-    private MessageLogic messageLogic;
+    private final MessageLogic messageLogic;
 
     /**
      * 使い方の出力先
@@ -76,8 +73,7 @@ public class CarryoverCommandImpl implements CarryoverCommand {
      *
      * @since 0.1.0
      */
-    @Autowired
-    private CarryoverPropertiesModel properties;
+    private final CarryoverPropertiesModel properties;
 
     /**
      * コンストラクタ<br>
@@ -86,9 +82,20 @@ public class CarryoverCommandImpl implements CarryoverCommand {
      * </p>
      *
      * @since 0.1.0
+     *
+     * @param carryoverService
+     *                         持ち越しの収集・集計サービス
+     * @param messageLogic
+     *                         メッセージの取得
+     * @param properties
+     *                         設定ファイルの値
      */
-    public CarryoverCommandImpl() {
+    public CarryoverCommandImpl(final ObjectProvider<CarryoverService> carryoverService,
+        final MessageLogic messageLogic, final CarryoverPropertiesModel properties) {
 
+        this.carryoverService = carryoverService;
+        this.messageLogic = messageLogic;
+        this.properties = properties;
         this.out = System.out;
         this.full = false;
         this.help = false;
