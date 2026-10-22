@@ -1,0 +1,41 @@
+{
+  "groups": [
+    {
+      "name": "carryover",
+      "type": "kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel",
+      "sourceType": "kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel"
+    }
+  ],
+  "properties": [
+    {
+      "name": "carryover.repository",
+      "type": "java.lang.String",
+      "description": "対象リポジトリ（owner/name）。",
+      "sourceType": "kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel"
+    },
+    {
+      "name": "carryover.token",
+      "type": "java.lang.String",
+      "description": "GitHub API のトークン。未設定の場合は空文字。",
+      "sourceType": "kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel"
+    },
+    {
+      "name": "carryover.data-dir",
+      "type": "java.lang.String",
+      "description": "出力先のディレクトリ（例: docs/data）。",
+      "sourceType": "kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel"
+    },
+    {
+      "name": "carryover.default-minutes-file",
+      "type": "java.lang.String",
+      "description": "標準時間の設定ファイル（例: config/default-minutes.json）。",
+      "sourceType": "kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel"
+    },
+    {
+      "name": "carryover.recent-count",
+      "type": "java.lang.Integer",
+      "description": "差分モードで更新日時に関係なく解析し直す最新の Issue の件数。",
+      "sourceType": "kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel"
+    }
+  ]
+}
