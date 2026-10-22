@@ -4,14 +4,13 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.stream.Stream;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssueDto;
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssuesDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverSummaryDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.CarryoverDataDao;
 import kmg.gr.gr002.dailytasks.carryover.repository.dto.json.CarryoverIssueJsonDto;
@@ -127,11 +126,10 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
      *                     読み込みに失敗した場合
      */
     @Override
-    public Map<Integer, CarryoverIssueDto> loadIssues() throws IOException {
+    public CarryoverIssuesDto loadIssues() throws IOException {
 
-        final Map<Integer, CarryoverIssueDto> result    = new TreeMap<>();
-        final Path                            issuesDir = this.dataDir
-            .resolve(CarryoverDataFileTypes.ISSUES_DIR.getFileName());
+        final CarryoverIssuesDto result    = new CarryoverIssuesDto();
+        final Path               issuesDir = this.dataDir.resolve(CarryoverDataFileTypes.ISSUES_DIR.getFileName());
 
         if (!Files.isDirectory(issuesDir)) {
 

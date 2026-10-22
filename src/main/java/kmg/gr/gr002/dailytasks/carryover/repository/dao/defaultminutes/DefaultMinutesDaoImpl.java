@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.DefaultMinutesDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.DefaultMinutesDao;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTypes;
@@ -108,15 +109,15 @@ public class DefaultMinutesDaoImpl implements DefaultMinutesDao {
      *
      * @since 0.1.0
      *
-     * @return 項目名と標準時間（分）の対応。設定ファイルがない場合は空
+     * @return 項目ごとの標準時間。設定ファイルがない場合は空
      *
      * @throws IOException
      *                     読み込みに失敗した場合
      */
     @Override
-    public Map<String, Double> load() throws IOException {
+    public DefaultMinutesDto load() throws IOException {
 
-        Map<String, Double> result = Map.of();
+        final DefaultMinutesDto result = new DefaultMinutesDto();
 
         if (!Files.isRegularFile(this.configFile)) {
 
@@ -126,13 +127,22 @@ public class DefaultMinutesDaoImpl implements DefaultMinutesDao {
 
         }
 
+        /* Jackson が動的キーの JSON オブジェクトを Map として読む。メソッド内の一時データ */
+        final Map<String, Double> loaded;
+
         try {
 
-            result = this.jsonMapper.readValue(this.configFile.toFile(), DefaultMinutesDaoImpl.DEFAULT_MINUTES_TYPE);
+            loaded = this.jsonMapper.readValue(this.configFile.toFile(), DefaultMinutesDaoImpl.DEFAULT_MINUTES_TYPE);
 
         } catch (final JacksonException e) {
 
             throw new IOException(e);
+
+        }
+
+        for (final Map.Entry<String, Double> entry : loaded.entrySet()) {
+
+            result.add(entry.getKey(), entry.getValue());
 
         }
 

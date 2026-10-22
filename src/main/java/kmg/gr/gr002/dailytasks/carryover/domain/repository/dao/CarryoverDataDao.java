@@ -2,9 +2,9 @@ package kmg.gr.gr002.dailytasks.carryover.domain.repository.dao;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Map;
 
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssueDto;
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssuesDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverSummaryDto;
 
 /**
@@ -41,7 +41,7 @@ public interface CarryoverDataDao {
      * @throws IOException
      *                     読み込みに失敗した場合
      */
-    Map<Integer, CarryoverIssueDto> loadIssues() throws IOException;
+    CarryoverIssuesDto loadIssues() throws IOException;
 
     /**
      * Issue ごとの解析結果を保存する<br>

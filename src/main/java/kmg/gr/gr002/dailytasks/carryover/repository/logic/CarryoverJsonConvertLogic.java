@@ -1,8 +1,6 @@
 package kmg.gr.gr002.dailytasks.carryover.repository.logic;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
@@ -11,11 +9,13 @@ import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverItemDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverSummaryDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.DailySummaryDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.ItemStatDto;
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.ItemStatsDto;
 import kmg.gr.gr002.dailytasks.carryover.repository.dto.json.CarryoverIssueJsonDto;
 import kmg.gr.gr002.dailytasks.carryover.repository.dto.json.CarryoverItemJsonDto;
 import kmg.gr.gr002.dailytasks.carryover.repository.dto.json.CarryoverSummaryJsonDto;
 import kmg.gr.gr002.dailytasks.carryover.repository.dto.json.DailySummaryJsonDto;
 import kmg.gr.gr002.dailytasks.carryover.repository.dto.json.ItemStatJsonDto;
+import kmg.gr.gr002.dailytasks.carryover.repository.dto.json.ItemStatsJsonDto;
 
 /**
  * domain 層の DTO と JSON の形の型を相互に変換する<br>
@@ -117,13 +117,13 @@ public class CarryoverJsonConvertLogic {
      *
      * @return キーごとの JSON の形の集計値（並び順は元のまま）
      */
-    private static Map<String, ItemStatJsonDto> toItemStatJsons(final Map<String, ItemStatDto> dtos) {
+    private static ItemStatsJsonDto toItemStatJsons(final ItemStatsDto dtos) {
 
-        final Map<String, ItemStatJsonDto> result = new LinkedHashMap<>();
+        final ItemStatsJsonDto result = new ItemStatsJsonDto();
 
-        for (final Map.Entry<String, ItemStatDto> entry : dtos.entrySet()) {
+        for (final String name : dtos.names()) {
 
-            result.put(entry.getKey(), CarryoverJsonConvertLogic.toItemStatJson(entry.getValue()));
+            result.add(name, CarryoverJsonConvertLogic.toItemStatJson(dtos.find(name)));
 
         }
 

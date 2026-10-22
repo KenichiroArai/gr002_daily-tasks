@@ -76,7 +76,7 @@ public class DailySummaryModelTest {
         testTarget.add(DailySummaryModelTest.createItem("国語", "2026-06-18"));
 
         /* 検証の準備 */
-        final int actualMonthCount = testTarget.getByOriginMonth().get("2026-06").getCount();
+        final int actualMonthCount = testTarget.getByOriginMonth().find("2026-06").getCount();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedMonthCount, actualMonthCount, "持ち越し元の月の件数が一致しません");
@@ -122,7 +122,7 @@ public class DailySummaryModelTest {
         final DailySummaryModel testTarget = DailySummaryModelTest.createSummary();
 
         /* テスト対象の実行 */
-        final int testResult = testTarget.getByItem().get("国語").getCount();
+        final int testResult = testTarget.getByItem().find("国語").getCount();
 
         /* 検証の準備 */
         final int actualCount = testResult;
@@ -147,7 +147,7 @@ public class DailySummaryModelTest {
         final DailySummaryModel testTarget = DailySummaryModelTest.createSummary();
 
         /* テスト対象の実行 */
-        final Set<String> testResult = testTarget.getByOriginMonth().keySet();
+        final Set<String> testResult = Set.copyOf(testTarget.getByOriginMonth().names());
 
         /* 検証の準備 */
         final Set<String> actualMonths = Set.copyOf(testResult);

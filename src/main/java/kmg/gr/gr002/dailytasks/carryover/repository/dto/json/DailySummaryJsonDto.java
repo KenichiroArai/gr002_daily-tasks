@@ -1,9 +1,5 @@
 package kmg.gr.gr002.dailytasks.carryover.repository.dto.json;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 /**
@@ -25,14 +21,14 @@ public class DailySummaryJsonDto {
      *
      * @since 0.1.0
      */
-    private final Map<String, ItemStatJsonDto> byItem;
+    private final ItemStatsJsonDto byItem;
 
     /**
      * 持ち越し元の月ごとの集計（キーは yyyy-MM）
      *
      * @since 0.1.0
      */
-    private final Map<String, ItemStatJsonDto> byOriginMonth;
+    private final ItemStatsJsonDto byOriginMonth;
 
     /**
      * その日の日付（yyyy-MM-dd）
@@ -84,15 +80,14 @@ public class DailySummaryJsonDto {
      *                      持ち越し元の月ごとの集計（キーは yyyy-MM）
      */
     public DailySummaryJsonDto(final String date, final int issue, final Integer declaredCount,
-        final ItemStatJsonDto total, final Map<String, ItemStatJsonDto> byItem,
-        final Map<String, ItemStatJsonDto> byOriginMonth) {
+        final ItemStatJsonDto total, final ItemStatsJsonDto byItem, final ItemStatsJsonDto byOriginMonth) {
 
         this.date = date;
         this.issue = issue;
         this.declaredCount = declaredCount;
         this.total = total;
-        this.byItem = Collections.unmodifiableMap(new LinkedHashMap<>(byItem));
-        this.byOriginMonth = Collections.unmodifiableMap(new LinkedHashMap<>(byOriginMonth));
+        this.byItem = new ItemStatsJsonDto(byItem);
+        this.byOriginMonth = new ItemStatsJsonDto(byOriginMonth);
 
     }
 
@@ -103,9 +98,9 @@ public class DailySummaryJsonDto {
      *
      * @return 項目ごとの集計（キーは項目名）
      */
-    public Map<String, ItemStatJsonDto> getByItem() {
+    public ItemStatsJsonDto getByItem() {
 
-        final Map<String, ItemStatJsonDto> result = this.byItem;
+        final ItemStatsJsonDto result = this.byItem;
         return result;
 
     }
@@ -117,9 +112,9 @@ public class DailySummaryJsonDto {
      *
      * @return 持ち越し元の月ごとの集計（キーは yyyy-MM）
      */
-    public Map<String, ItemStatJsonDto> getByOriginMonth() {
+    public ItemStatsJsonDto getByOriginMonth() {
 
-        final Map<String, ItemStatJsonDto> result = this.byOriginMonth;
+        final ItemStatsJsonDto result = this.byOriginMonth;
         return result;
 
     }

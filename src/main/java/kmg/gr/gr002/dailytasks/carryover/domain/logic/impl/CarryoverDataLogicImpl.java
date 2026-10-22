@@ -2,14 +2,13 @@ package kmg.gr.gr002.dailytasks.carryover.domain.logic.impl;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Map;
-import java.util.TreeMap;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverDataLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
+import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssuesModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSummaryModel;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssueDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverSummaryDto;
@@ -90,16 +89,10 @@ public class CarryoverDataLogicImpl implements CarryoverDataLogic {
      *                     読み込みに失敗した場合
      */
     @Override
-    public Map<Integer, CarryoverIssueModel> loadIssues() throws IOException {
+    public CarryoverIssuesModel loadIssues() throws IOException {
 
-        final Map<Integer, CarryoverIssueModel> result = new TreeMap<>();
-
-        for (final Map.Entry<Integer, CarryoverIssueDto> entry : this.carryoverDataDao.loadIssues().entrySet()) {
-
-            result.put(entry.getKey(), entry.getValue().toCarryoverIssueModel(this.messageLogic));
-
-        }
-
+        final CarryoverIssuesModel result
+            = this.carryoverDataDao.loadIssues().toCarryoverIssuesModel(this.messageLogic);
         return result;
 
     }

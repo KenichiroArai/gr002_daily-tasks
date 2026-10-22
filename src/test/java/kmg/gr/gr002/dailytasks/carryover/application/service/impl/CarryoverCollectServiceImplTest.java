@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Assertions;
@@ -16,6 +14,7 @@ import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverParseLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.logic.DailyTaskIssueLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.logic.DefaultMinutesLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
+import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssuesModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSourceModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSummaryModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueModel;
@@ -94,9 +93,9 @@ public class CarryoverCollectServiceImplTest {
          * @return 保存済みの解析結果
          */
         @Override
-        public Map<Integer, CarryoverIssueModel> loadIssues() {
+        public CarryoverIssuesModel loadIssues() {
 
-            final Map<Integer, CarryoverIssueModel> result = new TreeMap<>();
+            final CarryoverIssuesModel result = new CarryoverIssuesModel();
             return result;
 
         }
@@ -247,7 +246,22 @@ public class CarryoverCollectServiceImplTest {
      *
      * @since 0.1.0
      */
-    private static final DefaultMinutesModel DEFAULT_MINUTES = new DefaultMinutesModel(Map.of("国語", (double) 15));
+    private static final DefaultMinutesModel DEFAULT_MINUTES = CarryoverCollectServiceImplTest.defaultMinutes();
+
+    /**
+     * テスト用の標準時間を作る<br>
+     *
+     * @since 0.1.0
+     *
+     * @return 項目ごとの標準時間
+     */
+    private static DefaultMinutesModel defaultMinutes() {
+
+        final DefaultMinutesModel result = new DefaultMinutesModel();
+        result.add("国語", (double) 15);
+        return result;
+
+    }
 
     /**
      * テスト用の Issue #1（時間表記なし、更新日時 u1）

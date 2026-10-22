@@ -339,6 +339,32 @@ java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.1.0.jar --full
 - `{@inheritDoc}` は使わない。オーバーライドやインタフェースの実装でも、メソッドの説明と必須タグをそのメソッドに書く。説明は、実装するインタフェースの Javadoc に合わせる
 - 後述の「Javadoc のフォーマットルール」に従う
 
+### 対応（Map）
+
+共通ルールは kb002_daily-tasks_doc の [docs/coding-rules.md](https://github.com/KenichiroArai/kb002_daily-tasks_doc/blob/main/docs/coding-rules.md) の「対応」に従う。
+
+- 意味のある対応を公開の引数や戻り値にするときは、モデルまたは DTO が管理する。`Map` はクラス内の索引に留める
+- メソッド内で Jackson が返す `Map` を受け、すぐ専用の型へ移すのは許す。理由をコメントする
+- 列挙型の `VALUES_MAP` は、定数名から定数を引くクラス内の索引として残す
+
+```java
+// 望ましくない形式:
+public Map<String, Double> load() {
+
+    final Map<String, Double> result = Map.of();
+    return result;
+
+}
+
+// 望ましい形式:
+public DefaultMinutesDto load() {
+
+    final DefaultMinutesDto result = new DefaultMinutesDto();
+    return result;
+
+}
+```
+
 ### アクセス修飾子
 
 - 外部に公開しないもの、サブクラスも使わないもの（フィールド・メソッド・コンストラクタ・入れ子クラス）は `private` にする

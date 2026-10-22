@@ -3,16 +3,17 @@ package kmg.gr.gr002.dailytasks.carryover.domain.logic.impl;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
+import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssuesModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverItemModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSummaryModel;
 import kmg.gr.gr002.dailytasks.carryover.application.types.MinutesSourceTypes;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssueDto;
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssuesDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverItemDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverSummaryDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.CarryoverDataDao;
@@ -55,7 +56,7 @@ public class CarryoverDataLogicImplTest {
          *
          * @since 0.1.0
          */
-        private final Map<Integer, CarryoverIssueDto> issues;
+        private final CarryoverIssuesDto issues;
 
         /**
          * 保存された解析結果
@@ -79,7 +80,7 @@ public class CarryoverDataLogicImplTest {
          * @param issues
          *               読み込み結果として返す解析結果
          */
-        private StubCarryoverDataDao(final Map<Integer, CarryoverIssueDto> issues) {
+        private StubCarryoverDataDao(final CarryoverIssuesDto issues) {
 
             this.issues = issues;
 
@@ -150,9 +151,9 @@ public class CarryoverDataLogicImplTest {
          * @return 設定した解析結果
          */
         @Override
-        public Map<Integer, CarryoverIssueDto> loadIssues() {
+        public CarryoverIssuesDto loadIssues() {
 
-            final Map<Integer, CarryoverIssueDto> result = this.issues;
+            final CarryoverIssuesDto result = this.issues;
             return result;
 
         }
@@ -227,20 +228,50 @@ public class CarryoverDataLogicImplTest {
             "持ち越し", "- [ ] 国語2026/06/18");
         final CarryoverIssueDto    testDto    = new CarryoverIssueDto(371, "2026年10月06日のタスク", "2026-10-06", "open",
             "2026-10-06T14:23:08Z", List.of("持ち越し"), null, 1, 0.0, List.of(testItem));
-        final StubCarryoverDataDao testData   = new StubCarryoverDataDao(Map.of(371, testDto));
+        final CarryoverIssuesDto     testIssues = new CarryoverIssuesDto();
+        testIssues.put(371, testDto);
+        final StubCarryoverDataDao   testData   = new StubCarryoverDataDao(testIssues);
         final CarryoverDataLogicImpl testTarget = CarryoverDataLogicImplTest.createTarget(testData);
 
         /* テスト対象の実行 */
         testTarget.initialize(Path.of("docs", "data"));
-        final Map<Integer, CarryoverIssueModel> testResult = testTarget.loadIssues();
+        final CarryoverIssuesModel testResult = testTarget.loadIssues();
 
         /* 検証の準備 */
-        final MinutesSourceTypes actualMinutesSource = testResult.get(371).getItems().get(0).getMinutesSource();
+        final MinutesSourceTypes actualMinutesSource = testResult.find(371).getItems().get(0).getMinutesSource();
         final Path               actualDataDir       = testData.getDataDir();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedMinutesSource, actualMinutesSource, "残り時間の取得元が一致しません");
         Assertions.assertEquals(expectedDataDir, actualDataDir, "出力先のディレクトリが一致しません");
+
+    }
+
+    /**
+     * loadIssues メソッドのテスト - 準正常系:保存済みの解析結果がない場合
+     *
+     * @since 0.1.0
+     *
+     * @throws Exception
+     *                   読み込みに失敗した場合
+     */
+    @Test
+    public void testLoadIssues_semiEmpty() throws Exception {
+
+        /* 期待値の定義 */
+
+        /* 準備 */
+        final StubCarryoverDataDao   testData   = new StubCarryoverDataDao(new CarryoverIssuesDto());
+        final CarryoverDataLogicImpl testTarget = CarryoverDataLogicImplTest.createTarget(testData);
+
+        /* テスト対象の実行 */
+        final CarryoverIssuesModel testResult = testTarget.loadIssues();
+
+        /* 検証の準備 */
+        final boolean actualEmpty = testResult.numbers().isEmpty();
+
+        /* 検証の実施 */
+        Assertions.assertTrue(actualEmpty, "解析結果は空になる必要があります");
 
     }
 
@@ -260,7 +291,7 @@ public class CarryoverDataLogicImplTest {
         final Path   expectedDataDir       = Path.of("docs", "data");
 
         /* 準備 */
-        final StubCarryoverDataDao   testData   = new StubCarryoverDataDao(Map.of());
+        final StubCarryoverDataDao   testData   = new StubCarryoverDataDao(new CarryoverIssuesDto());
         final CarryoverDataLogicImpl testTarget = CarryoverDataLogicImplTest.createTarget(testData);
         final CarryoverItemModel     testItem   = new CarryoverItemModel("音楽", "2026-08-18", false, 11.5,
             MinutesSourceTypes.PARSED, "持ち越し", "- [ ] 音楽2026/08/18（残り時間：11.5分）");
@@ -297,7 +328,7 @@ public class CarryoverDataLogicImplTest {
         final Path expectedDataDir     = Path.of("docs", "data");
 
         /* 準備 */
-        final StubCarryoverDataDao   testData    = new StubCarryoverDataDao(Map.of());
+        final StubCarryoverDataDao   testData    = new StubCarryoverDataDao(new CarryoverIssuesDto());
         final CarryoverDataLogicImpl testTarget  = CarryoverDataLogicImplTest.createTarget(testData);
         final CarryoverSummaryModel  testSummary = new CarryoverSummaryModel(371, List.of(), List.of());
 

@@ -2,7 +2,8 @@ package kmg.gr.gr002.dailytasks.carryover.domain.repository.dao;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Map;
+
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.DefaultMinutesDto;
 
 /**
  * 項目ごとの標準時間の設定を読み込む DAO<br>
@@ -33,11 +34,11 @@ public interface DefaultMinutesDao {
      *
      * @since 0.1.0
      *
-     * @return 項目名と標準時間（分）の対応。設定がない場合は空
+     * @return 項目ごとの標準時間。設定がない場合は空
      *
      * @throws IOException
      *                     読み込みに失敗した場合
      */
-    Map<String, Double> load() throws IOException;
+    DefaultMinutesDto load() throws IOException;
 
 }

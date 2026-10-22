@@ -1,9 +1,6 @@
 package kmg.gr.gr002.dailytasks.carryover.repository.dto.json;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -31,11 +28,13 @@ public class DailySummaryJsonDtoTest {
      */
     private static DailySummaryJsonDto createTarget() {
 
-        final Map<String, ItemStatJsonDto> byItem = new LinkedHashMap<>();
-        byItem.put("英語", new ItemStatJsonDto(1, 30, 0, 0));
-        byItem.put("国語", new ItemStatJsonDto(1, 15, 1, 15));
+        final ItemStatsJsonDto byItem        = new ItemStatsJsonDto();
+        final ItemStatsJsonDto byOriginMonth = new ItemStatsJsonDto();
+        byItem.add("英語", new ItemStatJsonDto(1, 30, 0, 0));
+        byItem.add("国語", new ItemStatJsonDto(1, 15, 1, 15));
+        byOriginMonth.add("2026-03", new ItemStatJsonDto(2, 45, 1, 15));
         final DailySummaryJsonDto result = new DailySummaryJsonDto("2026-03-24", 175, 2,
-            new ItemStatJsonDto(2, 45, 1, 15), byItem, Map.of("2026-03", new ItemStatJsonDto(2, 45, 1, 15)));
+            new ItemStatJsonDto(2, 45, 1, 15), byItem, byOriginMonth);
         return result;
 
     }
@@ -55,10 +54,10 @@ public class DailySummaryJsonDtoTest {
         final DailySummaryJsonDto testTarget = DailySummaryJsonDtoTest.createTarget();
 
         /* テスト対象の実行 */
-        final Map<String, ItemStatJsonDto> testResult = testTarget.getByItem();
+        final ItemStatsJsonDto testResult = testTarget.getByItem();
 
         /* 検証の準備 */
-        final List<String> actualByItem = new ArrayList<>(testResult.keySet());
+        final List<String> actualByItem = testResult.names();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedByItem, actualByItem, "項目ごとの集計が一致しません");
@@ -80,10 +79,10 @@ public class DailySummaryJsonDtoTest {
         final DailySummaryJsonDto testTarget = DailySummaryJsonDtoTest.createTarget();
 
         /* テスト対象の実行 */
-        final Map<String, ItemStatJsonDto> testResult = testTarget.getByOriginMonth();
+        final ItemStatsJsonDto testResult = testTarget.getByOriginMonth();
 
         /* 検証の準備 */
-        final List<String> actualByOriginMonth = new ArrayList<>(testResult.keySet());
+        final List<String> actualByOriginMonth = testResult.names();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedByOriginMonth, actualByOriginMonth, "持ち越し元の月ごとの集計が一致しません");
@@ -187,6 +186,32 @@ public class DailySummaryJsonDtoTest {
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedTotal, actualTotal, "全体の集計が一致しません");
+
+    }
+
+    /**
+     * JSON オブジェクトとしての集計を確認する<br>
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testGetByItem_normalJsonObject() {
+
+        /* 期待値の定義 */
+        final int expectedCount = 1;
+
+        /* 準備 */
+        final DailySummaryJsonDto testTarget = DailySummaryJsonDtoTest.createTarget();
+
+        /* テスト対象の実行 */
+        final boolean testResult = testTarget.getByItem().isEmpty();
+
+        /* 検証の準備 */
+        final int actualCount = testTarget.getByItem().toJsonObject().get("英語").getCount();
+
+        /* 検証の実施 */
+        Assertions.assertFalse(testResult, "項目ごとの集計は空ではない必要があります");
+        Assertions.assertEquals(expectedCount, actualCount, "項目ごとの件数が一致しません");
 
     }
 

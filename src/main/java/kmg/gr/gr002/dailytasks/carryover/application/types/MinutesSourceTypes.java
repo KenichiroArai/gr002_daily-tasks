@@ -52,6 +52,9 @@ public enum MinutesSourceTypes implements KmgCmnTypes<String> {
 
     /**
      * 種類のマップ
+     * <p>
+     * 列挙定数の名前から定数を引くクラス内の索引。外には渡さない。
+     * </p>
      *
      * @since 0.1.0
      */

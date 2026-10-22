@@ -1,11 +1,6 @@
 package kmg.gr.gr002.dailytasks.carryover.domain.dto;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailySummaryModel;
-import kmg.gr.gr002.dailytasks.carryover.application.model.ItemStatModel;
 
 /**
  * 日別の持ち越しの集計の DTO<br>
@@ -22,42 +17,18 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.ItemStatModel;
 public class DailySummaryDto {
 
     /**
-     * キーごとの集計値を保存用の DTO に変換する<br>
-     *
-     * @since 0.1.0
-     *
-     * @param stats
-     *              キーごとの集計値
-     *
-     * @return キーごとの保存用の DTO（並び順は元のまま）
-     */
-    private static Map<String, ItemStatDto> toItemStatDtos(final Map<String, ItemStatModel> stats) {
-
-        final Map<String, ItemStatDto> result = new LinkedHashMap<>();
-
-        for (final Map.Entry<String, ItemStatModel> entry : stats.entrySet()) {
-
-            result.put(entry.getKey(), new ItemStatDto(entry.getValue()));
-
-        }
-
-        return result;
-
-    }
-
-    /**
      * 項目ごとの集計（キーは項目名）
      *
      * @since 0.1.0
      */
-    private final Map<String, ItemStatDto> byItem;
+    private final ItemStatsDto byItem;
 
     /**
      * 持ち越し元の月ごとの集計（キーは yyyy-MM）
      *
      * @since 0.1.0
      */
-    private final Map<String, ItemStatDto> byOriginMonth;
+    private final ItemStatsDto byOriginMonth;
 
     /**
      * その日の日付（yyyy-MM-dd）
@@ -101,7 +72,7 @@ public class DailySummaryDto {
     public DailySummaryDto(final DailySummaryModel day) {
 
         this(day.getDate(), day.getIssue(), day.getDeclaredCount(), new ItemStatDto(day.getTotal()),
-            DailySummaryDto.toItemStatDtos(day.getByItem()), DailySummaryDto.toItemStatDtos(day.getByOriginMonth()));
+            new ItemStatsDto(day.getByItem()), new ItemStatsDto(day.getByOriginMonth()));
 
     }
 
@@ -127,14 +98,14 @@ public class DailySummaryDto {
      *                      持ち越し元の月ごとの集計（キーは yyyy-MM）
      */
     public DailySummaryDto(final String date, final int issue, final Integer declaredCount, final ItemStatDto total,
-        final Map<String, ItemStatDto> byItem, final Map<String, ItemStatDto> byOriginMonth) {
+        final ItemStatsDto byItem, final ItemStatsDto byOriginMonth) {
 
         this.date = date;
         this.issue = issue;
         this.declaredCount = declaredCount;
         this.total = total;
-        this.byItem = Collections.unmodifiableMap(new LinkedHashMap<>(byItem));
-        this.byOriginMonth = Collections.unmodifiableMap(new LinkedHashMap<>(byOriginMonth));
+        this.byItem = new ItemStatsDto(byItem);
+        this.byOriginMonth = new ItemStatsDto(byOriginMonth);
 
     }
 
@@ -145,9 +116,9 @@ public class DailySummaryDto {
      *
      * @return 項目ごとの集計（キーは項目名）
      */
-    public Map<String, ItemStatDto> getByItem() {
+    public ItemStatsDto getByItem() {
 
-        final Map<String, ItemStatDto> result = this.byItem;
+        final ItemStatsDto result = this.byItem;
         return result;
 
     }
@@ -159,9 +130,9 @@ public class DailySummaryDto {
      *
      * @return 持ち越し元の月ごとの集計（キーは yyyy-MM）
      */
-    public Map<String, ItemStatDto> getByOriginMonth() {
+    public ItemStatsDto getByOriginMonth() {
 
-        final Map<String, ItemStatDto> result = this.byOriginMonth;
+        final ItemStatsDto result = this.byOriginMonth;
         return result;
 
     }

@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
@@ -14,10 +12,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssueDto;
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssuesDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverItemDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverSummaryDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.DailySummaryDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.ItemStatDto;
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.ItemStatsDto;
 import kmg.gr.gr002.dailytasks.carryover.repository.logic.CarryoverJsonConvertLogic;
 import kmg.gr.gr002.dailytasks.testutil.ReflectionTestUtil;
 import tools.jackson.core.JacksonException;
@@ -189,11 +189,11 @@ public class CarryoverDataDaoImplTest {
         Files.writeString(this.tempDir.resolve("issues").resolve("memo.txt"), "対象外");
 
         /* テスト対象の実行 */
-        final Map<Integer, CarryoverIssueDto> testResult = testTarget.loadIssues();
+        final CarryoverIssuesDto testResult = testTarget.loadIssues();
 
         /* 検証の準備 */
-        final Set<Integer>     actualNumbers       = testResult.keySet();
-        final CarryoverItemDto actualItem          = testResult.get(Integer.valueOf(371)).getItems().get(0);
+        final Set<Integer>     actualNumbers       = testResult.numbers();
+        final CarryoverItemDto actualItem          = testResult.find(371).getItems().get(0);
         final double           actualMinutes       = actualItem.getMinutes();
         final String           actualMinutesSource = actualItem.getMinutesSource();
         final boolean          actualChecked       = actualItem.isChecked();
@@ -224,10 +224,10 @@ public class CarryoverDataDaoImplTest {
 
         /* テスト対象の実行 */
         testTarget.initialize(this.tempDir.resolve("none"));
-        final Map<Integer, CarryoverIssueDto> testResult = testTarget.loadIssues();
+        final CarryoverIssuesDto testResult = testTarget.loadIssues();
 
         /* 検証の準備 */
-        final boolean actualEmpty = testResult.isEmpty();
+        final boolean actualEmpty = testResult.numbers().isEmpty();
 
         /* 検証の実施 */
         Assertions.assertTrue(actualEmpty, "空になる必要があります");
@@ -320,10 +320,11 @@ public class CarryoverDataDaoImplTest {
         final CarryoverDataDaoImpl     testTarget    = CarryoverDataDaoImplTest.createTarget();
         final ItemStatDto              testStat      = new ItemStatDto(1, 30, 0, 0);
         final ItemStatDto              testEmptyStat = new ItemStatDto(0, 0, 0, 0);
-        final Map<String, ItemStatDto> testByItem    = new LinkedHashMap<>();
-        testByItem.put("英語", testStat);
-        testByItem.put("国語", testEmptyStat);
-        final DailySummaryDto testDay = new DailySummaryDto("2026-03-24", 175, null, testStat, testByItem, Map.of());
+        final ItemStatsDto testByItem = new ItemStatsDto();
+        testByItem.add("英語", testStat);
+        testByItem.add("国語", testEmptyStat);
+        final DailySummaryDto testDay = new DailySummaryDto("2026-03-24", 175, null, testStat, testByItem,
+            new ItemStatsDto());
 
         /* テスト対象の実行 */
         testTarget.initialize(this.tempDir);

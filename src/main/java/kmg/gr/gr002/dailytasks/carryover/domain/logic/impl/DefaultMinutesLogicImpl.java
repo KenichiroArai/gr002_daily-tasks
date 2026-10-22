@@ -2,7 +2,6 @@ package kmg.gr.gr002.dailytasks.carryover.domain.logic.impl;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Map;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -76,8 +75,7 @@ public class DefaultMinutesLogicImpl implements DefaultMinutesLogic {
     @Override
     public DefaultMinutesModel loadDefaultMinutes() throws IOException {
 
-        final Map<String, Double> minutesByName = this.defaultMinutesDao.load();
-        final DefaultMinutesModel result        = new DefaultMinutesModel(minutesByName);
+        final DefaultMinutesModel result = this.defaultMinutesDao.load().toDefaultMinutesModel();
         return result;
 
     }

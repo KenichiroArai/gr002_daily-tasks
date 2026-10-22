@@ -1,7 +1,5 @@
 package kmg.gr.gr002.dailytasks.carryover.application.model;
 
-import java.util.Map;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -31,7 +29,8 @@ public class DefaultMinutesModelTest {
         final Double expectedMinutes = (double) 15;
 
         /* 準備 */
-        final DefaultMinutesModel testTarget = new DefaultMinutesModel(Map.of("国語", (double) 15));
+        final DefaultMinutesModel testTarget = new DefaultMinutesModel();
+        testTarget.add("国語", (double) 15);
 
         /* テスト対象の実行 */
         final Double testResult = testTarget.find("国語");
@@ -55,7 +54,8 @@ public class DefaultMinutesModelTest {
         /* 期待値の定義 */
 
         /* 準備 */
-        final DefaultMinutesModel testTarget = new DefaultMinutesModel(Map.of("国語", (double) 15));
+        final DefaultMinutesModel testTarget = new DefaultMinutesModel();
+        testTarget.add("国語", (double) 15);
 
         /* テスト対象の実行 */
         final Double testResult = testTarget.find("英語");

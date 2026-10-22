@@ -3,11 +3,12 @@ package kmg.gr.gr002.dailytasks.carryover.repository.dao.defaultminutes;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.DefaultMinutesDto;
 
 import kmg.gr.gr002.dailytasks.testutil.LogAssertions;
 import kmg.gr.gr002.dailytasks.testutil.LogCapture;
@@ -100,10 +101,10 @@ public class DefaultMinutesDaoImplTest {
 
         /* テスト対象の実行 */
         testTarget.initialize(testConfig);
-        final Map<String, Double> testResult = testTarget.load();
+        final DefaultMinutesDto testResult = testTarget.load();
 
         /* 検証の準備 */
-        final Double actualMinutes = testResult.get("高校数学");
+        final Double actualMinutes = testResult.toDefaultMinutesModel().find("高校数学");
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedMinutes, actualMinutes, "標準時間が一致しません");
@@ -134,11 +135,11 @@ public class DefaultMinutesDaoImplTest {
         try (LogCapture testLog = new LogCapture(DefaultMinutesDaoImpl.class)) {
 
             testTarget.initialize(testConfig);
-            final Map<String, Double> testResult = testTarget.load();
+            final DefaultMinutesDto testResult = testTarget.load();
 
             /* 検証の準備 */
             final String[] actualMsgs    = testLog.getMessages();
-            final Double   actualMinutes = testResult.get("国語");
+            final Double   actualMinutes = testResult.toDefaultMinutesModel().find("国語");
 
             /* 検証の実施 */
             Assertions.assertNull(actualMinutes, "標準時間は未登録になる必要があります");

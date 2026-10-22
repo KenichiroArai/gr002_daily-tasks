@@ -2,7 +2,6 @@ package kmg.gr.gr002.dailytasks.carryover.domain.logic.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -36,8 +35,23 @@ public class CarryoverParseLogicImplTest {
      *
      * @since 0.1.0
      */
-    private static final DefaultMinutesModel DEFAULT_MINUTES
-        = new DefaultMinutesModel(Map.of("国語", (double) 15, "マラソン日記", (double) 0));
+    private static final DefaultMinutesModel DEFAULT_MINUTES = CarryoverParseLogicImplTest.defaultMinutes();
+
+    /**
+     * テスト用の標準時間を作る<br>
+     *
+     * @since 0.1.0
+     *
+     * @return 項目ごとの標準時間
+     */
+    private static DefaultMinutesModel defaultMinutes() {
+
+        final DefaultMinutesModel result = new DefaultMinutesModel();
+        result.add("国語", (double) 15);
+        result.add("マラソン日記", (double) 0);
+        return result;
+
+    }
 
     /**
      * private の addSection メソッドを呼び出す<br>

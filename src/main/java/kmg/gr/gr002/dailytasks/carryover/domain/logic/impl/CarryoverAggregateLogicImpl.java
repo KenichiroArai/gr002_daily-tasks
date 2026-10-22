@@ -52,9 +52,11 @@ public class CarryoverAggregateLogicImpl implements CarryoverAggregateLogic {
             .toList();
 
         /* 日別の集計 */
-        final List<DailySummaryModel> days       = new ArrayList<>();
-        final Map<String, Integer>    itemCounts = new HashMap<>();
-        boolean                       tracking   = false;
+        final List<DailySummaryModel> days = new ArrayList<>();
+
+        /* 項目名ごとの延べ件数。メソッド内の一時集計で、外には渡さない */
+        final Map<String, Integer> itemCounts = new HashMap<>();
+        boolean                    tracking   = false;
 
         for (final CarryoverIssueModel issue : sorted) {
 

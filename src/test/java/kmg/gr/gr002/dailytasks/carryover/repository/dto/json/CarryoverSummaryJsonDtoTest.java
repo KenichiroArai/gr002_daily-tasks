@@ -1,7 +1,6 @@
 package kmg.gr.gr002.dailytasks.carryover.repository.dto.json;
 
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -30,8 +29,10 @@ public class CarryoverSummaryJsonDtoTest {
     private static CarryoverSummaryJsonDto createTarget() {
 
         final ItemStatJsonDto         total  = new ItemStatJsonDto(1, 30, 0, 0);
-        final DailySummaryJsonDto     day    = new DailySummaryJsonDto("2026-03-24", 175, null, total,
-            Map.of("英語", total), Map.of());
+        final ItemStatsJsonDto        byItem = new ItemStatsJsonDto();
+        byItem.add("英語", total);
+        final DailySummaryJsonDto     day    = new DailySummaryJsonDto("2026-03-24", 175, null, total, byItem,
+            new ItemStatsJsonDto());
         final CarryoverSummaryJsonDto result = new CarryoverSummaryJsonDto(374, List.of("英語"), List.of(day));
         return result;
 

@@ -1,8 +1,7 @@
 package kmg.gr.gr002.dailytasks.carryover.application.service.impl;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.Collection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +9,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
+import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssuesModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSourceModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSummaryModel;
 import kmg.gr.gr002.dailytasks.carryover.application.service.CarryoverAggregateService;
@@ -55,9 +55,9 @@ public class CarryoverServiceImpl implements CarryoverService {
      *
      * @return 行数
      */
-    private static long countBySource(final Map<Integer, CarryoverIssueModel> issues, final MinutesSourceTypes source) {
+    private static long countBySource(final Collection<CarryoverIssueModel> issues, final MinutesSourceTypes source) {
 
-        final long result = issues.values().stream().flatMap(issue -> issue.getItems().stream())
+        final long result = issues.stream().flatMap(issue -> issue.getItems().stream())
             .filter(item -> item.getMinutesSource() == source).count();
         return result;
 
@@ -96,7 +96,7 @@ public class CarryoverServiceImpl implements CarryoverService {
      *
      * @since 0.1.0
      */
-    private Map<Integer, CarryoverIssueModel> issues;
+    private CarryoverIssuesModel issues;
 
     /**
      * 取得したリモートの Issue の件数
@@ -133,7 +133,7 @@ public class CarryoverServiceImpl implements CarryoverService {
         this.carryoverAggregateService = carryoverAggregateService;
         this.carryoverCollectService = carryoverCollectService;
         this.messageLogic = messageLogic;
-        this.issues = new TreeMap<>();
+        this.issues = new CarryoverIssuesModel();
 
     }
 
@@ -177,7 +177,7 @@ public class CarryoverServiceImpl implements CarryoverService {
         this.carryoverCollectService.fetch();
         final int result = this.carryoverCollectService.analyze();
         this.carryoverCollectService.saveIssues();
-        this.issues = new TreeMap<>(this.carryoverCollectService.getIssues());
+        this.issues = this.carryoverCollectService.getIssues().copy();
         this.savedCount = result;
         this.remoteCount = this.carryoverCollectService.getRemoteCount();
         return result;
@@ -224,8 +224,10 @@ public class CarryoverServiceImpl implements CarryoverService {
             summary.getDays().size());
 
         final String minutesSourceMessage = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12001);
-        final long   defaultCount         = CarryoverServiceImpl.countBySource(this.issues, MinutesSourceTypes.DEFAULT);
-        final long   unknownCount         = CarryoverServiceImpl.countBySource(this.issues, MinutesSourceTypes.UNKNOWN);
+        final long   defaultCount         = CarryoverServiceImpl.countBySource(this.issues.values(),
+            MinutesSourceTypes.DEFAULT);
+        final long   unknownCount         = CarryoverServiceImpl.countBySource(this.issues.values(),
+            MinutesSourceTypes.UNKNOWN);
         CarryoverServiceImpl.LOGGER.info(minutesSourceMessage, defaultCount, unknownCount);
 
     }

@@ -1,8 +1,6 @@
 package kmg.gr.gr002.dailytasks.carryover.repository.logic;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -12,6 +10,7 @@ import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverItemDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverSummaryDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.DailySummaryDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.ItemStatDto;
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.ItemStatsDto;
 import kmg.gr.gr002.dailytasks.carryover.repository.dto.json.CarryoverIssueJsonDto;
 import kmg.gr.gr002.dailytasks.carryover.repository.dto.json.CarryoverItemJsonDto;
 import kmg.gr.gr002.dailytasks.carryover.repository.dto.json.CarryoverSummaryJsonDto;
@@ -75,12 +74,12 @@ public class CarryoverJsonConvertLogicTest {
      */
     private static CarryoverSummaryDto createSummaryDto() {
 
-        final ItemStatDto              total         = new ItemStatDto(2, 26.5, 1, 11.5);
-        final Map<String, ItemStatDto> byItem        = new LinkedHashMap<>();
-        final Map<String, ItemStatDto> byOriginMonth = new LinkedHashMap<>();
-        byItem.put("音楽", new ItemStatDto(1, 11.5, 1, 11.5));
-        byItem.put("国語", new ItemStatDto(1, 15.0, 0, 0.0));
-        byOriginMonth.put("2026-08", new ItemStatDto(1, 11.5, 1, 11.5));
+        final ItemStatDto   total         = new ItemStatDto(2, 26.5, 1, 11.5);
+        final ItemStatsDto  byItem        = new ItemStatsDto();
+        final ItemStatsDto  byOriginMonth = new ItemStatsDto();
+        byItem.add("音楽", new ItemStatDto(1, 11.5, 1, 11.5));
+        byItem.add("国語", new ItemStatDto(1, 15.0, 0, 0.0));
+        byOriginMonth.add("2026-08", new ItemStatDto(1, 11.5, 1, 11.5));
         final DailySummaryDto     day    = new DailySummaryDto("2026-10-06", 371, 2, total, byItem, byOriginMonth);
         final CarryoverSummaryDto result = new CarryoverSummaryDto(371, List.of("音楽", "国語"), List.of(day));
         return result;
@@ -205,7 +204,7 @@ public class CarryoverJsonConvertLogicTest {
         final CarryoverSummaryJsonDto testResult = new CarryoverJsonConvertLogic().toCarryoverSummaryJson(testDto);
 
         /* 検証の準備 */
-        final List<String> actualKeys = List.copyOf(testResult.getDays().get(0).getByItem().keySet());
+        final List<String> actualKeys = testResult.getDays().get(0).getByItem().names();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedKeys, actualKeys, "項目ごとの集計の並び順が一致しません");
@@ -230,7 +229,7 @@ public class CarryoverJsonConvertLogicTest {
         final CarryoverSummaryJsonDto testResult = new CarryoverJsonConvertLogic().toCarryoverSummaryJson(testDto);
 
         /* 検証の準備 */
-        final ItemStatJsonDto actualStat           = testResult.getDays().get(0).getByOriginMonth().get("2026-08");
+        final ItemStatJsonDto actualStat           = testResult.getDays().get(0).getByOriginMonth().find("2026-08");
         final double          actualCheckedMinutes = actualStat.getCheckedMinutes();
 
         /* 検証の実施 */

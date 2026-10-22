@@ -1,7 +1,6 @@
 package kmg.gr.gr002.dailytasks.carryover.domain.dto;
 
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -56,8 +55,10 @@ public class CarryoverSummaryDtoTest {
     private static CarryoverSummaryDto createTarget() {
 
         final ItemStatDto         total  = new ItemStatDto(1, 30, 0, 0);
-        final DailySummaryDto     day    = new DailySummaryDto("2026-03-24", 175, null, total, Map.of("英語", total),
-            Map.of());
+        final ItemStatsDto     byItem = new ItemStatsDto();
+        byItem.add("英語", total);
+        final DailySummaryDto     day    = new DailySummaryDto("2026-03-24", 175, null, total, byItem,
+            new ItemStatsDto());
         final CarryoverSummaryDto result = new CarryoverSummaryDto(374, List.of("英語"), List.of(day));
         return result;
 
@@ -82,7 +83,7 @@ public class CarryoverSummaryDtoTest {
 
         /* 検証の準備 */
         final DailySummaryDto actualDay          = testResult.getDays().get(0);
-        final int             actualCheckedCount = actualDay.getByItem().get("音楽").getCheckedCount();
+        final int             actualCheckedCount = actualDay.getByItem().find("音楽").getCheckedCount();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedCheckedCount, actualCheckedCount, "項目ごとのチェック済み件数が一致しません");
@@ -108,7 +109,7 @@ public class CarryoverSummaryDtoTest {
 
         /* 検証の準備 */
         final DailySummaryDto actualDay   = testResult.getDays().get(0);
-        final int             actualCount = actualDay.getByOriginMonth().get("2026-08").getCount();
+        final int             actualCount = actualDay.getByOriginMonth().find("2026-08").getCount();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedCount, actualCount, "持ち越し元の月ごとの件数が一致しません");

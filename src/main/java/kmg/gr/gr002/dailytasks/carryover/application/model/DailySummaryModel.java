@@ -1,8 +1,5 @@
 package kmg.gr.gr002.dailytasks.carryover.application.model;
 
-import java.util.Map;
-import java.util.TreeMap;
-
 /**
  * 日別の持ち越しの集計<br>
  *
@@ -19,14 +16,14 @@ public class DailySummaryModel {
      *
      * @since 0.1.0
      */
-    private final Map<String, ItemStatModel> byItem;
+    private final ItemStatsModel byItem;
 
     /**
      * 持ち越し元の月（yyyy-MM）ごとの集計
      *
      * @since 0.1.0
      */
-    private final Map<String, ItemStatModel> byOriginMonth;
+    private final ItemStatsModel byOriginMonth;
 
     /**
      * その日の日付（yyyy-MM-dd）
@@ -74,8 +71,8 @@ public class DailySummaryModel {
         this.issue = issue;
         this.declaredCount = declaredCount;
         this.total = new ItemStatModel();
-        this.byItem = new TreeMap<>();
-        this.byOriginMonth = new TreeMap<>();
+        this.byItem = new ItemStatsModel();
+        this.byOriginMonth = new ItemStatsModel();
 
     }
 
@@ -91,7 +88,7 @@ public class DailySummaryModel {
 
         /* 全体と項目ごとの集計 */
         this.total.add(item);
-        this.byItem.computeIfAbsent(item.getName(), _ -> new ItemStatModel()).add(item);
+        this.byItem.findOrCreate(item.getName()).add(item);
 
         // 持ち越し元の日付がない行は月ごとの集計に含めない
         if (item.getOriginDate() == null) {
@@ -102,7 +99,7 @@ public class DailySummaryModel {
 
         /* 持ち越し元の月ごとの集計 */
         final String month = item.getOriginDate().substring(0, 7);
-        this.byOriginMonth.computeIfAbsent(month, _ -> new ItemStatModel()).add(item);
+        this.byOriginMonth.findOrCreate(month).add(item);
 
     }
 
@@ -113,9 +110,9 @@ public class DailySummaryModel {
      *
      * @return 項目ごとの集計（キーは項目名）
      */
-    public Map<String, ItemStatModel> getByItem() {
+    public ItemStatsModel getByItem() {
 
-        final Map<String, ItemStatModel> result = this.byItem;
+        final ItemStatsModel result = this.byItem;
         return result;
 
     }
@@ -127,9 +124,9 @@ public class DailySummaryModel {
      *
      * @return 持ち越し元の月ごとの集計（キーは yyyy-MM）
      */
-    public Map<String, ItemStatModel> getByOriginMonth() {
+    public ItemStatsModel getByOriginMonth() {
 
-        final Map<String, ItemStatModel> result = this.byOriginMonth;
+        final ItemStatsModel result = this.byOriginMonth;
         return result;
 
     }

@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -15,6 +13,7 @@ import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverParseLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.logic.DailyTaskIssueLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.logic.DefaultMinutesLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
+import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssuesModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSourceModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DefaultMinutesModel;
@@ -97,7 +96,7 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
      *
      * @since 0.1.0
      */
-    private Map<Integer, CarryoverIssueModel> issues;
+    private CarryoverIssuesModel issues;
 
     /**
      * 今回解析し、まだ保存していない Issue
@@ -152,7 +151,7 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
         this.carryoverParseLogic = carryoverParseLogic;
         this.dailyTaskIssueLogic = dailyTaskIssueLogic;
         this.defaultMinutesLogic = defaultMinutesLogic;
-        this.issues = new TreeMap<>();
+        this.issues = new CarryoverIssuesModel();
         this.pendingSaves = new ArrayList<>();
         this.remoteIssues = List.of();
 
@@ -178,7 +177,7 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
 
             final Integer number = remoteIssue.getNumber();
 
-            if (!this.needsUpdate(this.issues.get(number), remoteIssue, this.recentFrom)) {
+            if (!this.needsUpdate(this.issues.find(number), remoteIssue, this.recentFrom)) {
 
                 continue;
 
@@ -214,8 +213,8 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
         this.carryoverParseLogic.initialize(defaultMinutes);
 
         /* 保存済みの解析結果の読み込み */
-        final Map<Integer, CarryoverIssueModel> stored = this.carryoverDataLogic.loadIssues();
-        this.issues = new TreeMap<>(stored);
+        final CarryoverIssuesModel stored = this.carryoverDataLogic.loadIssues();
+        this.issues = stored.copy();
         this.pendingSaves.clear();
 
         /* Issue の取得 */
@@ -232,9 +231,9 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
      * @return Issue 番号と解析結果の対応。未取得の場合は空
      */
     @Override
-    public Map<Integer, CarryoverIssueModel> getIssues() {
+    public CarryoverIssuesModel getIssues() {
 
-        final Map<Integer, CarryoverIssueModel> result = this.issues;
+        final CarryoverIssuesModel result = this.issues;
         return result;
 
     }

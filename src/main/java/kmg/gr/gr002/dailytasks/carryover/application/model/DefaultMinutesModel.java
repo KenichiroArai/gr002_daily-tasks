@@ -1,11 +1,12 @@
 package kmg.gr.gr002.dailytasks.carryover.application.model;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
  * 項目ごとの標準時間<br>
  * <p>
- * 時間表記のない持ち越し項目の残り時間を補完するために使う。
+ * 時間表記のない持ち越し項目の残り時間を補完するために使う。項目名と標準時間の対応を管理する。
  * </p>
  *
  * @author KenichiroArai
@@ -18,6 +19,9 @@ public class DefaultMinutesModel {
 
     /**
      * 項目名と標準時間（分）の対応
+     * <p>
+     * 項目名は可変なので、クラス内の索引に Map を使う。外には渡さない。
+     * </p>
      *
      * @since 0.1.0
      */
@@ -25,15 +29,31 @@ public class DefaultMinutesModel {
 
     /**
      * コンストラクタ<br>
+     * <p>
+     * 標準時間は空にする。
+     * </p>
+     *
+     * @since 0.1.0
+     */
+    public DefaultMinutesModel() {
+
+        this.minutesByName = new LinkedHashMap<>();
+
+    }
+
+    /**
+     * 項目の標準時間を加える<br>
      *
      * @since 0.1.0
      *
-     * @param minutesByName
-     *                      項目名と標準時間（分）の対応
+     * @param name
+     *                項目名
+     * @param minutes
+     *                標準時間（分）
      */
-    public DefaultMinutesModel(final Map<String, Double> minutesByName) {
+    public void add(final String name, final double minutes) {
 
-        this.minutesByName = Map.copyOf(minutesByName);
+        this.minutesByName.put(name, minutes);
 
     }
 

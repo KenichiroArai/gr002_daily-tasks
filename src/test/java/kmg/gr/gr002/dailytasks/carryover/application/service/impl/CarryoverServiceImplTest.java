@@ -5,8 +5,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Assertions;
@@ -17,6 +15,7 @@ import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverParseLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.logic.DailyTaskIssueLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.logic.DefaultMinutesLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
+import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssuesModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSourceModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSummaryModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueModel;
@@ -197,9 +196,9 @@ public class CarryoverServiceImplTest {
          * @return 空の解析結果
          */
         @Override
-        public Map<Integer, CarryoverIssueModel> getIssues() {
+        public CarryoverIssuesModel getIssues() {
 
-            final Map<Integer, CarryoverIssueModel> result = new TreeMap<>();
+            final CarryoverIssuesModel result = new CarryoverIssuesModel();
             return result;
 
         }
@@ -292,7 +291,7 @@ public class CarryoverServiceImplTest {
          *
          * @since 0.1.0
          */
-        private final Map<Integer, CarryoverIssueModel> storedIssues = new TreeMap<>();
+        private final CarryoverIssuesModel storedIssues = new CarryoverIssuesModel();
 
         /**
          * 受け取った保存先のディレクトリを返す<br>
@@ -359,9 +358,9 @@ public class CarryoverServiceImplTest {
          * @return 保存済みの解析結果
          */
         @Override
-        public Map<Integer, CarryoverIssueModel> loadIssues() {
+        public CarryoverIssuesModel loadIssues() {
 
-            final Map<Integer, CarryoverIssueModel> result = new TreeMap<>(this.storedIssues);
+            final CarryoverIssuesModel result = this.storedIssues.copy();
             return result;
 
         }
@@ -591,7 +590,7 @@ public class CarryoverServiceImplTest {
      *
      * @since 0.1.0
      */
-    private static final DefaultMinutesModel DEFAULT_MINUTES = new DefaultMinutesModel(Map.of("国語", (double) 15));
+    private static final DefaultMinutesModel DEFAULT_MINUTES = CarryoverServiceImplTest.defaultMinutes();
 
     /**
      * テスト用の Issue #1（時間表記なし、更新日時 u1）
@@ -639,13 +638,28 @@ public class CarryoverServiceImplTest {
      * @throws Exception
      *                   例外が発生した場合
      */
-    private static long countBySource(final Map<Integer, CarryoverIssueModel> issues, final MinutesSourceTypes source)
+    private static long countBySource(final Collection<CarryoverIssueModel> issues, final MinutesSourceTypes source)
         throws Exception {
 
         final long result
             = ReflectionTestUtil.<Long>invokeStatic(CarryoverServiceImpl.class, "countBySource", new Class<?>[] {
-                Map.class, MinutesSourceTypes.class
+                Collection.class, MinutesSourceTypes.class
             }, issues, source);
+        return result;
+
+    }
+
+    /**
+     * テスト用の標準時間を作る<br>
+     *
+     * @since 0.1.0
+     *
+     * @return 項目ごとの標準時間
+     */
+    private static DefaultMinutesModel defaultMinutes() {
+
+        final DefaultMinutesModel result = new DefaultMinutesModel();
+        result.add("国語", (double) 15);
         return result;
 
     }
@@ -965,12 +979,12 @@ public class CarryoverServiceImplTest {
         final long expectedCount = 1;
 
         /* 準備 */
-        final Map<Integer, CarryoverIssueModel> testIssues
-            = Map.of(1, CarryoverServiceImplTest.parse(CarryoverServiceImplTest.ISSUE1), 2,
-                CarryoverServiceImplTest.parse(CarryoverServiceImplTest.ISSUE2));
+        final CarryoverIssuesModel testIssues = new CarryoverIssuesModel();
+        testIssues.put(1, CarryoverServiceImplTest.parse(CarryoverServiceImplTest.ISSUE1));
+        testIssues.put(2, CarryoverServiceImplTest.parse(CarryoverServiceImplTest.ISSUE2));
 
         /* テスト対象の実行 */
-        final long testResult = CarryoverServiceImplTest.countBySource(testIssues, MinutesSourceTypes.PARSED);
+        final long testResult = CarryoverServiceImplTest.countBySource(testIssues.values(), MinutesSourceTypes.PARSED);
 
         /* 検証の準備 */
         final long actualCount = testResult;

@@ -1,12 +1,12 @@
 package kmg.gr.gr002.dailytasks.carryover.domain.logic.impl;
 
 import java.nio.file.Path;
-import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import kmg.gr.gr002.dailytasks.carryover.application.model.DefaultMinutesModel;
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.DefaultMinutesDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.DefaultMinutesDao;
 
 /**
@@ -46,19 +46,19 @@ public class DefaultMinutesLogicImplTest {
          *
          * @since 0.1.0
          */
-        private final Map<String, Double> minutesByName;
+        private final DefaultMinutesDto minutes;
 
         /**
          * コンストラクタ<br>
          *
          * @since 0.1.0
          *
-         * @param minutesByName
-         *                      返す標準時間
+         * @param minutes
+         *                返す標準時間
          */
-        private StubDefaultMinutesDao(final Map<String, Double> minutesByName) {
+        private StubDefaultMinutesDao(final DefaultMinutesDto minutes) {
 
-            this.minutesByName = minutesByName;
+            this.minutes = minutes;
 
         }
 
@@ -99,9 +99,9 @@ public class DefaultMinutesLogicImplTest {
          * @return 設定した標準時間
          */
         @Override
-        public Map<String, Double> load() {
+        public DefaultMinutesDto load() {
 
-            final Map<String, Double> result = this.minutesByName;
+            final DefaultMinutesDto result = this.minutes;
             return result;
 
         }
@@ -141,7 +141,9 @@ public class DefaultMinutesLogicImplTest {
         final Path   expectedConfigFile = Path.of("config", "default-minutes.json");
 
         /* 準備 */
-        final StubDefaultMinutesDao   testDefaultMinutes = new StubDefaultMinutesDao(Map.of("音楽", 15.0));
+        final DefaultMinutesDto      testMinutes        = new DefaultMinutesDto();
+        testMinutes.add("音楽", 15.0);
+        final StubDefaultMinutesDao   testDefaultMinutes = new StubDefaultMinutesDao(testMinutes);
         final DefaultMinutesLogicImpl testTarget         = DefaultMinutesLogicImplTest.createTarget(testDefaultMinutes);
 
         /* テスト対象の実行 */

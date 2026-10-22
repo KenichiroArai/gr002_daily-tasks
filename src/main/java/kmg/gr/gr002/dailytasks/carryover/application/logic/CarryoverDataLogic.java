@@ -2,9 +2,9 @@ package kmg.gr.gr002.dailytasks.carryover.application.logic;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Map;
 
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
+import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssuesModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSummaryModel;
 
 /**
@@ -41,7 +41,7 @@ public interface CarryoverDataLogic {
      * @throws IOException
      *                     読み込みに失敗した場合
      */
-    Map<Integer, CarryoverIssueModel> loadIssues() throws IOException;
+    CarryoverIssuesModel loadIssues() throws IOException;
 
     /**
      * 持ち越しの解析結果を保存する<br>

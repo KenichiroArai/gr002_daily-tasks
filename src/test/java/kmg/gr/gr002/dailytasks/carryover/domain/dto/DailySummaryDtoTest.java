@@ -1,9 +1,6 @@
 package kmg.gr.gr002.dailytasks.carryover.domain.dto;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -31,11 +28,13 @@ public class DailySummaryDtoTest {
      */
     private static DailySummaryDto createTarget() {
 
-        final Map<String, ItemStatDto> byItem = new LinkedHashMap<>();
-        byItem.put("英語", new ItemStatDto(1, 30, 0, 0));
-        byItem.put("国語", new ItemStatDto(1, 15, 1, 15));
+        final ItemStatsDto byItem        = new ItemStatsDto();
+        final ItemStatsDto byOriginMonth = new ItemStatsDto();
+        byItem.add("英語", new ItemStatDto(1, 30, 0, 0));
+        byItem.add("国語", new ItemStatDto(1, 15, 1, 15));
+        byOriginMonth.add("2026-03", new ItemStatDto(2, 45, 1, 15));
         final DailySummaryDto result = new DailySummaryDto("2026-03-24", 175, 2, new ItemStatDto(2, 45, 1, 15), byItem,
-            Map.of("2026-03", new ItemStatDto(2, 45, 1, 15)));
+            byOriginMonth);
         return result;
 
     }
@@ -55,10 +54,10 @@ public class DailySummaryDtoTest {
         final DailySummaryDto testTarget = DailySummaryDtoTest.createTarget();
 
         /* テスト対象の実行 */
-        final Map<String, ItemStatDto> testResult = testTarget.getByItem();
+        final ItemStatsDto testResult = testTarget.getByItem();
 
         /* 検証の準備 */
-        final List<String> actualByItem = new ArrayList<>(testResult.keySet());
+        final List<String> actualByItem = testResult.names();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedByItem, actualByItem, "項目ごとの集計が一致しません");
@@ -80,10 +79,10 @@ public class DailySummaryDtoTest {
         final DailySummaryDto testTarget = DailySummaryDtoTest.createTarget();
 
         /* テスト対象の実行 */
-        final Map<String, ItemStatDto> testResult = testTarget.getByOriginMonth();
+        final ItemStatsDto testResult = testTarget.getByOriginMonth();
 
         /* 検証の準備 */
-        final List<String> actualByOriginMonth = new ArrayList<>(testResult.keySet());
+        final List<String> actualByOriginMonth = testResult.names();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedByOriginMonth, actualByOriginMonth, "持ち越し元の月ごとの集計が一致しません");
@@ -187,6 +186,30 @@ public class DailySummaryDtoTest {
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedTotal, actualTotal, "全体の集計が一致しません");
+
+    }
+
+    /**
+     * 項目ごとの集計が空でないことを確認する<br>
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testGetByItem_normalNotEmpty() {
+
+        /* 期待値の定義 */
+
+        /* 準備 */
+        final DailySummaryDto testTarget = DailySummaryDtoTest.createTarget();
+
+        /* テスト対象の実行 */
+        final boolean testResult = testTarget.getByItem().isEmpty();
+
+        /* 検証の準備 */
+        final boolean actualEmpty = testResult;
+
+        /* 検証の実施 */
+        Assertions.assertFalse(actualEmpty, "項目ごとの集計は空ではない必要があります");
 
     }
 

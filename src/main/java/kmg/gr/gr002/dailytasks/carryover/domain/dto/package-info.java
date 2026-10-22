@@ -1,8 +1,8 @@
 /**
  * 持ち越し機能の domain 層の DTO<br>
  * <p>
- * domain 層が repository 層と受け渡す型（解析結果、集計、GitHub の Issue、接続設定）を置く。application 層のモデルからの変換は、変換先であるこのパッケージの型が行う。保存の形式（JSON
- * の形）は持たない。
+ * domain 層が repository 層と受け渡す型（解析結果、集計、標準時間、GitHub の Issue、接続設定）を置く。application
+ * 層のモデルからの変換は、変換先であるこのパッケージの型が行う。保存の形式（JSON の形）は持たない。
  * </p>
  *
  * @author KenichiroArai

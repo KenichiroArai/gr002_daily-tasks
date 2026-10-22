@@ -1,9 +1,8 @@
 package kmg.gr.gr002.dailytasks.carryover.application.service;
 
 import java.io.IOException;
-import java.util.Map;
 
-import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
+import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssuesModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSourceModel;
 
 /**
@@ -52,7 +51,7 @@ public interface CarryoverCollectService {
      *
      * @return Issue 番号と解析結果の対応。未取得の場合は空
      */
-    Map<Integer, CarryoverIssueModel> getIssues();
+    CarryoverIssuesModel getIssues();
 
     /**
      * 取得したリモートの Issue の件数を返す<br>
