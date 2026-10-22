@@ -47,8 +47,8 @@ public class CarryoverParseLogicImplTest {
     private static DefaultMinutesModel defaultMinutes() {
 
         final DefaultMinutesModel result = new DefaultMinutesModel();
-        result.add("国語", (double) 15);
-        result.add("マラソン日記", (double) 0);
+        result.add("国語", 15.0);
+        result.add("マラソン日記", 0.0);
         return result;
 
     }

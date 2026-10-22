@@ -659,7 +659,7 @@ public class CarryoverServiceImplTest {
     private static DefaultMinutesModel defaultMinutes() {
 
         final DefaultMinutesModel result = new DefaultMinutesModel();
-        result.add("国語", (double) 15);
+        result.add("国語", 15.0);
         return result;
 
     }

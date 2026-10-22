@@ -30,7 +30,7 @@ public class DefaultMinutesModelTest {
 
         /* 準備 */
         final DefaultMinutesModel testTarget = new DefaultMinutesModel();
-        testTarget.add("国語", (double) 15);
+        testTarget.add("国語", 15.0);
 
         /* テスト対象の実行 */
         final Double testResult = testTarget.find("国語");
@@ -55,7 +55,7 @@ public class DefaultMinutesModelTest {
 
         /* 準備 */
         final DefaultMinutesModel testTarget = new DefaultMinutesModel();
-        testTarget.add("国語", (double) 15);
+        testTarget.add("国語", 15.0);
 
         /* テスト対象の実行 */
         final Double testResult = testTarget.find("英語");
