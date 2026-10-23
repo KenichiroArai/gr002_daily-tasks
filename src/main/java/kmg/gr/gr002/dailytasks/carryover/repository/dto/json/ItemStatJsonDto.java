@@ -2,6 +2,8 @@ package kmg.gr.gr002.dailytasks.carryover.repository.dto.json;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.ItemStatDto;
+
 /**
  * 持ち越し項目の件数と残り時間の集計値の JSON の形<br>
  *
@@ -64,6 +66,20 @@ public class ItemStatJsonDto {
         this.minutes = minutes;
         this.checkedCount = checkedCount;
         this.checkedMinutes = checkedMinutes;
+
+    }
+
+    /**
+     * 集計値から JSON の形を作る<br>
+     *
+     * @since 0.1.0
+     *
+     * @param stat
+     *             集計値
+     */
+    public ItemStatJsonDto(final ItemStatDto stat) {
+
+        this(stat.getCount(), stat.getMinutes(), stat.getCheckedCount(), stat.getCheckedMinutes());
 
     }
 

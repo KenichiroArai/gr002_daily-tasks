@@ -21,6 +21,26 @@ import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
 public class CarryoverIssueDto {
 
     /**
+     * 持ち越し項目を保存用の DTO にする<br>
+     *
+     * @since 0.1.0
+     *
+     * @param issue
+     *              持ち越しの解析結果
+     *
+     * @return 保存用の項目
+     */
+    private static List<CarryoverItemDto> toItemDtos(final CarryoverIssueModel issue) {
+
+        final List<CarryoverItemDto>   result;
+        final List<CarryoverItemModel> items = issue.getItems();
+
+        result = items.stream().map(CarryoverItemDto::new).toList();
+        return result;
+
+    }
+
+    /**
      * 持ち越し項目の件数
      *
      * @since 0.1.0
@@ -89,26 +109,6 @@ public class CarryoverIssueDto {
      * @since 0.1.0
      */
     private final String updatedAt;
-
-    /**
-     * 持ち越し項目を保存用の DTO にする<br>
-     *
-     * @since 0.1.0
-     *
-     * @param issue
-     *              持ち越しの解析結果
-     *
-     * @return 保存用の項目
-     */
-    private static List<CarryoverItemDto> toItemDtos(final CarryoverIssueModel issue) {
-
-        final List<CarryoverItemDto>   result;
-        final List<CarryoverItemModel> items = issue.getItems();
-
-        result = items.stream().map(CarryoverItemDto::new).toList();
-        return result;
-
-    }
 
     /**
      * 持ち越しの解析結果から保存用の DTO を作る<br>

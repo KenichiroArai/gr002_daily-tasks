@@ -3,6 +3,8 @@ package kmg.gr.gr002.dailytasks.carryover.repository.dto.json;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.ItemStatDto;
+
 /**
  * {@link ItemStatJsonDto} のテスト<br>
  *
@@ -28,6 +30,31 @@ public class ItemStatJsonDtoTest {
 
         final ItemStatJsonDto result = new ItemStatJsonDto(2, 30.5, 1, 10.5);
         return result;
+
+    }
+
+    /**
+     * コンストラクタのテスト - 正常系:残り時間を引き継ぐ場合
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testConstructor_normalMinutes() {
+
+        /* 期待値の定義 */
+        final double expectedMinutes = 26.5;
+
+        /* 準備 */
+        final ItemStatDto testStat = new ItemStatDto(2, expectedMinutes, 1, 11.5);
+
+        /* テスト対象の実行 */
+        final ItemStatJsonDto testResult = new ItemStatJsonDto(testStat);
+
+        /* 検証の準備 */
+        final double actualMinutes = testResult.getMinutes();
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedMinutes, actualMinutes, "全体の残り時間が一致しません");
 
     }
 

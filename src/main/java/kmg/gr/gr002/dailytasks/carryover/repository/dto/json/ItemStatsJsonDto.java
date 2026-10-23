@@ -6,6 +6,8 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.ItemStatsDto;
+
 /**
  * キーごとの集計値の JSON の形<br>
  * <p>
@@ -41,6 +43,29 @@ public class ItemStatsJsonDto {
     public ItemStatsJsonDto() {
 
         this.stats = new LinkedHashMap<>();
+
+    }
+
+    /**
+     * 集計値から JSON の形を作る<br>
+     * <p>
+     * 並び順は元のままにする。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @param stats
+     *              キーごとの集計値
+     */
+    public ItemStatsJsonDto(final ItemStatsDto stats) {
+
+        this();
+
+        for (final String name : stats.names()) {
+
+            this.add(name, new ItemStatJsonDto(stats.find(name)));
+
+        }
 
     }
 

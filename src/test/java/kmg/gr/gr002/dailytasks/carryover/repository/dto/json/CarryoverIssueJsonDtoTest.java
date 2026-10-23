@@ -5,6 +5,9 @@ import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssueDto;
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverItemDto;
+
 /**
  * {@link CarryoverIssueJsonDto} のテスト<br>
  *
@@ -33,6 +36,48 @@ public class CarryoverIssueJsonDtoTest {
         final CarryoverIssueJsonDto result = new CarryoverIssueJsonDto(371, "2026年10月06日のタスク", "2026-10-06", "open",
             "2026-10-06T14:23:08Z", List.of("持ち越し"), 1, 1, 8.5, List.of(item));
         return result;
+
+    }
+
+    /**
+     * 解析結果の DTO を作成する<br>
+     *
+     * @since 0.1.0
+     *
+     * @return 解析結果の DTO
+     */
+    private static CarryoverIssueDto createIssueDto() {
+
+        final CarryoverItemDto  item   = new CarryoverItemDto("音楽", "2026-08-18", true, 11.5, "parsed", "持ち越し",
+            "- [x] 音楽2026/08/18（残り時間：11.5分）");
+        final CarryoverIssueDto result = new CarryoverIssueDto(371, "2026年10月06日のタスク", "2026-10-06", "open",
+            "2026-10-06T14:23:08Z", List.of("持ち越し"), 1, 1, 11.5, List.of(item));
+        return result;
+
+    }
+
+    /**
+     * コンストラクタのテスト - 正常系:件数を引き継ぐ場合
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testConstructor_normalCount() {
+
+        /* 期待値の定義 */
+        final int expectedCount = 1;
+
+        /* 準備 */
+        final CarryoverIssueDto testDto = CarryoverIssueJsonDtoTest.createIssueDto();
+
+        /* テスト対象の実行 */
+        final CarryoverIssueJsonDto testResult = new CarryoverIssueJsonDto(testDto);
+
+        /* 検証の準備 */
+        final int actualCount = testResult.getCount();
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedCount, actualCount, "件数が一致しません");
 
     }
 
@@ -281,6 +326,34 @@ public class CarryoverIssueJsonDtoTest {
 
         /* 検証の準備 */
         final String actualUpdatedAt = testResult;
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedUpdatedAt, actualUpdatedAt, "更新日時が一致しません");
+
+    }
+
+    /**
+     * toCarryoverIssueDto メソッドのテスト - 正常系:更新日時を引き継ぐ場合
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testToCarryoverIssueDto_normalUpdatedAt() {
+
+        /* 期待値の定義 */
+        final String expectedUpdatedAt = "2026-10-05T10:00:00Z";
+
+        /* 準備 */
+        final CarryoverItemJsonDto  testItem = new CarryoverItemJsonDto("国語", "2026-06-18", false, 15.0, "default",
+            "持ち越し", "- [ ] 国語2026/06/18");
+        final CarryoverIssueJsonDto testJson = new CarryoverIssueJsonDto(370, "2026年10月05日のタスク", "2026-10-05", "closed",
+            expectedUpdatedAt, List.of("持ち越し"), 1, 1, 15.0, List.of(testItem));
+
+        /* テスト対象の実行 */
+        final CarryoverIssueDto testResult = testJson.toCarryoverIssueDto();
+
+        /* 検証の準備 */
+        final String actualUpdatedAt = testResult.getUpdatedAt();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedUpdatedAt, actualUpdatedAt, "更新日時が一致しません");

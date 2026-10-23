@@ -18,7 +18,6 @@ import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverSummaryDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.DailySummaryDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.ItemStatDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.ItemStatsDto;
-import kmg.gr.gr002.dailytasks.carryover.repository.logic.CarryoverJsonConvertLogic;
 import kmg.gr.gr002.dailytasks.testutil.ReflectionTestUtil;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.json.JsonMapper;
@@ -98,8 +97,7 @@ public class CarryoverDataDaoImplTest {
      */
     private static CarryoverDataDaoImpl createTarget() {
 
-        final CarryoverDataDaoImpl result
-            = new CarryoverDataDaoImpl(new CarryoverJsonConvertLogic(), new JsonMapper());
+        final CarryoverDataDaoImpl result = new CarryoverDataDaoImpl(new JsonMapper());
         return result;
 
     }

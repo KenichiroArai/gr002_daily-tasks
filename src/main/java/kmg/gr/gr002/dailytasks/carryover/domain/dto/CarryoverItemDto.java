@@ -20,6 +20,26 @@ import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002GenMsgTyp
 public class CarryoverItemDto {
 
     /**
+     * 残り時間の取得元の名前を返す<br>
+     *
+     * @since 0.1.0
+     *
+     * @param item
+     *             持ち越し項目
+     *
+     * @return 取得元の名前（parsed / default / unknown）
+     */
+    private static String minutesSourceName(final CarryoverItemModel item) {
+
+        final String             result;
+        final MinutesSourceTypes source = item.getMinutesSource();
+
+        result = source.getSource();
+        return result;
+
+    }
+
+    /**
      * チェック済みか
      *
      * @since 0.1.0
@@ -67,26 +87,6 @@ public class CarryoverItemDto {
      * @since 0.1.0
      */
     private final String section;
-
-    /**
-     * 残り時間の取得元の名前を返す<br>
-     *
-     * @since 0.1.0
-     *
-     * @param item
-     *             持ち越し項目
-     *
-     * @return 取得元の名前（parsed / default / unknown）
-     */
-    private static String minutesSourceName(final CarryoverItemModel item) {
-
-        final String             result;
-        final MinutesSourceTypes source = item.getMinutesSource();
-
-        result = source.getSource();
-        return result;
-
-    }
 
     /**
      * 持ち越し項目から保存用の DTO を作る<br>

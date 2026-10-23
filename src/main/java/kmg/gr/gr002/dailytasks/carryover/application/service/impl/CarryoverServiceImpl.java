@@ -228,10 +228,10 @@ public class CarryoverServiceImpl implements CarryoverService {
      */
     private void logResult(final CarryoverSummaryModel summary) {
 
-        final String                     collectMessage = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12000);
-        final String                     modeName       = this.modeName();
-        final List<DailySummaryModel>    days           = summary.getDays();
-        final int                        dayCount       = days.size();
+        final String                  collectMessage = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12000);
+        final String                  modeName       = this.modeName();
+        final List<DailySummaryModel> days           = summary.getDays();
+        final int                     dayCount       = days.size();
         CarryoverServiceImpl.LOGGER.info(collectMessage, modeName, this.remoteCount, this.savedCount, dayCount);
 
         final String minutesSourceMessage = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12001);

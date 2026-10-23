@@ -20,6 +20,26 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.DailySummaryModel;
 public class CarryoverSummaryDto {
 
     /**
+     * 日別の集計を保存用の DTO にする<br>
+     *
+     * @since 0.1.0
+     *
+     * @param summary
+     *                画面用の集計
+     *
+     * @return 保存用の日別の集計
+     */
+    private static List<DailySummaryDto> toDayDtos(final CarryoverSummaryModel summary) {
+
+        final List<DailySummaryDto>   result;
+        final List<DailySummaryModel> days = summary.getDays();
+
+        result = days.stream().map(DailySummaryDto::new).toList();
+        return result;
+
+    }
+
+    /**
      * 日別の集計（日付順）
      *
      * @since 0.1.0
@@ -39,26 +59,6 @@ public class CarryoverSummaryDto {
      * @since 0.1.0
      */
     private final int latestIssue;
-
-    /**
-     * 日別の集計を保存用の DTO にする<br>
-     *
-     * @since 0.1.0
-     *
-     * @param summary
-     *                画面用の集計
-     *
-     * @return 保存用の日別の集計
-     */
-    private static List<DailySummaryDto> toDayDtos(final CarryoverSummaryModel summary) {
-
-        final List<DailySummaryDto>   result;
-        final List<DailySummaryModel> days = summary.getDays();
-
-        result = days.stream().map(DailySummaryDto::new).toList();
-        return result;
-
-    }
 
     /**
      * 画面用の集計から保存用の DTO を作る<br>

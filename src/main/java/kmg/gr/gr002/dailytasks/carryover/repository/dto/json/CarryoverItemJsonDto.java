@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverItemDto;
+
 /**
  * 持ち越し項目の JSON の形（Issue ごとの JSON の 1 行分）<br>
  *
@@ -66,6 +68,21 @@ public class CarryoverItemJsonDto {
      * @since 0.1.0
      */
     private final String section;
+
+    /**
+     * 持ち越し項目から JSON の形を作る<br>
+     *
+     * @since 0.1.0
+     *
+     * @param item
+     *             持ち越し項目
+     */
+    public CarryoverItemJsonDto(final CarryoverItemDto item) {
+
+        this(item.getName(), item.getOriginDate(), item.isChecked(), item.getMinutes(), item.getMinutesSource(),
+            item.getSection(), item.getRaw());
+
+    }
 
     /**
      * コンストラクタ<br>
@@ -197,6 +214,21 @@ public class CarryoverItemJsonDto {
     public boolean isChecked() {
 
         final boolean result = this.checked;
+        return result;
+
+    }
+
+    /**
+     * JSON の形の持ち越し項目を保存用の DTO に変換する<br>
+     *
+     * @since 0.1.0
+     *
+     * @return 持ち越し項目の DTO
+     */
+    public CarryoverItemDto toCarryoverItemDto() {
+
+        final CarryoverItemDto result = new CarryoverItemDto(this.name, this.originDate, this.checked, this.minutes,
+            this.minutesSource, this.section, this.raw);
         return result;
 
     }

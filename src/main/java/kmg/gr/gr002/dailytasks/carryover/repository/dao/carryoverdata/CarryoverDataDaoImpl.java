@@ -14,7 +14,7 @@ import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssuesDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverSummaryDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.CarryoverDataDao;
 import kmg.gr.gr002.dailytasks.carryover.repository.dto.json.CarryoverIssueJsonDto;
-import kmg.gr.gr002.dailytasks.carryover.repository.logic.CarryoverJsonConvertLogic;
+import kmg.gr.gr002.dailytasks.carryover.repository.dto.json.CarryoverSummaryJsonDto;
 import kmg.gr.gr002.dailytasks.carryover.repository.types.CarryoverDataFileTypes;
 import kmg.gr.gr002.dailytasks.carryover.repository.types.CarryoverDataFormatTypes;
 import tools.jackson.core.JacksonException;
@@ -27,8 +27,7 @@ import tools.jackson.databind.json.JsonMapper;
 /**
  * 持ち越しの JSON ファイル（Issue ごとの解析結果と画面用の集計）を読み書きする DAO の実装<br>
  * <p>
- * domain 層の DAO を実装する。受け取った DTO は {@link CarryoverJsonConvertLogic} で JSON の形の型に変換して読み書きする。出力は OS に関係なく改行を LF
- * に統一し、差分が安定するようにする。
+ * domain 層の DAO を実装する。受け取った DTO は JSON の形の型が変換して読み書きする。出力は OS に関係なく改行を LF に統一し、差分が安定するようにする。
  * </p>
  *
  * @author KenichiroArai
@@ -40,44 +39,6 @@ import tools.jackson.databind.json.JsonMapper;
 @Repository
 @Scope("prototype")
 public class CarryoverDataDaoImpl implements CarryoverDataDao {
-
-    /**
-     * DTO と JSON の形の変換
-     *
-     * @since 0.1.0
-     */
-    private final CarryoverJsonConvertLogic jsonConvertLogic;
-
-    /**
-     * JSON の変換
-     *
-     * @since 0.1.0
-     */
-    private final JsonMapper jsonMapper;
-
-    /**
-     * 出力先のディレクトリ（例: docs/data）
-     *
-     * @since 0.1.0
-     */
-    private Path dataDir;
-
-    /**
-     * コンストラクタ<br>
-     *
-     * @since 0.1.0
-     *
-     * @param jsonConvertLogic
-     *                         DTO と JSON の形の変換
-     * @param jsonMapper
-     *                         JSON の変換
-     */
-    public CarryoverDataDaoImpl(final CarryoverJsonConvertLogic jsonConvertLogic, final JsonMapper jsonMapper) {
-
-        this.jsonConvertLogic = jsonConvertLogic;
-        this.jsonMapper = jsonMapper;
-
-    }
 
     /**
      * JSON ファイルか<br>
@@ -101,6 +62,34 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
     }
 
     /**
+     * JSON の変換
+     *
+     * @since 0.1.0
+     */
+    private final JsonMapper jsonMapper;
+
+    /**
+     * 出力先のディレクトリ（例: docs/data）
+     *
+     * @since 0.1.0
+     */
+    private Path dataDir;
+
+    /**
+     * コンストラクタ<br>
+     *
+     * @since 0.1.0
+     *
+     * @param jsonMapper
+     *                   JSON の変換
+     */
+    public CarryoverDataDaoImpl(final JsonMapper jsonMapper) {
+
+        this.jsonMapper = jsonMapper;
+
+    }
+
+    /**
      * 改行を LF に統一した整形出力を作る<br>
      *
      * @since 0.1.0
@@ -111,12 +100,12 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
 
         /* 改行を LF に統一した整形出力 */
         final ObjectWriter         result;
-        final DefaultIndenter       indenter = new DefaultIndenter(CarryoverDataFormatTypes.INDENT.getFormat(),
+        final DefaultIndenter      indenter = new DefaultIndenter(CarryoverDataFormatTypes.INDENT.getFormat(),
             CarryoverDataFormatTypes.LINE_FEED.getFormat());
-        final DefaultPrettyPrinter  printer  = new DefaultPrettyPrinter()
+        final DefaultPrettyPrinter printer  = new DefaultPrettyPrinter()
             .withSeparators(Separators.createDefaultInstance().withObjectNameValueSpacing(Separators.Spacing.AFTER))
             .withObjectIndenter(indenter).withArrayIndenter(indenter);
-        final ObjectWriter          writer   = this.jsonMapper.writer();
+        final ObjectWriter         writer   = this.jsonMapper.writer();
 
         result = writer.with(printer);
         return result;
@@ -171,7 +160,8 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
 
             for (final Path path : paths.filter(CarryoverDataDaoImpl::jsonFile).toList()) {
 
-                final CarryoverIssueDto issue = this.jsonConvertLogic.toCarryoverIssueDto(this.readIssue(path));
+                final CarryoverIssueJsonDto issueJson = this.readIssue(path);
+                final CarryoverIssueDto     issue     = issueJson.toCarryoverIssueDto();
                 result.put(issue.getNumber(), issue);
 
             }
@@ -230,10 +220,11 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
     @Override
     public void saveIssue(final CarryoverIssueDto issue) throws IOException {
 
-        final Path path = this.dataDir.resolve(CarryoverDataFileTypes.ISSUES_DIR.getFileName())
+        final Path                  path      = this.dataDir.resolve(CarryoverDataFileTypes.ISSUES_DIR.getFileName())
             .resolve(String.format(CarryoverDataFormatTypes.ISSUE_FILE_NAME.getFormat(), issue.getNumber(),
                 CarryoverDataFileTypes.JSON_EXTENSION.getFileName()));
-        this.write(path, this.jsonConvertLogic.toCarryoverIssueJson(issue));
+        final CarryoverIssueJsonDto issueJson = new CarryoverIssueJsonDto(issue);
+        this.write(path, issueJson);
 
     }
 
@@ -251,8 +242,10 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
     @Override
     public void saveSummary(final CarryoverSummaryDto summary) throws IOException {
 
-        final Path path = this.dataDir.resolve(CarryoverDataFileTypes.SUMMARY_FILE.getFileName());
-        this.write(path, this.jsonConvertLogic.toCarryoverSummaryJson(summary));
+        final Path                    path        = this.dataDir
+            .resolve(CarryoverDataFileTypes.SUMMARY_FILE.getFileName());
+        final CarryoverSummaryJsonDto summaryJson = new CarryoverSummaryJsonDto(summary);
+        this.write(path, summaryJson);
 
     }
 

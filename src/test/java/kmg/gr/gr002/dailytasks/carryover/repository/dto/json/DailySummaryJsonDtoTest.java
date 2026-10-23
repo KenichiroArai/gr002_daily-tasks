@@ -6,6 +6,10 @@ import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.DailySummaryDto;
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.ItemStatDto;
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.ItemStatsDto;
+
 /**
  * {@link DailySummaryJsonDto} のテスト<br>
  *
@@ -37,6 +41,104 @@ public class DailySummaryJsonDtoTest {
         final DailySummaryJsonDto result = new DailySummaryJsonDto("2026-03-24", 175, 2,
             new ItemStatJsonDto(2, 45, 1, 15), byItem, byOriginMonth);
         return result;
+
+    }
+
+    /**
+     * 日別の集計の DTO を作成する<br>
+     *
+     * @since 0.1.0
+     *
+     * @return 日別の集計の DTO
+     */
+    private static DailySummaryDto createDayDto() {
+
+        final ItemStatDto     total         = new ItemStatDto(2, 26.5, 1, 11.5);
+        final ItemStatsDto    byItem        = new ItemStatsDto();
+        final ItemStatsDto    byOriginMonth = new ItemStatsDto();
+        byItem.add("音楽", new ItemStatDto(1, 11.5, 1, 11.5));
+        byItem.add("国語", new ItemStatDto(1, 15.0, 0, 0.0));
+        byOriginMonth.add("2026-08", new ItemStatDto(1, 11.5, 1, 11.5));
+        final DailySummaryDto result = new DailySummaryDto("2026-10-06", 371, 2, total, byItem, byOriginMonth);
+        return result;
+
+    }
+
+    /**
+     * コンストラクタのテスト - 正常系:項目ごとの集計を並び順のまま変換する場合
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testConstructor_normalByItem() {
+
+        /* 期待値の定義 */
+        final List<String> expectedKeys = List.of("音楽", "国語");
+
+        /* 準備 */
+        final DailySummaryDto testDto = DailySummaryJsonDtoTest.createDayDto();
+
+        /* テスト対象の実行 */
+        final DailySummaryJsonDto testResult = new DailySummaryJsonDto(testDto);
+
+        /* 検証の準備 */
+        final ItemStatsJsonDto byItem     = testResult.getByItem();
+        final List<String>     actualKeys = byItem.names();
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedKeys, actualKeys, "項目ごとの集計の並び順が一致しません");
+
+    }
+
+    /**
+     * コンストラクタのテスト - 正常系:持ち越し元の月ごとの集計を変換する場合
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testConstructor_normalByOriginMonth() {
+
+        /* 期待値の定義 */
+        final double expectedCheckedMinutes = 11.5;
+
+        /* 準備 */
+        final DailySummaryDto testDto = DailySummaryJsonDtoTest.createDayDto();
+
+        /* テスト対象の実行 */
+        final DailySummaryJsonDto testResult = new DailySummaryJsonDto(testDto);
+
+        /* 検証の準備 */
+        final ItemStatsJsonDto byOriginMonth       = testResult.getByOriginMonth();
+        final ItemStatJsonDto  actualStat          = byOriginMonth.find("2026-08");
+        final double           actualCheckedMinutes = actualStat.getCheckedMinutes();
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedCheckedMinutes, actualCheckedMinutes, "チェック済みの残り時間が一致しません");
+
+    }
+
+    /**
+     * コンストラクタのテスト - 正常系:残数を引き継ぐ場合
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testConstructor_normalDeclaredCount() {
+
+        /* 期待値の定義 */
+        final Integer expectedDeclaredCount = 2;
+
+        /* 準備 */
+        final DailySummaryDto testDto = DailySummaryJsonDtoTest.createDayDto();
+
+        /* テスト対象の実行 */
+        final DailySummaryJsonDto testResult = new DailySummaryJsonDto(testDto);
+
+        /* 検証の準備 */
+        final Integer actualDeclaredCount = testResult.getDeclaredCount();
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedDeclaredCount, actualDeclaredCount, "残数が一致しません");
 
     }
 

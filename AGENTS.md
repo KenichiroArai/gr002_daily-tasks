@@ -69,8 +69,7 @@ src/main/java/kmg/gr/gr002/dailytasks/
       api/github/            # 外部 API の実装（GitHub REST API からの Issue 取得 GitHubIssueApiImpl）
       dao/carryoverdata/     # DAO の実装（持ち越しの JSON ファイルの読み書き CarryoverDataDaoImpl）
       dao/defaultminutes/    # DAO の実装（標準時間の設定ファイルの読み込み DefaultMinutesDaoImpl）
-      dto/json/              # JSON ファイルの形（Jackson のアノテーションを持つのはここだけ）
-      logic/                 # domain の DTO と JSON の形の変換（CarryoverJsonConvertLogic）
+      dto/json/              # JSON ファイルの形（Jackson のアノテーションを持つのはここだけ）。domain の DTO との変換もここ
       types/                 # 列挙型（出力ファイル名 CarryoverDataFileTypes、JSON の出力書式 CarryoverDataFormatTypes、GitHub API の URL GitHubApiUrlTypes、ヘッダ GitHubApiHeaderTypes、項目名 GitHubIssueFieldTypes、空文字 GitHubApiTextTypes）
 src/main/resources/
   application.properties     # 設定値（carryover.*: 対象リポジトリ、トークン、出力先、標準時間のファイル、最新の件数。spring.*: Spring Boot の設定）
@@ -229,7 +228,7 @@ flowchart LR
   - presentation は設定ファイルの値（`presentation/model/CarryoverPropertiesModel`）とコマンドライン引数の値を application に渡し、application からは件数などの結果だけを受け取る
   - application は業務モデル（`application/model/`）を使って処理の流れを組み立てる。domain はこのモデルを使って解析・集計する
   - domain は application のモデルを自層の DTO（`domain/dto/`）に、変換先のコンストラクタで変換して repository とやり取りする。DTO からモデルへ戻すときは DTO のメソッドで行う
-  - repository は domain の DTO を入出力に使い、JSON の形の型（`repository/dto/json/`）との変換を自層で行う（`repository/logic/CarryoverJsonConvertLogic`）
+  - repository は domain の DTO を入出力に使い、JSON の形（`repository/dto/json/`）へは変換先のコンストラクタで変換する。JSON から DTO へ戻すときは、読み戻しが必要な JSON 用 DTO のメソッドで行う
 - JSON の形（Jackson のアノテーション）は `repository/dto/json/` だけが持つ。domain の DTO には付けない
 - GitHub API の応答のように、JSON の形の型を作らずに読み取れるものは、外部 API の実装が domain の DTO を直接作ってよい
 

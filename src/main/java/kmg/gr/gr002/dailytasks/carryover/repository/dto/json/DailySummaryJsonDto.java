@@ -2,6 +2,8 @@ package kmg.gr.gr002.dailytasks.carryover.repository.dto.json;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.DailySummaryDto;
+
 /**
  * 日別の持ち越しの集計の JSON の形<br>
  *
@@ -57,6 +59,24 @@ public class DailySummaryJsonDto {
      * @since 0.1.0
      */
     private final ItemStatJsonDto total;
+
+    /**
+     * 日別の集計から JSON の形を作る<br>
+     * <p>
+     * 集計の並び順は元のままにする。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @param day
+     *            日別の集計
+     */
+    public DailySummaryJsonDto(final DailySummaryDto day) {
+
+        this(day.getDate(), day.getIssue(), day.getDeclaredCount(), new ItemStatJsonDto(day.getTotal()),
+            new ItemStatsJsonDto(day.getByItem()), new ItemStatsJsonDto(day.getByOriginMonth()));
+
+    }
 
     /**
      * コンストラクタ<br>

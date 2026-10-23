@@ -3,6 +3,8 @@ package kmg.gr.gr002.dailytasks.carryover.repository.dto.json;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverItemDto;
+
 /**
  * {@link CarryoverItemJsonDto} のテスト<br>
  *
@@ -29,6 +31,32 @@ public class CarryoverItemJsonDtoTest {
         final CarryoverItemJsonDto result = new CarryoverItemJsonDto("音楽", "2026-08-18", true, 11.5, "parsed", "持ち越し",
             "- [x] 音楽2026/08/18（残り時間：11.5分）");
         return result;
+
+    }
+
+    /**
+     * コンストラクタのテスト - 正常系:元の行を引き継ぐ場合
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testConstructor_normalRaw() {
+
+        /* 期待値の定義 */
+        final String expectedRaw = "- [x] 音楽2026/08/18（残り時間：11.5分）";
+
+        /* 準備 */
+        final CarryoverItemDto testItem = new CarryoverItemDto("音楽", "2026-08-18", true, 11.5, "parsed", "持ち越し",
+            expectedRaw);
+
+        /* テスト対象の実行 */
+        final CarryoverItemJsonDto testResult = new CarryoverItemJsonDto(testItem);
+
+        /* 検証の準備 */
+        final String actualRaw = testResult.getRaw();
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedRaw, actualRaw, "元の行が一致しません");
 
     }
 
@@ -203,6 +231,32 @@ public class CarryoverItemJsonDtoTest {
 
         /* 検証の実施 */
         Assertions.assertTrue(actualChecked, "チェック済みになっていません");
+
+    }
+
+    /**
+     * toCarryoverItemDto メソッドのテスト - 正常系:残り時間の取得元を引き継ぐ場合
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testToCarryoverItemDto_normalMinutesSource() {
+
+        /* 期待値の定義 */
+        final String expectedMinutesSource = "default";
+
+        /* 準備 */
+        final CarryoverItemJsonDto testJson = new CarryoverItemJsonDto("国語", "2026-06-18", false, 15.0,
+            expectedMinutesSource, "持ち越し", "- [ ] 国語2026/06/18");
+
+        /* テスト対象の実行 */
+        final CarryoverItemDto testResult = testJson.toCarryoverItemDto();
+
+        /* 検証の準備 */
+        final String actualMinutesSource = testResult.getMinutesSource();
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedMinutesSource, actualMinutesSource, "残り時間の取得元が一致しません");
 
     }
 

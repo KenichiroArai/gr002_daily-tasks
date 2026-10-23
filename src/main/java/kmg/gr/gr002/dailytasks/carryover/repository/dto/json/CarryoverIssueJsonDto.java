@@ -7,6 +7,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssueDto;
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverItemDto;
+
 /**
  * 持ち越しの解析結果（Issue 単位）の JSON の形<br>
  * <p>
@@ -24,6 +27,26 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "number", "title", "date", "state", "updatedAt", "sections", "declaredCount", "count", "minutes", "items"
 })
 public class CarryoverIssueJsonDto {
+
+    /**
+     * 持ち越し項目を JSON の形にする<br>
+     *
+     * @since 0.1.0
+     *
+     * @param issue
+     *              持ち越しの解析結果
+     *
+     * @return JSON の形の持ち越し項目
+     */
+    private static List<CarryoverItemJsonDto> toItemJsons(final CarryoverIssueDto issue) {
+
+        final List<CarryoverItemJsonDto> result;
+        final List<CarryoverItemDto>     items = issue.getItems();
+
+        result = items.stream().map(CarryoverItemJsonDto::new).toList();
+        return result;
+
+    }
 
     /**
      * 持ち越し項目の件数
@@ -94,6 +117,22 @@ public class CarryoverIssueJsonDto {
      * @since 0.1.0
      */
     private final String updatedAt;
+
+    /**
+     * 持ち越しの解析結果から JSON の形を作る<br>
+     *
+     * @since 0.1.0
+     *
+     * @param issue
+     *              持ち越しの解析結果
+     */
+    public CarryoverIssueJsonDto(final CarryoverIssueDto issue) {
+
+        this(issue.getNumber(), issue.getTitle(), issue.getDate(), issue.getState(), issue.getUpdatedAt(),
+            issue.getSections(), issue.getDeclaredCount(), issue.getCount(), issue.getMinutes(),
+            CarryoverIssueJsonDto.toItemJsons(issue));
+
+    }
 
     /**
      * コンストラクタ<br>
@@ -277,6 +316,27 @@ public class CarryoverIssueJsonDto {
     public String getUpdatedAt() {
 
         final String result = this.updatedAt;
+        return result;
+
+    }
+
+    /**
+     * JSON の形の解析結果を保存用の DTO に変換する<br>
+     *
+     * @since 0.1.0
+     *
+     * @return 解析結果の DTO
+     */
+    public CarryoverIssueDto toCarryoverIssueDto() {
+
+        final CarryoverIssueDto          result;
+        final List<CarryoverItemJsonDto> itemJsons = this.items;
+        @SuppressWarnings("null")
+        final List<CarryoverItemDto>     carryoverItemDto     = itemJsons.stream().map(CarryoverItemJsonDto::toCarryoverItemDto)
+            .toList();
+
+        result = new CarryoverIssueDto(this.number, this.title, this.date, this.state, this.updatedAt, this.sections,
+            this.declaredCount, this.count, this.minutes, carryoverItemDto);
         return result;
 
     }

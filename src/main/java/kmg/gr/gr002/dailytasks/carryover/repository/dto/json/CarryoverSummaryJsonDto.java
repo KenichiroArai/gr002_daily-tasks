@@ -4,6 +4,9 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverSummaryDto;
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.DailySummaryDto;
+
 /**
  * 画面用の持ち越しの集計の JSON の形<br>
  * <p>
@@ -20,6 +23,26 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "latestIssue", "items", "days"
 })
 public class CarryoverSummaryJsonDto {
+
+    /**
+     * 日別の集計を JSON の形にする<br>
+     *
+     * @since 0.1.0
+     *
+     * @param summary
+     *                画面用の集計
+     *
+     * @return JSON の形の日別の集計
+     */
+    private static List<DailySummaryJsonDto> toDayJsons(final CarryoverSummaryDto summary) {
+
+        final List<DailySummaryJsonDto> result;
+        final List<DailySummaryDto>     days = summary.getDays();
+
+        result = days.stream().map(DailySummaryJsonDto::new).toList();
+        return result;
+
+    }
 
     /**
      * 日別の集計（日付順）
@@ -41,6 +64,20 @@ public class CarryoverSummaryJsonDto {
      * @since 0.1.0
      */
     private final int latestIssue;
+
+    /**
+     * 画面用の集計から JSON の形を作る<br>
+     *
+     * @since 0.1.0
+     *
+     * @param summary
+     *                画面用の集計
+     */
+    public CarryoverSummaryJsonDto(final CarryoverSummaryDto summary) {
+
+        this(summary.getLatestIssue(), summary.getItems(), CarryoverSummaryJsonDto.toDayJsons(summary));
+
+    }
 
     /**
      * コンストラクタ<br>
