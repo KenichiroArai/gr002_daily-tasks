@@ -224,8 +224,8 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
                 for (final JsonNode node : issues) {
 
                     /* プルリクエストか */
-                    final String pullRequestField = GitHubIssueFieldTypes.PULL_REQUEST.getFieldName();
-                    final boolean pullRequest = node.has(pullRequestField);
+                    final String  pullRequestField = GitHubIssueFieldTypes.PULL_REQUEST.getFieldName();
+                    final boolean pullRequest      = node.has(pullRequestField);
 
                     if (pullRequest) {
 

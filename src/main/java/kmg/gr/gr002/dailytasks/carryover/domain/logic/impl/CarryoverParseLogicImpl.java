@@ -246,7 +246,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         /* 括弧があるか */
         final Matcher parenthesesMatcher = CarryoverParseLogicImpl.PARENTHESES.matcher(text);
-        final boolean parentheses = parenthesesMatcher.find();
+        final boolean parentheses        = parenthesesMatcher.find();
 
         if (!parentheses) {
 
@@ -261,7 +261,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         /* 残り時間の表記か */
         final Matcher remainingMatcher = CarryoverParseLogicImpl.REMAINING_MINUTES.matcher(inner);
-        final boolean remaining = remainingMatcher.find();
+        final boolean remaining        = remainingMatcher.find();
 
         if (remaining) {
 
@@ -275,7 +275,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         /* 時間だけの表記か */
         final Matcher simpleMatcher = CarryoverParseLogicImpl.SIMPLE_MINUTES.matcher(inner);
-        final boolean simple = simpleMatcher.matches();
+        final boolean simple        = simpleMatcher.matches();
 
         if (!simple) {
 
@@ -317,7 +317,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         /* タイトルに日付があるか */
         final Matcher matcher = CarryoverParseLogicImpl.TITLE_DATE.matcher(title);
-        final boolean dated = matcher.find();
+        final boolean dated   = matcher.find();
 
         if (!dated) {
 
@@ -445,7 +445,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
             /* 見出しか */
             final Matcher headingMatcher = CarryoverParseLogicImpl.HEADING.matcher(line);
-            final boolean heading = headingMatcher.matches();
+            final boolean heading        = headingMatcher.matches();
 
             if (heading) {
 
@@ -472,7 +472,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
             /* 残数の行か */
             final Matcher declaredMatcher = CarryoverParseLogicImpl.DECLARED_COUNT.matcher(line);
-            final boolean declared = declaredMatcher.matches();
+            final boolean declared        = declaredMatcher.matches();
 
             if (declared) {
 
@@ -486,7 +486,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
             /* チェックボックスの行か */
             final Matcher checkboxMatcher = CarryoverParseLogicImpl.CHECKBOX.matcher(line);
-            final boolean checkbox = checkboxMatcher.matches();
+            final boolean checkbox        = checkboxMatcher.matches();
 
             if (!checkbox) {
 
@@ -567,7 +567,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
         final String name = CarryoverParseLogicImpl.normalizeName(namePart);
 
         /* 項目名が不明か */
-        final String unknownText = CarryoverParseTextTypes.UNKNOWN.getText();
+        final String  unknownText = CarryoverParseTextTypes.UNKNOWN.getText();
         final boolean unknownName = unknownText.equals(name);
 
         if (unknownName) {
@@ -655,7 +655,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
         }
 
         /* 残数と解析件数が一致するか */
-        final int declared = declaredCount.intValue();
+        final int declared = declaredCount;
 
         if (declared == parsedCount) {
 
@@ -701,8 +701,8 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
         }
 
         /* 区切り線か */
-        final String horizontalRule = CarryoverParsePatternTypes.HORIZONTAL_RULE.getPattern();
-        final boolean rule = stripped.matches(horizontalRule);
+        final String  horizontalRule = CarryoverParsePatternTypes.HORIZONTAL_RULE.getPattern();
+        final boolean rule           = stripped.matches(horizontalRule);
 
         if (rule) {
 

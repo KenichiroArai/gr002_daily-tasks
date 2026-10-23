@@ -178,8 +178,8 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
             final Integer number = remoteIssue.getNumber();
 
             /* 解析し直す必要があるか */
-            final CarryoverIssueModel stored = this.issues.find(number);
-            final boolean needsUpdate = this.needsUpdate(stored, remoteIssue, this.recentFrom);
+            final CarryoverIssueModel stored      = this.issues.find(number);
+            final boolean             needsUpdate = this.needsUpdate(stored, remoteIssue, this.recentFrom);
 
             if (!needsUpdate) {
 
