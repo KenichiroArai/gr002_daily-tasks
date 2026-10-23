@@ -57,8 +57,12 @@ public final class ReflectionTestUtil {
 
         }
 
+        /* メソッドが見つかったか */
         if (result == null) {
 
+            // メソッドが見つからない場合
+
+            // 見つからない例外にする
             throw new NoSuchMethodException(clazz.getName() + "." + name);
 
         }
@@ -187,14 +191,22 @@ public final class ReflectionTestUtil {
 
             final Throwable cause = e.getCause();
 
+            /* 原因が Exception か */
             if (cause instanceof final Exception exception) {
 
+                // 原因が Exception の場合
+
+                // 原因の例外をそのまま投げる
                 throw exception;
 
             }
 
+            /* 原因が Error か */
             if (cause instanceof final Error error) {
 
+                // 原因が Error の場合
+
+                // 原因のエラーをそのまま投げる
                 throw error;
 
             }

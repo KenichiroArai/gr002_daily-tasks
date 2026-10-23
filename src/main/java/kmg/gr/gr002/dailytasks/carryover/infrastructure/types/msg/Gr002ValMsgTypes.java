@@ -86,8 +86,12 @@ public enum Gr002ValMsgTypes implements KmgFundCmnValMsgTypes, KmgFundCmnExcMsgT
 
         Gr002ValMsgTypes result = Gr002ValMsgTypes.VALUES_MAP.get(key);
 
+        /* キーが存在しないか */
         if (result == null) {
 
+            // キーが存在しない場合
+
+            // 指定無しにする
             result = NONE;
 
         }

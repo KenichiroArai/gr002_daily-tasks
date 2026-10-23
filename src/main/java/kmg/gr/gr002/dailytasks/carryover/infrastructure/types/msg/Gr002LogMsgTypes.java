@@ -175,8 +175,12 @@ public enum Gr002LogMsgTypes implements KmgFundCmnLogMsgTypes {
 
         Gr002LogMsgTypes result = Gr002LogMsgTypes.VALUES_MAP.get(key);
 
+        /* キーが存在しないか */
         if (result == null) {
 
+            // キーが存在しない場合
+
+            // 指定無しにする
             result = NONE;
 
         }

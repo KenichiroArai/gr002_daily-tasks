@@ -233,8 +233,12 @@ public class CarryoverItemDto {
 
         final MinutesSourceTypes minutesSourceType = MinutesSourceTypes.getEnum(this.minutesSource);
 
+        /* 残り時間の取得元が不明か */
         if (minutesSourceType == MinutesSourceTypes.NONE) {
 
+            // 残り時間の取得元が不明な場合
+
+            // 不正な値として例外にする
             final String template = messageLogic.get(Gr002GenMsgTypes.GR002_GEN11102);
             final String message  = String.format(template, this.minutesSource);
             throw new IllegalArgumentException(message);

@@ -132,14 +132,26 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
      */
     private static void addSection(final List<String> sections, final String section) {
 
-        if (TargetSectionTypes.getEnum(section) == TargetSectionTypes.NONE) {
+        /* 対象外のセクションか */
+        final TargetSectionTypes sectionType = TargetSectionTypes.getEnum(section);
 
+        if (sectionType == TargetSectionTypes.NONE) {
+
+            // 対象外のセクションの場合
+
+            // セクション名を追加しない
             return;
 
         }
 
-        if (sections.contains(section)) {
+        /* 追加済みのセクションか */
+        final boolean contained = sections.contains(section);
 
+        if (contained) {
+
+            // 追加済みのセクションの場合
+
+            // セクション名を追加しない
             return;
 
         }
@@ -198,8 +210,14 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         } while (!result.equals(previous));
 
-        if (!result.isEmpty()) {
+        /* 項目名が残っているか */
+        final boolean named = !result.isEmpty();
 
+        if (named) {
+
+            // 項目名が残っている場合
+
+            // 正規化した項目名を返す
             return result;
 
         }
@@ -226,32 +244,44 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         Double result = null;
 
-        /* 括弧内の取得 */
+        /* 括弧があるか */
         final Matcher parenthesesMatcher = CarryoverParseLogicImpl.PARENTHESES.matcher(text);
+        final boolean parentheses = parenthesesMatcher.find();
 
-        if (!parenthesesMatcher.find()) {
+        if (!parentheses) {
 
+            // 括弧がない場合
+
+            // 残り時間なしとする
             return result;
 
         }
 
         final String inner = parenthesesMatcher.group(1);
 
-        /* 残り時間の表記 */
+        /* 残り時間の表記か */
         final Matcher remainingMatcher = CarryoverParseLogicImpl.REMAINING_MINUTES.matcher(inner);
+        final boolean remaining = remainingMatcher.find();
 
-        if (remainingMatcher.find()) {
+        if (remaining) {
 
+            // 残り時間の表記の場合
+
+            // 残り時間を返す
             result = Double.valueOf(remainingMatcher.group(1));
             return result;
 
         }
 
-        /* 時間だけの表記 */
+        /* 時間だけの表記か */
         final Matcher simpleMatcher = CarryoverParseLogicImpl.SIMPLE_MINUTES.matcher(inner);
+        final boolean simple = simpleMatcher.matches();
 
-        if (!simpleMatcher.matches()) {
+        if (!simple) {
 
+            // 時間だけの表記ではない場合
+
+            // 残り時間なしとする
             return result;
 
         }
@@ -275,16 +305,25 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         String result = null;
 
+        /* タイトルがないか */
         if (title == null) {
 
+            // タイトルがない場合
+
+            // 日付なしとする
             return result;
 
         }
 
+        /* タイトルに日付があるか */
         final Matcher matcher = CarryoverParseLogicImpl.TITLE_DATE.matcher(title);
+        final boolean dated = matcher.find();
 
-        if (!matcher.find()) {
+        if (!dated) {
 
+            // タイトルに日付がない場合
+
+            // 日付なしとする
             return result;
 
         }
@@ -308,8 +347,12 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         List<String> result = List.of();
 
+        /* 本文がないか */
         if (body == null) {
 
+            // 本文がない場合
+
+            // 空の行一覧を返す
             return result;
 
         }
@@ -381,8 +424,12 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
         /* 日付の取得 */
         final String date = CarryoverParseLogicImpl.parseTitleDate(issue.getTitle());
 
+        /* 日付が取得できたか */
         if (date == null) {
 
+            // 日付が取得できない場合
+
+            // タイトルの日付がないことを警告する
             final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12002);
             CarryoverParseLogicImpl.LOGGER.warn(message, issue.getNumber(), issue.getTitle());
 
@@ -396,38 +443,56 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         for (final String line : CarryoverParseLogicImpl.splitLines(issue.getBody())) {
 
-            // 見出しの場合は対象セクションかを判定する
+            /* 見出しか */
             final Matcher headingMatcher = CarryoverParseLogicImpl.HEADING.matcher(line);
+            final boolean heading = headingMatcher.matches();
 
-            if (headingMatcher.matches()) {
+            if (heading) {
 
+                // 見出しの場合
+
+                // 対象セクションかを判定して、次の行へ進む
                 currentSection = headingMatcher.group(1);
                 CarryoverParseLogicImpl.addSection(sections, currentSection);
                 continue;
 
             }
 
-            if (TargetSectionTypes.getEnum(currentSection) == TargetSectionTypes.NONE) {
+            /* 対象外のセクションか */
+            final TargetSectionTypes sectionType = TargetSectionTypes.getEnum(currentSection);
 
+            if (sectionType == TargetSectionTypes.NONE) {
+
+                // 対象外のセクションの場合
+
+                // 次の行へ進む
                 continue;
 
             }
 
-            // 残数の行
+            /* 残数の行か */
             final Matcher declaredMatcher = CarryoverParseLogicImpl.DECLARED_COUNT.matcher(line);
+            final boolean declared = declaredMatcher.matches();
 
-            if (declaredMatcher.matches()) {
+            if (declared) {
 
+                // 残数の行の場合
+
+                // 残数を控えて、次の行へ進む
                 declaredCount = Integer.valueOf(declaredMatcher.group(1));
                 continue;
 
             }
 
-            // チェックボックスの行
+            /* チェックボックスの行か */
             final Matcher checkboxMatcher = CarryoverParseLogicImpl.CHECKBOX.matcher(line);
+            final boolean checkbox = checkboxMatcher.matches();
 
-            if (!checkboxMatcher.matches()) {
+            if (!checkbox) {
 
+                // チェックボックスの行ではない場合
+
+                // 想定外の行を警告して、次の行へ進む
                 this.warnUnexpectedLine(issue.getNumber(), line);
                 continue;
 
@@ -476,8 +541,14 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
         String        rest         = content;
         final Matcher datedMatcher = CarryoverParseLogicImpl.DATED_CONTENT.matcher(content);
 
-        if (datedMatcher.matches()) {
+        /* 持ち越し元の日付があるか */
+        final boolean dated = datedMatcher.matches();
 
+        if (dated) {
+
+            // 持ち越し元の日付がある場合
+
+            // 項目名、日付、残りの部分に分ける
             namePart = datedMatcher.group(1);
             originDate = CarryoverParseLogicImpl.formatDate(datedMatcher.group(2), datedMatcher.group(3),
                 datedMatcher.group(4));
@@ -485,6 +556,9 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         } else {
 
+            // 持ち越し元の日付がない場合
+
+            // 日付の形式が違うことを警告する
             final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12003);
             CarryoverParseLogicImpl.LOGGER.warn(message, number, raw);
 
@@ -492,8 +566,15 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         final String name = CarryoverParseLogicImpl.normalizeName(namePart);
 
-        if (CarryoverParseTextTypes.UNKNOWN.getText().equals(name)) {
+        /* 項目名が不明か */
+        final String unknownText = CarryoverParseTextTypes.UNKNOWN.getText();
+        final boolean unknownName = unknownText.equals(name);
 
+        if (unknownName) {
+
+            // 項目名が不明な場合
+
+            // 項目名が取れないことを警告する
             final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12004);
             CarryoverParseLogicImpl.LOGGER.warn(message, number, raw);
 
@@ -502,16 +583,26 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
         /* 残り時間の取得 */
         final Double parsedMinutes = CarryoverParseLogicImpl.parseMinutes(rest);
 
+        /* 残り時間を解釈できたか */
         if (parsedMinutes != null) {
 
+            // 残り時間を解釈できた場合
+
+            // 本文の時間を使って項目を返す
             result = new CarryoverItemModel(name, originDate, checked, parsedMinutes, MinutesSourceTypes.PARSED,
                 section, raw);
             return result;
 
         }
 
-        if (!rest.isBlank()) {
+        /* 解釈できない残りがあるか */
+        final boolean restLeft = !rest.isBlank();
 
+        if (restLeft) {
+
+            // 解釈できない残りがある場合
+
+            // 時間表記を解釈できないことを警告する
             final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12005);
             CarryoverParseLogicImpl.LOGGER.warn(message, number, raw);
 
@@ -520,8 +611,12 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
         /* 標準時間での補完 */
         final Double defaultValue = this.defaultMinutes.find(name);
 
+        /* 標準時間があるか */
         if (defaultValue == null) {
 
+            // 標準時間がない場合
+
+            // 取得元を不明にして項目を返す
             final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12006);
             CarryoverParseLogicImpl.LOGGER.warn(message, number, name);
             result = new CarryoverItemModel(name, originDate, checked, 0, MinutesSourceTypes.UNKNOWN, section, raw);
@@ -549,14 +644,24 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
      */
     private void verifyDeclaredCount(final int number, final Integer declaredCount, final int parsedCount) {
 
+        /* 残数の記載がないか */
         if (declaredCount == null) {
 
+            // 残数の記載がない場合
+
+            // 食い違いを見ない
             return;
 
         }
 
-        if (declaredCount.intValue() == parsedCount) {
+        /* 残数と解析件数が一致するか */
+        final int declared = declaredCount.intValue();
 
+        if (declared == parsedCount) {
+
+            // 残数と解析件数が一致する場合
+
+            // 警告しない
             return;
 
         }
@@ -583,14 +688,27 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         final String stripped = line.strip();
 
-        if (stripped.isEmpty()) {
+        /* 空行か */
+        final boolean blank = stripped.isEmpty();
 
+        if (blank) {
+
+            // 空行の場合
+
+            // 警告しない
             return;
 
         }
 
-        if (stripped.matches(CarryoverParsePatternTypes.HORIZONTAL_RULE.getPattern())) {
+        /* 区切り線か */
+        final String horizontalRule = CarryoverParsePatternTypes.HORIZONTAL_RULE.getPattern();
+        final boolean rule = stripped.matches(horizontalRule);
 
+        if (rule) {
+
+            // 区切り線の場合
+
+            // 警告しない
             return;
 
         }

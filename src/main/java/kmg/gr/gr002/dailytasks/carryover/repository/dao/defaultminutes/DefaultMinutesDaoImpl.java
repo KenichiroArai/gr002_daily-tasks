@@ -119,8 +119,14 @@ public class DefaultMinutesDaoImpl implements DefaultMinutesDao {
 
         final DefaultMinutesDto result = new DefaultMinutesDto();
 
-        if (!Files.isRegularFile(this.configFile)) {
+        /* 標準時間のファイルがあるか */
+        final boolean regularFile = Files.isRegularFile(this.configFile);
 
+        if (!regularFile) {
+
+            // 標準時間のファイルがない場合
+
+            // 警告して空の標準時間を返す
             final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12009);
             DefaultMinutesDaoImpl.LOGGER.warn(message, this.configFile);
             return result;

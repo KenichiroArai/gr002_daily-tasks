@@ -91,14 +91,24 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
         String         result = GitHubApiTextTypes.EMPTY.getText();
         final JsonNode value  = node.get(fieldName);
 
+        /* フィールドがないか */
         if (value == null) {
 
+            // フィールドがない場合
+
+            // 空文字を返す
             return result;
 
         }
 
-        if (value.isNull()) {
+        /* フィールドが null か */
+        final boolean nullValue = value.isNull();
 
+        if (nullValue) {
+
+            // フィールドが null の場合
+
+            // 空文字を返す
             return result;
 
         }
@@ -213,9 +223,15 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
 
                 for (final JsonNode node : issues) {
 
-                    // プルリクエストは対象外
-                    if (node.has(GitHubIssueFieldTypes.PULL_REQUEST.getFieldName())) {
+                    /* プルリクエストか */
+                    final String pullRequestField = GitHubIssueFieldTypes.PULL_REQUEST.getFieldName();
+                    final boolean pullRequest = node.has(pullRequestField);
 
+                    if (pullRequest) {
+
+                        // プルリクエストの場合
+
+                        // 対象外として次へ進む
                         continue;
 
                     }
@@ -263,8 +279,14 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
             .header(GitHubApiHeaderTypes.API_VERSION.getHeader(), GitHubApiHeaderTypes.API_VERSION_VALUE.getHeader())
             .GET();
 
-        if (this.hasToken()) {
+        /* トークンがあるか */
+        final boolean hasToken = this.hasToken();
 
+        if (hasToken) {
+
+            // トークンがある場合
+
+            // 認可ヘッダーを付ける
             builder.header(GitHubApiHeaderTypes.AUTHORIZATION.get(),
                 GitHubApiHeaderTypes.BEARER.getHeader() + this.settings.getToken());
 
@@ -273,18 +295,30 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
         /* 送信と応答の検証 */
         final HttpResponse<String> response = this.send(httpClient, builder.build());
 
-        if (response.statusCode() != GitHubIssueApiImpl.STATUS_OK) {
+        /* 応答が成功か */
+        final int statusCode = response.statusCode();
 
+        if (statusCode != GitHubIssueApiImpl.STATUS_OK) {
+
+            // 応答が成功ではない場合
+
+            // 取得失敗として例外にする
             final String template = this.messageLogic.get(Gr002GenMsgTypes.GR002_GEN11103);
-            final String message  = String.format(template, response.statusCode(), uri);
+            final String message  = String.format(template, statusCode, uri);
             throw new IOException(message);
 
         }
 
         result = this.readTree(response.body());
 
-        if (!result.isArray()) {
+        /* 応答が配列か */
+        final boolean array = result.isArray();
 
+        if (!array) {
+
+            // 応答が配列ではない場合
+
+            // 形式の不正として例外にする
             final String template = this.messageLogic.get(Gr002GenMsgTypes.GR002_GEN11104);
             final String message  = String.format(template, uri);
             throw new IOException(message);
@@ -307,8 +341,12 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
         boolean      result = false;
         final String token  = this.settings.getToken();
 
+        /* トークンがないか */
         if (token == null) {
 
+            // トークンがない場合
+
+            // トークンなしとする
             return result;
 
         }

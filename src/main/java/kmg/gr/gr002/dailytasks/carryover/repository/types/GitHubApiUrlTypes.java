@@ -61,9 +61,15 @@ public enum GitHubApiUrlTypes implements KmgCmnTypes<String> {
 
             GitHubApiUrlTypes.VALUES_MAP.put(type.get(), type);
 
-            if (type.getUrl() != null) {
+            /* 別名があるか */
+            final String url = type.getUrl();
 
-                GitHubApiUrlTypes.VALUES_MAP.put(type.getUrl(), type);
+            if (url != null) {
+
+                // 別名がある場合
+
+                // 別名でも引けるようにする
+                GitHubApiUrlTypes.VALUES_MAP.put(url, type);
 
             }
 
@@ -102,8 +108,12 @@ public enum GitHubApiUrlTypes implements KmgCmnTypes<String> {
 
         GitHubApiUrlTypes result = GitHubApiUrlTypes.VALUES_MAP.get(key);
 
+        /* キーが存在しないか */
         if (result == null) {
 
+            // キーが存在しない場合
+
+            // 指定無しにする
             result = NONE;
 
         }

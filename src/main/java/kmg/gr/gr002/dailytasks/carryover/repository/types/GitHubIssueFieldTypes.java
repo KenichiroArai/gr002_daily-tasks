@@ -88,9 +88,15 @@ public enum GitHubIssueFieldTypes implements KmgCmnTypes<String> {
 
             GitHubIssueFieldTypes.VALUES_MAP.put(type.get(), type);
 
-            if (type.getFieldName() != null) {
+            /* 別名があるか */
+            final String fieldName = type.getFieldName();
 
-                GitHubIssueFieldTypes.VALUES_MAP.put(type.getFieldName(), type);
+            if (fieldName != null) {
+
+                // 別名がある場合
+
+                // 別名でも引けるようにする
+                GitHubIssueFieldTypes.VALUES_MAP.put(fieldName, type);
 
             }
 
@@ -129,8 +135,12 @@ public enum GitHubIssueFieldTypes implements KmgCmnTypes<String> {
 
         GitHubIssueFieldTypes result = GitHubIssueFieldTypes.VALUES_MAP.get(key);
 
+        /* キーが存在しないか */
         if (result == null) {
 
+            // キーが存在しない場合
+
+            // 指定無しにする
             result = NONE;
 
         }

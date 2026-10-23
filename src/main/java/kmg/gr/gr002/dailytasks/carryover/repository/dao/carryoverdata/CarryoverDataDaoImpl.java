@@ -131,8 +131,14 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
         final CarryoverIssuesDto result    = new CarryoverIssuesDto();
         final Path               issuesDir = this.dataDir.resolve(CarryoverDataFileTypes.ISSUES_DIR.getFileName());
 
-        if (!Files.isDirectory(issuesDir)) {
+        /* Issue のディレクトリがあるか */
+        final boolean issuesDirectory = Files.isDirectory(issuesDir);
 
+        if (!issuesDirectory) {
+
+            // Issue のディレクトリがない場合
+
+            // 空の解析結果を返す
             return result;
 
         }

@@ -67,9 +67,15 @@ public enum CarryoverDataFileTypes implements KmgCmnTypes<String> {
 
             CarryoverDataFileTypes.VALUES_MAP.put(type.get(), type);
 
-            if (type.getFileName() != null) {
+            /* 別名があるか */
+            final String fileName = type.getFileName();
 
-                CarryoverDataFileTypes.VALUES_MAP.put(type.getFileName(), type);
+            if (fileName != null) {
+
+                // 別名がある場合
+
+                // 別名でも引けるようにする
+                CarryoverDataFileTypes.VALUES_MAP.put(fileName, type);
 
             }
 
@@ -108,8 +114,12 @@ public enum CarryoverDataFileTypes implements KmgCmnTypes<String> {
 
         CarryoverDataFileTypes result = CarryoverDataFileTypes.VALUES_MAP.get(key);
 
+        /* キーが存在しないか */
         if (result == null) {
 
+            // キーが存在しない場合
+
+            // 指定無しにする
             result = NONE;
 
         }

@@ -67,9 +67,15 @@ public enum MinutesSourceTypes implements KmgCmnTypes<String> {
 
             MinutesSourceTypes.VALUES_MAP.put(type.get(), type);
 
-            if (type.getSource() != null) {
+            /* 別名があるか */
+            final String source = type.getSource();
 
-                MinutesSourceTypes.VALUES_MAP.put(type.getSource(), type);
+            if (source != null) {
+
+                // 別名がある場合
+
+                // 別名でも引けるようにする
+                MinutesSourceTypes.VALUES_MAP.put(source, type);
 
             }
 
@@ -108,8 +114,12 @@ public enum MinutesSourceTypes implements KmgCmnTypes<String> {
 
         MinutesSourceTypes result = MinutesSourceTypes.VALUES_MAP.get(key);
 
+        /* キーが存在しないか */
         if (result == null) {
 
+            // キーが存在しない場合
+
+            // 指定無しにする
             result = NONE;
 
         }

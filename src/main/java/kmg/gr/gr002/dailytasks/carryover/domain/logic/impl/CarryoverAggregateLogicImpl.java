@@ -62,8 +62,12 @@ public class CarryoverAggregateLogicImpl implements CarryoverAggregateLogic {
 
             tracking = tracking || issue.hasSection();
 
+            /* 集計対象の追跡中か */
             if (!tracking) {
 
+                // 集計対象の追跡中ではない場合
+
+                // 次の Issue へ進む
                 continue;
 
             }

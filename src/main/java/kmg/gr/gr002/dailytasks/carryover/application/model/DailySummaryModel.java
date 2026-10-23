@@ -90,15 +90,20 @@ public class DailySummaryModel {
         this.total.add(item);
         this.byItem.findOrCreate(item.getName()).add(item);
 
-        // 持ち越し元の日付がない行は月ごとの集計に含めない
-        if (item.getOriginDate() == null) {
+        /* 持ち越し元の日付があるか */
+        final String originDate = item.getOriginDate();
 
+        if (originDate == null) {
+
+            // 持ち越し元の日付がない場合
+
+            // 月ごとの集計に含めない
             return;
 
         }
 
         /* 持ち越し元の月ごとの集計 */
-        final String month = item.getOriginDate().substring(0, 7);
+        final String month = originDate.substring(0, 7);
         this.byOriginMonth.findOrCreate(month).add(item);
 
     }

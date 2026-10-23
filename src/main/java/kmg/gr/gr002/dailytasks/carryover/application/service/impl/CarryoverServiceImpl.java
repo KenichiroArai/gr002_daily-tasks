@@ -243,8 +243,12 @@ public class CarryoverServiceImpl implements CarryoverService {
 
         String result = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12012);
 
+        /* 全件モードか */
         if (!this.full) {
 
+            // 全件モードではない場合
+
+            // 差分の名前を返す
             return result;
 
         }

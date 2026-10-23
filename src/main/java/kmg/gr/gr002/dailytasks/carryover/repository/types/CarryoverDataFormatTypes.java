@@ -67,9 +67,15 @@ public enum CarryoverDataFormatTypes implements KmgCmnTypes<String> {
 
             CarryoverDataFormatTypes.VALUES_MAP.put(type.get(), type);
 
-            if (type.getFormat() != null) {
+            /* 別名があるか */
+            final String format = type.getFormat();
 
-                CarryoverDataFormatTypes.VALUES_MAP.put(type.getFormat(), type);
+            if (format != null) {
+
+                // 別名がある場合
+
+                // 別名でも引けるようにする
+                CarryoverDataFormatTypes.VALUES_MAP.put(format, type);
 
             }
 
@@ -108,8 +114,12 @@ public enum CarryoverDataFormatTypes implements KmgCmnTypes<String> {
 
         CarryoverDataFormatTypes result = CarryoverDataFormatTypes.VALUES_MAP.get(key);
 
+        /* キーが存在しないか */
         if (result == null) {
 
+            // キーが存在しない場合
+
+            // 指定無しにする
             result = NONE;
 
         }

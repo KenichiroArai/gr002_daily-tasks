@@ -53,9 +53,15 @@ public enum GitHubApiTextTypes implements KmgCmnTypes<String> {
 
             GitHubApiTextTypes.VALUES_MAP.put(type.get(), type);
 
-            if (type.getText() != null) {
+            /* 別名があるか */
+            final String text = type.getText();
 
-                GitHubApiTextTypes.VALUES_MAP.put(type.getText(), type);
+            if (text != null) {
+
+                // 別名がある場合
+
+                // 別名でも引けるようにする
+                GitHubApiTextTypes.VALUES_MAP.put(text, type);
 
             }
 
@@ -94,8 +100,12 @@ public enum GitHubApiTextTypes implements KmgCmnTypes<String> {
 
         GitHubApiTextTypes result = GitHubApiTextTypes.VALUES_MAP.get(key);
 
+        /* キーが存在しないか */
         if (result == null) {
 
+            // キーが存在しない場合
+
+            // 指定無しにする
             result = NONE;
 
         }

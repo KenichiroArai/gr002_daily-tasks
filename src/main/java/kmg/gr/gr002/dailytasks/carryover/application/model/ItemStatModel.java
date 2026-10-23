@@ -56,8 +56,14 @@ public class ItemStatModel {
         this.count++;
         this.minutes += item.getMinutes();
 
-        if (!item.isChecked()) {
+        /* チェック済みか */
+        final boolean checked = item.isChecked();
 
+        if (!checked) {
+
+            // チェック済みではない場合
+
+            // チェック済みの集計に含めない
             return;
 
         }

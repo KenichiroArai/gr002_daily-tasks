@@ -67,9 +67,15 @@ public enum CommandOptionTypes implements KmgCmnTypes<String> {
 
             CommandOptionTypes.VALUES_MAP.put(type.get(), type);
 
-            if (type.getOption() != null) {
+            /* 別名があるか */
+            final String option = type.getOption();
 
-                CommandOptionTypes.VALUES_MAP.put(type.getOption(), type);
+            if (option != null) {
+
+                // 別名がある場合
+
+                // 別名でも引けるようにする
+                CommandOptionTypes.VALUES_MAP.put(option, type);
 
             }
 
@@ -108,8 +114,12 @@ public enum CommandOptionTypes implements KmgCmnTypes<String> {
 
         CommandOptionTypes result = CommandOptionTypes.VALUES_MAP.get(key);
 
+        /* キーが存在しないか */
         if (result == null) {
 
+            // キーが存在しない場合
+
+            // 指定無しにする
             result = NONE;
 
         }

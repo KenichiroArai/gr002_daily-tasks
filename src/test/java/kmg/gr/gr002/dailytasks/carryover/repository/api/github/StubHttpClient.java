@@ -399,8 +399,12 @@ public class StubHttpClient extends HttpClient {
 
         this.requests.add(request);
 
+        /* 中断例外が設定されているか */
         if (this.interruptedException != null) {
 
+            // 中断例外が設定されている場合
+
+            // 中断例外を投げる
             throw this.interruptedException;
 
         }

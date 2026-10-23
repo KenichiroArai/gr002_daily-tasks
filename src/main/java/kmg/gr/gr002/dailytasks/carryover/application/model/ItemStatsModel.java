@@ -92,8 +92,12 @@ public class ItemStatsModel {
 
         ItemStatModel result = this.find(name);
 
+        /* 集計値があるか */
         if (result != null) {
 
+            // 集計値がある場合
+
+            // 既存の集計値を返す
             return result;
 
         }

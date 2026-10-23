@@ -171,9 +171,12 @@ public class CarryoverCommandImpl implements CarryoverCommand {
         /* 引数の解析 */
         this.parseArgs(args);
 
-        /* 使い方の表示 */
+        /* 使い方の表示か */
         if (this.help) {
 
+            // 使い方の表示の場合
+
+            // 使い方を表示して終了する
             final String usage = this.messageLogic.get(Gr002GenMsgTypes.GR002_GEN11100);
             this.out.println(usage);
             return;

@@ -74,9 +74,15 @@ public enum CarryoverParseTextTypes implements KmgCmnTypes<String> {
 
             CarryoverParseTextTypes.VALUES_MAP.put(type.get(), type);
 
-            if (type.getText() != null) {
+            /* 別名があるか */
+            final String text = type.getText();
 
-                CarryoverParseTextTypes.VALUES_MAP.put(type.getText(), type);
+            if (text != null) {
+
+                // 別名がある場合
+
+                // 別名でも引けるようにする
+                CarryoverParseTextTypes.VALUES_MAP.put(text, type);
 
             }
 
@@ -115,8 +121,12 @@ public enum CarryoverParseTextTypes implements KmgCmnTypes<String> {
 
         CarryoverParseTextTypes result = CarryoverParseTextTypes.VALUES_MAP.get(key);
 
+        /* キーが存在しないか */
         if (result == null) {
 
+            // キーが存在しない場合
+
+            // 指定無しにする
             result = NONE;
 
         }

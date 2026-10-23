@@ -69,23 +69,37 @@ public class ArchitectureTest {
 
                 for (final JavaConstructor constructor : item.getConstructors()) {
 
-                    if (constructor.isAnnotatedWith(Autowired.class)) {
+                    /* Autowired が付いているか */
+                    final boolean autowired = constructor.isAnnotatedWith(Autowired.class);
 
+                    if (autowired) {
+
+                        // Autowired が付いている場合
+
+                        // 付いているコンストラクタを数える
                         autowiredCount++;
 
                     }
 
                 }
 
+                /* コンストラクタが1つで Autowired が付いているか */
                 if (constructorCount <= 1 && autowiredCount > 0) {
 
+                    // コンストラクタが1つで Autowired が付いている場合
+
+                    // 違反として記録する
                     events.add(SimpleConditionEvent.violated(item,
                         item.getFullName() + " has a single constructor annotated with Autowired"));
 
                 }
 
+                /* コンストラクタが複数で Autowired が1つではないか */
                 if (constructorCount >= 2 && autowiredCount != 1) {
 
+                    // コンストラクタが複数で Autowired が1つではない場合
+
+                    // 違反として記録する
                     events.add(SimpleConditionEvent.violated(item,
                         item.getFullName() + " must annotate exactly one constructor with Autowired"));
 
@@ -108,8 +122,14 @@ public class ArchitectureTest {
 
                 for (final JavaField field : item.getFields()) {
 
-                    if (!field.isAnnotatedWith(Autowired.class)) {
+                    /* フィールドに Autowired が付いているか */
+                    final boolean autowired = field.isAnnotatedWith(Autowired.class);
 
+                    if (!autowired) {
+
+                        // フィールドに Autowired が付いていない場合
+
+                        // 次のフィールドへ進む
                         continue;
 
                     }

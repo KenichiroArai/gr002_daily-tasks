@@ -67,9 +67,15 @@ public enum TargetSectionTypes implements KmgCmnTypes<String> {
 
             TargetSectionTypes.VALUES_MAP.put(type.get(), type);
 
-            if (type.getSection() != null) {
+            /* 別名があるか */
+            final String section = type.getSection();
 
-                TargetSectionTypes.VALUES_MAP.put(type.getSection(), type);
+            if (section != null) {
+
+                // 別名がある場合
+
+                // 別名でも引けるようにする
+                TargetSectionTypes.VALUES_MAP.put(section, type);
 
             }
 
@@ -108,8 +114,12 @@ public enum TargetSectionTypes implements KmgCmnTypes<String> {
 
         TargetSectionTypes result = TargetSectionTypes.VALUES_MAP.get(key);
 
+        /* キーが存在しないか */
         if (result == null) {
 
+            // キーが存在しない場合
+
+            // 指定無しにする
             result = NONE;
 
         }

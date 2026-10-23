@@ -88,9 +88,15 @@ public enum GitHubApiHeaderTypes implements KmgCmnTypes<String> {
 
             GitHubApiHeaderTypes.VALUES_MAP.put(type.get(), type);
 
-            if (type.getHeader() != null) {
+            /* 別名があるか */
+            final String header = type.getHeader();
 
-                GitHubApiHeaderTypes.VALUES_MAP.put(type.getHeader(), type);
+            if (header != null) {
+
+                // 別名がある場合
+
+                // 別名でも引けるようにする
+                GitHubApiHeaderTypes.VALUES_MAP.put(header, type);
 
             }
 
@@ -129,8 +135,12 @@ public enum GitHubApiHeaderTypes implements KmgCmnTypes<String> {
 
         GitHubApiHeaderTypes result = GitHubApiHeaderTypes.VALUES_MAP.get(key);
 
+        /* キーが存在しないか */
         if (result == null) {
 
+            // キーが存在しない場合
+
+            // 指定無しにする
             result = NONE;
 
         }

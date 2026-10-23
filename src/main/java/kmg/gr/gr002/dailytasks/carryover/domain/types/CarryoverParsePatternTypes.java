@@ -130,9 +130,15 @@ public enum CarryoverParsePatternTypes implements KmgCmnTypes<String> {
 
             CarryoverParsePatternTypes.VALUES_MAP.put(type.get(), type);
 
-            if (type.getPattern() != null) {
+            /* 別名があるか */
+            final String pattern = type.getPattern();
 
-                CarryoverParsePatternTypes.VALUES_MAP.put(type.getPattern(), type);
+            if (pattern != null) {
+
+                // 別名がある場合
+
+                // 別名でも引けるようにする
+                CarryoverParsePatternTypes.VALUES_MAP.put(pattern, type);
 
             }
 
@@ -171,8 +177,12 @@ public enum CarryoverParsePatternTypes implements KmgCmnTypes<String> {
 
         CarryoverParsePatternTypes result = CarryoverParsePatternTypes.VALUES_MAP.get(key);
 
+        /* キーが存在しないか */
         if (result == null) {
 
+            // キーが存在しない場合
+
+            // 指定無しにする
             result = NONE;
 
         }

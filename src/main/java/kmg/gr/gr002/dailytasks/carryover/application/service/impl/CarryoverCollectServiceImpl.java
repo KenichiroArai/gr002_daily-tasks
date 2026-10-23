@@ -177,8 +177,15 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
 
             final Integer number = remoteIssue.getNumber();
 
-            if (!this.needsUpdate(this.issues.find(number), remoteIssue, this.recentFrom)) {
+            /* 解析し直す必要があるか */
+            final CarryoverIssueModel stored = this.issues.find(number);
+            final boolean needsUpdate = this.needsUpdate(stored, remoteIssue, this.recentFrom);
 
+            if (!needsUpdate) {
+
+                // 解析し直す必要がない場合
+
+                // 次の Issue へ進む
                 continue;
 
             }
@@ -300,20 +307,34 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
 
         boolean result = true;
 
+        /* 全件モードか */
         if (this.full) {
 
+            // 全件モードの場合
+
+            // 解析し直す
             return result;
 
         }
 
+        /* 保存済みの解析結果がないか */
         if (stored == null) {
 
+            // 保存済みの解析結果がない場合
+
+            // 解析し直す
             return result;
 
         }
 
-        if (remoteIssue.getNumber() >= recentFrom) {
+        /* 直近の Issue か */
+        final Integer issueNumber = remoteIssue.getNumber();
 
+        if (issueNumber >= recentFrom) {
+
+            // 直近の Issue の場合
+
+            // 更新日時に関係なく解析し直す
             return result;
 
         }

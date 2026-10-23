@@ -60,9 +60,15 @@ public enum IssueStateTypes implements KmgCmnTypes<String> {
 
             IssueStateTypes.VALUES_MAP.put(type.get(), type);
 
-            if (type.getState() != null) {
+            /* 別名があるか */
+            final String state = type.getState();
 
-                IssueStateTypes.VALUES_MAP.put(type.getState(), type);
+            if (state != null) {
+
+                // 別名がある場合
+
+                // 別名でも引けるようにする
+                IssueStateTypes.VALUES_MAP.put(state, type);
 
             }
 
@@ -101,8 +107,12 @@ public enum IssueStateTypes implements KmgCmnTypes<String> {
 
         IssueStateTypes result = IssueStateTypes.VALUES_MAP.get(key);
 
+        /* キーが存在しないか */
         if (result == null) {
 
+            // キーが存在しない場合
+
+            // 指定無しにする
             result = NONE;
 
         }
