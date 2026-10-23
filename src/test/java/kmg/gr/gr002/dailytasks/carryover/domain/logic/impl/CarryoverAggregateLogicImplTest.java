@@ -9,6 +9,7 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverItemModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSummaryModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailySummaryModel;
+import kmg.gr.gr002.dailytasks.carryover.application.model.ItemStatModel;
 import kmg.gr.gr002.dailytasks.carryover.application.types.MinutesSourceTypes;
 
 /**
@@ -98,10 +99,16 @@ public class CarryoverAggregateLogicImplTest {
         final CarryoverSummaryModel testResult = testTarget.aggregate(testIssues);
 
         /* 検証の準備 */
+        final List<DailySummaryModel> days = testResult.getDays();
+
         @SuppressWarnings("null")
-        final List<String>  actualDates       = testResult.getDays().stream().map(DailySummaryModel::getDate).toList();
-        final List<Integer> actualCounts      = testResult.getDays().stream().map(day -> day.getTotal().getCount())
-            .toList();
+        final List<String>  actualDates       = days.stream().map(DailySummaryModel::getDate).toList();
+        final List<Integer> actualCounts      = days.stream().map(day -> {
+
+            final ItemStatModel total = day.getTotal();
+            return total.getCount();
+
+        }).toList();
         final List<String>  actualItems       = testResult.getItems();
         final int           actualLatestIssue = testResult.getLatestIssue();
 
@@ -132,7 +139,8 @@ public class CarryoverAggregateLogicImplTest {
 
         /* 検証の準備 */
         final int     actualLatestIssue = testResult.getLatestIssue();
-        final boolean actualDaysEmpty   = testResult.getDays().isEmpty();
+        final List<DailySummaryModel> days             = testResult.getDays();
+        final boolean                  actualDaysEmpty = days.isEmpty();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedLatestIssue, actualLatestIssue, "最新の Issue 番号が一致しません");

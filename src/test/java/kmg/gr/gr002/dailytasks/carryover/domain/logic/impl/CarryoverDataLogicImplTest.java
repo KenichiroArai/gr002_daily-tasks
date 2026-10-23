@@ -3,6 +3,7 @@ package kmg.gr.gr002.dailytasks.carryover.domain.logic.impl;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -238,7 +239,10 @@ public class CarryoverDataLogicImplTest {
         final CarryoverIssuesModel testResult = testTarget.loadIssues();
 
         /* 検証の準備 */
-        final MinutesSourceTypes actualMinutesSource = testResult.find(371).getItems().get(0).getMinutesSource();
+        final CarryoverIssueModel    issue371             = testResult.find(371);
+        final List<CarryoverItemModel> items                = issue371.getItems();
+        final CarryoverItemModel      firstItem            = items.get(0);
+        final MinutesSourceTypes      actualMinutesSource  = firstItem.getMinutesSource();
         final Path               actualDataDir       = testData.getDataDir();
 
         /* 検証の実施 */
@@ -268,7 +272,8 @@ public class CarryoverDataLogicImplTest {
         final CarryoverIssuesModel testResult = testTarget.loadIssues();
 
         /* 検証の準備 */
-        final boolean actualEmpty = testResult.numbers().isEmpty();
+        final Set<Integer> numbers     = testResult.numbers();
+        final boolean      actualEmpty = numbers.isEmpty();
 
         /* 検証の実施 */
         Assertions.assertTrue(actualEmpty, "解析結果は空になる必要があります");
@@ -303,7 +308,11 @@ public class CarryoverDataLogicImplTest {
         testTarget.saveIssue(testIssue);
 
         /* 検証の準備 */
-        final String actualMinutesSource = testData.getSavedIssues().get(0).getItems().get(0).getMinutesSource();
+        final List<CarryoverIssueDto> savedIssues          = testData.getSavedIssues();
+        final CarryoverIssueDto       savedIssue           = savedIssues.get(0);
+        final List<CarryoverItemDto>  savedItems           = savedIssue.getItems();
+        final CarryoverItemDto        savedItem            = savedItems.get(0);
+        final String                  actualMinutesSource  = savedItem.getMinutesSource();
         final Path   actualDataDir       = testData.getDataDir();
 
         /* 検証の実施 */
@@ -337,7 +346,8 @@ public class CarryoverDataLogicImplTest {
         testTarget.saveSummary(testSummary);
 
         /* 検証の準備 */
-        final int  actualLatestIssue = testData.getSavedSummary().getLatestIssue();
+        final CarryoverSummaryDto savedSummary      = testData.getSavedSummary();
+        final int                  actualLatestIssue = savedSummary.getLatestIssue();
         final Path actualDataDir     = testData.getDataDir();
 
         /* 検証の実施 */

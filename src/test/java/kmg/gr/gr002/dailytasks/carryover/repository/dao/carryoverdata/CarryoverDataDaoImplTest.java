@@ -186,14 +186,18 @@ public class CarryoverDataDaoImplTest {
         testTarget.initialize(this.tempDir);
         testTarget.saveIssue(CarryoverDataDaoImplTest.createIssue(1));
         testTarget.saveIssue(CarryoverDataDaoImplTest.createIssue(371));
-        Files.writeString(this.tempDir.resolve("issues").resolve("memo.txt"), "対象外");
+        final Path issuesDir = this.tempDir.resolve("issues");
+        final Path memo      = issuesDir.resolve("memo.txt");
+        Files.writeString(memo, "対象外");
 
         /* テスト対象の実行 */
         final CarryoverIssuesDto testResult = testTarget.loadIssues();
 
         /* 検証の準備 */
         final Set<Integer>     actualNumbers       = testResult.numbers();
-        final CarryoverItemDto actualItem          = testResult.find(371).getItems().get(0);
+        final CarryoverIssueDto       found               = testResult.find(371);
+        final List<CarryoverItemDto>  items               = found.getItems();
+        final CarryoverItemDto        actualItem          = items.get(0);
         final double           actualMinutes       = actualItem.getMinutes();
         final String           actualMinutesSource = actualItem.getMinutesSource();
         final boolean          actualChecked       = actualItem.isChecked();
@@ -227,7 +231,8 @@ public class CarryoverDataDaoImplTest {
         final CarryoverIssuesDto testResult = testTarget.loadIssues();
 
         /* 検証の準備 */
-        final boolean actualEmpty = testResult.numbers().isEmpty();
+        final Set<Integer> numbers     = testResult.numbers();
+        final boolean      actualEmpty = numbers.isEmpty();
 
         /* 検証の実施 */
         Assertions.assertTrue(actualEmpty, "空になる必要があります");
@@ -256,8 +261,9 @@ public class CarryoverDataDaoImplTest {
         testTarget.saveIssue(CarryoverDataDaoImplTest.createIssue(7));
 
         /* 検証の準備 */
-        final String  actualJson       = Files.readString(this.tempDir.resolve("issues").resolve("0007.json"),
-            StandardCharsets.UTF_8);
+        final Path    issuesDir      = this.tempDir.resolve("issues");
+        final Path    issueFile      = issuesDir.resolve("0007.json");
+        final String  actualJson     = Files.readString(issueFile, StandardCharsets.UTF_8);
         final boolean actualStartsWith = actualJson.startsWith(expectedFirstLines);
         final boolean actualHasCr      = actualJson.contains("\r");
         final boolean actualEndsWithLf = actualJson.endsWith("}\n");
@@ -412,7 +418,9 @@ public class CarryoverDataDaoImplTest {
 
         /* 準備 */
         final CarryoverDataDaoImpl testTarget = CarryoverDataDaoImplTest.createTarget();
-        final Path                 testPath   = this.tempDir.resolve("a").resolve("b").resolve("c.json");
+        final Path                 dirA       = this.tempDir.resolve("a");
+        final Path                 dirB       = dirA.resolve("b");
+        final Path                 testPath   = dirB.resolve("c.json");
 
         /* テスト対象の実行 */
         CarryoverDataDaoImplTest.write(testTarget, testPath, List.of(1));

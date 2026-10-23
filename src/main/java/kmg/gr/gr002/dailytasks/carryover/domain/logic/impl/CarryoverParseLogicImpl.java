@@ -498,7 +498,8 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
             }
 
-            final boolean checked = !CarryoverParseTextTypes.UNCHECKED.getText().equals(checkboxMatcher.group(1));
+            final String  uncheckedText = CarryoverParseTextTypes.UNCHECKED.getText();
+            final boolean checked       = !uncheckedText.equals(checkboxMatcher.group(1));
             items.add(this.parseItem(issue.getNumber(), currentSection, checked, checkboxMatcher.group(2), line));
 
         }

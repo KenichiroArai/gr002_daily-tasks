@@ -203,7 +203,8 @@ public class DailySummaryDtoTest {
         final DailySummaryDto testTarget = DailySummaryDtoTest.createTarget();
 
         /* テスト対象の実行 */
-        final boolean testResult = testTarget.getByItem().isEmpty();
+        final ItemStatsDto byItem = testTarget.getByItem();
+        final boolean testResult = byItem.isEmpty();
 
         /* 検証の準備 */
         final boolean actualEmpty = testResult;

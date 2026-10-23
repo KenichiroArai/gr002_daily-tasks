@@ -311,9 +311,11 @@ java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.1.0.jar --full
 ### メソッドの戻り値
 
 - メソッドの戻り値は変数 `result` で定義する
-- メソッドの戻り値の変数は先頭で宣言する
+- メソッドの戻り値の変数は、メソッドの最初の文で宣言する。値がすぐ決まらないときは、初期値を置いて後で代入するか、宣言だけ先に書いて後で代入する。コンストラクタと `void` は対象外とする
 - return 文は `return result;` に統一する
-- このルールは画面（mk002_daily-tasks_web-next の TypeScript）にも共通する。共通ルールは kb002_daily-tasks_doc の [docs/coding-rules.md](https://github.com/KenichiroArai/kb002_daily-tasks_doc/blob/main/docs/coding-rules.md) を参照する
+- メソッドの戻り値を、そのまま次のメソッドの呼び出し先にしない。いったん変数に受ける。引数としての単独の呼び出しは分けない。コンストラクタの `this(...)` で連鎖している引数は、private な static メソッドへ切り出す
+- 定型（`Stream`、Builder、`Comparator` の連結、`replaceAll().strip()` など）はそのままにしてよい。ストリームを始める前の自前メソッドの戻り値は変数に受ける
+- このルールは画面（mk002_daily-tasks_web-next の TypeScript）にも共通する。共通ルールは kb002_daily-tasks_doc の [docs/coding-rules.md](https://github.com/KenichiroArai/kb002_daily-tasks_doc/blob/main/docs/coding-rules.md) の「戻り値」と「メソッド呼び出し」を参照する
 
 ### 初期化
 

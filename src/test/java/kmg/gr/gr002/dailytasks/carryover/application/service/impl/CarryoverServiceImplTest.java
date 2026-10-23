@@ -18,6 +18,7 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssuesModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSourceModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSummaryModel;
+import kmg.gr.gr002.dailytasks.carryover.application.model.DailySummaryModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DefaultMinutesModel;
 import kmg.gr.gr002.dailytasks.carryover.application.service.CarryoverAggregateService;
@@ -875,7 +876,9 @@ public class CarryoverServiceImplTest {
             final String[]      actualMsgs         = testLog.getMessages();
             final int           actualCount        = testResult;
             final List<Integer> actualSavedNumbers = testDataLogic.getSavedNumbers();
-            final int           actualDays         = testDataLogic.getSavedSummary().getDays().size();
+            final CarryoverSummaryModel   savedSummary       = testDataLogic.getSavedSummary();
+            final List<DailySummaryModel>  days               = savedSummary.getDays();
+            final int                      actualDays         = days.size();
 
             /* 検証の実施 */
             Assertions.assertEquals(expectedCount, actualCount, "解析件数が一致しません");

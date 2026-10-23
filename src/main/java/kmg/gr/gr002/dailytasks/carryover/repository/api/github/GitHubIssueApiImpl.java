@@ -130,7 +130,11 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
      */
     private static GitHubIssueDto toIssue(final JsonNode node) {
 
-        final GitHubIssueDto result = new GitHubIssueDto(node.path(GitHubIssueFieldTypes.NUMBER.getFieldName()).asInt(),
+        final GitHubIssueDto result;
+        final JsonNode       numberNode = node.path(GitHubIssueFieldTypes.NUMBER.getFieldName());
+        final int            number     = numberNode.asInt();
+
+        result = new GitHubIssueDto(number,
             GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.TITLE.getFieldName()),
             GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.STATE.getFieldName()),
             GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.UPDATED_AT.getFieldName()),
@@ -428,7 +432,8 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
 
         } catch (final InterruptedException e) {
 
-            Thread.currentThread().interrupt();
+            final Thread currentThread = Thread.currentThread();
+            currentThread.interrupt();
             final String message = this.messageLogic.get(Gr002GenMsgTypes.GR002_GEN11105);
             throw new IOException(message, e);
 

@@ -339,7 +339,9 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
 
         }
 
-        result = !remoteIssue.getUpdatedAt().equals(stored.getUpdatedAt());
+        final String remoteUpdatedAt = remoteIssue.getUpdatedAt();
+        final String storedUpdatedAt = stored.getUpdatedAt();
+        result = !remoteUpdatedAt.equals(storedUpdatedAt);
         return result;
 
     }

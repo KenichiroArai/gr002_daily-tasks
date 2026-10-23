@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.ObjectProvider;
 
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002GenMsgTypes;
 import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel;
 import kmg.gr.gr002.dailytasks.carryover.presentation.service.CarryoverService;
@@ -316,7 +317,10 @@ public class CarryoverCommandImplTest {
      */
     private static String usage() {
 
-        final String result = MessageLogicTestUtil.create().get(Gr002GenMsgTypes.GR002_GEN11100);
+        final String       result;
+        final MessageLogic messageLogic = MessageLogicTestUtil.create();
+
+        result = messageLogic.get(Gr002GenMsgTypes.GR002_GEN11100);
         return result;
 
     }
@@ -516,7 +520,8 @@ public class CarryoverCommandImplTest {
         /* 検証の準備 */
         final List<Boolean>            actualCalls      = testService.getCalls();
         final List<String>             actualSteps      = testService.getSteps();
-        final CarryoverPropertiesModel actualProperties = testService.getPropertiesList().get(0);
+        final List<CarryoverPropertiesModel> properties       = testService.getPropertiesList();
+        final CarryoverPropertiesModel       actualProperties = properties.get(0);
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedCalls, actualCalls, "呼び出し時のモードが一致しません");
@@ -582,7 +587,8 @@ public class CarryoverCommandImplTest {
 
         /* 検証の準備 */
         final String  actualOutput    = testOutput.toString(StandardCharsets.UTF_8);
-        final boolean actualNotCalled = testService.getCalls().isEmpty();
+        final List<Boolean> calls          = testService.getCalls();
+        final boolean       actualNotCalled = calls.isEmpty();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedOutput, actualOutput, "使い方が一致しません");
@@ -613,7 +619,8 @@ public class CarryoverCommandImplTest {
         testTarget.run("-h");
 
         /* 検証の準備 */
-        final boolean actualNotCalled = testService.getCalls().isEmpty();
+        final List<Boolean> calls          = testService.getCalls();
+        final boolean       actualNotCalled = calls.isEmpty();
 
         /* 検証の実施 */
         Assertions.assertTrue(actualNotCalled, "収集は実行されない必要があります");

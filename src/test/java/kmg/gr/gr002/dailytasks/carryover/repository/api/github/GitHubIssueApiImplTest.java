@@ -3,6 +3,7 @@ package kmg.gr.gr002.dailytasks.carryover.repository.api.github;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
+import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
@@ -291,7 +292,8 @@ public class GitHubIssueApiImplTest {
 
         try (StubHttpClient testHttpClient = new StubHttpClient()) {
 
-            testHttpClient.addResponse(200, testPage1).addResponse(200, "[]");
+            testHttpClient.addResponse(200, testPage1);
+            testHttpClient.addResponse(200, "[]");
             final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
             testTarget.initialize(GitHubIssueApiImplTest.createSettings(null));
 
@@ -300,7 +302,8 @@ public class GitHubIssueApiImplTest {
 
             /* 検証の準備 */
             final int actualSize         = testResult.size();
-            final int actualRequestCount = testHttpClient.getRequests().size();
+            final List<HttpRequest> requests           = testHttpClient.getRequests();
+            final int                actualRequestCount = requests.size();
 
             /* 検証の実施 */
             Assertions.assertEquals(expectedSize, actualSize, "Issue の件数が一致しません");
@@ -441,8 +444,10 @@ public class GitHubIssueApiImplTest {
                 1);
 
             /* 検証の準備 */
-            final Optional<String> actualAuthorization
-                = testHttpClient.getRequests().get(0).headers().firstValue("Authorization");
+            final List<HttpRequest> requests = testHttpClient.getRequests();
+            final HttpRequest       request  = requests.get(0);
+            final HttpHeaders       headers  = request.headers();
+            final Optional<String>  actualAuthorization = headers.firstValue("Authorization");
 
             /* 検証の実施 */
             Assertions.assertEquals(expectedAuthorization, actualAuthorization, "認証ヘッダが一致しません");
@@ -477,9 +482,12 @@ public class GitHubIssueApiImplTest {
                 GitHubIssueApiImplTest.createSettings("test-token"), 1);
 
             /* 検証の準備 */
-            final Optional<String> actualAuthorization = testHttpClient.getRequests().get(0).headers()
-                .firstValue("Authorization");
-            final String           actualUri           = testHttpClient.getRequests().get(0).uri().toString();
+            final List<HttpRequest> requests = testHttpClient.getRequests();
+            final HttpRequest       request  = requests.get(0);
+            final HttpHeaders       headers  = request.headers();
+            final URI               uri      = request.uri();
+            final Optional<String>  actualAuthorization = headers.firstValue("Authorization");
+            final String            actualUri           = uri.toString();
 
             /* 検証の実施 */
             Assertions.assertEquals(expectedAuthorization, actualAuthorization, "認証ヘッダが一致しません");
@@ -741,7 +749,8 @@ public class GitHubIssueApiImplTest {
         final String expectedValue = "本文";
 
         /* 準備 */
-        final JsonNode testNode = new JsonMapper().readTree("{\"body\":\"本文\"}");
+        final JsonMapper mapper = new JsonMapper();
+        final JsonNode testNode = mapper.readTree("{\"body\":\"本文\"}");
 
         /* テスト対象の実行 */
         final String testResult = GitHubIssueApiImplTest.textOrEmpty(testNode, "body");
@@ -769,7 +778,8 @@ public class GitHubIssueApiImplTest {
         final String expectedValue = "";
 
         /* 準備 */
-        final JsonNode testNode = new JsonMapper().readTree("{}");
+        final JsonMapper mapper = new JsonMapper();
+        final JsonNode testNode = mapper.readTree("{}");
 
         /* テスト対象の実行 */
         final String testResult = GitHubIssueApiImplTest.textOrEmpty(testNode, "body");
@@ -797,7 +807,8 @@ public class GitHubIssueApiImplTest {
         final String expectedValue = "";
 
         /* 準備 */
-        final JsonNode testNode = new JsonMapper().readTree("{\"body\":null}");
+        final JsonMapper mapper = new JsonMapper();
+        final JsonNode testNode = mapper.readTree("{\"body\":null}");
 
         /* テスト対象の実行 */
         final String testResult = GitHubIssueApiImplTest.textOrEmpty(testNode, "body");
@@ -829,7 +840,8 @@ public class GitHubIssueApiImplTest {
         final String expectedBody      = "本文";
 
         /* 準備 */
-        final JsonNode testNode = new JsonMapper().readTree(GitHubIssueApiImplTest.issueJson(371));
+        final JsonMapper mapper = new JsonMapper();
+        final JsonNode testNode = mapper.readTree(GitHubIssueApiImplTest.issueJson(371));
 
         /* テスト対象の実行 */
         final GitHubIssueDto testResult = GitHubIssueApiImplTest.toIssue(testNode);

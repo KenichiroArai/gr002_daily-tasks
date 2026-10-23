@@ -565,7 +565,9 @@ public class CarryoverParseLogicImplTest {
             final Integer      actualDeclaredCount = testResult.getDeclaredCount();
             final int          actualCount         = testResult.getCount();
             final double       actualMinutes       = testResult.getMinutes();
-            final boolean      actualSecondChecked = testResult.getItems().get(1).isChecked();
+            final List<CarryoverItemModel> items               = testResult.getItems();
+            final CarryoverItemModel       secondItem          = items.get(1);
+            final boolean                   actualSecondChecked = secondItem.isChecked();
 
             /* 検証の実施 */
             Assertions.assertEquals(expectedDate, actualDate, "日付が一致しません");

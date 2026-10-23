@@ -11,6 +11,7 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssuesModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSummaryModel;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssueDto;
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssuesDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverSummaryDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.CarryoverDataDao;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
@@ -91,8 +92,10 @@ public class CarryoverDataLogicImpl implements CarryoverDataLogic {
     @Override
     public CarryoverIssuesModel loadIssues() throws IOException {
 
-        final CarryoverIssuesModel result
-            = this.carryoverDataDao.loadIssues().toCarryoverIssuesModel(this.messageLogic);
+        final CarryoverIssuesModel result;
+        final CarryoverIssuesDto   issues = this.carryoverDataDao.loadIssues();
+
+        result = issues.toCarryoverIssuesModel(this.messageLogic);
         return result;
 
     }

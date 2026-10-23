@@ -1,5 +1,7 @@
 package kmg.gr.gr002.dailytasks;
 
+import java.util.Set;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,10 +66,11 @@ public class ArchitectureTest {
             @Override
             public void check(final JavaClass item, final ConditionEvents events) {
 
-                final int constructorCount = item.getConstructors().size();
+                final Set<JavaConstructor> constructors     = item.getConstructors();
+                final int                  constructorCount = constructors.size();
                 int autowiredCount = 0;
 
-                for (final JavaConstructor constructor : item.getConstructors()) {
+                for (final JavaConstructor constructor : constructors) {
 
                     /* Autowired が付いているか */
                     final boolean autowired = constructor.isAnnotatedWith(Autowired.class);

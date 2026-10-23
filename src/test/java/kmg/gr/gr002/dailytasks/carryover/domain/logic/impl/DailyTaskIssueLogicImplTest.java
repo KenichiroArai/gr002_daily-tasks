@@ -150,7 +150,8 @@ public class DailyTaskIssueLogicImplTest {
         final List<DailyTaskIssueModel> testResult = testTarget.fetchAllIssues();
 
         /* 検証の準備 */
-        final String actualTitle = testResult.get(0).getTitle();
+        final DailyTaskIssueModel firstIssue = testResult.get(0);
+        final String actualTitle = firstIssue.getTitle();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedTitle, actualTitle, "タイトルが一致しません");
@@ -181,8 +182,9 @@ public class DailyTaskIssueLogicImplTest {
         testTarget.fetchAllIssues();
 
         /* 検証の準備 */
-        final String actualRepository = testGitHub.getSettings().getRepository();
-        final String actualToken      = testGitHub.getSettings().getToken();
+        final GitHubSettingsDto settings = testGitHub.getSettings();
+        final String actualRepository = settings.getRepository();
+        final String actualToken = settings.getToken();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedRepository, actualRepository, "対象リポジトリが一致しません");

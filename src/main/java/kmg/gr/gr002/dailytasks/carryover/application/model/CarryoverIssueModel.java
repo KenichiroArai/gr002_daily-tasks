@@ -272,7 +272,10 @@ public class CarryoverIssueModel {
      */
     public boolean isOpen() {
 
-        final boolean result = IssueStateTypes.OPEN.getState().equals(this.state);
+        final boolean result;
+        final String  openState = IssueStateTypes.OPEN.getState();
+
+        result = openState.equals(this.state);
         return result;
 
     }

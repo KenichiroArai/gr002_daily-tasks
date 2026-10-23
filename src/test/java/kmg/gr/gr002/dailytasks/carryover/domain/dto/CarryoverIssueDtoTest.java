@@ -121,7 +121,9 @@ public class CarryoverIssueDtoTest {
         final CarryoverIssueDto testResult = new CarryoverIssueDto(testIssue);
 
         /* 検証の準備 */
-        final String actualMinutesSource = testResult.getItems().get(0).getMinutesSource();
+        final List<CarryoverItemDto> items = testResult.getItems();
+        final CarryoverItemDto item = items.get(0);
+        final String actualMinutesSource = item.getMinutesSource();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedMinutesSource, actualMinutesSource, "残り時間の取得元が一致しません");
@@ -422,7 +424,9 @@ public class CarryoverIssueDtoTest {
         final CarryoverIssueModel testResult = testDto.toCarryoverIssueModel(MessageLogicTestUtil.create());
 
         /* 検証の準備 */
-        final MinutesSourceTypes actualMinutesSource = testResult.getItems().get(0).getMinutesSource();
+        final List<CarryoverItemModel> items = testResult.getItems();
+        final CarryoverItemModel item = items.get(0);
+        final MinutesSourceTypes actualMinutesSource = item.getMinutesSource();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedMinutesSource, actualMinutesSource, "残り時間の取得元が一致しません");

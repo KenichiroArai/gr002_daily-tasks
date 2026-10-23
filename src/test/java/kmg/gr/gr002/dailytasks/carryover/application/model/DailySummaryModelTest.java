@@ -1,5 +1,6 @@
 package kmg.gr.gr002.dailytasks.carryover.application.model;
 
+import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
@@ -76,7 +77,9 @@ public class DailySummaryModelTest {
         testTarget.add(DailySummaryModelTest.createItem("国語", "2026-06-18"));
 
         /* 検証の準備 */
-        final int actualMonthCount = testTarget.getByOriginMonth().find("2026-06").getCount();
+        final ItemStatsModel byOriginMonth = testTarget.getByOriginMonth();
+        final ItemStatModel june = byOriginMonth.find("2026-06");
+        final int actualMonthCount = june.getCount();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedMonthCount, actualMonthCount, "持ち越し元の月の件数が一致しません");
@@ -100,7 +103,8 @@ public class DailySummaryModelTest {
         testTarget.add(DailySummaryModelTest.createItem("国語", null));
 
         /* 検証の準備 */
-        final boolean actualEmpty = testTarget.getByOriginMonth().isEmpty();
+        final ItemStatsModel byOriginMonth = testTarget.getByOriginMonth();
+        final boolean actualEmpty = byOriginMonth.isEmpty();
 
         /* 検証の実施 */
         Assertions.assertTrue(actualEmpty, "持ち越し元の月ごとの集計は空になる必要があります");
@@ -122,7 +126,9 @@ public class DailySummaryModelTest {
         final DailySummaryModel testTarget = DailySummaryModelTest.createSummary();
 
         /* テスト対象の実行 */
-        final int testResult = testTarget.getByItem().find("国語").getCount();
+        final ItemStatsModel byItem = testTarget.getByItem();
+        final ItemStatModel japanese = byItem.find("国語");
+        final int testResult = japanese.getCount();
 
         /* 検証の準備 */
         final int actualCount = testResult;
@@ -147,7 +153,9 @@ public class DailySummaryModelTest {
         final DailySummaryModel testTarget = DailySummaryModelTest.createSummary();
 
         /* テスト対象の実行 */
-        final Set<String> testResult = Set.copyOf(testTarget.getByOriginMonth().names());
+        final ItemStatsModel byOriginMonth = testTarget.getByOriginMonth();
+        final List<String>    names         = byOriginMonth.names();
+        final Set<String>     testResult    = Set.copyOf(names);
 
         /* 検証の準備 */
         final Set<String> actualMonths = Set.copyOf(testResult);

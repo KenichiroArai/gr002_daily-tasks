@@ -80,6 +80,27 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
     }
 
     /**
+     * JSON ファイルか<br>
+     *
+     * @since 0.1.0
+     *
+     * @param path
+     *             調べるパス
+     *
+     * @return true：拡張子が JSON、false：それ以外
+     */
+    private static boolean jsonFile(final Path path) {
+
+        final boolean result;
+        final Path    fileName = path.getFileName();
+        final String  name     = fileName.toString();
+
+        result = name.endsWith(CarryoverDataFileTypes.JSON_EXTENSION.getFileName());
+        return result;
+
+    }
+
+    /**
      * 改行を LF に統一した整形出力を作る<br>
      *
      * @since 0.1.0
@@ -89,12 +110,15 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
     private ObjectWriter createObjectWriter() {
 
         /* 改行を LF に統一した整形出力 */
-        final DefaultIndenter      indenter = new DefaultIndenter(CarryoverDataFormatTypes.INDENT.getFormat(),
+        final ObjectWriter         result;
+        final DefaultIndenter       indenter = new DefaultIndenter(CarryoverDataFormatTypes.INDENT.getFormat(),
             CarryoverDataFormatTypes.LINE_FEED.getFormat());
-        final DefaultPrettyPrinter printer  = new DefaultPrettyPrinter()
+        final DefaultPrettyPrinter  printer  = new DefaultPrettyPrinter()
             .withSeparators(Separators.createDefaultInstance().withObjectNameValueSpacing(Separators.Spacing.AFTER))
             .withObjectIndenter(indenter).withArrayIndenter(indenter);
-        final ObjectWriter         result   = this.jsonMapper.writer().with(printer);
+        final ObjectWriter          writer   = this.jsonMapper.writer();
+
+        result = writer.with(printer);
         return result;
 
     }
@@ -145,9 +169,7 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
 
         try (Stream<Path> paths = Files.list(issuesDir)) {
 
-            for (final Path path : paths
-                .filter(p -> p.getFileName().toString().endsWith(CarryoverDataFileTypes.JSON_EXTENSION.getFileName()))
-                .toList()) {
+            for (final Path path : paths.filter(CarryoverDataDaoImpl::jsonFile).toList()) {
 
                 final CarryoverIssueDto issue = this.jsonConvertLogic.toCarryoverIssueDto(this.readIssue(path));
                 result.put(issue.getNumber(), issue);
@@ -253,7 +275,8 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
 
         try {
 
-            json = this.createObjectWriter().writeValueAsString(value) + CarryoverDataFormatTypes.LINE_FEED.getFormat();
+            final ObjectWriter writer = this.createObjectWriter();
+            json = writer.writeValueAsString(value) + CarryoverDataFormatTypes.LINE_FEED.getFormat();
 
         } catch (final JacksonException e) {
 

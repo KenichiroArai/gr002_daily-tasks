@@ -1,6 +1,7 @@
 package kmg.gr.gr002.dailytasks.carryover.repository.dto.json;
 
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -204,10 +205,13 @@ public class DailySummaryJsonDtoTest {
         final DailySummaryJsonDto testTarget = DailySummaryJsonDtoTest.createTarget();
 
         /* テスト対象の実行 */
-        final boolean testResult = testTarget.getByItem().isEmpty();
+        final ItemStatsJsonDto byItem = testTarget.getByItem();
+        final boolean testResult = byItem.isEmpty();
 
         /* 検証の準備 */
-        final int actualCount = testTarget.getByItem().toJsonObject().get("英語").getCount();
+        final Map<String, ItemStatJsonDto> stats = byItem.toJsonObject();
+        final ItemStatJsonDto english = stats.get("英語");
+        final int actualCount = english.getCount();
 
         /* 検証の実施 */
         Assertions.assertFalse(testResult, "項目ごとの集計は空ではない必要があります");

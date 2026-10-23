@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import kmg.gr.gr002.dailytasks.carryover.application.logic.DefaultMinutesLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DefaultMinutesModel;
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.DefaultMinutesDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.DefaultMinutesDao;
 
 /**
@@ -75,7 +76,10 @@ public class DefaultMinutesLogicImpl implements DefaultMinutesLogic {
     @Override
     public DefaultMinutesModel loadDefaultMinutes() throws IOException {
 
-        final DefaultMinutesModel result = this.defaultMinutesDao.load().toDefaultMinutesModel();
+        final DefaultMinutesModel result;
+        final DefaultMinutesDto   minutes = this.defaultMinutesDao.load();
+
+        result = minutes.toDefaultMinutesModel();
         return result;
 
     }

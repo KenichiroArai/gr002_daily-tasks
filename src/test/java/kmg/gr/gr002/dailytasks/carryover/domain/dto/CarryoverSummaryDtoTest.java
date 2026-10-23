@@ -34,13 +34,17 @@ public class CarryoverSummaryDtoTest {
      */
     private static CarryoverSummaryModel createSummary() {
 
-        final CarryoverItemModel  item  = new CarryoverItemModel("音楽", "2026-08-18", true, 11.5,
+        final CarryoverSummaryModel result;
+        final CarryoverItemModel    item  = new CarryoverItemModel("音楽", "2026-08-18", true, 11.5,
             MinutesSourceTypes.PARSED, "持ち越し", "- [x] 音楽2026/08/18（残り時間：11.5分）");
-        final CarryoverIssueModel issue = new CarryoverIssueModel(371, "2026年10月06日のタスク", "2026-10-06", "open",
+        final CarryoverIssueModel   issue = new CarryoverIssueModel(371, "2026年10月06日のタスク", "2026-10-06", "open",
             "2026-10-06T14:23:08Z", List.of("持ち越し"), 1, List.of(item));
-        final DailySummaryModel   day   = new DailySummaryModel("2026-10-06", 371, 1);
-        day.add(issue.getItems().get(0));
-        final CarryoverSummaryModel result = new CarryoverSummaryModel(371, List.of("音楽"), List.of(day));
+        final DailySummaryModel     day   = new DailySummaryModel("2026-10-06", 371, 1);
+        final List<CarryoverItemModel> items = issue.getItems();
+        final CarryoverItemModel       firstItem = items.get(0);
+
+        day.add(firstItem);
+        result = new CarryoverSummaryModel(371, List.of("音楽"), List.of(day));
         return result;
 
     }
@@ -82,8 +86,11 @@ public class CarryoverSummaryDtoTest {
         final CarryoverSummaryDto testResult = new CarryoverSummaryDto(testSummary);
 
         /* 検証の準備 */
-        final DailySummaryDto actualDay          = testResult.getDays().get(0);
-        final int             actualCheckedCount = actualDay.getByItem().find("音楽").getCheckedCount();
+        final List<DailySummaryDto> days = testResult.getDays();
+        final DailySummaryDto actualDay = days.get(0);
+        final ItemStatsDto byItem = actualDay.getByItem();
+        final ItemStatDto music = byItem.find("音楽");
+        final int actualCheckedCount = music.getCheckedCount();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedCheckedCount, actualCheckedCount, "項目ごとのチェック済み件数が一致しません");
@@ -108,8 +115,11 @@ public class CarryoverSummaryDtoTest {
         final CarryoverSummaryDto testResult = new CarryoverSummaryDto(testSummary);
 
         /* 検証の準備 */
-        final DailySummaryDto actualDay   = testResult.getDays().get(0);
-        final int             actualCount = actualDay.getByOriginMonth().find("2026-08").getCount();
+        final List<DailySummaryDto> days = testResult.getDays();
+        final DailySummaryDto actualDay = days.get(0);
+        final ItemStatsDto byOriginMonth = actualDay.getByOriginMonth();
+        final ItemStatDto august = byOriginMonth.find("2026-08");
+        final int actualCount = august.getCount();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedCount, actualCount, "持ち越し元の月ごとの件数が一致しません");
@@ -159,7 +169,9 @@ public class CarryoverSummaryDtoTest {
         final CarryoverSummaryDto testResult = new CarryoverSummaryDto(testSummary);
 
         /* 検証の準備 */
-        final ItemStatDto actualTotal   = testResult.getDays().get(0).getTotal();
+        final List<DailySummaryDto> days = testResult.getDays();
+        final DailySummaryDto day = days.get(0);
+        final ItemStatDto actualTotal = day.getTotal();
         final double      actualMinutes = actualTotal.getMinutes();
 
         /* 検証の実施 */

@@ -88,7 +88,8 @@ public class DailySummaryModel {
 
         /* 全体と項目ごとの集計 */
         this.total.add(item);
-        this.byItem.findOrCreate(item.getName()).add(item);
+        final ItemStatModel itemStat = this.byItem.findOrCreate(item.getName());
+        itemStat.add(item);
 
         /* 持ち越し元の日付があるか */
         final String originDate = item.getOriginDate();
@@ -103,8 +104,9 @@ public class DailySummaryModel {
         }
 
         /* 持ち越し元の月ごとの集計 */
-        final String month = originDate.substring(0, 7);
-        this.byOriginMonth.findOrCreate(month).add(item);
+        final String        month     = originDate.substring(0, 7);
+        final ItemStatModel monthStat = this.byOriginMonth.findOrCreate(month);
+        monthStat.add(item);
 
     }
 

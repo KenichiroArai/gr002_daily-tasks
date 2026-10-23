@@ -111,7 +111,8 @@ public class CarryoverIssuesDto {
 
         for (final Map.Entry<Integer, CarryoverIssueDto> entry : this.issues.entrySet()) {
 
-            result.put(entry.getKey(), entry.getValue().toCarryoverIssueModel(messageLogic));
+            final CarryoverIssueDto issue = entry.getValue();
+            result.put(entry.getKey(), issue.toCarryoverIssueModel(messageLogic));
 
         }
 

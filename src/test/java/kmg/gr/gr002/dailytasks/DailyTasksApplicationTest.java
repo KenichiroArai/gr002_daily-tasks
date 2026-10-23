@@ -55,7 +55,8 @@ public class DailyTasksApplicationTest {
         }
 
         /* 検証の準備 */
-        final boolean actualStartsWith = testOutput.toString(StandardCharsets.UTF_8).startsWith(expectedPrefix);
+        final String output = testOutput.toString(StandardCharsets.UTF_8);
+        final boolean actualStartsWith = output.startsWith(expectedPrefix);
 
         /* 検証の実施 */
         Assertions.assertTrue(actualStartsWith, "使い方が表示される必要があります");

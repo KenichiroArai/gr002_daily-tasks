@@ -91,6 +91,26 @@ public class CarryoverIssueDto {
     private final String updatedAt;
 
     /**
+     * 持ち越し項目を保存用の DTO にする<br>
+     *
+     * @since 0.1.0
+     *
+     * @param issue
+     *              持ち越しの解析結果
+     *
+     * @return 保存用の項目
+     */
+    private static List<CarryoverItemDto> toItemDtos(final CarryoverIssueModel issue) {
+
+        final List<CarryoverItemDto>   result;
+        final List<CarryoverItemModel> items = issue.getItems();
+
+        result = items.stream().map(CarryoverItemDto::new).toList();
+        return result;
+
+    }
+
+    /**
      * 持ち越しの解析結果から保存用の DTO を作る<br>
      * <p>
      * 件数と残り時間の合計は、項目のリストから求める。
@@ -105,7 +125,7 @@ public class CarryoverIssueDto {
 
         this(issue.getNumber(), issue.getTitle(), issue.getDate(), issue.getState(), issue.getUpdatedAt(),
             issue.getSections(), issue.getDeclaredCount(), issue.getCount(), issue.getMinutes(),
-            issue.getItems().stream().map(CarryoverItemDto::new).toList());
+            CarryoverIssueDto.toItemDtos(issue));
 
     }
 

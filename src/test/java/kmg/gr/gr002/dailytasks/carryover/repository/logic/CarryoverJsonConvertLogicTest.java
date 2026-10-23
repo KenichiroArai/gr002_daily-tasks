@@ -16,6 +16,7 @@ import kmg.gr.gr002.dailytasks.carryover.repository.dto.json.CarryoverItemJsonDt
 import kmg.gr.gr002.dailytasks.carryover.repository.dto.json.CarryoverSummaryJsonDto;
 import kmg.gr.gr002.dailytasks.carryover.repository.dto.json.DailySummaryJsonDto;
 import kmg.gr.gr002.dailytasks.carryover.repository.dto.json.ItemStatJsonDto;
+import kmg.gr.gr002.dailytasks.carryover.repository.dto.json.ItemStatsJsonDto;
 
 /**
  * {@link CarryoverJsonConvertLogic} のテスト<br>
@@ -101,7 +102,8 @@ public class CarryoverJsonConvertLogicTest {
         final CarryoverIssueJsonDto testJson = CarryoverJsonConvertLogicTest.createIssueJson();
 
         /* テスト対象の実行 */
-        final CarryoverIssueDto testResult = new CarryoverJsonConvertLogic().toCarryoverIssueDto(testJson);
+        final CarryoverJsonConvertLogic testLogic = new CarryoverJsonConvertLogic();
+        final CarryoverIssueDto testResult = testLogic.toCarryoverIssueDto(testJson);
 
         /* 検証の準備 */
         final String actualUpdatedAt = testResult.getUpdatedAt();
@@ -126,10 +128,13 @@ public class CarryoverJsonConvertLogicTest {
         final CarryoverIssueJsonDto testJson = CarryoverJsonConvertLogicTest.createIssueJson();
 
         /* テスト対象の実行 */
-        final CarryoverIssueDto testResult = new CarryoverJsonConvertLogic().toCarryoverIssueDto(testJson);
+        final CarryoverJsonConvertLogic testLogic = new CarryoverJsonConvertLogic();
+        final CarryoverIssueDto testResult = testLogic.toCarryoverIssueDto(testJson);
 
         /* 検証の準備 */
-        final String actualMinutesSource = testResult.getItems().get(0).getMinutesSource();
+        final List<CarryoverItemDto> items = testResult.getItems();
+        final CarryoverItemDto item = items.get(0);
+        final String actualMinutesSource = item.getMinutesSource();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedMinutesSource, actualMinutesSource, "残り時間の取得元が一致しません");
@@ -151,7 +156,8 @@ public class CarryoverJsonConvertLogicTest {
         final CarryoverIssueDto testDto = CarryoverJsonConvertLogicTest.createIssueDto();
 
         /* テスト対象の実行 */
-        final CarryoverIssueJsonDto testResult = new CarryoverJsonConvertLogic().toCarryoverIssueJson(testDto);
+        final CarryoverJsonConvertLogic testLogic = new CarryoverJsonConvertLogic();
+        final CarryoverIssueJsonDto testResult = testLogic.toCarryoverIssueJson(testDto);
 
         /* 検証の準備 */
         final int actualCount = testResult.getCount();
@@ -176,10 +182,13 @@ public class CarryoverJsonConvertLogicTest {
         final CarryoverIssueDto testDto = CarryoverJsonConvertLogicTest.createIssueDto();
 
         /* テスト対象の実行 */
-        final CarryoverIssueJsonDto testResult = new CarryoverJsonConvertLogic().toCarryoverIssueJson(testDto);
+        final CarryoverJsonConvertLogic testLogic = new CarryoverJsonConvertLogic();
+        final CarryoverIssueJsonDto testResult = testLogic.toCarryoverIssueJson(testDto);
 
         /* 検証の準備 */
-        final String actualRaw = testResult.getItems().get(0).getRaw();
+        final List<CarryoverItemJsonDto> items = testResult.getItems();
+        final CarryoverItemJsonDto item = items.get(0);
+        final String actualRaw = item.getRaw();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedRaw, actualRaw, "元の行が一致しません");
@@ -201,10 +210,14 @@ public class CarryoverJsonConvertLogicTest {
         final CarryoverSummaryDto testDto = CarryoverJsonConvertLogicTest.createSummaryDto();
 
         /* テスト対象の実行 */
-        final CarryoverSummaryJsonDto testResult = new CarryoverJsonConvertLogic().toCarryoverSummaryJson(testDto);
+        final CarryoverJsonConvertLogic testLogic = new CarryoverJsonConvertLogic();
+        final CarryoverSummaryJsonDto testResult = testLogic.toCarryoverSummaryJson(testDto);
 
         /* 検証の準備 */
-        final List<String> actualKeys = testResult.getDays().get(0).getByItem().names();
+        final List<DailySummaryJsonDto> days = testResult.getDays();
+        final DailySummaryJsonDto day = days.get(0);
+        final ItemStatsJsonDto byItem = day.getByItem();
+        final List<String> actualKeys = byItem.names();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedKeys, actualKeys, "項目ごとの集計の並び順が一致しません");
@@ -226,10 +239,14 @@ public class CarryoverJsonConvertLogicTest {
         final CarryoverSummaryDto testDto = CarryoverJsonConvertLogicTest.createSummaryDto();
 
         /* テスト対象の実行 */
-        final CarryoverSummaryJsonDto testResult = new CarryoverJsonConvertLogic().toCarryoverSummaryJson(testDto);
+        final CarryoverJsonConvertLogic testLogic = new CarryoverJsonConvertLogic();
+        final CarryoverSummaryJsonDto testResult = testLogic.toCarryoverSummaryJson(testDto);
 
         /* 検証の準備 */
-        final ItemStatJsonDto actualStat           = testResult.getDays().get(0).getByOriginMonth().find("2026-08");
+        final List<DailySummaryJsonDto> days = testResult.getDays();
+        final DailySummaryJsonDto day = days.get(0);
+        final ItemStatsJsonDto byOriginMonth = day.getByOriginMonth();
+        final ItemStatJsonDto actualStat = byOriginMonth.find("2026-08");
         final double          actualCheckedMinutes = actualStat.getCheckedMinutes();
 
         /* 検証の実施 */
@@ -252,10 +269,12 @@ public class CarryoverJsonConvertLogicTest {
         final CarryoverSummaryDto testDto = CarryoverJsonConvertLogicTest.createSummaryDto();
 
         /* テスト対象の実行 */
-        final CarryoverSummaryJsonDto testResult = new CarryoverJsonConvertLogic().toCarryoverSummaryJson(testDto);
+        final CarryoverJsonConvertLogic testLogic = new CarryoverJsonConvertLogic();
+        final CarryoverSummaryJsonDto testResult = testLogic.toCarryoverSummaryJson(testDto);
 
         /* 検証の準備 */
-        final DailySummaryJsonDto actualDay           = testResult.getDays().get(0);
+        final List<DailySummaryJsonDto> days = testResult.getDays();
+        final DailySummaryJsonDto actualDay = days.get(0);
         final Integer             actualDeclaredCount = actualDay.getDeclaredCount();
 
         /* 検証の実施 */
@@ -278,7 +297,8 @@ public class CarryoverJsonConvertLogicTest {
         final CarryoverSummaryDto testDto = CarryoverJsonConvertLogicTest.createSummaryDto();
 
         /* テスト対象の実行 */
-        final CarryoverSummaryJsonDto testResult = new CarryoverJsonConvertLogic().toCarryoverSummaryJson(testDto);
+        final CarryoverJsonConvertLogic testLogic = new CarryoverJsonConvertLogic();
+        final CarryoverSummaryJsonDto testResult = testLogic.toCarryoverSummaryJson(testDto);
 
         /* 検証の準備 */
         final int actualLatestIssue = testResult.getLatestIssue();
@@ -303,10 +323,14 @@ public class CarryoverJsonConvertLogicTest {
         final CarryoverSummaryDto testDto = CarryoverJsonConvertLogicTest.createSummaryDto();
 
         /* テスト対象の実行 */
-        final CarryoverSummaryJsonDto testResult = new CarryoverJsonConvertLogic().toCarryoverSummaryJson(testDto);
+        final CarryoverJsonConvertLogic testLogic = new CarryoverJsonConvertLogic();
+        final CarryoverSummaryJsonDto testResult = testLogic.toCarryoverSummaryJson(testDto);
 
         /* 検証の準備 */
-        final double actualMinutes = testResult.getDays().get(0).getTotal().getMinutes();
+        final List<DailySummaryJsonDto> days = testResult.getDays();
+        final DailySummaryJsonDto day = days.get(0);
+        final ItemStatJsonDto total = day.getTotal();
+        final double actualMinutes = total.getMinutes();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedMinutes, actualMinutes, "全体の残り時間が一致しません");

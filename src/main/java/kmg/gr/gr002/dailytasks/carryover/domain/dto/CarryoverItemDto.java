@@ -69,6 +69,26 @@ public class CarryoverItemDto {
     private final String section;
 
     /**
+     * 残り時間の取得元の名前を返す<br>
+     *
+     * @since 0.1.0
+     *
+     * @param item
+     *             持ち越し項目
+     *
+     * @return 取得元の名前（parsed / default / unknown）
+     */
+    private static String minutesSourceName(final CarryoverItemModel item) {
+
+        final String             result;
+        final MinutesSourceTypes source = item.getMinutesSource();
+
+        result = source.getSource();
+        return result;
+
+    }
+
+    /**
      * 持ち越し項目から保存用の DTO を作る<br>
      *
      * @since 0.1.0
@@ -79,7 +99,7 @@ public class CarryoverItemDto {
     public CarryoverItemDto(final CarryoverItemModel item) {
 
         this(item.getName(), item.getOriginDate(), item.isChecked(), item.getMinutes(),
-            item.getMinutesSource().getSource(), item.getSection(), item.getRaw());
+            CarryoverItemDto.minutesSourceName(item), item.getSection(), item.getRaw());
 
     }
 

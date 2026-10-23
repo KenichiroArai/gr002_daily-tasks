@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import kmg.gr.gr002.dailytasks.carryover.application.model.DefaultMinutesModel;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.DefaultMinutesDto;
 
 import kmg.gr.gr002.dailytasks.testutil.LogAssertions;
@@ -104,7 +105,8 @@ public class DefaultMinutesDaoImplTest {
         final DefaultMinutesDto testResult = testTarget.load();
 
         /* 検証の準備 */
-        final Double actualMinutes = testResult.toDefaultMinutesModel().find("高校数学");
+        final DefaultMinutesModel minutes = testResult.toDefaultMinutesModel();
+        final Double actualMinutes = minutes.find("高校数学");
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedMinutes, actualMinutes, "標準時間が一致しません");
@@ -139,7 +141,8 @@ public class DefaultMinutesDaoImplTest {
 
             /* 検証の準備 */
             final String[] actualMsgs    = testLog.getMessages();
-            final Double   actualMinutes = testResult.toDefaultMinutesModel().find("国語");
+            final DefaultMinutesModel minutes = testResult.toDefaultMinutesModel();
+            final Double actualMinutes = minutes.find("国語");
 
             /* 検証の実施 */
             Assertions.assertNull(actualMinutes, "標準時間は未登録になる必要があります");
