@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.ObjectProvider;
 
+import kmg.core.infrastructure.type.KmgString;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002GenMsgTypes;
 import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel;
@@ -574,7 +575,7 @@ public class CarryoverCommandImplTest {
     public void testRun_normalHelp() throws Exception {
 
         /* 期待値の定義 */
-        final String expectedOutput = CarryoverCommandImplTest.usage() + System.lineSeparator();
+        final String expectedOutput = KmgString.concat(CarryoverCommandImplTest.usage(), System.lineSeparator());
 
         /* 準備 */
         final StubCarryoverService  testService = new StubCarryoverService();

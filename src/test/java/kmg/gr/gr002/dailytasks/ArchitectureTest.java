@@ -24,6 +24,8 @@ import com.tngtech.archunit.lang.SimpleConditionEvent;
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 import com.tngtech.archunit.library.Architectures;
 
+import kmg.core.infrastructure.type.KmgString;
+
 /**
  * 層間のルールのテスト<br>
  * <p>
@@ -92,8 +94,8 @@ public class ArchitectureTest {
                     // コンストラクタが1つで Autowired が付いている場合
 
                     // 違反として記録する
-                    events.add(SimpleConditionEvent.violated(item,
-                        item.getFullName() + " has a single constructor annotated with Autowired"));
+                    events.add(SimpleConditionEvent.violated(item, KmgString.concat(item.getFullName(),
+                        " has a single constructor annotated with Autowired")));
 
                 }
 
@@ -103,8 +105,8 @@ public class ArchitectureTest {
                     // コンストラクタが複数で Autowired が1つではない場合
 
                     // 違反として記録する
-                    events.add(SimpleConditionEvent.violated(item,
-                        item.getFullName() + " must annotate exactly one constructor with Autowired"));
+                    events.add(SimpleConditionEvent.violated(item, KmgString.concat(item.getFullName(),
+                        " must annotate exactly one constructor with Autowired")));
 
                 }
 
@@ -138,7 +140,7 @@ public class ArchitectureTest {
                     }
 
                     events.add(SimpleConditionEvent.violated(field,
-                        field.getFullName() + " is annotated with Autowired"));
+                        KmgString.concat(field.getFullName(), " is annotated with Autowired")));
 
                 }
 

@@ -10,6 +10,7 @@ import java.util.stream.IntStream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import kmg.core.infrastructure.type.KmgString;
 import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverDataLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverParseLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.logic.DailyTaskIssueLogic;
@@ -683,7 +684,8 @@ public class CarryoverServiceImplTest {
         final List<DailyTaskIssueModel> result
             = IntStream.rangeClosed(1, count)
                 .mapToObj(number -> new DailyTaskIssueModel(number,
-                    String.format("2026年03月%02d日のタスク", Integer.valueOf(number)), "closed", "u" + number,
+                    String.format("2026年03月%02d日のタスク", Integer.valueOf(number)), "closed",
+                    KmgString.concat("u", String.valueOf(number)),
                     "## 負債\n- [ ] 英語2026/03/01（残り時間：10分）"))
                 .toList();
         return result;

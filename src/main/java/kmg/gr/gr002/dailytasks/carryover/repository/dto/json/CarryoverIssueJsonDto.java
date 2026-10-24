@@ -330,10 +330,10 @@ public class CarryoverIssueJsonDto {
     public CarryoverIssueDto toCarryoverIssueDto() {
 
         final CarryoverIssueDto          result;
-        final List<CarryoverItemJsonDto> itemJsons = this.items;
+        final List<CarryoverItemJsonDto> itemJsons        = this.items;
         @SuppressWarnings("null")
-        final List<CarryoverItemDto>     carryoverItemDto     = itemJsons.stream().map(CarryoverItemJsonDto::toCarryoverItemDto)
-            .toList();
+        final List<CarryoverItemDto>     carryoverItemDto = itemJsons.stream()
+            .map(CarryoverItemJsonDto::toCarryoverItemDto).toList();
 
         result = new CarryoverIssueDto(this.number, this.title, this.date, this.state, this.updatedAt, this.sections,
             this.declaredCount, this.count, this.minutes, carryoverItemDto);

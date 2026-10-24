@@ -4,6 +4,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import kmg.core.infrastructure.type.KmgString;
+
 /**
  * テスト用のリフレクションの操作<br>
  * <p>
@@ -63,7 +65,7 @@ public final class ReflectionTestUtil {
             // メソッドが見つからない場合
 
             // 見つからない例外にする
-            throw new NoSuchMethodException(clazz.getName() + "." + name);
+            throw new NoSuchMethodException(KmgString.concat(clazz.getName(), ".", name));
 
         }
 

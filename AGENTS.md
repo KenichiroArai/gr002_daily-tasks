@@ -316,6 +316,27 @@ java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.1.0.jar --full
 - 定型（`Stream`、Builder、`Comparator` の連結、`replaceAll().strip()` など）はそのままにしてよい。ストリームを始める前の自前メソッドの戻り値は変数に受ける
 - このルールは画面（mk002_daily-tasks_web-next の TypeScript）にも共通する。共通ルールは kb002_daily-tasks_doc の [docs/coding-rules.md](https://github.com/KenichiroArai/kb002_daily-tasks_doc/blob/main/docs/coding-rules.md) の「戻り値」と「メソッド呼び出し」を参照する
 
+### 文字列の結合
+
+- 実行時に結合する文字列は、2 つでも、kmg-core の `KmgString.concat(String...)` を使う。`StringBuilder` では結合しない
+- 文字列リテラル同士、または文字列リテラルと定数（`static final` で定数式により初期化した `String`）の `+` は、コンパイル時に 1 つの文字列になる。実行時の結合は起きないので、`KmgString.concat` は使わない
+- kmg-fund に同じメソッドはないので、`kmg.core.infrastructure.type.KmgString` を import する。kmg-fund を優先し、無いものだけ kmg-core を使う既存の方針に合う
+- `String` 以外（`int`、`Path` など）は `String.valueOf` または `toString()` で文字列にしてから渡す
+- 引数が単独のメソッド呼び出しなら、前述の「メソッドの戻り値」のとおり変数には切り出さない
+- 対象外は次のとおり。上記のコンパイル時の文字列、数値の `+` / `++` / `+=`、`String.format`、文字列リテラルの中の `+` という文字（正規表現や `application/vnd.github+json`）、言語仕様で定数式が必要な箇所（アノテーション値、case ラベル）
+
+```java
+// 望ましくない形式（実行時の結合）:
+json = writer.writeValueAsString(value) + CarryoverDataFormatTypes.LINE_FEED.getFormat();
+
+// 望ましい形式（実行時の結合）:
+json = KmgString.concat(writer.writeValueAsString(value), CarryoverDataFormatTypes.LINE_FEED.getFormat());
+
+// 望ましい形式（コンパイル時に 1 つの文字列になる）:
+final String expected = "prefix "
+    + "suffix";
+```
+
 ### 初期化
 
 - 生成時に決まるインスタンス変数の初期化はコンストラクタで行う。ブレークポイントを置いてデバッグしやすくするためである。依存も同じコンストラクタの引数で受け、`private final` のフィールドへ代入する。コンストラクタが1つのときは `@Autowired` を付けない。フィールドには `@Autowired` を付けない
@@ -761,7 +782,7 @@ public class SampleClass {
 - [ ] JSON 形式の後方互換の確認（変更時は全件モードで再生成）
 - [ ] テストの追加 / 更新（命名・実装順序・検証方法を含む）
 - [ ] `mvn test` で JaCoCo カバレッジ 100% を維持
-- [ ] コーディングルール（戻り値 `result`、早期リターン、処理コメント、`record` 禁止、生成時の初期化はコンストラクタまたは static 初期化子、共通の情報は `initialize`）の順守
+- [ ] コーディングルール（戻り値 `result`、早期リターン、処理コメント、`record` 禁止、実行時の文字列結合は `KmgString.concat`、生成時の初期化はコンストラクタまたは static 初期化子、共通の情報は `initialize`）の順守
 - [ ] アクセス修飾子の順守（公開しないものは `private`、修飾子なしは原則禁止）
 - [ ] Javadoc の追加 / 更新（`{@inheritDoc}` は使わない）
 - [ ] 解析ルールを変更した場合、`declaredCount` との食い違いと補完件数のログを確認し、kb002_daily-tasks_doc の仕様を更新
@@ -787,6 +808,7 @@ public class SampleClass {
 - 外部に公開しないメンバーを修飾子なし（パッケージプライベート）にすること（テストのためだけに公開範囲を広げない）
 - 深いネストのままガード節を使わずに実装すること
 - テストメソッドに複数ケースを詰め込むこと
+- 実行時の文字列結合を `+` や `StringBuilder` で行うこと（`KmgString.concat` を使う。数値演算、`String.format`、リテラル内の `+`、コンパイル時に 1 つの文字列になる定数式は除く）
 
 ## 参考リンク
 

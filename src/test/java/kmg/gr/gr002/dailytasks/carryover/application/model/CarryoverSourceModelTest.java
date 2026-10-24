@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import kmg.core.infrastructure.type.KmgString;
 import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel;
 
 /**
@@ -180,8 +181,9 @@ public class CarryoverSourceModelTest {
     public void testToString_normalWithoutToken() {
 
         /* 期待値の定義 */
-        final String expectedString = "CarryoverSourceModel[repository=owner/repo, dataDir=" + Path.of("docs", "data")
-            + ", defaultMinutesFile=" + Path.of("config", "default-minutes.json") + "]";
+        final String expectedString = KmgString.concat("CarryoverSourceModel[repository=owner/repo, dataDir=",
+            Path.of("docs", "data").toString(), ", defaultMinutesFile=",
+            Path.of("config", "default-minutes.json").toString(), "]");
 
         /* 準備 */
         final CarryoverSourceModel testTarget = CarryoverSourceModelTest.createTarget();

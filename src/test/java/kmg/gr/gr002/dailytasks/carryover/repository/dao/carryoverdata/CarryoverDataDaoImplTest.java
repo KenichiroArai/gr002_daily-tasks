@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import kmg.core.infrastructure.type.KmgString;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssueDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssuesDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverItemDto;
@@ -267,7 +268,8 @@ public class CarryoverDataDaoImplTest {
         final boolean actualEndsWithLf = actualJson.endsWith("}\n");
 
         /* 検証の実施 */
-        Assertions.assertTrue(actualStartsWith, "JSON の先頭が一致しません: " + actualJson);
+        Assertions.assertTrue(actualStartsWith,
+            KmgString.concat("JSON の先頭が一致しません: ", actualJson));
         Assertions.assertFalse(actualHasCr, "改行は LF である必要があります");
         Assertions.assertTrue(actualEndsWithLf, "末尾は改行である必要があります");
 

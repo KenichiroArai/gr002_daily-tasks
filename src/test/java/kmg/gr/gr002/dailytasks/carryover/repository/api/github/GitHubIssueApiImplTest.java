@@ -15,6 +15,7 @@ import java.util.stream.IntStream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import kmg.core.infrastructure.type.KmgString;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubIssueDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubSettingsDto;
 import kmg.gr.gr002.dailytasks.testutil.LogAssertions;
@@ -334,8 +335,8 @@ public class GitHubIssueApiImplTest {
         try (StubHttpClient testHttpClient = new StubHttpClient();
             LogCapture testLog = new LogCapture(GitHubIssueApiImpl.class)) {
 
-            testHttpClient.addResponse(200,
-                "[" + GitHubIssueApiImplTest.issueJson(1) + ",{\"number\":2,\"pull_request\":{}}]");
+            testHttpClient.addResponse(200, KmgString.concat("[", GitHubIssueApiImplTest.issueJson(1),
+                ",{\"number\":2,\"pull_request\":{}}]"));
             final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
             testTarget.initialize(GitHubIssueApiImplTest.createSettings(null));
 
@@ -396,7 +397,8 @@ public class GitHubIssueApiImplTest {
     public void testFetchPage_errorStatus() {
 
         /* 期待値の定義 */
-        final String expectedMessage = "GitHub API の呼び出しに失敗しました: status=403, uri=" + GitHubIssueApiImplTest.PAGE1_URI;
+        final String expectedMessage = "GitHub API の呼び出しに失敗しました: status=403, uri="
+            + GitHubIssueApiImplTest.PAGE1_URI;
 
         /* 準備 */
         try (StubHttpClient testHttpClient = new StubHttpClient()) {

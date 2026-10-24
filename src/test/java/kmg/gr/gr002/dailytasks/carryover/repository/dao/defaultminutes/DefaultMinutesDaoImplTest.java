@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import kmg.core.infrastructure.type.KmgString;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DefaultMinutesModel;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.DefaultMinutesDto;
 
@@ -127,7 +128,7 @@ public class DefaultMinutesDaoImplTest {
         /* 期待値の定義 */
         final Path     testConfig   = this.tempDir.resolve("none.json");
         final String[] expectedMsgs = {
-            "標準時間の設定ファイルがありません: " + testConfig,
+            KmgString.concat("標準時間の設定ファイルがありません: ", testConfig.toString()),
         };
 
         /* 準備 */

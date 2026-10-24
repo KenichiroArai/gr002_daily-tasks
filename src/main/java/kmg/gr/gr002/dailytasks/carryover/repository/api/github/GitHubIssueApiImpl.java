@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
+import kmg.core.infrastructure.type.KmgString;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubIssueDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubSettingsDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.api.GitHubIssueApi;
@@ -292,7 +293,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
 
             // 認可ヘッダーを付ける
             builder.header(GitHubApiHeaderTypes.AUTHORIZATION.get(),
-                GitHubApiHeaderTypes.BEARER.getHeader() + this.settings.getToken());
+                KmgString.concat(GitHubApiHeaderTypes.BEARER.getHeader(), this.settings.getToken()));
 
         }
 

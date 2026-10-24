@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
+import kmg.core.infrastructure.type.KmgString;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssueDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssuesDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverSummaryDto;
@@ -269,7 +270,7 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
         try {
 
             final ObjectWriter writer = this.createObjectWriter();
-            json = writer.writeValueAsString(value) + CarryoverDataFormatTypes.LINE_FEED.getFormat();
+            json = KmgString.concat(writer.writeValueAsString(value), CarryoverDataFormatTypes.LINE_FEED.getFormat());
 
         } catch (final JacksonException e) {
 
