@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueModel;
+import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueRefModel;
 
 /**
  * 日々のタスク Issue を取得するロジック<br>
@@ -30,6 +31,36 @@ public interface DailyTaskIssueLogic {
      *                     取得に失敗した場合
      */
     List<DailyTaskIssueModel> fetchAllIssues() throws IOException;
+
+    /**
+     * Issue を 1 件取得する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param number
+     *               Issue 番号
+     *
+     * @return 日々のタスク Issue
+     *
+     * @throws IOException
+     *                     取得に失敗した場合
+     */
+    DailyTaskIssueModel fetchIssue(int number) throws IOException;
+
+    /**
+     * すべての日々のタスク Issue の参照（本文なし）を取得する<br>
+     * <p>
+     * 日付はまだ入れない。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @return 日々のタスク Issue の参照（作成順）。日付は null
+     *
+     * @throws IOException
+     *                     取得に失敗した場合
+     */
+    List<DailyTaskIssueRefModel> fetchIssueRefs() throws IOException;
 
     /**
      * 対象リポジトリとトークンを受け取り、Issue の取得先を初期化する<br>

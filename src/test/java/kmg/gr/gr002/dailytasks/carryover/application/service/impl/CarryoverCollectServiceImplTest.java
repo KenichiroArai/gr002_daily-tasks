@@ -19,6 +19,7 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssuesModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSourceModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSummaryModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueModel;
+import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueRefModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DefaultMinutesModel;
 import kmg.gr.gr002.dailytasks.carryover.domain.logic.impl.CarryoverParseLogicImpl;
 import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel;
@@ -58,6 +59,13 @@ public class CarryoverCollectServiceImplTest {
         private final List<Integer> savedNumbers = new ArrayList<>();
 
         /**
+         * 保存済みの解析結果
+         *
+         * @since 0.1.0
+         */
+        private final CarryoverIssuesModel storedIssues = new CarryoverIssuesModel();
+
+        /**
          * 保存した Issue 番号を返す<br>
          *
          * @since 0.1.0
@@ -94,9 +102,24 @@ public class CarryoverCollectServiceImplTest {
          * @return 保存済みの解析結果
          */
         @Override
+        public CarryoverIssueModel loadIssue(final int number) {
+
+            final CarryoverIssueModel result = null;
+            return result;
+
+        }
+
+        /**
+         * 保存済みの解析結果を返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @return 保存済みの解析結果
+         */
+        @Override
         public CarryoverIssuesModel loadIssues() {
 
-            final CarryoverIssuesModel result = new CarryoverIssuesModel();
+            final CarryoverIssuesModel result = this.storedIssues.copy();
             return result;
 
         }
@@ -113,6 +136,20 @@ public class CarryoverCollectServiceImplTest {
         public void saveIssue(final CarryoverIssueModel issue) {
 
             this.savedNumbers.add(issue.getNumber());
+
+        }
+
+        /**
+         * 保存済みの解析結果を登録する<br>
+         *
+         * @since 0.1.0
+         *
+         * @param issue
+         *              解析結果
+         */
+        private void store(final CarryoverIssueModel issue) {
+
+            this.storedIssues.put(issue.getNumber(), issue);
 
         }
 
@@ -176,6 +213,65 @@ public class CarryoverCollectServiceImplTest {
         public List<DailyTaskIssueModel> fetchAllIssues() {
 
             final List<DailyTaskIssueModel> result = this.remoteIssues;
+            return result;
+
+        }
+
+        /**
+         * 番号が一致する Issue を返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @param number
+         *               Issue 番号
+         *
+         * @return 一致する Issue。ない場合は null
+         */
+        @Override
+        public DailyTaskIssueModel fetchIssue(final int number) {
+
+            DailyTaskIssueModel result = null;
+
+            for (final DailyTaskIssueModel issue : this.remoteIssues) {
+
+                /* 番号が一致するか */
+                final int issueNumber = issue.getNumber();
+
+                if (issueNumber == number) {
+
+                    // 番号が一致する場合
+
+                    // その Issue を返す
+                    result = issue;
+                    return result;
+
+                }
+
+            }
+
+            return result;
+
+        }
+
+        /**
+         * 登録した Issue の参照を返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @return 参照。日付は null
+         */
+        @Override
+        public List<DailyTaskIssueRefModel> fetchIssueRefs() {
+
+            final List<DailyTaskIssueRefModel> result = new ArrayList<>();
+
+            for (final DailyTaskIssueModel issue : this.remoteIssues) {
+
+                result.add(new DailyTaskIssueRefModel(issue.getNumber(), issue.getTitle(), issue.getState(),
+                    issue.getUpdatedAt(), null));
+
+            }
+
             return result;
 
         }
@@ -285,7 +381,7 @@ public class CarryoverCollectServiceImplTest {
      * @since 0.1.0
      */
     private static final CarryoverPropertiesModel PROPERTIES
-        = new CarryoverPropertiesModel("owner/repo", "test-token", "docs/data", "config/default-minutes.json", 10);
+        = new CarryoverPropertiesModel("owner/repo", "test-token", "docs/data", "config/default-minutes.json", 10, 365);
 
     /**
      * #1 から指定件数までの Issue を作成する<br>
@@ -369,9 +465,11 @@ public class CarryoverCollectServiceImplTest {
 
         final CarryoverCollectServiceImpl target = new CarryoverCollectServiceImpl(null, null, null, null);
         ReflectionTestUtil.setField(target, "full", Boolean.valueOf(full));
-        final boolean result = ReflectionTestUtil.<Boolean>invoke(target, "needsUpdate", new Class<?>[] {
-            CarryoverIssueModel.class, DailyTaskIssueModel.class, int.class
-        }, stored, remoteIssue, Integer.valueOf(recentFrom));
+        final int     issueNumber = remoteIssue.getNumber();
+        final String  updatedAt   = remoteIssue.getUpdatedAt();
+        final boolean result      = ReflectionTestUtil.<Boolean>invoke(target, "needsUpdate", new Class<?>[] {
+            CarryoverIssueModel.class, int.class, String.class, int.class
+        }, stored, Integer.valueOf(issueNumber), updatedAt, Integer.valueOf(recentFrom));
         return result;
 
     }
@@ -453,6 +551,51 @@ public class CarryoverCollectServiceImplTest {
         /* 検証の実施 */
         Assertions.assertEquals(expectedCount, actualCount, "解析件数が一致しません");
         Assertions.assertEquals(expectedSavedNumbers, actualSavedNumbers, "解析の時点では保存しない必要があります");
+
+    }
+
+    /**
+     * analyze メソッドのテスト - 準正常系:更新日時が同じ過去の Issue は解析しない場合
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     入出力エラーが発生した場合
+     */
+    @Test
+    public void testAnalyze_semiSkipsUnchanged() throws IOException {
+
+        /* 期待値の定義 */
+        final int expectedCount  = 1;
+        final int expectedRemote = 2;
+
+        /* 準備 */
+        final DailyTaskIssueModel testNewer = new DailyTaskIssueModel(2, "2026年03月25日のタスク", "open", "u2",
+            "## 負債\n- [ ] 国語2026/03/20");
+        final CarryoverCollectServiceImplTest.StubCarryoverDataLogic testDataLogic
+            = new CarryoverCollectServiceImplTest.StubCarryoverDataLogic();
+        testDataLogic.store(CarryoverCollectServiceImplTest.parse(CarryoverCollectServiceImplTest.ISSUE1));
+        final CarryoverCollectServiceImpl testTarget = CarryoverCollectServiceImplTest.createTarget(
+            new CarryoverCollectServiceImplTest.StubDailyTaskIssueLogic(
+                List.of(CarryoverCollectServiceImplTest.ISSUE1, testNewer)),
+            testDataLogic);
+
+        /* テスト対象の実行 */
+        testTarget.initialize(new CarryoverSourceModel(CarryoverCollectServiceImplTest.PROPERTIES), 1, false);
+        testTarget.fetch();
+        final int testResult = testTarget.analyze();
+
+        /* 検証の準備 */
+        final int                    actualCount  = testResult;
+        final int                    actualRemote = testTarget.getRemoteCount();
+        final CarryoverIssuesModel   actualIssues = testTarget.getIssues();
+        final CarryoverIssueModel    kept         = actualIssues.find(1);
+        final boolean                actualKept   = kept != null;
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedCount, actualCount, "解析件数が一致しません");
+        Assertions.assertEquals(expectedRemote, actualRemote, "取得件数が一致しません");
+        Assertions.assertTrue(actualKept, "解析しなかった Issue は保存済みの内容を残す必要があります");
 
     }
 

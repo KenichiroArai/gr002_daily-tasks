@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 
 import kmg.core.infrastructure.type.KmgString;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubIssueDto;
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubIssueRefDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubSettingsDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.api.GitHubIssueApi;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
@@ -145,6 +146,30 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
     }
 
     /**
+     * API の応答を本文なしの参照に変換する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param node
+     *             Issue の JSON
+     *
+     * @return Issue の参照。本文は含まない
+     */
+    private static GitHubIssueRefDto toRef(final JsonNode node) {
+
+        final GitHubIssueRefDto result;
+        final JsonNode          numberNode = node.path(GitHubIssueFieldTypes.NUMBER.getFieldName());
+        final int               number     = numberNode.asInt();
+
+        result = new GitHubIssueRefDto(number,
+            GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.TITLE.getFieldName()),
+            GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.STATE.getFieldName()),
+            GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.UPDATED_AT.getFieldName()));
+        return result;
+
+    }
+
+    /**
      * API のベース URL（例: https://api.github.com）
      *
      * @since 0.1.0
@@ -214,6 +239,65 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
     public List<GitHubIssueDto> fetchAllIssues() throws IOException {
 
         final List<GitHubIssueDto> result = new ArrayList<>();
+        final List<JsonNode>       nodes  = this.fetchIssueNodes();
+
+        for (final JsonNode node : nodes) {
+
+            result.add(GitHubIssueApiImpl.toIssue(node));
+
+        }
+
+        return result;
+
+    }
+
+    /**
+     * Issue を 1 件取得する<br>
+     * <p>
+     * {@link #initialize(GitHubSettingsDto)} のあとで呼ぶ。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @param number
+     *               Issue 番号
+     *
+     * @return Issue
+     *
+     * @throws IOException
+     *                     通信に失敗した場合、または応答が不正な場合
+     */
+    @Override
+    public GitHubIssueDto fetchIssue(final int number) throws IOException {
+
+        GitHubIssueDto result = null;
+
+        try (HttpClient httpClient = this.httpClientSupplier.get()) {
+
+            final URI      uri  = URI.create(String.format(GitHubApiUrlTypes.ISSUE.getUrl(), this.apiBaseUrl,
+                this.settings.getRepository(), number));
+            final JsonNode node = this.fetchResponse(httpClient, uri, false);
+            result = GitHubIssueApiImpl.toIssue(node);
+
+        }
+
+        return result;
+
+    }
+
+    /**
+     * プルリクエストを除いた Issue の JSON を、作成順に取得する<br>
+     *
+     * @since 0.1.0
+     *
+     * @return Issue の JSON（作成順）
+     *
+     * @throws IOException
+     *                     通信に失敗した場合、または応答が不正な場合
+     */
+    private List<JsonNode> fetchIssueNodes() throws IOException {
+
+        final List<JsonNode> result = new ArrayList<>();
 
         int page = 1;
         int pageSize;
@@ -241,7 +325,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
 
                     }
 
-                    result.add(GitHubIssueApiImpl.toIssue(node));
+                    result.add(node);
 
                 }
 
@@ -253,6 +337,35 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
 
         final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12010);
         GitHubIssueApiImpl.LOGGER.info(message, result.size(), page - 1);
+        return result;
+
+    }
+
+    /**
+     * すべての Issue の参照（本文なし）を取得する<br>
+     * <p>
+     * プルリクエストは除外する。{@link #initialize(GitHubSettingsDto)} のあとで呼ぶ。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @return Issue の参照（作成順）。本文は含まない
+     *
+     * @throws IOException
+     *                     通信に失敗した場合、または応答が不正な場合
+     */
+    @Override
+    public List<GitHubIssueRefDto> fetchIssueRefs() throws IOException {
+
+        final List<GitHubIssueRefDto> result = new ArrayList<>();
+        final List<JsonNode>          nodes  = this.fetchIssueNodes();
+
+        for (final JsonNode node : nodes) {
+
+            result.add(GitHubIssueApiImpl.toRef(node));
+
+        }
+
         return result;
 
     }
@@ -274,11 +387,36 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
      */
     private JsonNode fetchPage(final HttpClient httpClient, final int page) throws IOException {
 
+        final URI      uri    = URI.create(String.format(GitHubApiUrlTypes.ISSUES_QUERY.getUrl(), this.apiBaseUrl,
+            this.settings.getRepository(), GitHubIssueApiImpl.PER_PAGE, page));
+        final JsonNode result = this.fetchResponse(httpClient, uri, true);
+        return result;
+
+    }
+
+    /**
+     * 応答の JSON を取得する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param httpClient
+     *                      HTTP クライアント
+     * @param uri
+     *                      リクエストの URI
+     * @param arrayExpected
+     *                      true：配列を期待する、false：オブジェクトを期待する
+     *
+     * @return 応答の JSON
+     *
+     * @throws IOException
+     *                     通信に失敗した場合、または応答が不正な場合
+     */
+    private JsonNode fetchResponse(final HttpClient httpClient, final URI uri, final boolean arrayExpected)
+        throws IOException {
+
         JsonNode result = null;
 
         /* リクエストの作成 */
-        final URI                 uri     = URI.create(String.format(GitHubApiUrlTypes.ISSUES_QUERY.getUrl(),
-            this.apiBaseUrl, this.settings.getRepository(), GitHubIssueApiImpl.PER_PAGE, page));
         final HttpRequest.Builder builder = HttpRequest.newBuilder(uri).timeout(GitHubIssueApiImpl.TIMEOUT)
             .header(GitHubApiHeaderTypes.ACCEPT.get(), GitHubApiHeaderTypes.GITHUB_JSON.getHeader())
             .header(GitHubApiHeaderTypes.API_VERSION.getHeader(), GitHubApiHeaderTypes.API_VERSION_VALUE.getHeader())
@@ -316,16 +454,20 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
 
         result = this.readTree(response.body());
 
-        /* 応答が配列か */
-        final boolean array = result.isArray();
+        /* 期待する形か */
+        final boolean array  = result.isArray();
+        final boolean object = result.isObject();
+        final boolean shape  = arrayExpected ? array : object;
 
-        if (!array) {
+        if (!shape) {
 
-            // 応答が配列ではない場合
+            // 期待する形ではない場合
 
             // 形式の不正として例外にする
-            final String template = this.messageLogic.get(Gr002GenMsgTypes.GR002_GEN11104);
-            final String message  = String.format(template, uri);
+            final Gr002GenMsgTypes messageType = arrayExpected ? Gr002GenMsgTypes.GR002_GEN11104
+                : Gr002GenMsgTypes.GR002_GEN11106;
+            final String           template    = this.messageLogic.get(messageType);
+            final String           message     = String.format(template, uri);
             throw new IOException(message);
 
         }

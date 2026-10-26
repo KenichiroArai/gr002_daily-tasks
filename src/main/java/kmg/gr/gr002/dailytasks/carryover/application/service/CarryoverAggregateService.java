@@ -3,6 +3,7 @@ package kmg.gr.gr002.dailytasks.carryover.application.service;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSummaryModel;
@@ -37,6 +38,16 @@ public interface CarryoverAggregateService {
     CarryoverSummaryModel aggregate(Collection<CarryoverIssueModel> issues);
 
     /**
+     * 解析結果を、実行中の集計の状態へ日付順のまま足す<br>
+     *
+     * @since 0.1.0
+     *
+     * @param issues
+     *               この単位の解析結果（日付順）
+     */
+    void append(List<CarryoverIssueModel> issues);
+
+    /**
      * 集計の保存先を受け取り、フィールドに保持する<br>
      *
      * @since 0.1.0
@@ -58,5 +69,14 @@ public interface CarryoverAggregateService {
      *                     書き込みに失敗した場合
      */
     void saveSummary(CarryoverSummaryModel summary) throws IOException;
+
+    /**
+     * ここまでの集計の状態から画面用の集計を作る<br>
+     *
+     * @since 0.1.0
+     *
+     * @return 画面用の集計
+     */
+    CarryoverSummaryModel summary();
 
 }

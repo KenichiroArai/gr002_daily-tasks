@@ -433,4 +433,62 @@ public class CarryoverDataDaoImplTest {
 
     }
 
+    /**
+     * loadIssue メソッドのテスト - 正常系:保存した 1 件を読み込む場合
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     入出力エラーが発生した場合
+     */
+    @Test
+    public void testLoadIssue_normalFile() throws IOException {
+
+        /* 期待値の定義 */
+        final int expectedNumber = 7;
+
+        /* 準備 */
+        final CarryoverDataDaoImpl testTarget = CarryoverDataDaoImplTest.createTarget();
+        testTarget.initialize(this.tempDir);
+        testTarget.saveIssue(CarryoverDataDaoImplTest.createIssue(expectedNumber));
+
+        /* テスト対象の実行 */
+        final CarryoverIssueDto testResult = testTarget.loadIssue(expectedNumber);
+
+        /* 検証の準備 */
+        final int actualNumber = testResult.getNumber();
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedNumber, actualNumber, "Issue 番号が一致しません");
+
+    }
+
+    /**
+     * loadIssue メソッドのテスト - 準正常系:ファイルがない場合
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     入出力エラーが発生した場合
+     */
+    @Test
+    public void testLoadIssue_semiMissing() throws IOException {
+
+        /* 期待値の定義 */
+
+        /* 準備 */
+        final CarryoverDataDaoImpl testTarget = CarryoverDataDaoImplTest.createTarget();
+        testTarget.initialize(this.tempDir);
+
+        /* テスト対象の実行 */
+        final CarryoverIssueDto testResult = testTarget.loadIssue(7);
+
+        /* 検証の準備 */
+        final boolean actualMissing = testResult == null;
+
+        /* 検証の実施 */
+        Assertions.assertTrue(actualMissing, "ファイルがないときは null になる必要があります");
+
+    }
+
 }

@@ -29,8 +29,33 @@ public class CarryoverPropertiesModelTest {
     private static CarryoverPropertiesModel createTarget() {
 
         final CarryoverPropertiesModel result = new CarryoverPropertiesModel("owner/repo", "secret-token", "docs/data",
-            "config/default-minutes.json", 10);
+            "config/default-minutes.json", 10, 365);
         return result;
+
+    }
+
+    /**
+     * getBatchSize メソッドのテスト - 正常系:コンストラクタで設定した値を返す
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testGetBatchSize_normalValue() {
+
+        /* 期待値の定義 */
+        final int expectedBatchSize = 365;
+
+        /* 準備 */
+        final CarryoverPropertiesModel testTarget = CarryoverPropertiesModelTest.createTarget();
+
+        /* テスト対象の実行 */
+        final int testResult = testTarget.getBatchSize();
+
+        /* 検証の準備 */
+        final int actualBatchSize = testResult;
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedBatchSize, actualBatchSize, "単位の件数が一致しません");
 
     }
 
@@ -193,7 +218,7 @@ public class CarryoverPropertiesModelTest {
 
         /* 期待値の定義 */
         final String expectedString = "CarryoverPropertiesModel[repository=owner/repo, dataDir=docs/data, "
-            + "defaultMinutesFile=config/default-minutes.json, recentCount=10]";
+            + "defaultMinutesFile=config/default-minutes.json, recentCount=10, batchSize=365]";
 
         /* 準備 */
         final CarryoverPropertiesModel testTarget = CarryoverPropertiesModelTest.createTarget();

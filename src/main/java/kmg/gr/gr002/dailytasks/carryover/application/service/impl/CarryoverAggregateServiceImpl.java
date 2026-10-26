@@ -3,12 +3,14 @@ package kmg.gr.gr002.dailytasks.carryover.application.service.impl;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverAggregateLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverDataLogic;
+import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverAggregationModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSummaryModel;
 import kmg.gr.gr002.dailytasks.carryover.application.service.CarryoverAggregateService;
@@ -28,6 +30,13 @@ import kmg.gr.gr002.dailytasks.carryover.application.service.CarryoverAggregateS
 @Service
 @Scope("prototype")
 public class CarryoverAggregateServiceImpl implements CarryoverAggregateService {
+
+    /**
+     * 単位をまたいで持ち越す集計の状態
+     *
+     * @since 0.1.0
+     */
+    private final CarryoverAggregationModel aggregation;
 
     /**
      * 日別の集計
@@ -58,6 +67,7 @@ public class CarryoverAggregateServiceImpl implements CarryoverAggregateService 
 
         this.carryoverAggregateLogic = carryoverAggregateLogic;
         this.carryoverDataLogic = carryoverDataLogic;
+        this.aggregation = new CarryoverAggregationModel();
 
     }
 
@@ -79,6 +89,25 @@ public class CarryoverAggregateServiceImpl implements CarryoverAggregateService 
 
         final CarryoverSummaryModel result = this.carryoverAggregateLogic.aggregate(issues);
         return result;
+
+    }
+
+    /**
+     * 解析結果を、実行中の集計の状態へ日付順のまま足す<br>
+     *
+     * @since 0.1.0
+     *
+     * @param issues
+     *               この単位の解析結果（日付順）
+     */
+    @Override
+    public void append(final List<CarryoverIssueModel> issues) {
+
+        for (final CarryoverIssueModel issue : issues) {
+
+            this.carryoverAggregateLogic.add(this.aggregation, issue);
+
+        }
 
     }
 
@@ -112,6 +141,21 @@ public class CarryoverAggregateServiceImpl implements CarryoverAggregateService 
     public void saveSummary(final CarryoverSummaryModel summary) throws IOException {
 
         this.carryoverDataLogic.saveSummary(summary);
+
+    }
+
+    /**
+     * ここまでの集計の状態から画面用の集計を作る<br>
+     *
+     * @since 0.1.0
+     *
+     * @return 画面用の集計
+     */
+    @Override
+    public CarryoverSummaryModel summary() {
+
+        final CarryoverSummaryModel result = this.carryoverAggregateLogic.toSummary(this.aggregation);
+        return result;
 
     }
 

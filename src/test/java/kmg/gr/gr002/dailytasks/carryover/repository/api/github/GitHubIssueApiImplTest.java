@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 
 import kmg.core.infrastructure.type.KmgString;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubIssueDto;
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubIssueRefDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubSettingsDto;
 import kmg.gr.gr002.dailytasks.testutil.LogAssertions;
 import kmg.gr.gr002.dailytasks.testutil.LogCapture;
@@ -820,6 +821,116 @@ public class GitHubIssueApiImplTest {
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedValue, actualValue, "値が一致しません");
+
+    }
+
+    /**
+     * fetchIssue メソッドのテスト - 異常系:応答がオブジェクトではない場合
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testFetchIssue_errorNotObject() {
+
+        /* 期待値の定義 */
+        final String expectedMessage = "GitHub API の応答がオブジェクトではありません: uri="
+            + "https://api.example.com/repos/owner/repo/issues/7";
+
+        /* 準備 */
+        try (StubHttpClient testHttpClient = new StubHttpClient()) {
+
+            testHttpClient.addResponse(200, "[]");
+            final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
+            testTarget.initialize(GitHubIssueApiImplTest.createSettings("token"));
+
+            /* テスト対象の実行 */
+            final IOException testException = Assertions.assertThrows(IOException.class, () -> testTarget.fetchIssue(7));
+
+            /* 検証の準備 */
+            final String actualMessage = testException.getMessage();
+
+            /* 検証の実施 */
+            Assertions.assertEquals(expectedMessage, actualMessage, "例外のメッセージが一致しません");
+
+        }
+
+    }
+
+    /**
+     * fetchIssueRefs メソッドのテスト - 正常系:本文を持たない参照を返す場合
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     入出力エラーが発生した場合
+     */
+    @Test
+    public void testFetchIssueRefs_normalWithoutBody() throws IOException {
+
+        /* 期待値の定義 */
+        final int    expectedNumber    = 1;
+        final String expectedTitle     = "2026年10月06日のタスク";
+        final String expectedState     = "open";
+        final String expectedUpdatedAt = "2026-10-06T14:23:08Z";
+
+        /* 準備 */
+        try (StubHttpClient testHttpClient = new StubHttpClient()) {
+
+            testHttpClient.addResponse(200, KmgString.concat("[", GitHubIssueApiImplTest.issueJson(1), "]"));
+            final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
+            testTarget.initialize(GitHubIssueApiImplTest.createSettings(null));
+
+            /* テスト対象の実行 */
+            final List<GitHubIssueRefDto> testResult = testTarget.fetchIssueRefs();
+
+            /* 検証の準備 */
+            final GitHubIssueRefDto actualRef    = testResult.get(0);
+            final int               actualNumber    = actualRef.getNumber();
+            final String            actualTitle     = actualRef.getTitle();
+            final String            actualState     = actualRef.getState();
+            final String            actualUpdatedAt = actualRef.getUpdatedAt();
+
+            /* 検証の実施 */
+            Assertions.assertEquals(expectedNumber, actualNumber, "Issue 番号が一致しません");
+            Assertions.assertEquals(expectedTitle, actualTitle, "タイトルが一致しません");
+            Assertions.assertEquals(expectedState, actualState, "状態が一致しません");
+            Assertions.assertEquals(expectedUpdatedAt, actualUpdatedAt, "更新日時が一致しません");
+
+        }
+
+    }
+
+    /**
+     * fetchIssue メソッドのテスト - 正常系:Issue を 1 件取得する場合
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     入出力エラーが発生した場合
+     */
+    @Test
+    public void testFetchIssue_normalValue() throws IOException {
+
+        /* 期待値の定義 */
+        final String expectedBody = "本文";
+
+        /* 準備 */
+        try (StubHttpClient testHttpClient = new StubHttpClient()) {
+
+            testHttpClient.addResponse(200, GitHubIssueApiImplTest.issueJson(7));
+            final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
+            testTarget.initialize(GitHubIssueApiImplTest.createSettings("token"));
+
+            /* テスト対象の実行 */
+            final GitHubIssueDto testResult = testTarget.fetchIssue(7);
+
+            /* 検証の準備 */
+            final String actualBody = testResult.getBody();
+
+            /* 検証の実施 */
+            Assertions.assertEquals(expectedBody, actualBody, "本文が一致しません");
+
+        }
 
     }
 

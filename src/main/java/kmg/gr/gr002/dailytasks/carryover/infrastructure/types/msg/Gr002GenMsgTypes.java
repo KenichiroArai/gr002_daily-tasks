@@ -80,6 +80,14 @@ public enum Gr002GenMsgTypes implements KmgFundCmnGenMsgTypes, KmgFundCmnExcMsgT
      */
     GR002_GEN11105("GitHub API の中断", "Gr002Gen11105", "GitHub API の呼び出しが中断された場合", "GitHub API の呼び出しが中断されました"),
 
+    /**
+     * GitHub API の応答がオブジェクトではない
+     *
+     * @since 0.1.0
+     */
+    GR002_GEN11106("GitHub API の応答がオブジェクトではない", "Gr002Gen11106", "GitHub API の応答がオブジェクトではない場合",
+        "GitHub API の応答がオブジェクトではありません: uri=%s"),
+
     /* 定義：終了 */
     ;
 

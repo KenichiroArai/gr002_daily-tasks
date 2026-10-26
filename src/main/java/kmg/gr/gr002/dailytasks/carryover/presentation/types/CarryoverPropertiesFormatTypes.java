@@ -32,7 +32,7 @@ public enum CarryoverPropertiesFormatTypes implements KmgCmnTypes<String> {
      * @since 0.1.0
      */
     TO_STRING("文字列表現", "ToString", "トークンを含めない文字列表現",
-        "CarryoverPropertiesModel[repository=%s, dataDir=%s, defaultMinutesFile=%s, recentCount=%d]"),
+        "CarryoverPropertiesModel[repository=%s, dataDir=%s, defaultMinutesFile=%s, recentCount=%d, batchSize=%d]"),
 
     /* 定義：終了 */
     ;

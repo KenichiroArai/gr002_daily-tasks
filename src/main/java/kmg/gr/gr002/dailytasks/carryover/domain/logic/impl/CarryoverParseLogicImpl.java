@@ -301,7 +301,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
      *
      * @return 日付（yyyy-MM-dd）。取得できない場合は null
      */
-    private static String parseTitleDate(final String title) {
+    private static String titleDate(final String title) {
 
         String result = null;
 
@@ -329,6 +329,24 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
         }
 
         result = CarryoverParseLogicImpl.formatDate(matcher.group(1), matcher.group(2), matcher.group(3));
+        return result;
+
+    }
+
+    /**
+     * タイトルから日付を取得する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param title
+     *              Issue タイトル
+     *
+     * @return 日付（yyyy-MM-dd）。取得できない場合は null
+     */
+    @Override
+    public String parseTitleDate(final String title) {
+
+        final String result = CarryoverParseLogicImpl.titleDate(title);
         return result;
 
     }
@@ -422,7 +440,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
         CarryoverIssueModel result = null;
 
         /* 日付の取得 */
-        final String date = CarryoverParseLogicImpl.parseTitleDate(issue.getTitle());
+        final String date = CarryoverParseLogicImpl.titleDate(issue.getTitle());
 
         /* 日付が取得できたか */
         if (date == null) {

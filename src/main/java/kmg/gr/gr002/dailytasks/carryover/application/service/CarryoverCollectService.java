@@ -1,9 +1,12 @@
 package kmg.gr.gr002.dailytasks.carryover.application.service;
 
 import java.io.IOException;
+import java.util.List;
 
+import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssuesModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSourceModel;
+import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueRefModel;
 
 /**
  * 持ち越しの収集サービス<br>
@@ -32,6 +35,24 @@ public interface CarryoverCollectService {
     int analyze();
 
     /**
+     * 渡された参照だけを差分判定して解析し、保存する<br>
+     * <p>
+     * {@link #fetchRefs()} のあとで呼ぶ。戻り値の解析結果は {@link #getBatchIssues()} でも返す。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @param batch
+     *              この単位の参照（日付順）
+     *
+     * @return 解析して保存した Issue の件数
+     *
+     * @throws IOException
+     *                     取得、読み込みまたは書き込みに失敗した場合
+     */
+    int collectBatch(List<DailyTaskIssueRefModel> batch) throws IOException;
+
+    /**
      * 標準時間、保存済みの解析結果、リモートの Issue を取得する<br>
      * <p>
      * {@link #initialize(CarryoverSourceModel, int, boolean)} のあとで呼ぶ。標準時間は解析ロジックへ渡す。
@@ -43,6 +64,30 @@ public interface CarryoverCollectService {
      *                     読み込みまたは取得に失敗した場合
      */
     void fetch() throws IOException;
+
+    /**
+     * 本文を持たない参照を取得し、タイトルから日付を付ける<br>
+     * <p>
+     * 標準時間の読み込みは、最初の呼び出しで 1 回行う。差分判定の下限もここで決める。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @return 日々のタスク Issue の参照（作成順）
+     *
+     * @throws IOException
+     *                     読み込みまたは取得に失敗した場合
+     */
+    List<DailyTaskIssueRefModel> fetchRefs() throws IOException;
+
+    /**
+     * 直前の {@link #collectBatch(List)} で扱った解析結果を返す<br>
+     *
+     * @since 0.1.0
+     *
+     * @return その単位の解析結果。未収集の場合は空
+     */
+    List<CarryoverIssueModel> getBatchIssues();
 
     /**
      * 保存済みと今回解析した Issue を返す<br>

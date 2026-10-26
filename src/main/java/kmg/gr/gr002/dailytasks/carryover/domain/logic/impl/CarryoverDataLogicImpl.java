@@ -80,6 +80,40 @@ public class CarryoverDataLogicImpl implements CarryoverDataLogic {
     }
 
     /**
+     * Issue 番号の解析結果を読み込む<br>
+     *
+     * @since 0.1.0
+     *
+     * @param number
+     *               Issue 番号
+     *
+     * @return 解析結果。保存されていない場合は null
+     *
+     * @throws IOException
+     *                     読み込みに失敗した場合
+     */
+    @Override
+    public CarryoverIssueModel loadIssue(final int number) throws IOException {
+
+        CarryoverIssueModel      result = null;
+        final CarryoverIssueDto issue  = this.carryoverDataDao.loadIssue(number);
+
+        /* 保存済みの解析結果がないか */
+        if (issue == null) {
+
+            // 保存済みの解析結果がない場合
+
+            // 未保存として null を返す
+            return result;
+
+        }
+
+        result = issue.toCarryoverIssueModel(this.messageLogic);
+        return result;
+
+    }
+
+    /**
      * 保存済みの持ち越しの解析結果を読み込む<br>
      *
      * @since 0.1.0

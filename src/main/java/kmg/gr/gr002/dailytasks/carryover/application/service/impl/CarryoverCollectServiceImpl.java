@@ -16,6 +16,7 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssuesModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSourceModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueModel;
+import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueRefModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DefaultMinutesModel;
 import kmg.gr.gr002.dailytasks.carryover.application.service.CarryoverCollectService;
 
@@ -57,6 +58,27 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
     }
 
     /**
+     * Issue 番号が大きい順に指定件数を選んだときの、最小の Issue 番号を返す<br>
+     *
+     * @since 0.1.0
+     *
+     * @param issues
+     *               取得した参照
+     * @param count
+     *               件数
+     *
+     * @return 最小の Issue 番号。Issue がない場合は 0
+     */
+    private static int recentFromRefs(final List<DailyTaskIssueRefModel> issues, final int count) {
+
+        @SuppressWarnings("null")
+        final int result = issues.stream().map(DailyTaskIssueRefModel::getNumber).sorted(Comparator.reverseOrder())
+            .limit(count).min(Comparator.naturalOrder()).orElse(0);
+        return result;
+
+    }
+
+    /**
      * 持ち越しの解析結果の読み書き
      *
      * @since 0.1.0
@@ -85,11 +107,25 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
     private final DefaultMinutesLogic defaultMinutesLogic;
 
     /**
+     * 直前の単位で扱った解析結果
+     *
+     * @since 0.1.0
+     */
+    private List<CarryoverIssueModel> batchIssues;
+
+    /**
      * 全件モードか
      *
      * @since 0.1.0
      */
     private boolean full;
+
+    /**
+     * 標準時間を解析ロジックへ渡したか
+     *
+     * @since 0.1.0
+     */
+    private boolean minutesReady;
 
     /**
      * 保存済みと今回解析した Issue
@@ -154,6 +190,8 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
         this.issues = new CarryoverIssuesModel();
         this.pendingSaves = new ArrayList<>();
         this.remoteIssues = List.of();
+        this.batchIssues = List.of();
+        this.minutesReady = false;
 
     }
 
@@ -175,11 +213,12 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
 
         for (final DailyTaskIssueModel remoteIssue : this.remoteIssues) {
 
-            final Integer number = remoteIssue.getNumber();
+            final int number = remoteIssue.getNumber();
 
             /* 解析し直す必要があるか */
             final CarryoverIssueModel stored      = this.issues.find(number);
-            final boolean             needsUpdate = this.needsUpdate(stored, remoteIssue, this.recentFrom);
+            final String              updatedAt   = remoteIssue.getUpdatedAt();
+            final boolean             needsUpdate = this.needsUpdate(stored, number, updatedAt, this.recentFrom);
 
             if (!needsUpdate) {
 
@@ -202,6 +241,61 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
     }
 
     /**
+     * 渡された参照だけを差分判定して解析し、保存する<br>
+     * <p>
+     * {@link #fetchRefs()} のあとで呼ぶ。戻り値の解析結果は {@link #getBatchIssues()} でも返す。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @param batch
+     *              この単位の参照（日付順）
+     *
+     * @return 解析して保存した Issue の件数
+     *
+     * @throws IOException
+     *                     取得、読み込みまたは書き込みに失敗した場合
+     */
+    @Override
+    public int collectBatch(final List<DailyTaskIssueRefModel> batch) throws IOException {
+
+        int result = 0;
+        this.prepareMinutes();
+        final List<CarryoverIssueModel> collected = new ArrayList<>();
+
+        for (final DailyTaskIssueRefModel ref : batch) {
+
+            final int                 number    = ref.getNumber();
+            final CarryoverIssueModel stored    = this.carryoverDataLogic.loadIssue(number);
+            final String              updatedAt = ref.getUpdatedAt();
+
+            /* 解析し直す必要があるか */
+            final boolean needsUpdate = this.needsUpdate(stored, number, updatedAt, this.recentFrom);
+
+            if (!needsUpdate) {
+
+                // 解析し直す必要がない場合
+
+                // 保存済みの解析結果をこの単位の結果にする
+                collected.add(stored);
+                continue;
+
+            }
+
+            final DailyTaskIssueModel remoteIssue = this.dailyTaskIssueLogic.fetchIssue(number);
+            final CarryoverIssueModel parsed      = this.carryoverParseLogic.parse(remoteIssue);
+            this.carryoverDataLogic.saveIssue(parsed);
+            collected.add(parsed);
+            result++;
+
+        }
+
+        this.batchIssues = collected;
+        return result;
+
+    }
+
+    /**
      * 標準時間、保存済みの解析結果、リモートの Issue を取得する<br>
      * <p>
      * {@link #initialize(CarryoverSourceModel, int, boolean)} のあとで呼ぶ。標準時間は解析ロジックへ渡す。
@@ -216,8 +310,7 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
     public void fetch() throws IOException {
 
         /* 標準時間の読み込み */
-        final DefaultMinutesModel defaultMinutes = this.defaultMinutesLogic.loadDefaultMinutes();
-        this.carryoverParseLogic.initialize(defaultMinutes);
+        this.prepareMinutes();
 
         /* 保存済みの解析結果の読み込み */
         final CarryoverIssuesModel stored = this.carryoverDataLogic.loadIssues();
@@ -227,6 +320,54 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
         /* Issue の取得 */
         this.remoteIssues = this.dailyTaskIssueLogic.fetchAllIssues();
         this.recentFrom = CarryoverCollectServiceImpl.recentFrom(this.remoteIssues, this.recentCount);
+
+    }
+
+    /**
+     * 本文を持たない参照を取得し、タイトルから日付を付ける<br>
+     * <p>
+     * 標準時間の読み込みは、最初の呼び出しで 1 回行う。差分判定の下限もここで決める。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @return 日々のタスク Issue の参照（作成順）
+     *
+     * @throws IOException
+     *                     読み込みまたは取得に失敗した場合
+     */
+    @Override
+    public List<DailyTaskIssueRefModel> fetchRefs() throws IOException {
+
+        final List<DailyTaskIssueRefModel> result = new ArrayList<>();
+        this.prepareMinutes();
+        final List<DailyTaskIssueRefModel> fetched = this.dailyTaskIssueLogic.fetchIssueRefs();
+
+        for (final DailyTaskIssueRefModel fetchedRef : fetched) {
+
+            final String date = this.carryoverParseLogic.parseTitleDate(fetchedRef.getTitle());
+            result.add(new DailyTaskIssueRefModel(fetchedRef.getNumber(), fetchedRef.getTitle(), fetchedRef.getState(),
+                fetchedRef.getUpdatedAt(), date));
+
+        }
+
+        this.recentFrom = CarryoverCollectServiceImpl.recentFromRefs(result, this.recentCount);
+        return result;
+
+    }
+
+    /**
+     * 直前の {@link #collectBatch(List)} で扱った解析結果を返す<br>
+     *
+     * @since 0.1.0
+     *
+     * @return その単位の解析結果。未収集の場合は空
+     */
+    @Override
+    public List<CarryoverIssueModel> getBatchIssues() {
+
+        final List<CarryoverIssueModel> result = this.batchIssues;
+        return result;
 
     }
 
@@ -294,15 +435,17 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
      *
      * @param stored
      *                    保存済みの解析結果。未保存の場合は null
-     * @param remoteIssue
-     *                    取得した Issue
+     * @param issueNumber
+     *                    Issue 番号
+     * @param updatedAt
+     *                    取得した更新日時
      * @param recentFrom
      *                    更新日時に関係なく解析し直す Issue 番号の下限
      *
      * @return true：解析し直す、false：保存済みの解析結果を使う
      */
     @SuppressWarnings("hiding")
-    private boolean needsUpdate(final CarryoverIssueModel stored, final DailyTaskIssueModel remoteIssue,
+    private boolean needsUpdate(final CarryoverIssueModel stored, final int issueNumber, final String updatedAt,
         final int recentFrom) {
 
         boolean result = true;
@@ -328,8 +471,6 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
         }
 
         /* 直近の Issue か */
-        final Integer issueNumber = remoteIssue.getNumber();
-
         if (issueNumber >= recentFrom) {
 
             // 直近の Issue の場合
@@ -339,10 +480,38 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
 
         }
 
-        final String remoteUpdatedAt = remoteIssue.getUpdatedAt();
         final String storedUpdatedAt = stored.getUpdatedAt();
-        result = !remoteUpdatedAt.equals(storedUpdatedAt);
+        result = !updatedAt.equals(storedUpdatedAt);
         return result;
+
+    }
+
+    /**
+     * 標準時間を読み込み、解析ロジックへ渡す<br>
+     * <p>
+     * 最初の呼び出しだけ読む。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     読み込みに失敗した場合
+     */
+    private void prepareMinutes() throws IOException {
+
+        /* 標準時間を読み込み済みか */
+        if (this.minutesReady) {
+
+            // 標準時間を読み込み済みの場合
+
+            // 読み込み直さない
+            return;
+
+        }
+
+        final DefaultMinutesModel defaultMinutes = this.defaultMinutesLogic.loadDefaultMinutes();
+        this.carryoverParseLogic.initialize(defaultMinutes);
+        this.minutesReady = true;
 
     }
 

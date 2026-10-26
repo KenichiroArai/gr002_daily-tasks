@@ -48,6 +48,20 @@ public class CarryoverCommandImplTest {
     private static final class StubCarryoverService implements CarryoverService {
 
         /**
+         * 残りの単位の開始位置
+         *
+         * @since 0.1.0
+         */
+        private int batchIndex;
+
+        /**
+         * 単位の数
+         *
+         * @since 0.1.0
+         */
+        private int batchCount = 1;
+
+        /**
          * 呼び出し時のモード
          *
          * @since 0.1.0
@@ -77,6 +91,7 @@ public class CarryoverCommandImplTest {
         public void aggregate() {
 
             this.steps.add("aggregate");
+            this.batchIndex++;
 
         }
 
@@ -154,6 +169,35 @@ public class CarryoverCommandImplTest {
             this.propertiesList.add(properties);
             this.calls.add(full);
             this.steps.add("initialize");
+
+        }
+
+        /**
+         * 次の単位があるかを返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @return 単位が残っている場合は true
+         */
+        @Override
+        public boolean hasNext() {
+
+            final boolean result = this.batchIndex < this.batchCount;
+            return result;
+
+        }
+
+        /**
+         * 単位の数を設定する<br>
+         *
+         * @since 0.1.0
+         *
+         * @param batchCount
+         *                   単位の数
+         */
+        private void setBatchCount(final int batchCount) {
+
+            this.batchCount = batchCount;
 
         }
 
@@ -262,7 +306,7 @@ public class CarryoverCommandImplTest {
      * @since 0.1.0
      */
     private static final CarryoverPropertiesModel PROPERTIES
-        = new CarryoverPropertiesModel("owner/repo", "test-token", "out/data", "conf/minutes.json", 7);
+        = new CarryoverPropertiesModel("owner/repo", "test-token", "out/data", "conf/minutes.json", 7, 365);
 
     /**
      * テスト対象を作成する<br>
@@ -652,6 +696,36 @@ public class CarryoverCommandImplTest {
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedMessage, actualMessage, "例外のメッセージが一致しません");
+
+    }
+
+    /**
+     * run メソッドのテスト - 正常系:単位が 2 つのとき収集と集計を 2 回行う場合
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     入出力エラーが発生した場合
+     */
+    @Test
+    public void testRun_normalTwoBatches() throws IOException {
+
+        /* 期待値の定義 */
+        final List<String> expectedSteps = List.of("initialize", "collect", "aggregate", "collect", "aggregate");
+
+        /* 準備 */
+        final StubCarryoverService testService = new StubCarryoverService();
+        testService.setBatchCount(2);
+        final CarryoverCommandImpl testTarget = CarryoverCommandImplTest.createTarget(testService, System.out);
+
+        /* テスト対象の実行 */
+        testTarget.run();
+
+        /* 検証の準備 */
+        final List<String> actualSteps = testService.getSteps();
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedSteps, actualSteps, "呼び出しの順が一致しません");
 
     }
 

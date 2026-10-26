@@ -152,6 +152,21 @@ public class CarryoverDataLogicImplTest {
          * @return 設定した解析結果
          */
         @Override
+        public CarryoverIssueDto loadIssue(final int number) {
+
+            final CarryoverIssueDto result = this.issues.find(number);
+            return result;
+
+        }
+
+        /**
+         * 設定した解析結果を返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @return 設定した解析結果
+         */
+        @Override
         public CarryoverIssuesDto loadIssues() {
 
             final CarryoverIssuesDto result = this.issues;
@@ -353,6 +368,67 @@ public class CarryoverDataLogicImplTest {
         /* 検証の実施 */
         Assertions.assertEquals(expectedLatestIssue, actualLatestIssue, "最新の Issue 番号が一致しません");
         Assertions.assertEquals(expectedDataDir, actualDataDir, "出力先のディレクトリが一致しません");
+
+    }
+
+    /**
+     * loadIssue メソッドのテスト - 正常系:保存済みの 1 件をモデルに変換する場合
+     *
+     * @since 0.1.0
+     *
+     * @throws Exception
+     *                   読み込みに失敗した場合
+     */
+    @Test
+    public void testLoadIssue_normalConvert() throws Exception {
+
+        /* 期待値の定義 */
+        final int expectedNumber = 371;
+
+        /* 準備 */
+        final CarryoverIssueDto      testDto    = new CarryoverIssueDto(371, "2026年10月06日のタスク", "2026-10-06", "open",
+            "2026-10-06T14:23:08Z", List.of("持ち越し"), null, 1, 0.0, List.of());
+        final CarryoverIssuesDto     testIssues = new CarryoverIssuesDto();
+        testIssues.put(371, testDto);
+        final StubCarryoverDataDao   testData   = new StubCarryoverDataDao(testIssues);
+        final CarryoverDataLogicImpl testTarget = CarryoverDataLogicImplTest.createTarget(testData);
+
+        /* テスト対象の実行 */
+        final CarryoverIssueModel testResult = testTarget.loadIssue(371);
+
+        /* 検証の準備 */
+        final int actualNumber = testResult.getNumber();
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedNumber, actualNumber, "Issue 番号が一致しません");
+
+    }
+
+    /**
+     * loadIssue メソッドのテスト - 準正常系:保存済みの解析結果がない場合
+     *
+     * @since 0.1.0
+     *
+     * @throws Exception
+     *                   読み込みに失敗した場合
+     */
+    @Test
+    public void testLoadIssue_semiMissing() throws Exception {
+
+        /* 期待値の定義 */
+
+        /* 準備 */
+        final StubCarryoverDataDao   testData   = new StubCarryoverDataDao(new CarryoverIssuesDto());
+        final CarryoverDataLogicImpl testTarget = CarryoverDataLogicImplTest.createTarget(testData);
+
+        /* テスト対象の実行 */
+        final CarryoverIssueModel testResult = testTarget.loadIssue(371);
+
+        /* 検証の準備 */
+        final boolean actualMissing = testResult == null;
+
+        /* 検証の実施 */
+        Assertions.assertTrue(actualMissing, "未保存のときは null になる必要があります");
 
     }
 

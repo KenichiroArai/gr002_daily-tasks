@@ -215,7 +215,7 @@ public class CarryoverParseLogicImplTest {
     }
 
     /**
-     * private の parseTitleDate メソッドを呼び出す<br>
+     * parseTitleDate メソッドを呼び出す<br>
      *
      * @since 0.1.0
      *
@@ -223,16 +223,11 @@ public class CarryoverParseLogicImplTest {
      *              Issue タイトル
      *
      * @return 日付
-     *
-     * @throws Exception
-     *                   例外が発生した場合
      */
-    private static String parseTitleDate(final String title) throws Exception {
+    private static String parseTitleDate(final String title) {
 
-        final String result
-            = ReflectionTestUtil.invokeStatic(CarryoverParseLogicImpl.class, "parseTitleDate", new Class<?>[] {
-                String.class
-            }, title);
+        final CarryoverParseLogicImpl target = new CarryoverParseLogicImpl(MessageLogicTestUtil.create());
+        final String                  result = target.parseTitleDate(title);
         return result;
 
     }

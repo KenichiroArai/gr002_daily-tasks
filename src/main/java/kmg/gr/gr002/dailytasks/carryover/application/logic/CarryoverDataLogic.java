@@ -32,6 +32,21 @@ public interface CarryoverDataLogic {
     void initialize(Path dataDir);
 
     /**
+     * Issue 番号の解析結果を読み込む<br>
+     *
+     * @since 0.1.0
+     *
+     * @param number
+     *               Issue 番号
+     *
+     * @return 解析結果。保存されていない場合は null
+     *
+     * @throws IOException
+     *                     読み込みに失敗した場合
+     */
+    CarryoverIssueModel loadIssue(int number) throws IOException;
+
+    /**
      * 保存済みの持ち越しの解析結果を読み込む<br>
      *
      * @since 0.1.0

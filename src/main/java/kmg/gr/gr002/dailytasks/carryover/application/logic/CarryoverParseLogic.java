@@ -43,4 +43,16 @@ public interface CarryoverParseLogic {
      */
     CarryoverIssueModel parse(DailyTaskIssueModel issue);
 
+    /**
+     * タイトルから日付を取得する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param title
+     *              Issue タイトル
+     *
+     * @return 日付（yyyy-MM-dd）。取得できない場合は null
+     */
+    String parseTitleDate(String title);
+
 }

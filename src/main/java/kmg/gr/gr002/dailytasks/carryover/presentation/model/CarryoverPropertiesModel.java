@@ -54,6 +54,13 @@ public class CarryoverPropertiesModel {
     private final Path defaultMinutesFilePath;
 
     /**
+     * 収集と集計を繰り返す単位（Issue の件数）。1 未満のときは全件を 1 単位にする
+     *
+     * @since 0.1.0
+     */
+    private final int batchSize;
+
+    /**
      * 差分モードで更新日時に関係なく解析し直す最新の Issue の件数
      *
      * @since 0.1.0
@@ -91,9 +98,11 @@ public class CarryoverPropertiesModel {
      *                           標準時間の設定ファイル（例: config/default-minutes.json）
      * @param recentCount
      *                           差分モードで更新日時に関係なく解析し直す最新の Issue の件数
+     * @param batchSize
+     *                           収集と集計を繰り返す単位（Issue の件数）。1 未満のときは全件を 1 単位にする
      */
     public CarryoverPropertiesModel(final String repository, final String token, final String dataDir,
-        final String defaultMinutesFile, final int recentCount) {
+        final String defaultMinutesFile, final int recentCount, final int batchSize) {
 
         /* オリジナル */
         this.repository = repository;
@@ -101,6 +110,7 @@ public class CarryoverPropertiesModel {
         this.dataDir = dataDir;
         this.defaultMinutesFile = defaultMinutesFile;
         this.recentCount = recentCount;
+        this.batchSize = batchSize;
 
         /* 変換後 */
         this.dataDirPath = Path.of(dataDir);
@@ -132,6 +142,20 @@ public class CarryoverPropertiesModel {
     public Path getDefaultMinutesFile() {
 
         final Path result = this.defaultMinutesFilePath;
+        return result;
+
+    }
+
+    /**
+     * 収集と集計を繰り返す単位を返す<br>
+     *
+     * @since 0.1.0
+     *
+     * @return 単位（Issue の件数）。1 未満のときは全件を 1 単位にする
+     */
+    public int getBatchSize() {
+
+        final int result = this.batchSize;
         return result;
 
     }
@@ -192,7 +216,7 @@ public class CarryoverPropertiesModel {
     public String toString() {
 
         final String result = String.format(CarryoverPropertiesFormatTypes.TO_STRING.getFormat(), this.repository,
-            this.dataDir, this.defaultMinutesFile, Integer.valueOf(this.recentCount));
+            this.dataDir, this.defaultMinutesFile, Integer.valueOf(this.recentCount), Integer.valueOf(this.batchSize));
         return result;
 
     }

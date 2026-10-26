@@ -130,6 +130,62 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
     }
 
     /**
+     * Issue ごとの解析結果のパスを返す<br>
+     *
+     * @since 0.1.0
+     *
+     * @param number
+     *               Issue 番号
+     *
+     * @return JSON ファイルのパス
+     */
+    private Path issuePath(final int number) {
+
+        final Path result = this.dataDir.resolve(CarryoverDataFileTypes.ISSUES_DIR.getFileName())
+            .resolve(String.format(CarryoverDataFormatTypes.ISSUE_FILE_NAME.getFormat(), number,
+                CarryoverDataFileTypes.JSON_EXTENSION.getFileName()));
+        return result;
+
+    }
+
+    /**
+     * Issue 番号の解析結果を読み込む<br>
+     *
+     * @since 0.1.0
+     *
+     * @param number
+     *               Issue 番号
+     *
+     * @return 解析結果。ファイルがない場合は null
+     *
+     * @throws IOException
+     *                     読み込みに失敗した場合
+     */
+    @Override
+    public CarryoverIssueDto loadIssue(final int number) throws IOException {
+
+        CarryoverIssueDto result = null;
+        final Path        path   = this.issuePath(number);
+
+        /* 解析結果のファイルがあるか */
+        final boolean stored = Files.isRegularFile(path);
+
+        if (!stored) {
+
+            // 解析結果のファイルがない場合
+
+            // 未保存として null を返す
+            return result;
+
+        }
+
+        final CarryoverIssueJsonDto issueJson = this.readIssue(path);
+        result = issueJson.toCarryoverIssueDto();
+        return result;
+
+    }
+
+    /**
      * 保存済みの Issue ごとの解析結果を読み込む<br>
      *
      * @since 0.1.0
@@ -221,9 +277,7 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
     @Override
     public void saveIssue(final CarryoverIssueDto issue) throws IOException {
 
-        final Path                  path      = this.dataDir.resolve(CarryoverDataFileTypes.ISSUES_DIR.getFileName())
-            .resolve(String.format(CarryoverDataFormatTypes.ISSUE_FILE_NAME.getFormat(), issue.getNumber(),
-                CarryoverDataFileTypes.JSON_EXTENSION.getFileName()));
+        final Path                  path      = this.issuePath(issue.getNumber());
         final CarryoverIssueJsonDto issueJson = new CarryoverIssueJsonDto(issue);
         this.write(path, issueJson);
 

@@ -1,6 +1,7 @@
 package kmg.gr.gr002.dailytasks.carryover.domain.logic.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.context.annotation.Scope;
@@ -8,7 +9,9 @@ import org.springframework.stereotype.Component;
 
 import kmg.gr.gr002.dailytasks.carryover.application.logic.DailyTaskIssueLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueModel;
+import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueRefModel;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubIssueDto;
+import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubIssueRefDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubSettingsDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.api.GitHubIssueApi;
 
@@ -69,6 +72,59 @@ public class DailyTaskIssueLogicImpl implements DailyTaskIssueLogic {
         @SuppressWarnings("null")
         final List<DailyTaskIssueModel> models = issues.stream().map(GitHubIssueDto::toDailyTaskIssueModel).toList();
         result = models;
+        return result;
+
+    }
+
+    /**
+     * Issue を 1 件取得する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param number
+     *               Issue 番号
+     *
+     * @return 日々のタスク Issue
+     *
+     * @throws IOException
+     *                     取得に失敗した場合
+     */
+    @Override
+    public DailyTaskIssueModel fetchIssue(final int number) throws IOException {
+
+        final DailyTaskIssueModel result;
+        final GitHubIssueDto      issue = this.gitHubIssueApi.fetchIssue(number);
+
+        result = issue.toDailyTaskIssueModel();
+        return result;
+
+    }
+
+    /**
+     * すべての日々のタスク Issue の参照（本文なし）を取得する<br>
+     * <p>
+     * 日付はまだ入れない。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @return 日々のタスク Issue の参照（作成順）。日付は null
+     *
+     * @throws IOException
+     *                     取得に失敗した場合
+     */
+    @Override
+    public List<DailyTaskIssueRefModel> fetchIssueRefs() throws IOException {
+
+        final List<DailyTaskIssueRefModel> result = new ArrayList<>();
+        final List<GitHubIssueRefDto>      refs   = this.gitHubIssueApi.fetchIssueRefs();
+
+        for (final GitHubIssueRefDto ref : refs) {
+
+            result.add(ref.toDailyTaskIssueRefModel());
+
+        }
+
         return result;
 
     }

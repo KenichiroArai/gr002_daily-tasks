@@ -53,7 +53,7 @@ public class CarryoverSourceModelTest {
 
         /* 準備 */
         final CarryoverPropertiesModel testProperties = new CarryoverPropertiesModel(expectedRepository, expectedToken,
-            "docs/data", "config/default-minutes.json", 10);
+            "docs/data", "config/default-minutes.json", 10, 365);
 
         /* テスト対象の実行 */
         final CarryoverSourceModel testResult = new CarryoverSourceModel(testProperties);

@@ -127,7 +127,7 @@ public class CarryoverPropertiesFormatTypesTest {
 
         /* 準備 */
         final String testKey
-            = "CarryoverPropertiesModel[repository=%s, dataDir=%s, defaultMinutesFile=%s, recentCount=%d]";
+            = "CarryoverPropertiesModel[repository=%s, dataDir=%s, defaultMinutesFile=%s, recentCount=%d, batchSize=%d]";
 
         /* テスト対象の実行 */
         final CarryoverPropertiesFormatTypes testResult = CarryoverPropertiesFormatTypes.getEnum(testKey);

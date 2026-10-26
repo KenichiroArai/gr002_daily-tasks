@@ -45,7 +45,7 @@ src/main/java/kmg/gr/gr002/dailytasks/
   carryover/                 # 機能パッケージ（持ち越しの収集・集計）
     presentation/            # CLI などの入出力層
       command/               # コマンドのインタフェース（CommandLineRunner を継承）
-      command/impl/          # コマンドの実装（run で引数の解析、設定の引き継ぎ）
+      command/impl/          # コマンドの実装（run は引数の解析のあと、単位ごとに収集と集計を繰り返す）
       model/                 # 設定ファイルの値で application にもそのまま引き継ぐ設定（@ConfigurationProperties の CarryoverPropertiesModel）
       types/                 # 列挙型（コマンド引数 CommandOptionTypes、設定の文字列表現 CarryoverPropertiesFormatTypes）
       service/               # application に求めるサービス（CarryoverService。実装は application）
@@ -72,7 +72,7 @@ src/main/java/kmg/gr/gr002/dailytasks/
       dto/json/              # JSON ファイルの形（Jackson のアノテーションを持つのはここだけ）。domain の DTO との変換もここ
       types/                 # 列挙型（出力ファイル名 CarryoverDataFileTypes、JSON の出力書式 CarryoverDataFormatTypes、GitHub API の URL GitHubApiUrlTypes、ヘッダ GitHubApiHeaderTypes、項目名 GitHubIssueFieldTypes、空文字 GitHubApiTextTypes）
 src/main/resources/
-  application.properties     # 設定値（carryover.*: 対象リポジトリ、トークン、出力先、標準時間のファイル、最新の件数。spring.*: Spring Boot の設定）
+  application.properties     # 設定値（carryover.*: 対象リポジトリ、トークン、出力先、標準時間のファイル、最新の件数、単位の件数 batchSize。spring.*: Spring Boot の設定）
   messages.properties        # 一般メッセージ（使い方、例外）。キーは Gr002GenMsgTypes の key
   messages-log.properties    # ログメッセージ。キーは Gr002LogMsgTypes の key
   logback-spring.xml
@@ -153,7 +153,30 @@ repository 層のデータアクセスは、取得元によって次の 2 つに
 | サービス | `service/` | `XxxService` / `XxxServiceImpl` | `@Service` | 一連の流れを行う |
 | ロジック | `logic/` | `XxxLogic` / `XxxLogicImpl` | `@Component` | 個々の処理を行い、何度も呼ばれる |
 
-- **サービス**: サービス・ロジック・ユーティリティ・モデルなどを使い、一連の流れを行う。初期化、主処理、サブ処理、終了処理のように、処理（メソッド）の流れがはっきりしている。役割が複数あるときは統合サービスを残し、役割ごとのサービスに分ける（例: `CarryoverServiceImpl#collect` は収集サービスの取得、解析、保存を順に呼び、`aggregate` は集計サービスの集計と保存を順に呼ぶ）。呼び出し元（コマンド）が呼ぶのは役割までとする
+- **サービス**: サービス・ロジック・ユーティリティ・モデルなどを使い、一連の流れを行う。初期化、主処理、サブ処理、終了処理のように、処理（メソッド）の流れがはっきりしている。役割が複数あるときは統合サービスを残し、役割ごとのサービスに分ける（例: コマンドが呼ぶのは `initialize` と、単位ごとの `collect` / `aggregate` まで。`collect` はその単位の取得、解析、保存を行い、`aggregate` はそこまでの集計を足して `summary.json` を上書きする）。呼び出し元（コマンド）が呼ぶのは役割までとする。`ObjectProvider` から取るのはループの外の 1 回で、単位が続くあいだは同じインスタンスで次を繰り返す
+
+```java
+/* 収集と集計の実行 */
+service.initialize(this.properties, this.full);
+
+/* 次の単位があるか */
+boolean hasNext = service.hasNext();
+
+while (hasNext) {
+
+    // 次の単位がある場合
+
+    // その単位を収集する
+    service.collect();
+
+    // その単位までを集計して保存する
+    service.aggregate();
+
+    /* 次の単位があるか */
+    hasNext = service.hasNext();
+
+}
+```
 - **ロジック**: ロジック・ユーティリティ・モデルなどを使うが、サービスは呼ばない。メソッドごとに論理のまとまりになっており、各メソッドは基本的に互いに依存せず、サービス・ロジック・ユーティリティなどから何度も呼ばれる（例: get、read、write、exists、parse、aggregate、変換）。メソッド同士の依存は薄く、共通のパラメータだけをフィールドで共有する。インスタンス変数を共有する点がユーティリティとは異なる
 - インタフェースと実装に分ける場合は、ほかの型と同じく、インタフェースを呼ぶ側の層の `logic/`、実装を呼ばれる側の層の `logic/impl/` に置く。自層の中だけで使う部品（変換など）は、インタフェースを作らずに `logic/` に具象クラスを置いてよい
 - 名前に `Parser`、`Aggregator`、`Converter`、`Provider` などは使わず、`XxxLogic`（例: `CarryoverParseLogic`、`CarryoverAggregateLogic`、`MessageLogic`）とする

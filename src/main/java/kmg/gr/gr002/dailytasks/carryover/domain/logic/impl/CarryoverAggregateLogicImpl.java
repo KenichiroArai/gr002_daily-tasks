@@ -1,15 +1,13 @@
 package kmg.gr.gr002.dailytasks.carryover.domain.logic.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
 import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverAggregateLogic;
+import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverAggregationModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverItemModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSummaryModel;
@@ -31,6 +29,64 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.DailySummaryModel;
 public class CarryoverAggregateLogicImpl implements CarryoverAggregateLogic {
 
     /**
+     * 解析結果を 1 件、集計の状態へ足す<br>
+     * <p>
+     * 日付がある Issue は、呼ぶ側が日付順に渡す。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @param aggregation
+     *                    単位をまたいで持ち越す集計の状態
+     * @param issue
+     *                    持ち越しの解析結果
+     */
+    @Override
+    public void add(final CarryoverAggregationModel aggregation, final CarryoverIssueModel issue) {
+
+        aggregation.updateLatest(issue.getNumber());
+
+        /* 日付がないか */
+        final String date = issue.getDate();
+
+        if (date == null) {
+
+            // 日付がない場合
+
+            // 最大の Issue 番号だけ更新して次へ進む
+            return;
+
+        }
+
+        final boolean hasSection = issue.hasSection();
+        aggregation.track(hasSection);
+
+        /* 集計対象の追跡中か */
+        final boolean tracking = aggregation.isTracking();
+
+        if (!tracking) {
+
+            // 集計対象の追跡中ではない場合
+
+            // 日別の行にはしない
+            return;
+
+        }
+
+        final DailySummaryModel day = new DailySummaryModel(date, issue.getNumber(), issue.getDeclaredCount());
+
+        for (final CarryoverItemModel item : issue.getItems()) {
+
+            day.add(item);
+            aggregation.addItem(item.getName());
+
+        }
+
+        aggregation.addDay(day);
+
+    }
+
+    /**
      * 解析結果を集計する<br>
      *
      * @since 0.1.0
@@ -44,56 +100,58 @@ public class CarryoverAggregateLogicImpl implements CarryoverAggregateLogic {
     @Override
     public CarryoverSummaryModel aggregate(final Collection<CarryoverIssueModel> issues) {
 
-        CarryoverSummaryModel result = null;
+        final CarryoverSummaryModel    result;
+        final CarryoverAggregationModel aggregation = new CarryoverAggregationModel();
 
         /* 日付のある Issue を日付順に並べる */
         final List<CarryoverIssueModel> sorted = issues.stream().filter(issue -> issue.getDate() != null)
             .sorted(Comparator.comparing(CarryoverIssueModel::getDate).thenComparingInt(CarryoverIssueModel::getNumber))
             .toList();
 
-        /* 日別の集計 */
-        final List<DailySummaryModel> days = new ArrayList<>();
-
-        /* 項目名ごとの延べ件数。メソッド内の一時集計で、外には渡さない */
-        final Map<String, Integer> itemCounts = new HashMap<>();
-        boolean                    tracking   = false;
-
         for (final CarryoverIssueModel issue : sorted) {
 
-            tracking = tracking || issue.hasSection();
+            this.add(aggregation, issue);
 
-            /* 集計対象の追跡中か */
-            if (!tracking) {
+        }
 
-                // 集計対象の追跡中ではない場合
+        for (final CarryoverIssueModel issue : issues) {
 
-                // 次の Issue へ進む
+            /* 日付があるか */
+            final String date = issue.getDate();
+
+            if (date != null) {
+
+                // 日付がある場合
+
+                // 日付順の追加で足し終わっている
                 continue;
 
             }
 
-            final DailySummaryModel day
-                = new DailySummaryModel(issue.getDate(), issue.getNumber(), issue.getDeclaredCount());
-
-            for (final CarryoverItemModel item : issue.getItems()) {
-
-                day.add(item);
-                itemCounts.merge(item.getName(), 1, Integer::sum);
-
-            }
-
-            days.add(day);
+            this.add(aggregation, issue);
 
         }
 
-        /* 項目名を延べ件数の多い順に並べる */
-        final List<String> items = itemCounts.entrySet().stream()
-            .sorted(Map.Entry.<String, Integer>comparingByValue().reversed().thenComparing(Map.Entry.comparingByKey()))
-            .map(Map.Entry::getKey).toList();
+        result = this.toSummary(aggregation);
+        return result;
 
-        final int latestIssue = issues.stream().mapToInt(CarryoverIssueModel::getNumber).max().orElse(0);
+    }
 
-        result = new CarryoverSummaryModel(latestIssue, items, days);
+    /**
+     * ここまでの集計の状態から画面用の集計を作る<br>
+     *
+     * @since 0.1.0
+     *
+     * @param aggregation
+     *                    単位をまたいで持ち越す集計の状態
+     *
+     * @return 画面用の持ち越しの集計
+     */
+    @Override
+    public CarryoverSummaryModel toSummary(final CarryoverAggregationModel aggregation) {
+
+        final CarryoverSummaryModel result = new CarryoverSummaryModel(aggregation.getLatestIssue(),
+            aggregation.rankedItemNames(), aggregation.getDays());
         return result;
 
     }
