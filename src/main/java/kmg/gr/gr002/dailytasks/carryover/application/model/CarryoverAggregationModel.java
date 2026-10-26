@@ -91,7 +91,22 @@ public class CarryoverAggregationModel {
      */
     public void addItem(final String name) {
 
-        this.itemCounts.merge(name, 1, Integer::sum);
+        final Integer current = this.itemCounts.get(name);
+
+        /* まだ数えていない項目か */
+        if (current == null) {
+
+            // まだ数えていない項目の場合
+
+            // 1 件として登録する
+            this.itemCounts.put(name, 1);
+            return;
+
+        }
+
+        // 延べ件数を 1 増やす
+        final int next = current.intValue() + 1;
+        this.itemCounts.put(name, next);
 
     }
 

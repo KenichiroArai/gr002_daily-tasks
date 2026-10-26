@@ -100,7 +100,7 @@ public class CarryoverAggregateLogicImpl implements CarryoverAggregateLogic {
     @Override
     public CarryoverSummaryModel aggregate(final Collection<CarryoverIssueModel> issues) {
 
-        final CarryoverSummaryModel    result;
+        final CarryoverSummaryModel     result;
         final CarryoverAggregationModel aggregation = new CarryoverAggregationModel();
 
         /* 日付のある Issue を日付順に並べる */

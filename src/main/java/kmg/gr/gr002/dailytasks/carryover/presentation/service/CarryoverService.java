@@ -34,8 +34,8 @@ public interface CarryoverService {
     /**
      * 次の単位の Issue を取得して解析し、Issue ごとの JSON を出力する<br>
      * <p>
-     * {@link #hasNext()} が true のあとで呼ぶ。差分モードでは、Issue 番号が大きい順の最新の指定件数（設定の
-     * recentCount）を除き、保存済みの JSON と更新日時が同じ Issue は解析しない。集計は {@link #aggregate()} で行う。
+     * {@link #hasNext()} が true のあとで呼ぶ。差分モードでは、Issue 番号が大きい順の最新の指定件数（設定の recentCount）を除き、保存済みの JSON と更新日時が同じ Issue
+     * は解析しない。集計は {@link #aggregate()} で行う。
      * </p>
      *
      * @since 0.1.0

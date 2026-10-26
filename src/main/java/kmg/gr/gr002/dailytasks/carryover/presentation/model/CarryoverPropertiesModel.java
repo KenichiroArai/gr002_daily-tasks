@@ -119,6 +119,20 @@ public class CarryoverPropertiesModel {
     }
 
     /**
+     * 収集と集計を繰り返す単位を返す<br>
+     *
+     * @since 0.1.0
+     *
+     * @return 単位（Issue の件数）。1 未満のときは全件を 1 単位にする
+     */
+    public int getBatchSize() {
+
+        final int result = this.batchSize;
+        return result;
+
+    }
+
+    /**
      * 出力先のディレクトリを返す<br>
      *
      * @since 0.1.0
@@ -142,20 +156,6 @@ public class CarryoverPropertiesModel {
     public Path getDefaultMinutesFile() {
 
         final Path result = this.defaultMinutesFilePath;
-        return result;
-
-    }
-
-    /**
-     * 収集と集計を繰り返す単位を返す<br>
-     *
-     * @since 0.1.0
-     *
-     * @return 単位（Issue の件数）。1 未満のときは全件を 1 単位にする
-     */
-    public int getBatchSize() {
-
-        final int result = this.batchSize;
         return result;
 
     }

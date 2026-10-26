@@ -292,6 +292,35 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
     }
 
     /**
+     * 本文を行に分割する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param body
+     *             Issue 本文。null の場合は空とみなす
+     *
+     * @return 行
+     */
+    private static List<String> splitLines(final String body) {
+
+        List<String> result = List.of();
+
+        /* 本文がないか */
+        if (body == null) {
+
+            // 本文がない場合
+
+            // 空の行一覧を返す
+            return result;
+
+        }
+
+        result = List.of(body.split(CarryoverParsePatternTypes.LINE_SEPARATOR.getPattern(), -1));
+        return result;
+
+    }
+
+    /**
      * タイトルから日付を取得する<br>
      *
      * @since 0.1.0
@@ -329,53 +358,6 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
         }
 
         result = CarryoverParseLogicImpl.formatDate(matcher.group(1), matcher.group(2), matcher.group(3));
-        return result;
-
-    }
-
-    /**
-     * タイトルから日付を取得する<br>
-     *
-     * @since 0.1.0
-     *
-     * @param title
-     *              Issue タイトル
-     *
-     * @return 日付（yyyy-MM-dd）。取得できない場合は null
-     */
-    @Override
-    public String parseTitleDate(final String title) {
-
-        final String result = CarryoverParseLogicImpl.titleDate(title);
-        return result;
-
-    }
-
-    /**
-     * 本文を行に分割する<br>
-     *
-     * @since 0.1.0
-     *
-     * @param body
-     *             Issue 本文。null の場合は空とみなす
-     *
-     * @return 行
-     */
-    private static List<String> splitLines(final String body) {
-
-        List<String> result = List.of();
-
-        /* 本文がないか */
-        if (body == null) {
-
-            // 本文がない場合
-
-            // 空の行一覧を返す
-            return result;
-
-        }
-
-        result = List.of(body.split(CarryoverParsePatternTypes.LINE_SEPARATOR.getPattern(), -1));
         return result;
 
     }
@@ -645,6 +627,24 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         result
             = new CarryoverItemModel(name, originDate, checked, defaultValue, MinutesSourceTypes.DEFAULT, section, raw);
+        return result;
+
+    }
+
+    /**
+     * タイトルから日付を取得する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param title
+     *              Issue タイトル
+     *
+     * @return 日付（yyyy-MM-dd）。取得できない場合は null
+     */
+    @Override
+    public String parseTitleDate(final String title) {
+
+        final String result = CarryoverParseLogicImpl.titleDate(title);
         return result;
 
     }

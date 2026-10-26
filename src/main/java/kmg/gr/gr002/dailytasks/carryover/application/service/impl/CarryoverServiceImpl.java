@@ -81,9 +81,9 @@ public class CarryoverServiceImpl implements CarryoverService {
      * @since 0.1.0
      *
      * @param refs
-     *                 本文を持たない参照
+     *                  本文を持たない参照
      * @param batchSize
-     *                 単位（Issue の件数）。1 未満のときは全件を 1 単位にする
+     *                  単位（Issue の件数）。1 未満のときは全件を 1 単位にする
      *
      * @return 単位の一覧
      */
@@ -91,14 +91,13 @@ public class CarryoverServiceImpl implements CarryoverService {
     private static List<List<DailyTaskIssueRefModel>> split(final List<DailyTaskIssueRefModel> refs,
         final int batchSize) {
 
-        final List<List<DailyTaskIssueRefModel>> result = new ArrayList<>();
+        final List<List<DailyTaskIssueRefModel>> result  = new ArrayList<>();
         final List<DailyTaskIssueRefModel>       dated
-            = refs.stream().filter(ref -> ref.getDate() != null)
-                .sorted(Comparator.comparing(DailyTaskIssueRefModel::getDate)
-                    .thenComparingInt(DailyTaskIssueRefModel::getNumber))
+                                                         = refs
+                .stream().filter(ref -> ref.getDate() != null).sorted(Comparator
+                    .comparing(DailyTaskIssueRefModel::getDate).thenComparingInt(DailyTaskIssueRefModel::getNumber))
                 .toList();
-        final List<DailyTaskIssueRefModel>       undated
-            = refs.stream().filter(ref -> ref.getDate() == null).toList();
+        final List<DailyTaskIssueRefModel>       undated = refs.stream().filter(ref -> ref.getDate() == null).toList();
 
         /* 全件を 1 単位にするか */
         if (batchSize < 1) {
@@ -321,8 +320,8 @@ public class CarryoverServiceImpl implements CarryoverService {
     /**
      * 次の単位の Issue を取得して解析し、Issue ごとの JSON を出力する<br>
      * <p>
-     * {@link #hasNext()} が true のあとで呼ぶ。差分モードでは、Issue 番号が大きい順の最新の指定件数（設定の
-     * recentCount）を除き、保存済みの JSON と更新日時が同じ Issue は解析しない。集計は {@link #aggregate()} で行う。
+     * {@link #hasNext()} が true のあとで呼ぶ。差分モードでは、Issue 番号が大きい順の最新の指定件数（設定の recentCount）を除き、保存済みの JSON と更新日時が同じ Issue
+     * は解析しない。集計は {@link #aggregate()} で行う。
      * </p>
      *
      * @since 0.1.0
@@ -366,10 +365,10 @@ public class CarryoverServiceImpl implements CarryoverService {
         final List<CarryoverIssueModel> collected = this.carryoverCollectService.getBatchIssues();
         this.batchIssues = collected;
         this.savedCount = this.savedCount + result;
-        this.defaultCount = this.defaultCount
-            + CarryoverServiceImpl.countBySource(collected, MinutesSourceTypes.DEFAULT);
-        this.unknownCount = this.unknownCount
-            + CarryoverServiceImpl.countBySource(collected, MinutesSourceTypes.UNKNOWN);
+        this.defaultCount
+            = this.defaultCount + CarryoverServiceImpl.countBySource(collected, MinutesSourceTypes.DEFAULT);
+        this.unknownCount
+            = this.unknownCount + CarryoverServiceImpl.countBySource(collected, MinutesSourceTypes.UNKNOWN);
         this.batchAggregated = false;
         return result;
 
@@ -444,23 +443,6 @@ public class CarryoverServiceImpl implements CarryoverService {
     }
 
     /**
-     * 本文を持たない索引を作り、単位に分ける<br>
-     *
-     * @since 0.1.0
-     *
-     * @throws IOException
-     *                     取得または読み込みに失敗した場合
-     */
-    private void open() throws IOException {
-
-        final List<DailyTaskIssueRefModel> refs = this.carryoverCollectService.fetchRefs();
-        this.remoteCount = refs.size();
-        this.batches = CarryoverServiceImpl.split(refs, this.batchSize);
-        this.opened = true;
-
-    }
-
-    /**
      * 収集と集計の結果をログに出す<br>
      *
      * @since 0.1.0
@@ -504,6 +486,23 @@ public class CarryoverServiceImpl implements CarryoverService {
 
         result = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12011);
         return result;
+
+    }
+
+    /**
+     * 本文を持たない索引を作り、単位に分ける<br>
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     取得または読み込みに失敗した場合
+     */
+    private void open() throws IOException {
+
+        final List<DailyTaskIssueRefModel> refs = this.carryoverCollectService.fetchRefs();
+        this.remoteCount = refs.size();
+        this.batches = CarryoverServiceImpl.split(refs, this.batchSize);
+        this.opened = true;
 
     }
 

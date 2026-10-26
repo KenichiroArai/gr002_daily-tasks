@@ -95,7 +95,7 @@ public class CarryoverDataLogicImpl implements CarryoverDataLogic {
     @Override
     public CarryoverIssueModel loadIssue(final int number) throws IOException {
 
-        CarryoverIssueModel      result = null;
+        CarryoverIssueModel     result = null;
         final CarryoverIssueDto issue  = this.carryoverDataDao.loadIssue(number);
 
         /* 保存済みの解析結果がないか */
