@@ -270,7 +270,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
     @Override
     public GitHubIssueDto fetchIssue(final int number) throws IOException {
 
-        GitHubIssueDto result = null;
+        final GitHubIssueDto result;
 
         try (HttpClient httpClient = this.httpClientSupplier.get()) {
 
@@ -414,7 +414,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
     private JsonNode fetchResponse(final HttpClient httpClient, final URI uri, final boolean arrayExpected)
         throws IOException {
 
-        JsonNode result = null;
+        final JsonNode result;
 
         /* リクエストの作成 */
         final HttpRequest.Builder builder = HttpRequest.newBuilder(uri).timeout(GitHubIssueApiImpl.TIMEOUT)
@@ -534,7 +534,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
      */
     private JsonNode readTree(final String body) throws IOException {
 
-        JsonNode result = null;
+        final JsonNode result;
 
         try {
 
@@ -567,7 +567,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
      */
     private HttpResponse<String> send(final HttpClient httpClient, final HttpRequest request) throws IOException {
 
-        HttpResponse<String> result = null;
+        final HttpResponse<String> result;
 
         try {
 

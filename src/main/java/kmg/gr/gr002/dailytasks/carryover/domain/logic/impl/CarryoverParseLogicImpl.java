@@ -419,7 +419,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
     @Override
     public CarryoverIssueModel parse(final DailyTaskIssueModel issue) {
 
-        CarryoverIssueModel result = null;
+        final CarryoverIssueModel result;
 
         /* 日付の取得 */
         final String date = CarryoverParseLogicImpl.titleDate(issue.getTitle());
@@ -534,7 +534,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
     private CarryoverItemModel parseItem(final int number, final String section, final boolean checked,
         final String content, final String raw) {
 
-        CarryoverItemModel result = null;
+        final CarryoverItemModel result;
 
         /* 項目名・持ち越し元の日付・残りの部分の分割 */
         String        namePart     = content;

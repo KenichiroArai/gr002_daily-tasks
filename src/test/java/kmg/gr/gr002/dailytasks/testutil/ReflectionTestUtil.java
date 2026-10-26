@@ -191,7 +191,7 @@ public final class ReflectionTestUtil {
     @SuppressWarnings("unchecked")
     private static <T> T invokeMethod(final Method method, final Object target, final Object... args) throws Exception {
 
-        T result = null;
+        final T result;
 
         try {
 

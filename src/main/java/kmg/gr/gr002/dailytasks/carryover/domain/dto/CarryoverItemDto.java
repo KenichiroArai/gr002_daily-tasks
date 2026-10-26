@@ -249,7 +249,7 @@ public class CarryoverItemDto {
      */
     public CarryoverItemModel toCarryoverItemModel(final MessageLogic messageLogic) {
 
-        CarryoverItemModel result = null;
+        final CarryoverItemModel result;
 
         final MinutesSourceTypes minutesSourceType = MinutesSourceTypes.getEnum(this.minutesSource);
 

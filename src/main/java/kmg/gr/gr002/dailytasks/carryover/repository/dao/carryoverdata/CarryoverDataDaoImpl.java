@@ -244,7 +244,7 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
      */
     private CarryoverIssueJsonDto readIssue(final Path path) throws IOException {
 
-        CarryoverIssueJsonDto result = null;
+        final CarryoverIssueJsonDto result;
 
         try {
 
