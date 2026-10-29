@@ -91,14 +91,14 @@ public class CarryoverServiceImpl implements CarryoverService {
     private static List<List<DailyTaskIssueRefModel>> split(final List<DailyTaskIssueRefModel> refs,
         final int batchSize) {
 
-        final List<List<DailyTaskIssueRefModel>> result  = new ArrayList<>();
+        final List<List<DailyTaskIssueRefModel>> result = new ArrayList<>();
         /* 日付あり・なしの振り分け */
-        final List<DailyTaskIssueRefModel>       dated
-                                                         = refs
+        final List<DailyTaskIssueRefModel> dated
+                                                   = refs
                 .stream().filter(ref -> ref.getDate() != null).sorted(Comparator
                     .comparing(DailyTaskIssueRefModel::getDate).thenComparingInt(DailyTaskIssueRefModel::getNumber))
                 .toList();
-        final List<DailyTaskIssueRefModel>       undated = refs.stream().filter(ref -> ref.getDate() == null).toList();
+        final List<DailyTaskIssueRefModel> undated = refs.stream().filter(ref -> ref.getDate() == null).toList();
 
         /* 全件を 1 単位にするか */
         if (batchSize < 1) {
