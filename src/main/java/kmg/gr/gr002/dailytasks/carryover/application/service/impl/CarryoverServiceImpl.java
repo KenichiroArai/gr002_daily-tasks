@@ -92,6 +92,7 @@ public class CarryoverServiceImpl implements CarryoverService {
         final int batchSize) {
 
         final List<List<DailyTaskIssueRefModel>> result  = new ArrayList<>();
+        /* 日付あり・なしの振り分け */
         final List<DailyTaskIssueRefModel>       dated
                                                          = refs
                 .stream().filter(ref -> ref.getDate() != null).sorted(Comparator
@@ -311,8 +312,13 @@ public class CarryoverServiceImpl implements CarryoverService {
 
         }
 
+        /* 集計の取得 */
         final CarryoverSummaryModel summary = this.carryoverAggregateService.summary();
+
+        /* 集計の保存 */
         this.carryoverAggregateService.saveSummary(summary);
+
+        /* 結果のログ出力 */
         this.logResult(summary);
 
     }
@@ -360,10 +366,13 @@ public class CarryoverServiceImpl implements CarryoverService {
 
         }
 
+        /* 単位の収集 */
         final List<DailyTaskIssueRefModel> batch = this.batches.get(this.batchIndex);
         result = this.carryoverCollectService.collectBatch(batch);
         final List<CarryoverIssueModel> collected = this.carryoverCollectService.getBatchIssues();
         this.batchIssues = collected;
+
+        /* 件数の累計 */
         this.savedCount = this.savedCount + result;
         this.defaultCount
             = this.defaultCount + CarryoverServiceImpl.countBySource(collected, MinutesSourceTypes.DEFAULT);

@@ -26,7 +26,7 @@ public final class LogAssertions {
      */
     public static void assertMessages(final String[] expectedMsgs, final String[] actualMsgs) {
 
-        // ログのチェック
+        /* ログのチェック */
         final int verMsgLength = Math.min(expectedMsgs.length, actualMsgs.length);
 
         for (int i = 0; i < verMsgLength; i++) {
@@ -35,7 +35,7 @@ public final class LogAssertions {
 
         }
 
-        // ログの数のチェック
+        /* ログの数のチェック */
         Assertions.assertEquals(expectedMsgs.length, actualMsgs.length, "ログの数が一致しません");
 
     }

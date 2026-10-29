@@ -372,13 +372,7 @@ final String expected = "prefix "
 
 ### 処理コメント
 
-- 機能ごと、処理のまとまり単位に `/* コメント */` で記載する
-- 通常コメントは `//` で記載する
-- 分岐の書き方は kb002_daily-tasks_doc の [docs/coding-rules.md](https://github.com/KenichiroArai/kb002_daily-tasks_doc/blob/main/docs/coding-rules.md) の「分岐」に従う
-- if、else if、else の直前に、何を判定するかを `/* コメント */` で書く
-- 分岐の中では、先に判定結果（`// 〜の場合`）、続けて処理内容（`// 〜する`）を書く
-- 条件がメソッド呼び出し、または比較の片側がメソッドの戻り値のときは、その戻り値を判定の直前の変数へ入れる
-- 変数やフィールドの直接比較、`instanceof`、変数だけの複合条件は切り出さない
+共通ルールは kb002_daily-tasks_doc の [docs/coding-rules.md](https://github.com/KenichiroArai/kb002_daily-tasks_doc/blob/main/docs/coding-rules.md) の「処理コメント」と「分岐」に従う。
 
 ### Javadoc
 

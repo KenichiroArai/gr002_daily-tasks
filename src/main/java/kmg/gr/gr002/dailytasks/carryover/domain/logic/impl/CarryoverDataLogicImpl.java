@@ -108,6 +108,7 @@ public class CarryoverDataLogicImpl implements CarryoverDataLogic {
 
         }
 
+        /* モデルへの変換 */
         result = issue.toCarryoverIssueModel(this.messageLogic);
         return result;
 

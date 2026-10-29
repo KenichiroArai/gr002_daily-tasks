@@ -58,6 +58,7 @@ public class CarryoverAggregateLogicImpl implements CarryoverAggregateLogic {
 
         }
 
+        /* セクション追跡の更新 */
         final boolean hasSection = issue.hasSection();
         aggregation.track(hasSection);
 
@@ -73,6 +74,7 @@ public class CarryoverAggregateLogicImpl implements CarryoverAggregateLogic {
 
         }
 
+        /* 日別集計への加算 */
         final DailySummaryModel day = new DailySummaryModel(date, issue.getNumber(), issue.getDeclaredCount());
 
         for (final CarryoverItemModel item : issue.getItems()) {
@@ -108,12 +110,14 @@ public class CarryoverAggregateLogicImpl implements CarryoverAggregateLogic {
             .sorted(Comparator.comparing(CarryoverIssueModel::getDate).thenComparingInt(CarryoverIssueModel::getNumber))
             .toList();
 
+        /* 日付順 Issue の集計 */
         for (final CarryoverIssueModel issue : sorted) {
 
             this.add(aggregation, issue);
 
         }
 
+        /* 日付なし Issue の集計 */
         for (final CarryoverIssueModel issue : issues) {
 
             /* 日付があるか */
@@ -132,6 +136,7 @@ public class CarryoverAggregateLogicImpl implements CarryoverAggregateLogic {
 
         }
 
+        /* 画面用集計への変換 */
         result = this.toSummary(aggregation);
         return result;
 

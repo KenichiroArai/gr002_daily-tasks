@@ -229,7 +229,10 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
 
             }
 
+            /* 本文の解析 */
             final CarryoverIssueModel parsed = this.carryoverParseLogic.parse(remoteIssue);
+
+            /* 解析結果の反映 */
             this.pendingSaves.add(parsed);
             this.issues.put(number, parsed);
             result++;
@@ -260,6 +263,8 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
     public int collectBatch(final List<DailyTaskIssueRefModel> batch) throws IOException {
 
         int result = 0;
+
+        /* 標準時間の準備 */
         this.prepareMinutes();
         final List<CarryoverIssueModel> collected = new ArrayList<>();
 
@@ -282,6 +287,7 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
 
             }
 
+            /* 再解析と保存 */
             final DailyTaskIssueModel remoteIssue = this.dailyTaskIssueLogic.fetchIssue(number);
             final CarryoverIssueModel parsed      = this.carryoverParseLogic.parse(remoteIssue);
             this.carryoverDataLogic.saveIssue(parsed);
@@ -290,6 +296,7 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
 
         }
 
+        /* 単位結果の保持 */
         this.batchIssues = collected;
         return result;
 
@@ -509,7 +516,10 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
 
         }
 
+        /* 標準時間の読み込み */
         final DefaultMinutesModel defaultMinutes = this.defaultMinutesLogic.loadDefaultMinutes();
+
+        /* 解析ロジックの初期化 */
         this.carryoverParseLogic.initialize(defaultMinutes);
         this.minutesReady = true;
 

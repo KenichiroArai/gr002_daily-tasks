@@ -90,7 +90,7 @@ public class CarryoverCollectServiceImplTest {
         @Override
         public void initialize(final Path dataDir) {
 
-            /* 保存先は収集サービスの初期化で渡される。このテストでは使わない */
+            // 保存先は収集サービスの初期化で渡される。このテストでは使わない
 
         }
 
@@ -164,7 +164,7 @@ public class CarryoverCollectServiceImplTest {
         @Override
         public void saveSummary(final CarryoverSummaryModel summary) {
 
-            /* 収集サービスは集計を保存しない */
+            // 収集サービスは集計を保存しない
 
         }
 
@@ -289,7 +289,7 @@ public class CarryoverCollectServiceImplTest {
         @Override
         public void initialize(final String repository, final String token) {
 
-            /* 取得先は収集サービスの初期化で渡される。このテストでは使わない */
+            // 取得先は収集サービスの初期化で渡される。このテストでは使わない
 
         }
 
@@ -317,7 +317,7 @@ public class CarryoverCollectServiceImplTest {
         @Override
         public void initialize(final Path defaultMinutesFile) {
 
-            /* 設定ファイルは収集サービスの初期化で渡される。このテストでは使わない */
+            // 設定ファイルは収集サービスの初期化で渡される。このテストでは使わない
 
         }
 

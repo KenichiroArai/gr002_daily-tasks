@@ -565,6 +565,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         }
 
+        /* 項目名の正規化 */
         final String name = CarryoverParseLogicImpl.normalizeName(namePart);
 
         /* 項目名が不明か */
@@ -625,6 +626,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         }
 
+        /* 標準時間での項目作成 */
         result
             = new CarryoverItemModel(name, originDate, checked, defaultValue, MinutesSourceTypes.DEFAULT, section, raw);
         return result;

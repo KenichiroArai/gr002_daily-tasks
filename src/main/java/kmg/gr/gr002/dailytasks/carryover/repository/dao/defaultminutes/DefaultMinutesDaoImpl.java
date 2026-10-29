@@ -133,7 +133,8 @@ public class DefaultMinutesDaoImpl implements DefaultMinutesDao {
 
         }
 
-        /* Jackson が動的キーの JSON オブジェクトを Map として読む。メソッド内の一時データ */
+        /* JSON の読み込み */
+        // Jackson が動的キーの JSON オブジェクトを Map として読む。メソッド内の一時データ
         final Map<String, Double> loaded;
 
         try {
@@ -146,6 +147,7 @@ public class DefaultMinutesDaoImpl implements DefaultMinutesDao {
 
         }
 
+        /* 標準時間の格納 */
         for (final Map.Entry<String, Double> entry : loaded.entrySet()) {
 
             result.add(entry.getKey(), entry.getValue());

@@ -179,7 +179,10 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
 
         }
 
+        /* JSON の読み込み */
         final CarryoverIssueJsonDto issueJson = this.readIssue(path);
+
+        /* DTO への変換 */
         result = issueJson.toCarryoverIssueDto();
         return result;
 
@@ -213,6 +216,7 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
 
         }
 
+        /* Issue JSON の読み込み */
         try (Stream<Path> paths = Files.list(issuesDir)) {
 
             for (final Path path : paths.filter(CarryoverDataDaoImpl::jsonFile).toList()) {

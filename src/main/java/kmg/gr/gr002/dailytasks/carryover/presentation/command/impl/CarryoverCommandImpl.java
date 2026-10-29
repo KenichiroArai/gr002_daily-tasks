@@ -122,7 +122,7 @@ public class CarryoverCommandImpl implements CarryoverCommand {
 
             final CommandOptionTypes option = CommandOptionTypes.getEnum(arg);
 
-            /* 全件モード以外では、使い方の表示だけを更新する */
+            /* オプションの反映 */
             this.help = switch (option) {
 
                 case FULL -> {

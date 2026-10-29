@@ -335,6 +335,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
 
         }
 
+        /* 取得件数のログ出力 */
         final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12010);
         GitHubIssueApiImpl.LOGGER.info(message, result.size(), page - 1);
         return result;
@@ -452,6 +453,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
 
         }
 
+        /* 応答本文の JSON 化 */
         result = this.readTree(response.body());
 
         /* 期待する形か */
