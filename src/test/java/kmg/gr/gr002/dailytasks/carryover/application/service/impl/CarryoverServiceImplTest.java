@@ -130,6 +130,22 @@ public class CarryoverServiceImplTest {
         }
 
         /**
+         * 呼び出しを記録し、空の集計を返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @return 空の集計
+         */
+        @Override
+        public CarryoverSummaryModel rebuildFromStored() {
+
+            this.steps.add("rebuildFromStored");
+            final CarryoverSummaryModel result = new CarryoverSummaryModel(0, List.of(), List.of());
+            return result;
+
+        }
+
+        /**
          * 呼び出しを記録する<br>
          *
          * @since 0.1.0
@@ -498,6 +514,7 @@ public class CarryoverServiceImplTest {
         public void saveIssue(final CarryoverIssueModel issue) {
 
             this.savedNumbers.add(issue.getNumber());
+            this.storedIssues.put(issue.getNumber(), issue);
 
         }
 
@@ -656,6 +673,27 @@ public class CarryoverServiceImplTest {
 
             }
 
+            return result;
+
+        }
+
+        /**
+         * 登録した Issue のうち最新の指定件数の参照を返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @param limit
+         *              取得する最大件数
+         *
+         * @return 参照（作成順）。日付は null
+         */
+        @Override
+        public List<DailyTaskIssueRefModel> fetchRecentIssueRefs(final int limit) {
+
+            final List<DailyTaskIssueRefModel> all    = this.fetchIssueRefs();
+            final int                          size   = all.size();
+            final int                          from   = Math.max(0, size - Math.max(limit, 0));
+            final List<DailyTaskIssueRefModel> result = new ArrayList<>(all.subList(from, size));
             return result;
 
         }
@@ -952,7 +990,7 @@ public class CarryoverServiceImplTest {
     }
 
     /**
-     * collect メソッドのテスト - 正常系:差分モードの場合は最新 10 件より前で更新日時が同じ保存済みの Issue を解析しない
+     * collect メソッドのテスト - 正常系:差分モードの場合は最新 10 件だけを取得し、集計は保存済み全件から作り直す
      *
      * @since 0.1.0
      *
@@ -964,9 +1002,10 @@ public class CarryoverServiceImplTest {
 
         /* 期待値の定義 */
         final int      expectedCount = 10;
+        final int      expectedDays  = 12;
         final String[] expectedMsgs  = {
-            "参照を取得しました: 参照=12 件、バッチ=1 件", "バッチを開始します: 1/1、対象=12 件",
-            "バッチが完了しました: 1/1、再解析=10 件、再利用=2 件", "モード=差分、取得=12 件、解析・保存=10 件、集計=12 日",
+            "参照を取得しました: 参照=10 件、バッチ=1 件", "バッチを開始します: 1/1、対象=10 件",
+            "バッチが完了しました: 1/1、再解析=10 件、再利用=0 件", "モード=差分、取得=10 件、解析・保存=10 件、集計=12 日",
             "標準時間で補完した行=0 件、標準時間が未登録の行=0 件",
         };
 
@@ -987,11 +1026,14 @@ public class CarryoverServiceImplTest {
             testTarget.aggregate();
 
             /* 検証の準備 */
-            final String[] actualMsgs  = testLog.getMessages();
-            final int      actualCount = testResult;
+            final String[]              actualMsgs  = testLog.getMessages();
+            final int                   actualCount = testResult;
+            final CarryoverSummaryModel summary     = testDataLogic.getSavedSummary();
+            final int                   actualDays  = summary.getDays().size();
 
             /* 検証の実施 */
             Assertions.assertEquals(expectedCount, actualCount, "解析件数が一致しません");
+            Assertions.assertEquals(expectedDays, actualDays, "集計の日数が一致しません");
             LogAssertions.assertMessages(expectedMsgs, actualMsgs);
 
         }
@@ -1099,7 +1141,7 @@ public class CarryoverServiceImplTest {
     }
 
     /**
-     * collect メソッドのテスト - 正常系:単位ごとに収集と集計を保存し、変わっていない Issue は本文を取得しない場合
+     * collect メソッドのテスト - 正常系:差分モードでは最新件数を単位に分け、最終単位のあとで保存済み全件から集計する
      *
      * @since 0.1.0
      *
@@ -1110,16 +1152,14 @@ public class CarryoverServiceImplTest {
     public void testCollect_normalTwoBatches() throws IOException {
 
         /* 期待値の定義 */
-        final List<Integer> expectedFirstLoaded  = List.of(1, 2, 3, 4, 5, 6);
-        final List<Integer> expectedFirstFetched = List.of(3, 4, 5, 6);
-        final int           expectedFirstDays    = 6;
+        final List<Integer> expectedFirstLoaded  = List.of(3, 4, 5, 6, 7, 8);
+        final List<Integer> expectedFirstFetched = List.of(3, 4, 5, 6, 7, 8);
         final int           expectedSecondDays   = 12;
         final String[]      expectedMsgs         = {
-            "参照を取得しました: 参照=12 件、バッチ=2 件", "バッチを開始します: 1/2、対象=6 件",
-            "バッチが完了しました: 1/2、再解析=4 件、再利用=2 件", "モード=差分、取得=12 件、解析・保存=4 件、集計=6 日",
-            "標準時間で補完した行=0 件、標準時間が未登録の行=0 件", "バッチを開始します: 2/2、対象=6 件",
-            "バッチが完了しました: 2/2、再解析=6 件、再利用=0 件", "モード=差分、取得=12 件、解析・保存=10 件、集計=12 日",
-            "標準時間で補完した行=0 件、標準時間が未登録の行=0 件", "モード=差分、取得=12 件、解析・保存=10 件、集計=12 日",
+            "参照を取得しました: 参照=10 件、バッチ=2 件", "バッチを開始します: 1/2、対象=6 件",
+            "バッチが完了しました: 1/2、再解析=6 件、再利用=0 件", "バッチを開始します: 2/2、対象=4 件",
+            "バッチが完了しました: 2/2、再解析=4 件、再利用=0 件", "モード=差分、取得=10 件、解析・保存=10 件、集計=12 日",
+            "標準時間で補完した行=0 件、標準時間が未登録の行=0 件", "モード=差分、取得=10 件、解析・保存=10 件、集計=12 日",
             "標準時間で補完した行=0 件、標準時間が未登録の行=0 件",
         };
 
@@ -1149,14 +1189,12 @@ public class CarryoverServiceImplTest {
             final List<Integer>           actualFirstLoaded  = List.copyOf(testDataLogic.getLoadedNumbers());
             final List<Integer>           actualFirstFetched = List.copyOf(testIssueLogic.getFetchedNumbers());
             final CarryoverSummaryModel   firstSummary       = testDataLogic.getSavedSummary();
-            final List<DailySummaryModel> firstDays          = firstSummary.getDays();
-            final int                     actualFirstDays    = firstDays.size();
 
             /* 検証の実施 */
             Assertions.assertTrue(testFirstHasNext, "1 単位目がある必要があります");
             Assertions.assertEquals(expectedFirstLoaded, actualFirstLoaded, "1 単位目に読んだ Issue 番号が一致しません");
             Assertions.assertEquals(expectedFirstFetched, actualFirstFetched, "1 単位目に取得した Issue 番号が一致しません");
-            Assertions.assertEquals(expectedFirstDays, actualFirstDays, "1 単位目の日数が一致しません");
+            Assertions.assertNull(firstSummary, "差分モードでは最終単位の前に集計を保存しない必要があります");
 
             /* 次の単位があるか */
             final boolean testHasNext = testTarget.hasNext();
@@ -1277,7 +1315,7 @@ public class CarryoverServiceImplTest {
     }
 
     /**
-     * collect と aggregate のテスト - 正常系:取得、解析、保存、集計、集計の保存の順で呼ぶ場合
+     * collect と aggregate のテスト - 正常系:差分モードでは保存済み全件から集計を作り直す場合
      *
      * @since 0.1.0
      *
@@ -1286,6 +1324,40 @@ public class CarryoverServiceImplTest {
      */
     @Test
     public void testCollect_normalOrder() throws IOException {
+
+        /* 期待値の定義 */
+        final List<String> expectedSteps = List.of("collect.initialize", "aggregate.initialize", "fetchRefs",
+            "collectBatch", "rebuildFromStored", "saveSummary");
+
+        /* 準備 */
+        final List<String>         testSteps  = new ArrayList<>();
+        final CarryoverServiceImpl testTarget = new CarryoverServiceImpl(
+            new CarryoverServiceImplTest.RecordingAggregateService(testSteps),
+            new CarryoverServiceImplTest.RecordingCollectService(testSteps), MessageLogicTestUtil.create());
+
+        /* テスト対象の実行 */
+        testTarget.initialize(CarryoverServiceImplTest.PROPERTIES, false);
+        testTarget.collect();
+        testTarget.aggregate();
+
+        /* 検証の準備 */
+        final List<String> actualSteps = testSteps;
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedSteps, actualSteps, "呼び出しの順が一致しません");
+
+    }
+
+    /**
+     * collect と aggregate のテスト - 正常系:全件モードでは単位ごとに集計へ足す場合
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     入出力エラーが発生した場合
+     */
+    @Test
+    public void testCollect_normalOrderFull() throws IOException {
 
         /* 期待値の定義 */
         final List<String> expectedSteps = List.of("collect.initialize", "aggregate.initialize", "fetchRefs",
@@ -1298,7 +1370,7 @@ public class CarryoverServiceImplTest {
             new CarryoverServiceImplTest.RecordingCollectService(testSteps), MessageLogicTestUtil.create());
 
         /* テスト対象の実行 */
-        testTarget.initialize(CarryoverServiceImplTest.PROPERTIES, false);
+        testTarget.initialize(CarryoverServiceImplTest.PROPERTIES, true);
         testTarget.collect();
         testTarget.aggregate();
 

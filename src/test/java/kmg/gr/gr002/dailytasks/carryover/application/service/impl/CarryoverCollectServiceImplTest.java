@@ -102,12 +102,15 @@ public class CarryoverCollectServiceImplTest {
          *
          * @since 0.1.0
          *
-         * @return 保存済みの解析結果
+         * @param number
+         *               Issue 番号
+         *
+         * @return 保存済みの解析結果。ない場合は null
          */
         @Override
         public CarryoverIssueModel loadIssue(final int number) {
 
-            final CarryoverIssueModel result = null;
+            final CarryoverIssueModel result = this.storedIssues.find(number);
             return result;
 
         }
@@ -275,6 +278,27 @@ public class CarryoverCollectServiceImplTest {
 
             }
 
+            return result;
+
+        }
+
+        /**
+         * 登録した Issue のうち最新の指定件数の参照を返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @param limit
+         *              取得する最大件数
+         *
+         * @return 参照（作成順）。日付は null
+         */
+        @Override
+        public List<DailyTaskIssueRefModel> fetchRecentIssueRefs(final int limit) {
+
+            final List<DailyTaskIssueRefModel> all    = this.fetchIssueRefs();
+            final int                          size   = all.size();
+            final int                          from   = Math.max(0, size - Math.max(limit, 0));
+            final List<DailyTaskIssueRefModel> result = new ArrayList<>(all.subList(from, size));
             return result;
 
         }
@@ -601,6 +625,48 @@ public class CarryoverCollectServiceImplTest {
         Assertions.assertEquals(expectedCount, actualCount, "解析件数が一致しません");
         Assertions.assertEquals(expectedRemote, actualRemote, "取得件数が一致しません");
         Assertions.assertTrue(actualKept, "解析しなかった Issue は保存済みの内容を残す必要があります");
+
+    }
+
+    /**
+     * collectBatch メソッドのテスト - 正常系:更新日時が同じ過去の Issue は保存済みを使う場合
+     *
+     * @since 0.1.0
+     *
+     * @throws Exception
+     *                   例外が発生した場合
+     */
+    @Test
+    public void testCollectBatch_normalReuseStored() throws Exception {
+
+        /* 期待値の定義 */
+        final int           expectedSaved  = 0;
+        final List<Integer> expectedBatch  = List.of(1);
+
+        /* 準備 */
+        final CarryoverCollectServiceImplTest.StubCarryoverDataLogic testDataLogic
+            = new CarryoverCollectServiceImplTest.StubCarryoverDataLogic();
+        testDataLogic.store(CarryoverCollectServiceImplTest.parse(CarryoverCollectServiceImplTest.ISSUE1));
+        final CarryoverCollectServiceImpl testTarget = CarryoverCollectServiceImplTest.createTarget(
+            new CarryoverCollectServiceImplTest.StubDailyTaskIssueLogic(
+                List.of(CarryoverCollectServiceImplTest.ISSUE1)),
+            testDataLogic);
+        testTarget.initialize(new CarryoverSourceModel(CarryoverCollectServiceImplTest.PROPERTIES), 10, false);
+        ReflectionTestUtil.setField(testTarget, "recentFrom", Integer.valueOf(2));
+        final DailyTaskIssueRefModel testRef = new DailyTaskIssueRefModel(1, "2026年03月24日のタスク", "closed", "u1",
+            "2026-03-24");
+
+        /* テスト対象の実行 */
+        final int testResult = testTarget.collectBatch(List.of(testRef));
+
+        /* 検証の準備 */
+        final int                    actualSaved = testResult;
+        final List<CarryoverIssueModel> batch    = testTarget.getBatchIssues();
+        final List<Integer>          actualBatch = batch.stream().map(CarryoverIssueModel::getNumber).toList();
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedSaved, actualSaved, "再解析件数は 0 である必要があります");
+        Assertions.assertEquals(expectedBatch, actualBatch, "保存済みの Issue を単位結果にする必要があります");
 
     }
 

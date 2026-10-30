@@ -8,6 +8,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -314,7 +315,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
             do {
 
                 /* 1 ページ分の取得 */
-                final JsonNode issues = this.fetchPage(httpClient, page);
+                final JsonNode issues = this.fetchPage(httpClient, page, GitHubApiUrlTypes.ISSUES_QUERY);
                 pageSize = issues.size();
 
                 for (final JsonNode node : issues) {
@@ -390,17 +391,156 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
      *                   HTTP クライアント
      * @param page
      *                   ページ番号（1 始まり）
+     * @param queryType
+     *                   一覧取得の URL の種類
      *
      * @return Issue の配列
      *
      * @throws IOException
      *                     通信に失敗した場合、または応答が不正な場合
      */
-    private JsonNode fetchPage(final HttpClient httpClient, final int page) throws IOException {
+    private JsonNode fetchPage(final HttpClient httpClient, final int page, final GitHubApiUrlTypes queryType)
+        throws IOException {
 
-        final URI      uri    = URI.create(String.format(GitHubApiUrlTypes.ISSUES_QUERY.getUrl(), this.apiBaseUrl,
+        final URI      uri    = URI.create(String.format(queryType.getUrl(), this.apiBaseUrl,
             this.settings.getRepository(), GitHubIssueApiImpl.PER_PAGE, page));
         final JsonNode result = this.fetchResponse(httpClient, uri, true);
+        return result;
+
+    }
+
+    /**
+     * プルリクエストを除いた最新の Issue の JSON を、上限件数まで取得する<br>
+     * <p>
+     * 作成降順でページングし、上限に達したら打ち切る。戻り値は作成昇順。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @param limit
+     *              取得する最大件数
+     *
+     * @return Issue の JSON（作成順）
+     *
+     * @throws IOException
+     *                     通信に失敗した場合、または応答が不正な場合
+     */
+    private List<JsonNode> fetchRecentIssueNodes(final int limit) throws IOException {
+
+        final List<JsonNode> result = new ArrayList<>();
+
+        int page = 1;
+        int pageSize;
+
+        try (HttpClient httpClient = this.httpClientSupplier.get()) {
+
+            do {
+
+                /* 1 ページ分の取得 */
+                final JsonNode issues = this.fetchPage(httpClient, page, GitHubApiUrlTypes.ISSUES_QUERY_DESC);
+                pageSize = issues.size();
+
+                for (final JsonNode node : issues) {
+
+                    /* 上限に達したか */
+                    final boolean enough = result.size() >= limit;
+
+                    if (enough) {
+
+                        // 上限に達した場合
+
+                        // これ以上は取らない
+                        break;
+
+                    }
+
+                    /* プルリクエストか */
+                    final String  pullRequestField = GitHubIssueFieldTypes.PULL_REQUEST.getFieldName();
+                    final boolean pullRequest      = node.has(pullRequestField);
+
+                    if (pullRequest) {
+
+                        // プルリクエストの場合
+
+                        // 対象外として次へ進む
+                        continue;
+
+                    }
+
+                    result.add(node);
+
+                }
+
+                final String pageMessage = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12028);
+                GitHubIssueApiImpl.LOGGER.debug(pageMessage, Integer.valueOf(page), Integer.valueOf(pageSize),
+                    Integer.valueOf(result.size()));
+                page++;
+
+                /* 上限に達したか */
+                final boolean enough = result.size() >= limit;
+
+                if (enough) {
+
+                    // 上限に達した場合
+
+                    // 次のページは取らない
+                    break;
+
+                }
+
+            } while (pageSize >= GitHubIssueApiImpl.PER_PAGE);
+
+        }
+
+        /* 作成昇順に並べ替える */
+        Collections.reverse(result);
+
+        /* 取得件数のログ出力 */
+        final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12010);
+        GitHubIssueApiImpl.LOGGER.info(message, result.size(), page - 1);
+        return result;
+
+    }
+
+    /**
+     * 最新の指定件数までの Issue の参照（本文なし）を取得する<br>
+     * <p>
+     * 作成降順で取得し、プルリクエストを除いたうえで上限件数に達したら打ち切る。戻り値は作成昇順。{@link #initialize(GitHubSettingsDto)} のあとで呼ぶ。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @param limit
+     *              取得する最大件数。1 未満のときは空を返す
+     *
+     * @return Issue の参照（作成順）。本文は含まない
+     *
+     * @throws IOException
+     *                     通信に失敗した場合、または応答が不正な場合
+     */
+    @Override
+    public List<GitHubIssueRefDto> fetchRecentIssueRefs(final int limit) throws IOException {
+
+        final List<GitHubIssueRefDto> result = new ArrayList<>();
+
+        /* 上限が 1 未満か */
+        if (limit < 1) {
+
+            // 上限が 1 未満の場合
+
+            // 空を返す
+            return result;
+
+        }
+
+        final List<JsonNode> nodes = this.fetchRecentIssueNodes(limit);
+
+        for (final JsonNode node : nodes) {
+
+            result.add(GitHubIssueApiImpl.toRef(node));
+
+        }
+
         return result;
 
     }

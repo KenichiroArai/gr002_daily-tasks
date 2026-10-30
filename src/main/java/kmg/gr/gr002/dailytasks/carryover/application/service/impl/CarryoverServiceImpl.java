@@ -288,7 +288,7 @@ public class CarryoverServiceImpl implements CarryoverService {
     /**
      * 直前の {@link #collect()} の結果を集計の状態へ足し、その時点の summary.json を上書きする<br>
      * <p>
-     * {@link #collect()} のあとで呼ぶ。結果のログも出す。
+     * {@link #collect()} のあとで呼ぶ。結果のログも出す。差分モードでは単位ごとの足し込みはせず、最後の単位のあとに保存済みの Issue 全件から集計を作り直す。
      * </p>
      *
      * @since 0.1.0
@@ -299,16 +299,49 @@ public class CarryoverServiceImpl implements CarryoverService {
     @Override
     public void aggregate() throws IOException {
 
-        /* この単位をまだ集計へ足していないか */
+        /* この単位をまだ進めていないか */
         if (!this.batchAggregated) {
 
-            // この単位をまだ集計へ足していない場合
+            // この単位をまだ進めていない場合
 
-            // 日付順のまま足し、次の単位へ進める
-            this.carryoverAggregateService.append(this.batchIssues);
+            /* 全件モードか */
+            if (this.full) {
+
+                // 全件モードの場合
+
+                // 日付順のまま足す
+                this.carryoverAggregateService.append(this.batchIssues);
+
+            }
+
             this.batchIndex++;
             this.batchAggregated = true;
             this.batchIssues = List.of();
+
+        }
+
+        /* 差分モードか */
+        if (!this.full) {
+
+            // 差分モードの場合
+
+            /* 最後の単位か */
+            final boolean finished = this.batchIndex >= this.batches.size();
+
+            if (!finished) {
+
+                // 最後の単位ではない場合
+
+                // 集計の保存は最後にまとめて行う
+                return;
+
+            }
+
+            /* 保存済み全件からの再構築 */
+            final CarryoverSummaryModel summary = this.carryoverAggregateService.rebuildFromStored();
+            this.carryoverAggregateService.saveSummary(summary);
+            this.logResult(summary);
+            return;
 
         }
 
@@ -326,8 +359,7 @@ public class CarryoverServiceImpl implements CarryoverService {
     /**
      * 次の単位の Issue を取得して解析し、Issue ごとの JSON を出力する<br>
      * <p>
-     * {@link #hasNext()} が true のあとで呼ぶ。差分モードでは、Issue 番号が大きい順の最新の指定件数（設定の recentCount）を除き、保存済みの JSON と更新日時が同じ Issue
-     * は解析しない。集計は {@link #aggregate()} で行う。
+     * {@link #hasNext()} が true のあとで呼ぶ。差分モードでは、最新の指定件数（設定の recentCount）だけを取得して解析し直す。集計は {@link #aggregate()} で行う。
      * </p>
      *
      * @since 0.1.0

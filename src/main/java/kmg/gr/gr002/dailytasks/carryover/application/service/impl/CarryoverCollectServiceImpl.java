@@ -160,7 +160,7 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
     private final List<CarryoverIssueModel> pendingSaves;
 
     /**
-     * 差分モードで更新日時に関係なく解析し直す最新の Issue の件数
+     * 差分モードで取得・解析し直す最新の Issue の件数
      *
      * @since 0.1.0
      */
@@ -354,7 +354,7 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
     /**
      * 本文を持たない参照を取得し、タイトルから日付を付ける<br>
      * <p>
-     * 標準時間の読み込みは、最初の呼び出しで 1 回行う。差分判定の下限もここで決める。
+     * 標準時間の読み込みは、最初の呼び出しで 1 回行う。差分判定の下限もここで決める。差分モードでは最新の指定件数だけを取得し、全件モードではすべてを取得する。
      * </p>
      *
      * @since 0.1.0
@@ -369,7 +369,25 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
 
         final List<DailyTaskIssueRefModel> result = new ArrayList<>();
         this.prepareMinutes();
-        final List<DailyTaskIssueRefModel> fetched = this.dailyTaskIssueLogic.fetchIssueRefs();
+
+        /* 全件モードか */
+        final List<DailyTaskIssueRefModel> fetched;
+
+        if (this.full) {
+
+            // 全件モードの場合
+
+            // すべての参照を取得する
+            fetched = this.dailyTaskIssueLogic.fetchIssueRefs();
+
+        } else {
+
+            // 差分モードの場合
+
+            // 最新の指定件数だけを取得する
+            fetched = this.dailyTaskIssueLogic.fetchRecentIssueRefs(this.recentCount);
+
+        }
 
         for (final DailyTaskIssueRefModel fetchedRef : fetched) {
 
@@ -440,7 +458,7 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
      * @param source
      *                    データの取得元と保存先
      * @param recentCount
-     *                    差分モードで更新日時に関係なく解析し直す最新の Issue の件数
+     *                    差分モードで取得・解析し直す最新の Issue の件数
      * @param full
      *                    true：全件モード（すべての Issue を解析し直す）、false：差分モード
      */

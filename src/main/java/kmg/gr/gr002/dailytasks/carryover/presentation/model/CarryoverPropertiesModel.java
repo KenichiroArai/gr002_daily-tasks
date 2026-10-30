@@ -61,7 +61,7 @@ public class CarryoverPropertiesModel {
     private final int batchSize;
 
     /**
-     * 差分モードで更新日時に関係なく解析し直す最新の Issue の件数
+     * 差分モードで取得・解析し直す最新の Issue の件数
      *
      * @since 0.1.0
      */
@@ -97,7 +97,7 @@ public class CarryoverPropertiesModel {
      * @param defaultMinutesFile
      *                           標準時間の設定ファイル（例: config/default-minutes.json）
      * @param recentCount
-     *                           差分モードで更新日時に関係なく解析し直す最新の Issue の件数
+     *                           差分モードで取得・解析し直す最新の Issue の件数
      * @param batchSize
      *                           収集と集計を繰り返す単位（Issue の件数）。1 未満のときは全件を 1 単位にする
      */
@@ -161,11 +161,11 @@ public class CarryoverPropertiesModel {
     }
 
     /**
-     * 差分モードで更新日時に関係なく解析し直す最新の Issue の件数を返す<br>
+     * 差分モードで取得・解析し直す最新の Issue の件数を返す<br>
      *
      * @since 0.1.0
      *
-     * @return 差分モードで更新日時に関係なく解析し直す最新の Issue の件数
+     * @return 差分モードで取得・解析し直す最新の Issue の件数
      */
     public int getRecentCount() {
 

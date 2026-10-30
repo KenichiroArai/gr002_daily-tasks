@@ -22,6 +22,7 @@ import kmg.core.infrastructure.type.KmgString;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubIssueDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubIssueRefDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubSettingsDto;
+import kmg.gr.gr002.dailytasks.carryover.repository.types.GitHubApiUrlTypes;
 import kmg.gr.gr002.dailytasks.testutil.LogAssertions;
 import kmg.gr.gr002.dailytasks.testutil.LogCapture;
 import kmg.gr.gr002.dailytasks.testutil.MessageLogicTestUtil;
@@ -61,6 +62,14 @@ public class GitHubIssueApiImplTest {
      */
     private static final String PAGE1_URI
         = "https://api.example.com/repos/owner/repo/issues?state=all&sort=created&direction=asc&per_page=100&page=1";
+
+    /**
+     * 1 ページ目の URL（作成降順）
+     *
+     * @since 0.1.0
+     */
+    private static final String PAGE1_DESC_URI
+        = "https://api.example.com/repos/owner/repo/issues?state=all&sort=created&direction=desc&per_page=100&page=1";
 
     /**
      * テスト用のリポジトリ
@@ -131,8 +140,8 @@ public class GitHubIssueApiImplTest {
 
         target.initialize(settings);
         final JsonNode result = ReflectionTestUtil.invoke(target, "fetchPage", new Class<?>[] {
-            HttpClient.class, int.class
-        }, httpClient, Integer.valueOf(page));
+            HttpClient.class, int.class, GitHubApiUrlTypes.class
+        }, httpClient, Integer.valueOf(page), GitHubApiUrlTypes.ISSUES_QUERY);
         return result;
 
     }
@@ -1014,6 +1023,156 @@ public class GitHubIssueApiImplTest {
             Assertions.assertEquals(expectedTitle, actualTitle, "タイトルが一致しません");
             Assertions.assertEquals(expectedState, actualState, "状態が一致しません");
             Assertions.assertEquals(expectedUpdatedAt, actualUpdatedAt, "更新日時が一致しません");
+
+        }
+
+    }
+
+    /**
+     * fetchRecentIssueRefs メソッドのテスト - 正常系:上限件数で打ち切り作成昇順で返す場合
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     入出力エラーが発生した場合
+     */
+    @Test
+    public void testFetchRecentIssueRefs_normalLimitAsc() throws IOException {
+
+        /* 期待値の定義 */
+        final List<Integer> expectedNumbers = List.of(2, 3);
+        final String        expectedUri     = GitHubIssueApiImplTest.PAGE1_DESC_URI;
+
+        /* 準備 */
+        try (StubHttpClient testHttpClient = new StubHttpClient()) {
+
+            testHttpClient.addResponse(200, KmgString.concat("[", GitHubIssueApiImplTest.issueJson(3), ",",
+                GitHubIssueApiImplTest.issueJson(2), ",", GitHubIssueApiImplTest.issueJson(1), "]"));
+            final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
+            testTarget.initialize(GitHubIssueApiImplTest.createSettings(null));
+
+            /* テスト対象の実行 */
+            final List<GitHubIssueRefDto> testResult = testTarget.fetchRecentIssueRefs(2);
+
+            /* 検証の準備 */
+            final List<Integer> actualNumbers = testResult.stream().map(GitHubIssueRefDto::getNumber).toList();
+            final URI           actualUri     = testHttpClient.getRequests().get(0).uri();
+
+            /* 検証の実施 */
+            Assertions.assertEquals(expectedNumbers, actualNumbers, "Issue 番号が一致しません");
+            Assertions.assertEquals(expectedUri, actualUri.toString(), "作成降順の URL である必要があります");
+
+        }
+
+    }
+
+    /**
+     * fetchRecentIssueRefs メソッドのテスト - 正常系:プルリクエストを除いて次ページから足りる件数を取る場合
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     入出力エラーが発生した場合
+     */
+    @Test
+    public void testFetchRecentIssueRefs_normalSkipPullRequest() throws IOException {
+
+        /* 期待値の定義 */
+        final List<Integer> expectedNumbers = List.of(1);
+        final int           expectedPages   = 2;
+
+        /* 準備 */
+        try (StubHttpClient testHttpClient = new StubHttpClient()) {
+
+            final String page1 = IntStream.rangeClosed(1, 100).mapToObj(number -> "{\"number\":"
+                + number + ",\"pull_request\":{}}").collect(Collectors.joining(",", "[", "]"));
+            testHttpClient.addResponse(200, page1);
+            testHttpClient.addResponse(200, KmgString.concat("[", GitHubIssueApiImplTest.issueJson(1), "]"));
+            final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
+            testTarget.initialize(GitHubIssueApiImplTest.createSettings(null));
+
+            /* テスト対象の実行 */
+            final List<GitHubIssueRefDto> testResult = testTarget.fetchRecentIssueRefs(1);
+
+            /* 検証の準備 */
+            final List<Integer> actualNumbers = testResult.stream().map(GitHubIssueRefDto::getNumber).toList();
+            final int           actualPages   = testHttpClient.getRequests().size();
+
+            /* 検証の実施 */
+            Assertions.assertEquals(expectedNumbers, actualNumbers, "Issue 番号が一致しません");
+            Assertions.assertEquals(expectedPages, actualPages, "ページ数が一致しません");
+
+        }
+
+    }
+
+    /**
+     * fetchRecentIssueRefs メソッドのテスト - 準正常系:上限が 1 未満のときは空を返す場合
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     入出力エラーが発生した場合
+     */
+    @Test
+    public void testFetchRecentIssueRefs_semiLimitBelowOne() throws IOException {
+
+        /* 期待値の定義 */
+
+        /* 準備 */
+        try (StubHttpClient testHttpClient = new StubHttpClient()) {
+
+            final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
+            testTarget.initialize(GitHubIssueApiImplTest.createSettings(null));
+
+            /* テスト対象の実行 */
+            final List<GitHubIssueRefDto> testResult = testTarget.fetchRecentIssueRefs(0);
+
+            /* 検証の準備 */
+            final boolean actualEmpty = testResult.isEmpty();
+            final int     actualPages = testHttpClient.getRequests().size();
+
+            /* 検証の実施 */
+            Assertions.assertTrue(actualEmpty, "参照は空になる必要があります");
+            Assertions.assertEquals(0, actualPages, "API を呼ばない必要があります");
+
+        }
+
+    }
+
+    /**
+     * fetchRecentIssueRefs メソッドのテスト - 正常系:上限に達する前に最終ページで打ち切る場合
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     入出力エラーが発生した場合
+     */
+    @Test
+    public void testFetchRecentIssueRefs_normalShortPage() throws IOException {
+
+        /* 期待値の定義 */
+        final List<Integer> expectedNumbers = List.of(1, 2);
+        final int           expectedPages   = 1;
+
+        /* 準備 */
+        try (StubHttpClient testHttpClient = new StubHttpClient()) {
+
+            testHttpClient.addResponse(200, KmgString.concat("[", GitHubIssueApiImplTest.issueJson(2), ",",
+                GitHubIssueApiImplTest.issueJson(1), "]"));
+            final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
+            testTarget.initialize(GitHubIssueApiImplTest.createSettings(null));
+
+            /* テスト対象の実行 */
+            final List<GitHubIssueRefDto> testResult = testTarget.fetchRecentIssueRefs(10);
+
+            /* 検証の準備 */
+            final List<Integer> actualNumbers = testResult.stream().map(GitHubIssueRefDto::getNumber).toList();
+            final int           actualPages   = testHttpClient.getRequests().size();
+
+            /* 検証の実施 */
+            Assertions.assertEquals(expectedNumbers, actualNumbers, "Issue 番号が一致しません");
+            Assertions.assertEquals(expectedPages, actualPages, "ページ数が一致しません");
 
         }
 

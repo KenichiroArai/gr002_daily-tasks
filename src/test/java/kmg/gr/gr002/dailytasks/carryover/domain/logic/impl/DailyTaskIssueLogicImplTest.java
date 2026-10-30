@@ -136,6 +136,27 @@ public class DailyTaskIssueLogicImplTest {
         }
 
         /**
+         * 設定した Issue のうち最新の指定件数の参照を返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @param limit
+         *              取得する最大件数
+         *
+         * @return 設定した Issue の参照（作成順）
+         */
+        @Override
+        public List<GitHubIssueRefDto> fetchRecentIssueRefs(final int limit) {
+
+            final List<GitHubIssueRefDto> all    = this.fetchIssueRefs();
+            final int                     size   = all.size();
+            final int                     from   = Math.max(0, size - Math.max(limit, 0));
+            final List<GitHubIssueRefDto> result = new ArrayList<>(all.subList(from, size));
+            return result;
+
+        }
+
+        /**
          * 受け取った接続設定を返す<br>
          *
          * @since 0.1.0
@@ -338,6 +359,38 @@ public class DailyTaskIssueLogicImplTest {
 
         /* 検証の実施 */
         Assertions.assertTrue(actualEmpty, "参照は空になる必要があります");
+
+    }
+
+    /**
+     * fetchRecentIssueRefs メソッドのテスト - 正常系:最新の指定件数をモデルに変換する場合
+     *
+     * @since 0.1.0
+     *
+     * @throws Exception
+     *                   取得に失敗した場合
+     */
+    @Test
+    public void testFetchRecentIssueRefs_normalLimit() throws Exception {
+
+        /* 期待値の定義 */
+        final List<Integer> expectedNumbers = List.of(2, 3);
+
+        /* 準備 */
+        final StubGitHubIssueApi testGitHub = new StubGitHubIssueApi(List.of(
+            new GitHubIssueDto(1, "1日のタスク", "closed", "u1", "本文"),
+            new GitHubIssueDto(2, "2日のタスク", "closed", "u2", "本文"),
+            new GitHubIssueDto(3, "3日のタスク", "open", "u3", "本文")));
+        final DailyTaskIssueLogicImpl testTarget = DailyTaskIssueLogicImplTest.createTarget(testGitHub);
+
+        /* テスト対象の実行 */
+        final List<DailyTaskIssueRefModel> testResult = testTarget.fetchRecentIssueRefs(2);
+
+        /* 検証の準備 */
+        final List<Integer> actualNumbers = testResult.stream().map(DailyTaskIssueRefModel::getNumber).toList();
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedNumbers, actualNumbers, "Issue 番号が一致しません");
 
     }
 

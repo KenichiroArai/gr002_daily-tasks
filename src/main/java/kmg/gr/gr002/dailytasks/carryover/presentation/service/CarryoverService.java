@@ -19,9 +19,9 @@ import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesM
 public interface CarryoverService {
 
     /**
-     * 直前の {@link #collect()} の結果を集計の状態へ足し、その時点の summary.json を上書きする<br>
+     * 直前の {@link #collect()} の結果を集計へ反映し、summary.json を上書きする<br>
      * <p>
-     * {@link #collect()} のあとで呼ぶ。結果のログも出す。
+     * {@link #collect()} のあとで呼ぶ。結果のログも出す。差分モードでは最後の単位のあとに保存済みの Issue 全件から集計を作り直す。
      * </p>
      *
      * @since 0.1.0
@@ -34,8 +34,7 @@ public interface CarryoverService {
     /**
      * 次の単位の Issue を取得して解析し、Issue ごとの JSON を出力する<br>
      * <p>
-     * {@link #hasNext()} が true のあとで呼ぶ。差分モードでは、Issue 番号が大きい順の最新の指定件数（設定の recentCount）を除き、保存済みの JSON と更新日時が同じ Issue
-     * は解析しない。集計は {@link #aggregate()} で行う。
+     * {@link #hasNext()} が true のあとで呼ぶ。差分モードでは、最新の指定件数（設定の recentCount）だけを取得して解析し直す。集計は {@link #aggregate()} で行う。
      * </p>
      *
      * @since 0.1.0

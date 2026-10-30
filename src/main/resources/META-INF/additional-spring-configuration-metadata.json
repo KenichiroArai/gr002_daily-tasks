@@ -34,7 +34,7 @@
     {
       "name": "carryover.recent-count",
       "type": "java.lang.Integer",
-      "description": "差分モードで更新日時に関係なく解析し直す最新の Issue の件数。",
+      "description": "差分モードで取得・解析し直す最新の Issue の件数。",
       "sourceType": "kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel"
     }
   ]

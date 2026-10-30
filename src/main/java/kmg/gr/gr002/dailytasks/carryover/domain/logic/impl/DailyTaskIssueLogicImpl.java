@@ -130,6 +130,38 @@ public class DailyTaskIssueLogicImpl implements DailyTaskIssueLogic {
     }
 
     /**
+     * 最新の指定件数までの日々のタスク Issue の参照（本文なし）を取得する<br>
+     * <p>
+     * 日付はまだ入れない。戻り値は作成昇順。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @param limit
+     *              取得する最大件数
+     *
+     * @return 日々のタスク Issue の参照（作成順）。日付は null
+     *
+     * @throws IOException
+     *                     取得に失敗した場合
+     */
+    @Override
+    public List<DailyTaskIssueRefModel> fetchRecentIssueRefs(final int limit) throws IOException {
+
+        final List<DailyTaskIssueRefModel> result = new ArrayList<>();
+        final List<GitHubIssueRefDto>      refs   = this.gitHubIssueApi.fetchRecentIssueRefs(limit);
+
+        for (final GitHubIssueRefDto ref : refs) {
+
+            result.add(ref.toDailyTaskIssueRefModel());
+
+        }
+
+        return result;
+
+    }
+
+    /**
      * 対象リポジトリとトークンを受け取り、Issue の取得先を初期化する<br>
      * <p>
      * 外部 API も同じ接続設定で初期化する。

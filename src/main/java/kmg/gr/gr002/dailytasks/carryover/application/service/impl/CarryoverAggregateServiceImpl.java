@@ -12,6 +12,7 @@ import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverAggregateLog
 import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverDataLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverAggregationModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
+import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssuesModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSummaryModel;
 import kmg.gr.gr002.dailytasks.carryover.application.service.CarryoverAggregateService;
 
@@ -123,6 +124,28 @@ public class CarryoverAggregateServiceImpl implements CarryoverAggregateService 
     public void initialize(final Path dataDir) {
 
         this.carryoverDataLogic.initialize(dataDir);
+
+    }
+
+    /**
+     * 保存済みの Issue ごとの解析結果をすべて読み込み、画面用の集計を作り直す<br>
+     * <p>
+     * 差分モードで、最新の Issue だけを収集したあとに呼ぶ。実行中の単位ごとの集計状態は使わない。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @return 画面用の集計
+     *
+     * @throws IOException
+     *                     読み込みに失敗した場合
+     */
+    @Override
+    public CarryoverSummaryModel rebuildFromStored() throws IOException {
+
+        final CarryoverIssuesModel  stored = this.carryoverDataLogic.loadIssues();
+        final CarryoverSummaryModel result = this.carryoverAggregateLogic.aggregate(stored.values());
+        return result;
 
     }
 

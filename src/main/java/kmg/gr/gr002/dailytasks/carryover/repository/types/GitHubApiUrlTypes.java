@@ -48,6 +48,14 @@ public enum GitHubApiUrlTypes implements KmgCmnTypes<String> {
     ISSUES_QUERY("Issue 一覧の書式", "IssuesQuery", "Issue 一覧を取得する URL の書式",
         "%s/repos/%s/issues?state=all&sort=created&direction=asc&per_page=%d&page=%d"),
 
+    /**
+     * Issue 一覧（作成降順）の書式
+     *
+     * @since 0.1.0
+     */
+    ISSUES_QUERY_DESC("Issue 一覧（作成降順）の書式", "IssuesQueryDesc", "Issue 一覧を作成降順で取得する URL の書式",
+        "%s/repos/%s/issues?state=all&sort=created&direction=desc&per_page=%d&page=%d"),
+
     /* 定義：終了 */
     ;
 

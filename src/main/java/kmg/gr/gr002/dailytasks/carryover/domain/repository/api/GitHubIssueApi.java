@@ -70,6 +70,24 @@ public interface GitHubIssueApi {
     List<GitHubIssueRefDto> fetchIssueRefs() throws IOException;
 
     /**
+     * 最新の指定件数までの Issue の参照（本文なし）を取得する<br>
+     * <p>
+     * 作成降順で取得し、プルリクエストを除いたうえで上限件数に達したら打ち切る。戻り値は作成昇順。{@link #initialize(GitHubSettingsDto)} のあとで呼ぶ。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @param limit
+     *              取得する最大件数。1 未満のときは空を返す
+     *
+     * @return Issue の参照（作成順）。本文は含まない
+     *
+     * @throws IOException
+     *                     通信に失敗した場合、または応答が不正な場合
+     */
+    List<GitHubIssueRefDto> fetchRecentIssueRefs(int limit) throws IOException;
+
+    /**
      * GitHub API の接続設定を受け取り、フィールドに保持する<br>
      *
      * @since 0.1.0

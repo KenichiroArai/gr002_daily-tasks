@@ -63,6 +63,24 @@ public interface DailyTaskIssueLogic {
     List<DailyTaskIssueRefModel> fetchIssueRefs() throws IOException;
 
     /**
+     * 最新の指定件数までの日々のタスク Issue の参照（本文なし）を取得する<br>
+     * <p>
+     * 日付はまだ入れない。戻り値は作成昇順。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @param limit
+     *              取得する最大件数
+     *
+     * @return 日々のタスク Issue の参照（作成順）。日付は null
+     *
+     * @throws IOException
+     *                     取得に失敗した場合
+     */
+    List<DailyTaskIssueRefModel> fetchRecentIssueRefs(int limit) throws IOException;
+
+    /**
      * 対象リポジトリとトークンを受け取り、Issue の取得先を初期化する<br>
      * <p>
      * 外部 API も同じ接続設定で初期化する。
