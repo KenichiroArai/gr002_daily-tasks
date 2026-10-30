@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,8 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueRefModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DefaultMinutesModel;
 import kmg.gr.gr002.dailytasks.carryover.application.service.CarryoverCollectService;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTypes;
 
 /**
  * 持ち越しの収集サービスの実装<br>
@@ -35,6 +39,13 @@ import kmg.gr.gr002.dailytasks.carryover.application.service.CarryoverCollectSer
 @Service
 @Scope("prototype")
 public class CarryoverCollectServiceImpl implements CarryoverCollectService {
+
+    /**
+     * ロガー
+     *
+     * @since 0.1.0
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(CarryoverCollectServiceImpl.class);
 
     /**
      * Issue 番号が大きい順に指定件数を選んだときの、最小の Issue 番号を返す<br>
@@ -105,6 +116,13 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
      * @since 0.1.0
      */
     private final DefaultMinutesLogic defaultMinutesLogic;
+
+    /**
+     * メッセージの取得
+     *
+     * @since 0.1.0
+     */
+    private final MessageLogic messageLogic;
 
     /**
      * 直前の単位で扱った解析結果
@@ -178,15 +196,18 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
      *                            日々のタスク Issue の取得
      * @param defaultMinutesLogic
      *                            項目ごとの標準時間の読み込み
+     * @param messageLogic
+     *                            メッセージの取得
      */
     public CarryoverCollectServiceImpl(final CarryoverDataLogic carryoverDataLogic,
         final CarryoverParseLogic carryoverParseLogic, final DailyTaskIssueLogic dailyTaskIssueLogic,
-        final DefaultMinutesLogic defaultMinutesLogic) {
+        final DefaultMinutesLogic defaultMinutesLogic, final MessageLogic messageLogic) {
 
         this.carryoverDataLogic = carryoverDataLogic;
         this.carryoverParseLogic = carryoverParseLogic;
         this.dailyTaskIssueLogic = dailyTaskIssueLogic;
         this.defaultMinutesLogic = defaultMinutesLogic;
+        this.messageLogic = messageLogic;
         this.issues = new CarryoverIssuesModel();
         this.pendingSaves = new ArrayList<>();
         this.remoteIssues = List.of();
@@ -436,6 +457,42 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
     }
 
     /**
+     * Issue の再解析をログに出す<br>
+     *
+     * @since 0.1.0
+     *
+     * @param issueNumber
+     *                    Issue 番号
+     * @param reasonType
+     *                    再解析の理由
+     */
+    private void logReparse(final int issueNumber, final Gr002LogMsgTypes reasonType) {
+
+        final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12019);
+        final String reason  = this.messageLogic.get(reasonType);
+        CarryoverCollectServiceImpl.LOGGER.debug(message, Integer.valueOf(issueNumber), reason);
+
+    }
+
+    /**
+     * Issue のスキップをログに出す<br>
+     *
+     * @since 0.1.0
+     *
+     * @param issueNumber
+     *                    Issue 番号
+     * @param reasonType
+     *                    スキップの理由
+     */
+    private void logSkip(final int issueNumber, final Gr002LogMsgTypes reasonType) {
+
+        final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12020);
+        final String reason  = this.messageLogic.get(reasonType);
+        CarryoverCollectServiceImpl.LOGGER.debug(message, Integer.valueOf(issueNumber), reason);
+
+    }
+
+    /**
      * Issue を解析し直す必要があるかを返す<br>
      *
      * @since 0.1.0
@@ -463,6 +520,7 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
             // 全件モードの場合
 
             // 解析し直す
+            this.logReparse(issueNumber, Gr002LogMsgTypes.GR002_LOG12021);
             return result;
 
         }
@@ -473,6 +531,7 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
             // 保存済みの解析結果がない場合
 
             // 解析し直す
+            this.logReparse(issueNumber, Gr002LogMsgTypes.GR002_LOG12022);
             return result;
 
         }
@@ -483,12 +542,26 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
             // 直近の Issue の場合
 
             // 更新日時に関係なく解析し直す
+            this.logReparse(issueNumber, Gr002LogMsgTypes.GR002_LOG12023);
             return result;
 
         }
 
         final String storedUpdatedAt = stored.getUpdatedAt();
         result = !updatedAt.equals(storedUpdatedAt);
+
+        /* 更新日時が変わっているか */
+        if (result) {
+
+            // 更新日時が変わっている場合
+
+            // 解析し直す
+            this.logReparse(issueNumber, Gr002LogMsgTypes.GR002_LOG12024);
+            return result;
+
+        }
+
+        this.logSkip(issueNumber, Gr002LogMsgTypes.GR002_LOG12025);
         return result;
 
     }

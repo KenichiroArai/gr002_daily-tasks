@@ -187,6 +187,31 @@ public class GitHubApiHeaderTypesTest {
     }
 
     /**
+     * getHeader メソッドのテスト - 正常系:レート制限の残数
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testGetHeader_normalRateLimitRemaining() {
+
+        /* 期待値の定義 */
+        final String expectedHeader = "X-RateLimit-Remaining";
+
+        /* 準備 */
+        final GitHubApiHeaderTypes testTarget = GitHubApiHeaderTypes.RATE_LIMIT_REMAINING;
+
+        /* テスト対象の実行 */
+        final String testResult = testTarget.getHeader();
+
+        /* 検証の準備 */
+        final String actualHeader = testResult;
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedHeader, actualHeader, "ヘッダが一致しません");
+
+    }
+
+    /**
      * getKey メソッドのテスト - 正常系:GitHub JSON
      *
      * @since 0.1.0

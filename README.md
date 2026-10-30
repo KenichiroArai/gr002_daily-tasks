@@ -36,6 +36,7 @@ java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.1.0.jar --full
 - 解析ルールや標準時間を変えたときは、全件モードで JSON を作り直してください。
 - 対象リポジトリ・トークン（`${GITHUB_TOKEN:}`）・出力先・標準時間の設定ファイル・毎回解析し直す最新の件数は [`src/main/resources/application.properties`](src/main/resources/application.properties) の `carryover.*`、使い方や例外のメッセージは [`src/main/resources/messages.properties`](src/main/resources/messages.properties)、ログのメッセージは [`src/main/resources/messages-log.properties`](src/main/resources/messages-log.properties) で管理しています。キーは列挙型の key（定数名のパスカルケース）です。
 - 設定値は Spring Boot の仕組みにより環境変数で上書きできます（例: `CARRYOVER_RECENTCOUNT=20`）。コマンドライン引数は `--full` と `--help` だけを受け付けます。
+- アプリ固有のログレベルは `logging.level.kmg.gr.gr002.dailytasks`（既定 `INFO`）。調査時は `LOGGING_LEVEL_KMG_GR_GR002_DAILYTASKS=DEBUG` で Issue 単位のスキップ理由や API ページ進捗も出せます。
 - Issue 解析の仕様は kb002_daily-tasks_doc の [docs/carryover-spec.md](https://github.com/KenichiroArai/kb002_daily-tasks_doc/blob/main/docs/carryover-spec.md) を参照してください。
 
 ## Eclipse

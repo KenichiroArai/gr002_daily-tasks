@@ -9,6 +9,7 @@ import java.util.stream.IntStream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import ch.qos.logback.classic.Level;
 import kmg.core.infrastructure.type.KmgString;
 import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverDataLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverParseLogic;
@@ -23,6 +24,8 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueRefMode
 import kmg.gr.gr002.dailytasks.carryover.application.model.DefaultMinutesModel;
 import kmg.gr.gr002.dailytasks.carryover.domain.logic.impl.CarryoverParseLogicImpl;
 import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel;
+import kmg.gr.gr002.dailytasks.testutil.LogAssertions;
+import kmg.gr.gr002.dailytasks.testutil.LogCapture;
 import kmg.gr.gr002.dailytasks.testutil.MessageLogicTestUtil;
 import kmg.gr.gr002.dailytasks.testutil.ReflectionTestUtil;
 
@@ -436,7 +439,8 @@ public class CarryoverCollectServiceImplTest {
         final CarryoverDataLogic dataLogic) {
 
         final CarryoverCollectServiceImpl result = new CarryoverCollectServiceImpl(dataLogic,
-            CarryoverCollectServiceImplTest.PARSE_LOGIC, issueLogic, new StubDefaultMinutesLogic());
+            CarryoverCollectServiceImplTest.PARSE_LOGIC, issueLogic, new StubDefaultMinutesLogic(),
+            MessageLogicTestUtil.create());
         return result;
 
     }
@@ -463,7 +467,8 @@ public class CarryoverCollectServiceImplTest {
     private static boolean needsUpdate(final boolean full, final CarryoverIssueModel stored,
         final DailyTaskIssueModel remoteIssue, final int recentFrom) throws Exception {
 
-        final CarryoverCollectServiceImpl target = new CarryoverCollectServiceImpl(null, null, null, null);
+        final CarryoverCollectServiceImpl target
+            = new CarryoverCollectServiceImpl(null, null, null, null, MessageLogicTestUtil.create());
         ReflectionTestUtil.setField(target, "full", Boolean.valueOf(full));
         final int     issueNumber = remoteIssue.getNumber();
         final String  updatedAt   = remoteIssue.getUpdatedAt();
@@ -611,20 +616,29 @@ public class CarryoverCollectServiceImplTest {
     public void testNeedsUpdate_normalFull() throws Exception {
 
         /* 期待値の定義 */
+        final String[] expectedMsgs = {
+            "#1 を再解析します: 全件モード",
+        };
 
         /* 準備 */
         final CarryoverIssueModel testStored
             = CarryoverCollectServiceImplTest.parse(CarryoverCollectServiceImplTest.ISSUE1);
 
         /* テスト対象の実行 */
-        final boolean testResult
-            = CarryoverCollectServiceImplTest.needsUpdate(true, testStored, CarryoverCollectServiceImplTest.ISSUE1, 2);
+        try (LogCapture testLog = new LogCapture(CarryoverCollectServiceImpl.class, Level.DEBUG)) {
 
-        /* 検証の準備 */
-        final boolean actualNeedsUpdate = testResult;
+            final boolean testResult = CarryoverCollectServiceImplTest.needsUpdate(true, testStored,
+                CarryoverCollectServiceImplTest.ISSUE1, 2);
 
-        /* 検証の実施 */
-        Assertions.assertTrue(actualNeedsUpdate, "解析し直すと判定される必要があります");
+            /* 検証の準備 */
+            final boolean  actualNeedsUpdate = testResult;
+            final String[] actualMsgs        = testLog.getMessages();
+
+            /* 検証の実施 */
+            Assertions.assertTrue(actualNeedsUpdate, "解析し直すと判定される必要があります");
+            LogAssertions.assertMessages(expectedMsgs, actualMsgs);
+
+        }
 
     }
 
@@ -725,20 +739,29 @@ public class CarryoverCollectServiceImplTest {
     public void testNeedsUpdate_semiNotUpdated() throws Exception {
 
         /* 期待値の定義 */
+        final String[] expectedMsgs = {
+            "#1 をスキップします: 更新日時一致",
+        };
 
         /* 準備 */
         final CarryoverIssueModel testStored
             = CarryoverCollectServiceImplTest.parse(CarryoverCollectServiceImplTest.ISSUE1);
 
         /* テスト対象の実行 */
-        final boolean testResult
-            = CarryoverCollectServiceImplTest.needsUpdate(false, testStored, CarryoverCollectServiceImplTest.ISSUE1, 2);
+        try (LogCapture testLog = new LogCapture(CarryoverCollectServiceImpl.class, Level.DEBUG)) {
 
-        /* 検証の準備 */
-        final boolean actualNeedsUpdate = testResult;
+            final boolean testResult = CarryoverCollectServiceImplTest.needsUpdate(false, testStored,
+                CarryoverCollectServiceImplTest.ISSUE1, 2);
 
-        /* 検証の実施 */
-        Assertions.assertFalse(actualNeedsUpdate, "解析し直さないと判定される必要があります");
+            /* 検証の準備 */
+            final boolean  actualNeedsUpdate = testResult;
+            final String[] actualMsgs        = testLog.getMessages();
+
+            /* 検証の実施 */
+            Assertions.assertFalse(actualNeedsUpdate, "解析し直さないと判定される必要があります");
+            LogAssertions.assertMessages(expectedMsgs, actualMsgs);
+
+        }
 
     }
 

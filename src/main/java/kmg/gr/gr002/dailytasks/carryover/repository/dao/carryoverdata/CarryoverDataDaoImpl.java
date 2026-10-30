@@ -6,6 +6,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +16,8 @@ import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssueDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssuesDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverSummaryDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.CarryoverDataDao;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTypes;
 import kmg.gr.gr002.dailytasks.carryover.repository.dto.json.CarryoverIssueJsonDto;
 import kmg.gr.gr002.dailytasks.carryover.repository.dto.json.CarryoverSummaryJsonDto;
 import kmg.gr.gr002.dailytasks.carryover.repository.types.CarryoverDataFileTypes;
@@ -40,6 +44,13 @@ import tools.jackson.databind.json.JsonMapper;
 @Repository
 @Scope("prototype")
 public class CarryoverDataDaoImpl implements CarryoverDataDao {
+
+    /**
+     * ロガー
+     *
+     * @since 0.1.0
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(CarryoverDataDaoImpl.class);
 
     /**
      * JSON ファイルか<br>
@@ -70,6 +81,13 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
     private final JsonMapper jsonMapper;
 
     /**
+     * メッセージの取得
+     *
+     * @since 0.1.0
+     */
+    private final MessageLogic messageLogic;
+
+    /**
      * 出力先のディレクトリ（例: docs/data）
      *
      * @since 0.1.0
@@ -82,11 +100,14 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
      * @since 0.1.0
      *
      * @param jsonMapper
-     *                   JSON の変換
+     *                     JSON の変換
+     * @param messageLogic
+     *                     メッセージの取得
      */
-    public CarryoverDataDaoImpl(final JsonMapper jsonMapper) {
+    public CarryoverDataDaoImpl(final JsonMapper jsonMapper, final MessageLogic messageLogic) {
 
         this.jsonMapper = jsonMapper;
+        this.messageLogic = messageLogic;
 
     }
 
@@ -175,11 +196,15 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
             // 解析結果のファイルがない場合
 
             // 未保存として null を返す
+            final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12032);
+            CarryoverDataDaoImpl.LOGGER.debug(message, Integer.valueOf(number));
             return result;
 
         }
 
         /* JSON の読み込み */
+        final String loadMessage = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12031);
+        CarryoverDataDaoImpl.LOGGER.debug(loadMessage, path);
         final CarryoverIssueJsonDto issueJson = this.readIssue(path);
 
         /* DTO への変換 */
@@ -221,6 +246,8 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
 
             for (final Path path : paths.filter(CarryoverDataDaoImpl::jsonFile).toList()) {
 
+                final String loadMessage = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12031);
+                CarryoverDataDaoImpl.LOGGER.debug(loadMessage, path);
                 final CarryoverIssueJsonDto issueJson = this.readIssue(path);
                 final CarryoverIssueDto     issue     = issueJson.toCarryoverIssueDto();
                 result.put(issue.getNumber(), issue);
@@ -283,6 +310,8 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
 
         final Path                  path      = this.issuePath(issue.getNumber());
         final CarryoverIssueJsonDto issueJson = new CarryoverIssueJsonDto(issue);
+        final String                message   = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12033);
+        CarryoverDataDaoImpl.LOGGER.debug(message, path);
         this.write(path, issueJson);
 
     }
@@ -304,6 +333,8 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
         final Path                    path        = this.dataDir
             .resolve(CarryoverDataFileTypes.SUMMARY_FILE.getFileName());
         final CarryoverSummaryJsonDto summaryJson = new CarryoverSummaryJsonDto(summary);
+        final String                  message     = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12034);
+        CarryoverDataDaoImpl.LOGGER.debug(message, path);
         this.write(path, summaryJson);
 
     }

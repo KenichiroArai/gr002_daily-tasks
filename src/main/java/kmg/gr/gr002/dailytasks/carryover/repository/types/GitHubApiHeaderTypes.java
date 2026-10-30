@@ -68,6 +68,20 @@ public enum GitHubApiHeaderTypes implements KmgCmnTypes<String> {
      */
     BEARER("Bearer", "Bearer", "Bearer スキーム", "Bearer "),
 
+    /**
+     * レート制限の残数
+     *
+     * @since 0.1.0
+     */
+    RATE_LIMIT_REMAINING("レート制限の残数", "RateLimitRemaining", "レート制限の残数のヘッダ名", "X-RateLimit-Remaining"),
+
+    /**
+     * レート制限のリセット時刻
+     *
+     * @since 0.1.0
+     */
+    RATE_LIMIT_RESET("レート制限のリセット時刻", "RateLimitReset", "レート制限のリセット時刻のヘッダ名", "X-RateLimit-Reset"),
+
     /* 定義：終了 */
     ;
 

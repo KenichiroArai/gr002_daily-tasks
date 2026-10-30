@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverAggregateLogic;
@@ -12,6 +14,8 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverItemModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSummaryModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailySummaryModel;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTypes;
 
 /**
  * 持ち越しの解析結果を日別に集計する実装<br>
@@ -27,6 +31,34 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.DailySummaryModel;
  */
 @Component
 public class CarryoverAggregateLogicImpl implements CarryoverAggregateLogic {
+
+    /**
+     * ロガー
+     *
+     * @since 0.1.0
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(CarryoverAggregateLogicImpl.class);
+
+    /**
+     * メッセージの取得
+     *
+     * @since 0.1.0
+     */
+    private final MessageLogic messageLogic;
+
+    /**
+     * コンストラクタ<br>
+     *
+     * @since 0.1.0
+     *
+     * @param messageLogic
+     *                     メッセージの取得
+     */
+    public CarryoverAggregateLogicImpl(final MessageLogic messageLogic) {
+
+        this.messageLogic = messageLogic;
+
+    }
 
     /**
      * 解析結果を 1 件、集計の状態へ足す<br>
@@ -155,8 +187,13 @@ public class CarryoverAggregateLogicImpl implements CarryoverAggregateLogic {
     @Override
     public CarryoverSummaryModel toSummary(final CarryoverAggregationModel aggregation) {
 
-        final CarryoverSummaryModel result = new CarryoverSummaryModel(aggregation.getLatestIssue(),
-            aggregation.rankedItemNames(), aggregation.getDays());
+        final List<String>            rankedItemNames = aggregation.rankedItemNames();
+        final List<DailySummaryModel> days            = aggregation.getDays();
+        final int                     latestIssue     = aggregation.getLatestIssue();
+        final CarryoverSummaryModel   result          = new CarryoverSummaryModel(latestIssue, rankedItemNames, days);
+        final String                  message         = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12027);
+        CarryoverAggregateLogicImpl.LOGGER.debug(message, Integer.valueOf(days.size()), Integer.valueOf(latestIssue),
+            Integer.valueOf(rankedItemNames.size()));
         return result;
 
     }

@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,8 @@ import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002GenMsgTypes;
 import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel;
 import kmg.gr.gr002.dailytasks.carryover.presentation.service.CarryoverService;
+import kmg.gr.gr002.dailytasks.testutil.LogAssertions;
+import kmg.gr.gr002.dailytasks.testutil.LogCapture;
 import kmg.gr.gr002.dailytasks.testutil.MessageLogicTestUtil;
 import kmg.gr.gr002.dailytasks.testutil.ReflectionTestUtil;
 
@@ -46,6 +49,13 @@ public class CarryoverCommandImplTest {
      * @version 0.1.0
      */
     private static final class StubCarryoverService implements CarryoverService {
+
+        /**
+         * collect で投げる例外。null の場合は投げない
+         *
+         * @since 0.1.0
+         */
+        private IOException collectException;
 
         /**
          * 残りの単位の開始位置
@@ -103,7 +113,17 @@ public class CarryoverCommandImplTest {
          * @return 3
          */
         @Override
-        public int collect() {
+        public int collect() throws IOException {
+
+            /* 例外を投げるか */
+            if (this.collectException != null) {
+
+                // 例外を投げる場合
+
+                // 収集失敗として例外を投げる
+                throw this.collectException;
+
+            }
 
             this.steps.add("collect");
             final int result = 3;
@@ -198,6 +218,20 @@ public class CarryoverCommandImplTest {
         private void setBatchCount(final int batchCount) {
 
             this.batchCount = batchCount;
+
+        }
+
+        /**
+         * collect で投げる例外を設定する<br>
+         *
+         * @since 0.1.0
+         *
+         * @param exception
+         *                  収集失敗の例外
+         */
+        private void setCollectException(final IOException exception) {
+
+            this.collectException = exception;
 
         }
 
@@ -554,24 +588,36 @@ public class CarryoverCommandImplTest {
         final List<Boolean>            expectedCalls      = List.of(Boolean.FALSE);
         final List<String>             expectedSteps      = List.of("initialize", "collect", "aggregate");
         final CarryoverPropertiesModel expectedProperties = CarryoverCommandImplTest.PROPERTIES;
+        final String                   expectedDataDir    = Path.of("out/data").toString();
+        final String[]                 expectedMsgs       = {
+            KmgString.concat("収集を開始します: モード=差分、repository=owner/repo、dataDir=", expectedDataDir,
+                "、recentCount=7、batchSize=365"),
+            "収集が完了しました",
+        };
 
         /* 準備 */
         final StubCarryoverService testService = new StubCarryoverService();
         final CarryoverCommandImpl testTarget  = CarryoverCommandImplTest.createTarget(testService, System.out);
 
         /* テスト対象の実行 */
-        testTarget.run();
+        try (LogCapture testLog = new LogCapture(CarryoverCommandImpl.class)) {
 
-        /* 検証の準備 */
-        final List<Boolean>            actualCalls      = testService.getCalls();
-        final List<String>             actualSteps      = testService.getSteps();
-        final List<CarryoverPropertiesModel> properties       = testService.getPropertiesList();
-        final CarryoverPropertiesModel       actualProperties = properties.get(0);
+            testTarget.run();
 
-        /* 検証の実施 */
-        Assertions.assertEquals(expectedCalls, actualCalls, "呼び出し時のモードが一致しません");
-        Assertions.assertEquals(expectedSteps, actualSteps, "呼び出しの順が一致しません");
-        Assertions.assertEquals(expectedProperties, actualProperties, "引き継いだ設定が一致しません");
+            /* 検証の準備 */
+            final List<Boolean>                  actualCalls      = testService.getCalls();
+            final List<String>                   actualSteps      = testService.getSteps();
+            final List<CarryoverPropertiesModel> properties       = testService.getPropertiesList();
+            final CarryoverPropertiesModel       actualProperties = properties.get(0);
+            final String[]                       actualMsgs       = testLog.getMessages();
+
+            /* 検証の実施 */
+            Assertions.assertEquals(expectedCalls, actualCalls, "呼び出し時のモードが一致しません");
+            Assertions.assertEquals(expectedSteps, actualSteps, "呼び出しの順が一致しません");
+            Assertions.assertEquals(expectedProperties, actualProperties, "引き継いだ設定が一致しません");
+            LogAssertions.assertMessages(expectedMsgs, actualMsgs);
+
+        }
 
     }
 
@@ -681,21 +727,69 @@ public class CarryoverCommandImplTest {
     public void testRun_semiUnknownArgument() {
 
         /* 期待値の定義 */
-        final String expectedMessage = "不明な引数です: --unknown";
+        final String   expectedMessage = "不明な引数です: --unknown";
+        final String[] expectedMsgs    = {
+            "収集に失敗しました: 不明な引数です: --unknown",
+        };
 
         /* 準備 */
         final CarryoverCommandImpl testTarget
             = CarryoverCommandImplTest.createTarget(new StubCarryoverService(), System.out);
 
         /* テスト対象の実行 */
-        final IllegalArgumentException testException
-            = Assertions.assertThrows(IllegalArgumentException.class, () -> testTarget.run("--unknown"));
+        try (LogCapture testLog = new LogCapture(CarryoverCommandImpl.class)) {
 
-        /* 検証の準備 */
-        final String actualMessage = testException.getMessage();
+            final IllegalArgumentException testException
+                = Assertions.assertThrows(IllegalArgumentException.class, () -> testTarget.run("--unknown"));
 
-        /* 検証の実施 */
-        Assertions.assertEquals(expectedMessage, actualMessage, "例外のメッセージが一致しません");
+            /* 検証の準備 */
+            final String   actualMessage = testException.getMessage();
+            final String[] actualMsgs    = testLog.getMessages();
+
+            /* 検証の実施 */
+            Assertions.assertEquals(expectedMessage, actualMessage, "例外のメッセージが一致しません");
+            LogAssertions.assertMessages(expectedMsgs, actualMsgs);
+
+        }
+
+    }
+
+    /**
+     * run メソッドのテスト - 異常系:収集中に IOException が発生した場合
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testRun_errorCollectFailed() {
+
+        /* 期待値の定義 */
+        final String   expectedMessage = "読み込みに失敗しました";
+        final String[] expectedMsgs    = {
+            KmgString.concat("収集を開始します: モード=差分、repository=owner/repo、dataDir=", Path.of("out/data").toString(),
+                "、recentCount=7、batchSize=365"),
+            "収集に失敗しました: 読み込みに失敗しました",
+        };
+
+        /* 準備 */
+        final StubCarryoverService testService = new StubCarryoverService();
+        testService.setCollectException(new IOException(expectedMessage));
+        final CarryoverCommandImpl testTarget = CarryoverCommandImplTest.createTarget(testService, System.out);
+
+        /* テスト対象の実行 */
+        try (LogCapture testLog = new LogCapture(CarryoverCommandImpl.class)) {
+
+            final IOException testException
+                = Assertions.assertThrows(IOException.class, () -> testTarget.run());
+
+            /* 検証の準備 */
+            final String   actualMessage = testException.getMessage();
+            final String[] actualMsgs    = testLog.getMessages();
+
+            /* 検証の実施 */
+            Assertions.assertEquals(expectedMessage, actualMessage, "例外のメッセージが一致しません");
+            LogAssertions.assertMessages(expectedMsgs, actualMsgs);
+
+        }
 
     }
 

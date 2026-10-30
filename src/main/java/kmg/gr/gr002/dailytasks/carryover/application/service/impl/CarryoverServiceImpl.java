@@ -367,10 +367,18 @@ public class CarryoverServiceImpl implements CarryoverService {
         }
 
         /* 単位の収集 */
-        final List<DailyTaskIssueRefModel> batch = this.batches.get(this.batchIndex);
+        final List<DailyTaskIssueRefModel> batch        = this.batches.get(this.batchIndex);
+        final int                          batchNumber  = this.batchIndex + 1;
+        final String                       startMessage = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12017);
+        CarryoverServiceImpl.LOGGER.info(startMessage, Integer.valueOf(batchNumber), Integer.valueOf(batchCount),
+            Integer.valueOf(batch.size()));
         result = this.carryoverCollectService.collectBatch(batch);
         final List<CarryoverIssueModel> collected = this.carryoverCollectService.getBatchIssues();
         this.batchIssues = collected;
+        final int    reusedCount   = collected.size() - result;
+        final String finishMessage = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12018);
+        CarryoverServiceImpl.LOGGER.info(finishMessage, Integer.valueOf(batchNumber), Integer.valueOf(batchCount),
+            Integer.valueOf(result), Integer.valueOf(reusedCount));
 
         /* 件数の累計 */
         this.savedCount = this.savedCount + result;
@@ -512,6 +520,9 @@ public class CarryoverServiceImpl implements CarryoverService {
         this.remoteCount = refs.size();
         this.batches = CarryoverServiceImpl.split(refs, this.batchSize);
         this.opened = true;
+        final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12016);
+        CarryoverServiceImpl.LOGGER.info(message, Integer.valueOf(this.remoteCount),
+            Integer.valueOf(this.batches.size()));
 
     }
 

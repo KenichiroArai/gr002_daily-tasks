@@ -2,6 +2,7 @@ package kmg.gr.gr002.dailytasks.testutil;
 
 import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
@@ -35,6 +36,13 @@ public final class LogCapture implements AutoCloseable {
     private final Logger logger;
 
     /**
+     * 変更前のログレベル
+     *
+     * @since 0.1.0
+     */
+    private final Level previousLevel;
+
+    /**
      * コンストラクタ<br>
      *
      * @since 0.1.0
@@ -44,7 +52,38 @@ public final class LogCapture implements AutoCloseable {
      */
     public LogCapture(final Class<?> target) {
 
+        this(target, null);
+
+    }
+
+    /**
+     * コンストラクタ<br>
+     * <p>
+     * レベルを指定した場合は取得中だけそのレベルにし、終了時に元へ戻す。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @param target
+     *               ログを取得する対象クラス
+     * @param level
+     *               取得中のログレベル。変更しない場合は null
+     */
+    public LogCapture(final Class<?> target, final Level level) {
+
         this.logger = (Logger) LoggerFactory.getLogger(target);
+        this.previousLevel = this.logger.getLevel();
+
+        /* レベルを変更するか */
+        if (level != null) {
+
+            // レベルを変更する場合
+
+            // 取得中だけ指定のレベルにする
+            this.logger.setLevel(level);
+
+        }
+
         this.listAppender = new ListAppender<>();
         this.listAppender.start();
         this.logger.addAppender(this.listAppender);
@@ -61,6 +100,7 @@ public final class LogCapture implements AutoCloseable {
 
         this.logger.detachAppender(this.listAppender);
         this.listAppender.stop();
+        this.logger.setLevel(this.previousLevel);
 
     }
 

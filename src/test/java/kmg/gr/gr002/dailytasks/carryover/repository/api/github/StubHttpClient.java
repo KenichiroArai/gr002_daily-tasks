@@ -56,6 +56,13 @@ public class StubHttpClient extends HttpClient {
         private final String body;
 
         /**
+         * 応答ヘッダ
+         *
+         * @since 0.1.0
+         */
+        private final Map<String, List<String>> headerMap;
+
+        /**
          * リクエスト
          *
          * @since 0.1.0
@@ -80,12 +87,16 @@ public class StubHttpClient extends HttpClient {
          *                   ステータスコード
          * @param body
          *                   本文
+         * @param headerMap
+         *                   応答ヘッダ
          */
-        private StubHttpResponse(final HttpRequest request, final int statusCode, final String body) {
+        private StubHttpResponse(final HttpRequest request, final int statusCode, final String body,
+            final Map<String, List<String>> headerMap) {
 
             this.request = request;
             this.statusCode = statusCode;
             this.body = body;
+            this.headerMap = headerMap;
 
         }
 
@@ -109,12 +120,12 @@ public class StubHttpClient extends HttpClient {
          *
          * @since 0.1.0
          *
-         * @return 空のヘッダ
+         * @return 応答ヘッダ
          */
         @Override
         public HttpHeaders headers() {
 
-            final HttpHeaders result = HttpHeaders.of(Map.of(), (_, _) -> true);
+            final HttpHeaders result = HttpHeaders.of(this.headerMap, (_, _) -> true);
             return result;
 
         }
@@ -246,8 +257,30 @@ public class StubHttpClient extends HttpClient {
      */
     public StubHttpClient addResponse(final int statusCode, final String body) {
 
+        final StubHttpClient result = this.addResponse(statusCode, body, Map.of());
+        return result;
+
+    }
+
+    /**
+     * 返す応答を追加する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param statusCode
+     *                   ステータスコード
+     * @param body
+     *                   本文
+     * @param headers
+     *                   応答ヘッダ
+     *
+     * @return 自身
+     */
+    public StubHttpClient addResponse(final int statusCode, final String body,
+        final Map<String, List<String>> headers) {
+
         this.responses.add(new Object[] {
-            Integer.valueOf(statusCode), body
+            Integer.valueOf(statusCode), body, headers
         });
         final StubHttpClient result = this;
         return result;
@@ -409,9 +442,10 @@ public class StubHttpClient extends HttpClient {
 
         }
 
-        final Object[]        response = this.responses.removeFirst();
-        final HttpResponse<T> result   = (HttpResponse<T>) new StubHttpResponse(request, ((Integer) response[0]),
-            (String) response[1]);
+        final Object[]                  response  = this.responses.removeFirst();
+        final Map<String, List<String>> headerMap = (Map<String, List<String>>) response[2];
+        final HttpResponse<T>           result    = (HttpResponse<T>) new StubHttpResponse(request,
+            ((Integer) response[0]).intValue(), (String) response[1], headerMap);
         return result;
 
     }

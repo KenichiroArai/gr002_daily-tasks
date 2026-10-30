@@ -1,10 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
+    <springProperty scope="context" name="spring.application.name"
+        source="spring.application.name" defaultValue="gr002_daily-tasks" />
+
+    <!--
+      コンソール出力の例:
+      2026-10-30 23:42:15.123   123 [INFO ] - [gr002_daily-tasks] <kmg...CarryoverCollectServiceImpl collect:42> [main] - 収集を開始します: ...
+
+      pattern の各要素:
+        %d{...}                   日時（年月日 + 時分秒.ミリ秒）
+        %5r                       起動からの経過ミリ秒（5桁）
+        [%-5p]                    ログレベル（左寄せ・5桁）
+        [${spring.application.name}]  アプリ名
+        <%C %M:%L>                呼び出し元（クラス・メソッド・行番号）
+        [%t]                      スレッド名
+        %m                        メッセージ本文
+        %n                        改行
+        %xEx                      例外スタックトレース
+    -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <charset>UTF-8</charset>
-            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{0} - %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %5r [%-5p] - [${spring.application.name}] &lt;%C %M:%L&gt; [%t] - %m%n%xEx</pattern>
         </encoder>
     </appender>
 

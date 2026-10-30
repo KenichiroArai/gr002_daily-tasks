@@ -7,6 +7,7 @@ import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -14,6 +15,8 @@ import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import ch.qos.logback.classic.Level;
 
 import kmg.core.infrastructure.type.KmgString;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubIssueDto;
@@ -351,6 +354,122 @@ public class GitHubIssueApiImplTest {
 
             /* 検証の実施 */
             Assertions.assertEquals(expectedNumbers, actualNumbers, "Issue 番号が一致しません");
+            LogAssertions.assertMessages(expectedMsgs, actualMsgs);
+
+        }
+
+    }
+
+    /**
+     * fetchAllIssues メソッドのテスト - 正常系:レート制限の残りが少ない場合は警告する
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     入出力エラーが発生した場合
+     */
+    @Test
+    public void testFetchAllIssues_normalRateLimitWarn() throws IOException {
+
+        /* 期待値の定義 */
+        final String[] expectedMsgs = {
+            "レート制限: remaining=5、reset=123", "レート制限の残りが少なくなっています: remaining=5、reset=123",
+            "Issue ページを取得しました: ページ=1、応答=0 件、累積=0 件", "Issue を 0 件取得しました（1 ページ）",
+        };
+
+        /* 準備 */
+        try (StubHttpClient testHttpClient = new StubHttpClient();
+            LogCapture testLog = new LogCapture(GitHubIssueApiImpl.class, Level.DEBUG)) {
+
+            testHttpClient.addResponse(200, "[]", Map.of("X-RateLimit-Remaining", List.of("5"), "X-RateLimit-Reset",
+                List.of("123")));
+            final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
+            testTarget.initialize(GitHubIssueApiImplTest.createSettings(null));
+
+            /* テスト対象の実行 */
+            testTarget.fetchAllIssues();
+
+            /* 検証の準備 */
+            final String[] actualMsgs = testLog.getMessages();
+
+            /* 検証の実施 */
+            LogAssertions.assertMessages(expectedMsgs, actualMsgs);
+
+        }
+
+    }
+
+    /**
+     * fetchAllIssues メソッドのテスト - 準正常系:レート制限の残数が数ではない場合は警告しない
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     入出力エラーが発生した場合
+     */
+    @Test
+    public void testFetchAllIssues_semiRateLimitInvalid() throws IOException {
+
+        /* 期待値の定義 */
+        final String[] expectedMsgs = {
+            "レート制限: remaining=abc、reset=", "Issue ページを取得しました: ページ=1、応答=0 件、累積=0 件",
+            "Issue を 0 件取得しました（1 ページ）",
+        };
+
+        /* 準備 */
+        try (StubHttpClient testHttpClient = new StubHttpClient();
+            LogCapture testLog = new LogCapture(GitHubIssueApiImpl.class, Level.DEBUG)) {
+
+            testHttpClient.addResponse(200, "[]", Map.of("X-RateLimit-Remaining", List.of("abc")));
+            final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
+            testTarget.initialize(GitHubIssueApiImplTest.createSettings(null));
+
+            /* テスト対象の実行 */
+            testTarget.fetchAllIssues();
+
+            /* 検証の準備 */
+            final String[] actualMsgs = testLog.getMessages();
+
+            /* 検証の実施 */
+            LogAssertions.assertMessages(expectedMsgs, actualMsgs);
+
+        }
+
+    }
+
+    /**
+     * fetchAllIssues メソッドのテスト - 正常系:レート制限の残りが十分な場合は警告しない
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     入出力エラーが発生した場合
+     */
+    @Test
+    public void testFetchAllIssues_normalRateLimitOk() throws IOException {
+
+        /* 期待値の定義 */
+        final String[] expectedMsgs = {
+            "レート制限: remaining=50、reset=999", "Issue ページを取得しました: ページ=1、応答=0 件、累積=0 件",
+            "Issue を 0 件取得しました（1 ページ）",
+        };
+
+        /* 準備 */
+        try (StubHttpClient testHttpClient = new StubHttpClient();
+            LogCapture testLog = new LogCapture(GitHubIssueApiImpl.class, Level.DEBUG)) {
+
+            testHttpClient.addResponse(200, "[]", Map.of("X-RateLimit-Remaining", List.of("50"), "X-RateLimit-Reset",
+                List.of("999")));
+            final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
+            testTarget.initialize(GitHubIssueApiImplTest.createSettings(null));
+
+            /* テスト対象の実行 */
+            testTarget.fetchAllIssues();
+
+            /* 検証の準備 */
+            final String[] actualMsgs = testLog.getMessages();
+
+            /* 検証の実施 */
             LogAssertions.assertMessages(expectedMsgs, actualMsgs);
 
         }

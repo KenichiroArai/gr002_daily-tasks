@@ -262,6 +262,57 @@ public class Gr002LogMsgTypesTest {
     }
 
     /**
+     * getValue メソッドのテスト - 正常系:収集開始の文面
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testGetValue_normalCollectStart() {
+
+        /* 期待値の定義 */
+        final String expectedValue
+            = "収集を開始します: モード={}、repository={}、dataDir={}、recentCount={}、batchSize={}";
+
+        /* 準備 */
+        final Gr002LogMsgTypes testTarget = Gr002LogMsgTypes.GR002_LOG12013;
+
+        /* テスト対象の実行 */
+        final String testResult = testTarget.getValue();
+
+        /* 検証の準備 */
+        final String actualValue = testResult;
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedValue, actualValue, "メッセージの値が一致しません");
+
+    }
+
+    /**
+     * getKey メソッドのテスト - 正常系:summary.json の保存のキー
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testGetKey_normalSummarySave() {
+
+        /* 期待値の定義 */
+        final String expectedKey = "Gr002Log12034";
+
+        /* 準備 */
+        final Gr002LogMsgTypes testTarget = Gr002LogMsgTypes.GR002_LOG12034;
+
+        /* テスト対象の実行 */
+        final String testResult = testTarget.getKey();
+
+        /* 検証の準備 */
+        final String actualKey = testResult;
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedKey, actualKey, "キーが一致しません");
+
+    }
+
+    /**
      * toString メソッドのテスト - 正常系:想定外の行のキー
      *
      * @since 0.1.0

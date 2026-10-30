@@ -13,6 +13,7 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSummaryModel
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailySummaryModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.ItemStatModel;
 import kmg.gr.gr002.dailytasks.carryover.application.types.MinutesSourceTypes;
+import kmg.gr.gr002.dailytasks.testutil.MessageLogicTestUtil;
 
 /**
  * {@link CarryoverAggregateLogicImpl} のテスト<br>
@@ -95,7 +96,7 @@ public class CarryoverAggregateLogicImplTest {
                     CarryoverAggregateLogicImplTest.createItem("音楽"))),
             CarryoverAggregateLogicImplTest.createIssue(174, "2026-03-23", List.of(), List.of()),
             CarryoverAggregateLogicImplTest.createIssue(1, null, List.of("負債"), List.of()));
-        final CarryoverAggregateLogicImpl testTarget = new CarryoverAggregateLogicImpl();
+        final CarryoverAggregateLogicImpl testTarget = new CarryoverAggregateLogicImpl(MessageLogicTestUtil.create());
 
         /* テスト対象の実行 */
         final CarryoverSummaryModel testResult = testTarget.aggregate(testIssues);
@@ -134,7 +135,7 @@ public class CarryoverAggregateLogicImplTest {
         final int expectedLatestIssue = 0;
 
         /* 準備 */
-        final CarryoverAggregateLogicImpl testTarget = new CarryoverAggregateLogicImpl();
+        final CarryoverAggregateLogicImpl testTarget = new CarryoverAggregateLogicImpl(MessageLogicTestUtil.create());
 
         /* テスト対象の実行 */
         final CarryoverSummaryModel testResult = testTarget.aggregate(List.of());
@@ -167,7 +168,7 @@ public class CarryoverAggregateLogicImplTest {
                 List.of(CarryoverAggregateLogicImplTest.createItem("音楽"))));
 
         /* 準備 */
-        final CarryoverAggregateLogicImpl testTarget     = new CarryoverAggregateLogicImpl();
+        final CarryoverAggregateLogicImpl testTarget     = new CarryoverAggregateLogicImpl(MessageLogicTestUtil.create());
         final CarryoverAggregationModel   testAggregation = new CarryoverAggregationModel();
         final CarryoverSummaryModel       expectedSummary = testTarget.aggregate(expectedIssues);
 
@@ -221,7 +222,7 @@ public class CarryoverAggregateLogicImplTest {
         final CarryoverIssueModel testIssue = CarryoverAggregateLogicImplTest.createIssue(175, "2026-03-24",
             List.of("負債"), List.of(CarryoverAggregateLogicImplTest.createItem("国語")));
         final CarryoverAggregateServiceImpl testTarget = new CarryoverAggregateServiceImpl(
-            new CarryoverAggregateLogicImpl(), null);
+            new CarryoverAggregateLogicImpl(MessageLogicTestUtil.create()), null);
 
         /* テスト対象の実行 */
         final CarryoverSummaryModel testResult = testTarget.aggregate(List.of(testIssue));

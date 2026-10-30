@@ -924,9 +924,9 @@ public class CarryoverServiceImplTest {
         final DefaultMinutesLogic minutesLogic, final CarryoverDataLogic dataLogic) {
 
         final CarryoverCollectServiceImpl   collectService   = new CarryoverCollectServiceImpl(dataLogic,
-            CarryoverServiceImplTest.PARSE_LOGIC, issueLogic, minutesLogic);
+            CarryoverServiceImplTest.PARSE_LOGIC, issueLogic, minutesLogic, MessageLogicTestUtil.create());
         final CarryoverAggregateServiceImpl aggregateService = new CarryoverAggregateServiceImpl(
-            new CarryoverAggregateLogicImpl(), dataLogic);
+            new CarryoverAggregateLogicImpl(MessageLogicTestUtil.create()), dataLogic);
         final CarryoverServiceImpl          result           = new CarryoverServiceImpl(aggregateService,
             collectService, MessageLogicTestUtil.create());
         return result;
@@ -965,7 +965,9 @@ public class CarryoverServiceImplTest {
         /* 期待値の定義 */
         final int      expectedCount = 10;
         final String[] expectedMsgs  = {
-            "モード=差分、取得=12 件、解析・保存=10 件、集計=12 日", "標準時間で補完した行=0 件、標準時間が未登録の行=0 件",
+            "参照を取得しました: 参照=12 件、バッチ=1 件", "バッチを開始します: 1/1、対象=12 件",
+            "バッチが完了しました: 1/1、再解析=10 件、再利用=2 件", "モード=差分、取得=12 件、解析・保存=10 件、集計=12 日",
+            "標準時間で補完した行=0 件、標準時間が未登録の行=0 件",
         };
 
         /* 準備 */
@@ -1010,7 +1012,9 @@ public class CarryoverServiceImplTest {
         /* 期待値の定義 */
         final int      expectedCount = 2;
         final String[] expectedMsgs  = {
-            "モード=差分、取得=2 件、解析・保存=2 件、集計=2 日", "標準時間で補完した行=1 件、標準時間が未登録の行=0 件",
+            "参照を取得しました: 参照=2 件、バッチ=1 件", "バッチを開始します: 1/1、対象=2 件",
+            "バッチが完了しました: 1/1、再解析=2 件、再利用=0 件", "モード=差分、取得=2 件、解析・保存=2 件、集計=2 日",
+            "標準時間で補完した行=1 件、標準時間が未登録の行=0 件",
         };
 
         /* 準備 */
@@ -1056,7 +1060,9 @@ public class CarryoverServiceImplTest {
         final List<Integer> expectedSavedNumbers = List.of(1, 2);
         final int           expectedDays         = 2;
         final String[]      expectedMsgs         = {
-            "モード=全件、取得=2 件、解析・保存=2 件、集計=2 日", "標準時間で補完した行=1 件、標準時間が未登録の行=0 件",
+            "参照を取得しました: 参照=2 件、バッチ=1 件", "バッチを開始します: 1/1、対象=2 件",
+            "バッチが完了しました: 1/1、再解析=2 件、再利用=0 件", "モード=全件、取得=2 件、解析・保存=2 件、集計=2 日",
+            "標準時間で補完した行=1 件、標準時間が未登録の行=0 件",
         };
 
         /* 準備 */
@@ -1109,9 +1115,12 @@ public class CarryoverServiceImplTest {
         final int           expectedFirstDays    = 6;
         final int           expectedSecondDays   = 12;
         final String[]      expectedMsgs         = {
-            "モード=差分、取得=12 件、解析・保存=4 件、集計=6 日", "標準時間で補完した行=0 件、標準時間が未登録の行=0 件",
-            "モード=差分、取得=12 件、解析・保存=10 件、集計=12 日", "標準時間で補完した行=0 件、標準時間が未登録の行=0 件",
-            "モード=差分、取得=12 件、解析・保存=10 件、集計=12 日", "標準時間で補完した行=0 件、標準時間が未登録の行=0 件",
+            "参照を取得しました: 参照=12 件、バッチ=2 件", "バッチを開始します: 1/2、対象=6 件",
+            "バッチが完了しました: 1/2、再解析=4 件、再利用=2 件", "モード=差分、取得=12 件、解析・保存=4 件、集計=6 日",
+            "標準時間で補完した行=0 件、標準時間が未登録の行=0 件", "バッチを開始します: 2/2、対象=6 件",
+            "バッチが完了しました: 2/2、再解析=6 件、再利用=0 件", "モード=差分、取得=12 件、解析・保存=10 件、集計=12 日",
+            "標準時間で補完した行=0 件、標準時間が未登録の行=0 件", "モード=差分、取得=12 件、解析・保存=10 件、集計=12 日",
+            "標準時間で補完した行=0 件、標準時間が未登録の行=0 件",
         };
 
         /* 準備 */
