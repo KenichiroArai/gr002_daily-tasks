@@ -18,7 +18,7 @@ import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssuesDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverItemDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverSummaryDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.CarryoverDataDao;
-import kmg.gr.gr002.dailytasks.testutil.MessageLogicTestUtil;
+import kmg.gr.gr002.dailytasks.testutil.DailyTasksMessageSourceTestUtil;
 
 /**
  * {@link CarryoverDataLogicImpl} のテスト<br>
@@ -219,7 +219,7 @@ public class CarryoverDataLogicImplTest {
     private static CarryoverDataLogicImpl createTarget(final CarryoverDataDao carryoverDataDao) {
 
         final CarryoverDataLogicImpl result
-            = new CarryoverDataLogicImpl(carryoverDataDao, MessageLogicTestUtil.create());
+            = new CarryoverDataLogicImpl(carryoverDataDao, DailyTasksMessageSourceTestUtil.create());
         return result;
 
     }

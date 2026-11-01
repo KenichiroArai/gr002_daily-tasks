@@ -13,7 +13,7 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.DefaultMinutesModel;
 import kmg.gr.gr002.dailytasks.carryover.application.types.MinutesSourceTypes;
 import kmg.gr.gr002.dailytasks.testutil.LogAssertions;
 import kmg.gr.gr002.dailytasks.testutil.LogCapture;
-import kmg.gr.gr002.dailytasks.testutil.MessageLogicTestUtil;
+import kmg.gr.gr002.dailytasks.testutil.DailyTasksMessageSourceTestUtil;
 import kmg.gr.gr002.dailytasks.testutil.ReflectionTestUtil;
 
 /**
@@ -102,7 +102,7 @@ public class CarryoverParseLogicImplTest {
      */
     private static CarryoverParseLogicImpl createTarget() {
 
-        final CarryoverParseLogicImpl result = new CarryoverParseLogicImpl(MessageLogicTestUtil.create());
+        final CarryoverParseLogicImpl result = new CarryoverParseLogicImpl(DailyTasksMessageSourceTestUtil.create());
         result.initialize(CarryoverParseLogicImplTest.DEFAULT_MINUTES);
         return result;
 
@@ -226,7 +226,7 @@ public class CarryoverParseLogicImplTest {
      */
     private static String parseTitleDate(final String title) {
 
-        final CarryoverParseLogicImpl target = new CarryoverParseLogicImpl(MessageLogicTestUtil.create());
+        final CarryoverParseLogicImpl target = new CarryoverParseLogicImpl(DailyTasksMessageSourceTestUtil.create());
         final String                  result = target.parseTitleDate(title);
         return result;
 
@@ -643,7 +643,7 @@ public class CarryoverParseLogicImplTest {
 
         /* 期待値の定義 */
         final String[] expectedMsgs = {
-            "#371 残数と解析件数が一致しません: 残=3, 解析=1",
+            "[Gr002Log12008] #371 残数と解析件数が一致しません: 残=3, 解析=1",
         };
 
         /* 準備 */
@@ -676,7 +676,7 @@ public class CarryoverParseLogicImplTest {
 
         /* 期待値の定義 */
         final String[] expectedMsgs = {
-            "#371 タイトルから日付を取得できません: タスク",
+            "[Gr002Log12002] #371 タイトルから日付を取得できません: タスク",
         };
 
         /* 準備 */
@@ -711,7 +711,7 @@ public class CarryoverParseLogicImplTest {
         /* 期待値の定義 */
         final int      expectedCount = 1;
         final String[] expectedMsgs  = {
-            "#371 想定外の行です: メモ",
+            "[Gr002Log12007] #371 想定外の行です: メモ",
         };
 
         /* 準備 */
@@ -830,7 +830,7 @@ public class CarryoverParseLogicImplTest {
         /* 期待値の定義 */
         final String   expectedName = "不明";
         final String[] expectedMsgs = {
-            "#371 項目名を取得できません: - [ ] 2026/06/18（残り時間：15分）",
+            "[Gr002Log12004] #371 項目名を取得できません: - [ ] 2026/06/18（残り時間：15分）",
         };
 
         /* 準備 */
@@ -869,7 +869,7 @@ public class CarryoverParseLogicImplTest {
         final double             expectedMinutes       = 0;
         final MinutesSourceTypes expectedMinutesSource = MinutesSourceTypes.UNKNOWN;
         final String[]           expectedMsgs          = {
-            "#371 標準時間が未登録のため 0 分とします: 英語",
+            "[Gr002Log12006] #371 標準時間が未登録のため 0 分とします: 英語",
         };
 
         /* 準備 */
@@ -910,7 +910,7 @@ public class CarryoverParseLogicImplTest {
         final double             expectedMinutes       = 15;
         final MinutesSourceTypes expectedMinutesSource = MinutesSourceTypes.DEFAULT;
         final String[]           expectedMsgs          = {
-            "#371 時間表記を解釈できないため標準時間で補完します: - [ ] 国語2026/06/18（未定）",
+            "[Gr002Log12005] #371 時間表記を解釈できないため標準時間で補完します: - [ ] 国語2026/06/18（未定）",
         };
 
         /* 準備 */
@@ -951,7 +951,7 @@ public class CarryoverParseLogicImplTest {
         final String   expectedName    = "国語";
         final double   expectedMinutes = 10;
         final String[] expectedMsgs    = {
-            "#371 持ち越し元の日付がありません: - [ ] 国語（10分）",
+            "[Gr002Log12003] #371 持ち越し元の日付がありません: - [ ] 国語（10分）",
         };
 
         /* 準備 */
@@ -1414,7 +1414,7 @@ public class CarryoverParseLogicImplTest {
 
         /* 期待値の定義 */
         final String[] expectedMsgs = {
-            "#371 残数と解析件数が一致しません: 残=76, 解析=75",
+            "[Gr002Log12008] #371 残数と解析件数が一致しません: 残=76, 解析=75",
         };
 
         /* 準備 */
@@ -1509,7 +1509,7 @@ public class CarryoverParseLogicImplTest {
 
         /* 期待値の定義 */
         final String[] expectedMsgs = {
-            "#371 想定外の行です: メモ",
+            "[Gr002Log12007] #371 想定外の行です: メモ",
         };
 
         /* 準備 */

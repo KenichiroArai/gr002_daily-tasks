@@ -22,7 +22,7 @@ import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubIssueDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubIssueRefDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubSettingsDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.api.GitHubIssueApi;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessageSource;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002GenMsgTypes;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTypes;
 import kmg.gr.gr002.dailytasks.carryover.repository.types.GitHubApiHeaderTypes;
@@ -203,7 +203,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
      *
      * @since 0.1.0
      */
-    private final MessageLogic messageLogic;
+    private final DailyTasksMessageSource messageSource;
 
     /**
      * GitHub API の接続設定
@@ -219,13 +219,13 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
      *
      * @param jsonMapper
      *                     JSON の変換
-     * @param messageLogic
+     * @param messageSource
      *                     メッセージの取得
      */
-    public GitHubIssueApiImpl(final JsonMapper jsonMapper, final MessageLogic messageLogic) {
+    public GitHubIssueApiImpl(final JsonMapper jsonMapper, final DailyTasksMessageSource messageSource) {
 
         this.jsonMapper = jsonMapper;
-        this.messageLogic = messageLogic;
+        this.messageSource = messageSource;
         this.httpClientSupplier = HttpClient::newHttpClient;
 
     }
@@ -337,7 +337,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
 
                 }
 
-                final String pageMessage = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12028);
+                final String pageMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12028);
                 GitHubIssueApiImpl.LOGGER.debug(pageMessage, Integer.valueOf(page), Integer.valueOf(pageSize),
                     Integer.valueOf(result.size()));
                 page++;
@@ -347,7 +347,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
         }
 
         /* 取得件数のログ出力 */
-        final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12010);
+        final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12010);
         GitHubIssueApiImpl.LOGGER.info(message, result.size(), page - 1);
         return result;
 
@@ -471,7 +471,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
 
                 }
 
-                final String pageMessage = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12028);
+                final String pageMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12028);
                 GitHubIssueApiImpl.LOGGER.debug(pageMessage, Integer.valueOf(page), Integer.valueOf(pageSize),
                     Integer.valueOf(result.size()));
                 page++;
@@ -496,7 +496,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
         Collections.reverse(result);
 
         /* 取得件数のログ出力 */
-        final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12010);
+        final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12010);
         GitHubIssueApiImpl.LOGGER.info(message, result.size(), page - 1);
         return result;
 
@@ -597,7 +597,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
             // 応答が成功ではない場合
 
             // 取得失敗として例外にする
-            final String template = this.messageLogic.get(Gr002GenMsgTypes.GR002_GEN11103);
+            final String template = this.messageSource.getExcMessage(Gr002GenMsgTypes.GR002_GEN11103);
             final String message  = String.format(template, statusCode, uri);
             throw new IOException(message);
 
@@ -621,7 +621,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
             // 形式の不正として例外にする
             final Gr002GenMsgTypes messageType = arrayExpected ? Gr002GenMsgTypes.GR002_GEN11104
                 : Gr002GenMsgTypes.GR002_GEN11106;
-            final String           template    = this.messageLogic.get(messageType);
+            final String           template    = this.messageSource.getExcMessage(messageType);
             final String           message     = String.format(template, uri);
             throw new IOException(message);
 
@@ -700,7 +700,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
         }
 
         final String resetValue   = reset == null ? GitHubApiTextTypes.EMPTY.getText() : reset;
-        final String debugMessage = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12029);
+        final String debugMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12029);
         GitHubIssueApiImpl.LOGGER.debug(debugMessage, remaining, resetValue);
 
         /* レート制限の残りが閾値以下か */
@@ -729,7 +729,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
 
         }
 
-        final String warnMessage = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12030);
+        final String warnMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12030);
         GitHubIssueApiImpl.LOGGER.warn(warnMessage, remaining, resetValue);
 
     }
@@ -792,7 +792,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
 
             final Thread currentThread = Thread.currentThread();
             currentThread.interrupt();
-            final String message = this.messageLogic.get(Gr002GenMsgTypes.GR002_GEN11105);
+            final String message = this.messageSource.getExcMessage(Gr002GenMsgTypes.GR002_GEN11105);
             throw new IOException(message, e);
 
         }

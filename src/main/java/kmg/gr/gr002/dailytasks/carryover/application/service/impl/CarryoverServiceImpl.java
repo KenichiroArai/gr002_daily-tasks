@@ -20,7 +20,7 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueRefMode
 import kmg.gr.gr002.dailytasks.carryover.application.service.CarryoverAggregateService;
 import kmg.gr.gr002.dailytasks.carryover.application.service.CarryoverCollectService;
 import kmg.gr.gr002.dailytasks.carryover.application.types.MinutesSourceTypes;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessageSource;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTypes;
 import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel;
 import kmg.gr.gr002.dailytasks.carryover.presentation.service.CarryoverService;
@@ -180,7 +180,7 @@ public class CarryoverServiceImpl implements CarryoverService {
      *
      * @since 0.1.0
      */
-    private final MessageLogic messageLogic;
+    private final DailyTasksMessageSource messageSource;
 
     /**
      * この単位の集計を状態へ足したか
@@ -271,15 +271,15 @@ public class CarryoverServiceImpl implements CarryoverService {
      *                                  持ち越しの集計
      * @param carryoverCollectService
      *                                  持ち越しの収集
-     * @param messageLogic
+     * @param messageSource
      *                                  メッセージの取得
      */
     public CarryoverServiceImpl(final CarryoverAggregateService carryoverAggregateService,
-        final CarryoverCollectService carryoverCollectService, final MessageLogic messageLogic) {
+        final CarryoverCollectService carryoverCollectService, final DailyTasksMessageSource messageSource) {
 
         this.carryoverAggregateService = carryoverAggregateService;
         this.carryoverCollectService = carryoverCollectService;
-        this.messageLogic = messageLogic;
+        this.messageSource = messageSource;
         this.batchIssues = List.of();
         this.batches = List.of();
 
@@ -401,14 +401,14 @@ public class CarryoverServiceImpl implements CarryoverService {
         /* 単位の収集 */
         final List<DailyTaskIssueRefModel> batch        = this.batches.get(this.batchIndex);
         final int                          batchNumber  = this.batchIndex + 1;
-        final String                       startMessage = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12017);
+        final String                       startMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12017);
         CarryoverServiceImpl.LOGGER.info(startMessage, Integer.valueOf(batchNumber), Integer.valueOf(batchCount),
             Integer.valueOf(batch.size()));
         result = this.carryoverCollectService.collectBatch(batch);
         final List<CarryoverIssueModel> collected = this.carryoverCollectService.getBatchIssues();
         this.batchIssues = collected;
         final int    reusedCount   = collected.size() - result;
-        final String finishMessage = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12018);
+        final String finishMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12018);
         CarryoverServiceImpl.LOGGER.info(finishMessage, Integer.valueOf(batchNumber), Integer.valueOf(batchCount),
             Integer.valueOf(result), Integer.valueOf(reusedCount));
 
@@ -501,13 +501,13 @@ public class CarryoverServiceImpl implements CarryoverService {
      */
     private void logResult(final CarryoverSummaryModel summary) {
 
-        final String                  collectMessage = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12000);
+        final String                  collectMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12000);
         final String                  modeName       = this.modeName();
         final List<DailySummaryModel> days           = summary.getDays();
         final int                     dayCount       = days.size();
         CarryoverServiceImpl.LOGGER.info(collectMessage, modeName, this.remoteCount, this.savedCount, dayCount);
 
-        final String minutesSourceMessage = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12001);
+        final String minutesSourceMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12001);
         CarryoverServiceImpl.LOGGER.info(minutesSourceMessage, this.defaultCount, this.unknownCount);
 
     }
@@ -521,7 +521,7 @@ public class CarryoverServiceImpl implements CarryoverService {
      */
     private String modeName() {
 
-        String result = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12012);
+        String result = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12012);
 
         /* 全件モードか */
         if (!this.full) {
@@ -533,7 +533,7 @@ public class CarryoverServiceImpl implements CarryoverService {
 
         }
 
-        result = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12011);
+        result = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12011);
         return result;
 
     }
@@ -552,7 +552,7 @@ public class CarryoverServiceImpl implements CarryoverService {
         this.remoteCount = refs.size();
         this.batches = CarryoverServiceImpl.split(refs, this.batchSize);
         this.opened = true;
-        final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12016);
+        final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12016);
         CarryoverServiceImpl.LOGGER.info(message, Integer.valueOf(this.remoteCount),
             Integer.valueOf(this.batches.size()));
 

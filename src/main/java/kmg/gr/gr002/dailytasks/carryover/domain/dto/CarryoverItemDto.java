@@ -2,7 +2,7 @@ package kmg.gr.gr002.dailytasks.carryover.domain.dto;
 
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverItemModel;
 import kmg.gr.gr002.dailytasks.carryover.application.types.MinutesSourceTypes;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessageSource;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002GenMsgTypes;
 
 /**
@@ -239,7 +239,7 @@ public class CarryoverItemDto {
      *
      * @since 0.1.0
      *
-     * @param messageLogic
+     * @param messageSource
      *                     メッセージの取得
      *
      * @return 持ち越し項目
@@ -247,7 +247,7 @@ public class CarryoverItemDto {
      * @throws IllegalArgumentException
      *                                  残り時間の取得元が不明な場合
      */
-    public CarryoverItemModel toCarryoverItemModel(final MessageLogic messageLogic) {
+    public CarryoverItemModel toCarryoverItemModel(final DailyTasksMessageSource messageSource) {
 
         final CarryoverItemModel result;
 
@@ -259,7 +259,7 @@ public class CarryoverItemDto {
             // 残り時間の取得元が不明な場合
 
             // 不正な値として例外にする
-            final String template = messageLogic.get(Gr002GenMsgTypes.GR002_GEN11102);
+            final String template = messageSource.getExcMessage(Gr002GenMsgTypes.GR002_GEN11102);
             final String message  = String.format(template, this.minutesSource);
             throw new IllegalArgumentException(message);
 

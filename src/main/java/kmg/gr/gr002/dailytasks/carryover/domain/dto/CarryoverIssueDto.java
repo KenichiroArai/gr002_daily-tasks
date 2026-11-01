@@ -4,7 +4,7 @@ import java.util.List;
 
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverItemModel;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessageSource;
 
 /**
  * 持ち越しの解析結果（Issue 単位）の DTO<br>
@@ -317,7 +317,7 @@ public class CarryoverIssueDto {
      *
      * @since 0.1.0
      *
-     * @param messageLogic
+     * @param messageSource
      *                     メッセージの取得
      *
      * @return 持ち越しの解析結果
@@ -325,12 +325,12 @@ public class CarryoverIssueDto {
      * @throws IllegalArgumentException
      *                                  残り時間の取得元が不明な場合
      */
-    public CarryoverIssueModel toCarryoverIssueModel(final MessageLogic messageLogic) {
+    public CarryoverIssueModel toCarryoverIssueModel(final DailyTasksMessageSource messageSource) {
 
         final CarryoverIssueModel result;
 
         final List<CarryoverItemModel> itemModels
-            = this.items.stream().map(item -> item.toCarryoverItemModel(messageLogic)).toList();
+            = this.items.stream().map(item -> item.toCarryoverItemModel(messageSource)).toList();
         result = new CarryoverIssueModel(this.number, this.title, this.date, this.state, this.updatedAt, this.sections,
             this.declaredCount, itemModels);
         return result;

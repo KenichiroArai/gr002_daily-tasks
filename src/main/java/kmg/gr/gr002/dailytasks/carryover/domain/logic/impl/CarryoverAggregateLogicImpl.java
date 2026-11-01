@@ -14,7 +14,7 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverItemModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSummaryModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailySummaryModel;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessageSource;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTypes;
 
 /**
@@ -44,19 +44,19 @@ public class CarryoverAggregateLogicImpl implements CarryoverAggregateLogic {
      *
      * @since 0.1.0
      */
-    private final MessageLogic messageLogic;
+    private final DailyTasksMessageSource messageSource;
 
     /**
      * コンストラクタ<br>
      *
      * @since 0.1.0
      *
-     * @param messageLogic
+     * @param messageSource
      *                     メッセージの取得
      */
-    public CarryoverAggregateLogicImpl(final MessageLogic messageLogic) {
+    public CarryoverAggregateLogicImpl(final DailyTasksMessageSource messageSource) {
 
-        this.messageLogic = messageLogic;
+        this.messageSource = messageSource;
 
     }
 
@@ -191,7 +191,7 @@ public class CarryoverAggregateLogicImpl implements CarryoverAggregateLogic {
         final List<DailySummaryModel> days            = aggregation.getDays();
         final int                     latestIssue     = aggregation.getLatestIssue();
         final CarryoverSummaryModel   result          = new CarryoverSummaryModel(latestIssue, rankedItemNames, days);
-        final String                  message         = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12027);
+        final String                  message         = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12027);
         CarryoverAggregateLogicImpl.LOGGER.debug(message, Integer.valueOf(days.size()), Integer.valueOf(latestIssue),
             Integer.valueOf(rankedItemNames.size()));
         return result;

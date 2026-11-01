@@ -13,13 +13,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.ObjectProvider;
 
 import kmg.core.infrastructure.type.KmgString;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessageSource;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002GenMsgTypes;
 import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel;
 import kmg.gr.gr002.dailytasks.carryover.presentation.service.CarryoverService;
 import kmg.gr.gr002.dailytasks.testutil.LogAssertions;
 import kmg.gr.gr002.dailytasks.testutil.LogCapture;
-import kmg.gr.gr002.dailytasks.testutil.MessageLogicTestUtil;
+import kmg.gr.gr002.dailytasks.testutil.DailyTasksMessageSourceTestUtil;
 import kmg.gr.gr002.dailytasks.testutil.ReflectionTestUtil;
 
 /**
@@ -357,7 +357,7 @@ public class CarryoverCommandImplTest {
     private static CarryoverCommandImpl createTarget(final CarryoverService service, final PrintStream out) {
 
         final CarryoverCommandImpl result = new CarryoverCommandImpl(new StubServiceProvider(service),
-            MessageLogicTestUtil.create(), CarryoverCommandImplTest.PROPERTIES);
+            DailyTasksMessageSourceTestUtil.create(), CarryoverCommandImplTest.PROPERTIES);
         ReflectionTestUtil.setField(result, "out", out);
         return result;
 
@@ -397,9 +397,9 @@ public class CarryoverCommandImplTest {
     private static String usage() {
 
         final String       result;
-        final MessageLogic messageLogic = MessageLogicTestUtil.create();
+        final DailyTasksMessageSource messageSource = DailyTasksMessageSourceTestUtil.create();
 
-        result = messageLogic.get(Gr002GenMsgTypes.GR002_GEN11100);
+        result = messageSource.getGenMessage(Gr002GenMsgTypes.GR002_GEN11100);
         return result;
 
     }
@@ -424,7 +424,7 @@ public class CarryoverCommandImplTest {
 
         /* テスト対象の実行 */
         final CarryoverCommandImpl testTarget = new CarryoverCommandImpl(new StubServiceProvider(testService),
-            MessageLogicTestUtil.create(), CarryoverCommandImplTest.PROPERTIES);
+            DailyTasksMessageSourceTestUtil.create(), CarryoverCommandImplTest.PROPERTIES);
 
         /* 検証の準備 */
         final ObjectProvider<CarryoverService> actualProvider = ReflectionTestUtil.getField(testTarget,
@@ -557,7 +557,7 @@ public class CarryoverCommandImplTest {
     public void testParseArgs_semiUnknownArgument() {
 
         /* 期待値の定義 */
-        final String expectedMessage = "不明な引数です: --unknown";
+        final String expectedMessage = "[Gr002Gen11101] 不明な引数です: --unknown";
 
         /* 準備 */
 
@@ -590,9 +590,9 @@ public class CarryoverCommandImplTest {
         final CarryoverPropertiesModel expectedProperties = CarryoverCommandImplTest.PROPERTIES;
         final String                   expectedDataDir    = Path.of("out/data").toString();
         final String[]                 expectedMsgs       = {
-            KmgString.concat("収集を開始します: モード=差分、repository=owner/repo、dataDir=", expectedDataDir,
+            KmgString.concat("[Gr002Log12013] 収集を開始します: モード=[Gr002Log12012] 差分、repository=owner/repo、dataDir=", expectedDataDir,
                 "、recentCount=7、batchSize=365"),
-            "収集が完了しました",
+            "[Gr002Log12014] 収集が完了しました",
         };
 
         /* 準備 */
@@ -727,9 +727,9 @@ public class CarryoverCommandImplTest {
     public void testRun_semiUnknownArgument() {
 
         /* 期待値の定義 */
-        final String   expectedMessage = "不明な引数です: --unknown";
+        final String   expectedMessage = "[Gr002Gen11101] 不明な引数です: --unknown";
         final String[] expectedMsgs    = {
-            "収集に失敗しました: 不明な引数です: --unknown",
+            "[Gr002Log12015] 収集に失敗しました: [Gr002Gen11101] 不明な引数です: --unknown",
         };
 
         /* 準備 */
@@ -765,9 +765,9 @@ public class CarryoverCommandImplTest {
         /* 期待値の定義 */
         final String   expectedMessage = "読み込みに失敗しました";
         final String[] expectedMsgs    = {
-            KmgString.concat("収集を開始します: モード=差分、repository=owner/repo、dataDir=", Path.of("out/data").toString(),
+            KmgString.concat("[Gr002Log12013] 収集を開始します: モード=[Gr002Log12012] 差分、repository=owner/repo、dataDir=", Path.of("out/data").toString(),
                 "、recentCount=7、batchSize=365"),
-            "収集に失敗しました: 読み込みに失敗しました",
+            "[Gr002Log12015] 収集に失敗しました: 読み込みに失敗しました",
         };
 
         /* 準備 */

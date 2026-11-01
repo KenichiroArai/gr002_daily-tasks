@@ -9,7 +9,7 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessageSource;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002GenMsgTypes;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTypes;
 import kmg.gr.gr002.dailytasks.carryover.presentation.command.CarryoverCommand;
@@ -55,7 +55,7 @@ public class CarryoverCommandImpl implements CarryoverCommand {
      *
      * @since 0.1.0
      */
-    private final MessageLogic messageLogic;
+    private final DailyTasksMessageSource messageSource;
 
     /**
      * 使い方の出力先
@@ -95,16 +95,16 @@ public class CarryoverCommandImpl implements CarryoverCommand {
      *
      * @param carryoverService
      *                         持ち越しの収集・集計サービス
-     * @param messageLogic
+     * @param messageSource
      *                         メッセージの取得
      * @param properties
      *                         設定ファイルの値
      */
     public CarryoverCommandImpl(final ObjectProvider<CarryoverService> carryoverService,
-        final MessageLogic messageLogic, final CarryoverPropertiesModel properties) {
+        final DailyTasksMessageSource messageSource, final CarryoverPropertiesModel properties) {
 
         this.carryoverService = carryoverService;
-        this.messageLogic = messageLogic;
+        this.messageSource = messageSource;
         this.properties = properties;
         this.out = System.out;
         this.full = false;
@@ -122,7 +122,7 @@ public class CarryoverCommandImpl implements CarryoverCommand {
      */
     private void logFailure(final Exception exception) {
 
-        final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12015);
+        final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12015);
         CarryoverCommandImpl.LOGGER.error(message, exception.getMessage(), exception);
 
     }
@@ -136,7 +136,7 @@ public class CarryoverCommandImpl implements CarryoverCommand {
      */
     private String modeName() {
 
-        String result = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12012);
+        String result = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12012);
 
         /* 全件モードか */
         if (!this.full) {
@@ -148,7 +148,7 @@ public class CarryoverCommandImpl implements CarryoverCommand {
 
         }
 
-        result = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12011);
+        result = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12011);
         return result;
 
     }
@@ -191,7 +191,7 @@ public class CarryoverCommandImpl implements CarryoverCommand {
 
                 case NONE -> {
 
-                    final String template = this.messageLogic.get(Gr002GenMsgTypes.GR002_GEN11101);
+                    final String template = this.messageSource.getExcMessage(Gr002GenMsgTypes.GR002_GEN11101);
                     final String message  = String.format(template, arg);
                     throw new IllegalArgumentException(message);
 
@@ -230,14 +230,14 @@ public class CarryoverCommandImpl implements CarryoverCommand {
                 // 使い方の表示の場合
 
                 // 使い方を表示して終了する
-                final String usage = this.messageLogic.get(Gr002GenMsgTypes.GR002_GEN11100);
+                final String usage = this.messageSource.getGenMessage(Gr002GenMsgTypes.GR002_GEN11100);
                 this.out.println(usage);
                 return;
 
             }
 
             /* 収集開始のログ */
-            final String startMessage = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12013);
+            final String startMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12013);
             final String modeName     = this.modeName();
             CarryoverCommandImpl.LOGGER.info(startMessage, modeName, this.properties.getRepository(),
                 this.properties.getDataDir(), Integer.valueOf(this.properties.getRecentCount()),
@@ -266,7 +266,7 @@ public class CarryoverCommandImpl implements CarryoverCommand {
             }
 
             /* 収集完了のログ */
-            final String completeMessage = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12014);
+            final String completeMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12014);
             CarryoverCommandImpl.LOGGER.info(completeMessage);
 
         } catch (final IllegalArgumentException e) {

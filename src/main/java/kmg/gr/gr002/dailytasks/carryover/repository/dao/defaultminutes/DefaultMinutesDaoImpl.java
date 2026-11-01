@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.DefaultMinutesDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.DefaultMinutesDao;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessageSource;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTypes;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.type.TypeReference;
@@ -62,7 +62,7 @@ public class DefaultMinutesDaoImpl implements DefaultMinutesDao {
      *
      * @since 0.1.0
      */
-    private final MessageLogic messageLogic;
+    private final DailyTasksMessageSource messageSource;
 
     /**
      * 設定ファイルのパス（例: config/default-minutes.json）
@@ -78,13 +78,13 @@ public class DefaultMinutesDaoImpl implements DefaultMinutesDao {
      *
      * @param jsonMapper
      *                     JSON の変換
-     * @param messageLogic
+     * @param messageSource
      *                     メッセージの取得
      */
-    public DefaultMinutesDaoImpl(final JsonMapper jsonMapper, final MessageLogic messageLogic) {
+    public DefaultMinutesDaoImpl(final JsonMapper jsonMapper, final DailyTasksMessageSource messageSource) {
 
         this.jsonMapper = jsonMapper;
-        this.messageLogic = messageLogic;
+        this.messageSource = messageSource;
 
     }
 
@@ -127,7 +127,7 @@ public class DefaultMinutesDaoImpl implements DefaultMinutesDao {
             // 標準時間のファイルがない場合
 
             // 警告して空の標準時間を返す
-            final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12009);
+            final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12009);
             DefaultMinutesDaoImpl.LOGGER.warn(message, this.configFile);
             return result;
 

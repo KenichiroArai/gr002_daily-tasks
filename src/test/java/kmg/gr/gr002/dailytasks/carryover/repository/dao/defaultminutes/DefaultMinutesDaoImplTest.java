@@ -14,7 +14,7 @@ import kmg.gr.gr002.dailytasks.carryover.domain.dto.DefaultMinutesDto;
 
 import kmg.gr.gr002.dailytasks.testutil.LogAssertions;
 import kmg.gr.gr002.dailytasks.testutil.LogCapture;
-import kmg.gr.gr002.dailytasks.testutil.MessageLogicTestUtil;
+import kmg.gr.gr002.dailytasks.testutil.DailyTasksMessageSourceTestUtil;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -39,7 +39,7 @@ public class DefaultMinutesDaoImplTest {
      */
     private static DefaultMinutesDaoImpl createTarget() {
 
-        final DefaultMinutesDaoImpl result = new DefaultMinutesDaoImpl(new JsonMapper(), MessageLogicTestUtil.create());
+        final DefaultMinutesDaoImpl result = new DefaultMinutesDaoImpl(new JsonMapper(), DailyTasksMessageSourceTestUtil.create());
         return result;
 
     }
@@ -128,7 +128,7 @@ public class DefaultMinutesDaoImplTest {
         /* 期待値の定義 */
         final Path     testConfig   = this.tempDir.resolve("none.json");
         final String[] expectedMsgs = {
-            KmgString.concat("標準時間の設定ファイルがありません: ", testConfig.toString()),
+            KmgString.concat("[Gr002Log12009] 標準時間の設定ファイルがありません: ", testConfig.toString()),
         };
 
         /* 準備 */

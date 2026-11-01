@@ -31,7 +31,7 @@ import kmg.gr.gr002.dailytasks.carryover.domain.logic.impl.CarryoverParseLogicIm
 import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel;
 import kmg.gr.gr002.dailytasks.testutil.LogAssertions;
 import kmg.gr.gr002.dailytasks.testutil.LogCapture;
-import kmg.gr.gr002.dailytasks.testutil.MessageLogicTestUtil;
+import kmg.gr.gr002.dailytasks.testutil.DailyTasksMessageSourceTestUtil;
 import kmg.gr.gr002.dailytasks.testutil.ReflectionTestUtil;
 
 /**
@@ -939,7 +939,7 @@ public class CarryoverServiceImplTest {
      */
     private static CarryoverParseLogic createParseLogic() {
 
-        final CarryoverParseLogicImpl result = new CarryoverParseLogicImpl(MessageLogicTestUtil.create());
+        final CarryoverParseLogicImpl result = new CarryoverParseLogicImpl(DailyTasksMessageSourceTestUtil.create());
         return result;
 
     }
@@ -962,11 +962,11 @@ public class CarryoverServiceImplTest {
         final DefaultMinutesLogic minutesLogic, final CarryoverDataLogic dataLogic) {
 
         final CarryoverCollectServiceImpl   collectService   = new CarryoverCollectServiceImpl(dataLogic,
-            CarryoverServiceImplTest.PARSE_LOGIC, issueLogic, minutesLogic, MessageLogicTestUtil.create());
+            CarryoverServiceImplTest.PARSE_LOGIC, issueLogic, minutesLogic, DailyTasksMessageSourceTestUtil.create());
         final CarryoverAggregateServiceImpl aggregateService = new CarryoverAggregateServiceImpl(
-            new CarryoverAggregateLogicImpl(MessageLogicTestUtil.create()), dataLogic);
+            new CarryoverAggregateLogicImpl(DailyTasksMessageSourceTestUtil.create()), dataLogic);
         final CarryoverServiceImpl          result           = new CarryoverServiceImpl(aggregateService,
-            collectService, MessageLogicTestUtil.create());
+            collectService, DailyTasksMessageSourceTestUtil.create());
         return result;
 
     }
@@ -1004,9 +1004,9 @@ public class CarryoverServiceImplTest {
         final int      expectedCount = 10;
         final int      expectedDays  = 12;
         final String[] expectedMsgs  = {
-            "参照を取得しました: 参照=10 件、バッチ=1 件", "バッチを開始します: 1/1、対象=10 件",
-            "バッチが完了しました: 1/1、再解析=10 件、再利用=0 件", "モード=差分、取得=10 件、解析・保存=10 件、集計=12 日",
-            "標準時間で補完した行=0 件、標準時間が未登録の行=0 件",
+            "[Gr002Log12016] 参照を取得しました: 参照=10 件、バッチ=1 件", "[Gr002Log12017] バッチを開始します: 1/1、対象=10 件",
+            "[Gr002Log12018] バッチが完了しました: 1/1、再解析=10 件、再利用=0 件", "[Gr002Log12000] モード=[Gr002Log12012] 差分、取得=10 件、解析・保存=10 件、集計=12 日",
+            "[Gr002Log12001] 標準時間で補完した行=0 件、標準時間が未登録の行=0 件",
         };
 
         /* 準備 */
@@ -1054,9 +1054,9 @@ public class CarryoverServiceImplTest {
         /* 期待値の定義 */
         final int      expectedCount = 2;
         final String[] expectedMsgs  = {
-            "参照を取得しました: 参照=2 件、バッチ=1 件", "バッチを開始します: 1/1、対象=2 件",
-            "バッチが完了しました: 1/1、再解析=2 件、再利用=0 件", "モード=差分、取得=2 件、解析・保存=2 件、集計=2 日",
-            "標準時間で補完した行=1 件、標準時間が未登録の行=0 件",
+            "[Gr002Log12016] 参照を取得しました: 参照=2 件、バッチ=1 件", "[Gr002Log12017] バッチを開始します: 1/1、対象=2 件",
+            "[Gr002Log12018] バッチが完了しました: 1/1、再解析=2 件、再利用=0 件", "[Gr002Log12000] モード=[Gr002Log12012] 差分、取得=2 件、解析・保存=2 件、集計=2 日",
+            "[Gr002Log12001] 標準時間で補完した行=1 件、標準時間が未登録の行=0 件",
         };
 
         /* 準備 */
@@ -1102,9 +1102,9 @@ public class CarryoverServiceImplTest {
         final List<Integer> expectedSavedNumbers = List.of(1, 2);
         final int           expectedDays         = 2;
         final String[]      expectedMsgs         = {
-            "参照を取得しました: 参照=2 件、バッチ=1 件", "バッチを開始します: 1/1、対象=2 件",
-            "バッチが完了しました: 1/1、再解析=2 件、再利用=0 件", "モード=全件、取得=2 件、解析・保存=2 件、集計=2 日",
-            "標準時間で補完した行=1 件、標準時間が未登録の行=0 件",
+            "[Gr002Log12016] 参照を取得しました: 参照=2 件、バッチ=1 件", "[Gr002Log12017] バッチを開始します: 1/1、対象=2 件",
+            "[Gr002Log12018] バッチが完了しました: 1/1、再解析=2 件、再利用=0 件", "[Gr002Log12000] モード=[Gr002Log12011] 全件、取得=2 件、解析・保存=2 件、集計=2 日",
+            "[Gr002Log12001] 標準時間で補完した行=1 件、標準時間が未登録の行=0 件",
         };
 
         /* 準備 */
@@ -1156,11 +1156,11 @@ public class CarryoverServiceImplTest {
         final List<Integer> expectedFirstFetched = List.of(3, 4, 5, 6, 7, 8);
         final int           expectedSecondDays   = 12;
         final String[]      expectedMsgs         = {
-            "参照を取得しました: 参照=10 件、バッチ=2 件", "バッチを開始します: 1/2、対象=6 件",
-            "バッチが完了しました: 1/2、再解析=6 件、再利用=0 件", "バッチを開始します: 2/2、対象=4 件",
-            "バッチが完了しました: 2/2、再解析=4 件、再利用=0 件", "モード=差分、取得=10 件、解析・保存=10 件、集計=12 日",
-            "標準時間で補完した行=0 件、標準時間が未登録の行=0 件", "モード=差分、取得=10 件、解析・保存=10 件、集計=12 日",
-            "標準時間で補完した行=0 件、標準時間が未登録の行=0 件",
+            "[Gr002Log12016] 参照を取得しました: 参照=10 件、バッチ=2 件", "[Gr002Log12017] バッチを開始します: 1/2、対象=6 件",
+            "[Gr002Log12018] バッチが完了しました: 1/2、再解析=6 件、再利用=0 件", "[Gr002Log12017] バッチを開始します: 2/2、対象=4 件",
+            "[Gr002Log12018] バッチが完了しました: 2/2、再解析=4 件、再利用=0 件", "[Gr002Log12000] モード=[Gr002Log12012] 差分、取得=10 件、解析・保存=10 件、集計=12 日",
+            "[Gr002Log12001] 標準時間で補完した行=0 件、標準時間が未登録の行=0 件", "[Gr002Log12000] モード=[Gr002Log12012] 差分、取得=10 件、解析・保存=10 件、集計=12 日",
+            "[Gr002Log12001] 標準時間で補完した行=0 件、標準時間が未登録の行=0 件",
         };
 
         /* 準備 */
@@ -1333,7 +1333,7 @@ public class CarryoverServiceImplTest {
         final List<String>         testSteps  = new ArrayList<>();
         final CarryoverServiceImpl testTarget = new CarryoverServiceImpl(
             new CarryoverServiceImplTest.RecordingAggregateService(testSteps),
-            new CarryoverServiceImplTest.RecordingCollectService(testSteps), MessageLogicTestUtil.create());
+            new CarryoverServiceImplTest.RecordingCollectService(testSteps), DailyTasksMessageSourceTestUtil.create());
 
         /* テスト対象の実行 */
         testTarget.initialize(CarryoverServiceImplTest.PROPERTIES, false);
@@ -1367,7 +1367,7 @@ public class CarryoverServiceImplTest {
         final List<String>         testSteps  = new ArrayList<>();
         final CarryoverServiceImpl testTarget = new CarryoverServiceImpl(
             new CarryoverServiceImplTest.RecordingAggregateService(testSteps),
-            new CarryoverServiceImplTest.RecordingCollectService(testSteps), MessageLogicTestUtil.create());
+            new CarryoverServiceImplTest.RecordingCollectService(testSteps), DailyTasksMessageSourceTestUtil.create());
 
         /* テスト対象の実行 */
         testTarget.initialize(CarryoverServiceImplTest.PROPERTIES, true);

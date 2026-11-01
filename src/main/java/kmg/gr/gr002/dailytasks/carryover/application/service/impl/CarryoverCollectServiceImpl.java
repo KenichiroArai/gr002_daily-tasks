@@ -21,7 +21,7 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueRefModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DefaultMinutesModel;
 import kmg.gr.gr002.dailytasks.carryover.application.service.CarryoverCollectService;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessageSource;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTypes;
 
 /**
@@ -122,7 +122,7 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
      *
      * @since 0.1.0
      */
-    private final MessageLogic messageLogic;
+    private final DailyTasksMessageSource messageSource;
 
     /**
      * 直前の単位で扱った解析結果
@@ -196,18 +196,18 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
      *                            日々のタスク Issue の取得
      * @param defaultMinutesLogic
      *                            項目ごとの標準時間の読み込み
-     * @param messageLogic
+     * @param messageSource
      *                            メッセージの取得
      */
     public CarryoverCollectServiceImpl(final CarryoverDataLogic carryoverDataLogic,
         final CarryoverParseLogic carryoverParseLogic, final DailyTaskIssueLogic dailyTaskIssueLogic,
-        final DefaultMinutesLogic defaultMinutesLogic, final MessageLogic messageLogic) {
+        final DefaultMinutesLogic defaultMinutesLogic, final DailyTasksMessageSource messageSource) {
 
         this.carryoverDataLogic = carryoverDataLogic;
         this.carryoverParseLogic = carryoverParseLogic;
         this.dailyTaskIssueLogic = dailyTaskIssueLogic;
         this.defaultMinutesLogic = defaultMinutesLogic;
-        this.messageLogic = messageLogic;
+        this.messageSource = messageSource;
         this.issues = new CarryoverIssuesModel();
         this.pendingSaves = new ArrayList<>();
         this.remoteIssues = List.of();
@@ -486,8 +486,8 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
      */
     private void logReparse(final int issueNumber, final Gr002LogMsgTypes reasonType) {
 
-        final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12019);
-        final String reason  = this.messageLogic.get(reasonType);
+        final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12019);
+        final String reason  = this.messageSource.getLogMessage(reasonType);
         CarryoverCollectServiceImpl.LOGGER.debug(message, Integer.valueOf(issueNumber), reason);
 
     }
@@ -504,8 +504,8 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
      */
     private void logSkip(final int issueNumber, final Gr002LogMsgTypes reasonType) {
 
-        final String message = this.messageLogic.get(Gr002LogMsgTypes.GR002_LOG12020);
-        final String reason  = this.messageLogic.get(reasonType);
+        final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12020);
+        final String reason  = this.messageSource.getLogMessage(reasonType);
         CarryoverCollectServiceImpl.LOGGER.debug(message, Integer.valueOf(issueNumber), reason);
 
     }

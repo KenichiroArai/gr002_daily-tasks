@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverItemModel;
 import kmg.gr.gr002.dailytasks.carryover.application.types.MinutesSourceTypes;
-import kmg.gr.gr002.dailytasks.testutil.MessageLogicTestUtil;
+import kmg.gr.gr002.dailytasks.testutil.DailyTasksMessageSourceTestUtil;
 
 /**
  * {@link CarryoverIssueDto} のテスト<br>
@@ -396,7 +396,7 @@ public class CarryoverIssueDtoTest {
         final CarryoverIssueDto testDto = CarryoverIssueDtoTest.createIssueDto("default");
 
         /* テスト対象の実行 */
-        final CarryoverIssueModel testResult = testDto.toCarryoverIssueModel(MessageLogicTestUtil.create());
+        final CarryoverIssueModel testResult = testDto.toCarryoverIssueModel(DailyTasksMessageSourceTestUtil.create());
 
         /* 検証の準備 */
         final String actualUpdatedAt = testResult.getUpdatedAt();
@@ -421,7 +421,7 @@ public class CarryoverIssueDtoTest {
         final CarryoverIssueDto testDto = CarryoverIssueDtoTest.createIssueDto("default");
 
         /* テスト対象の実行 */
-        final CarryoverIssueModel testResult = testDto.toCarryoverIssueModel(MessageLogicTestUtil.create());
+        final CarryoverIssueModel testResult = testDto.toCarryoverIssueModel(DailyTasksMessageSourceTestUtil.create());
 
         /* 検証の準備 */
         final List<CarryoverItemModel> items = testResult.getItems();
@@ -442,14 +442,14 @@ public class CarryoverIssueDtoTest {
     public void testToCarryoverIssueModel_semiUnknownMinutesSource() {
 
         /* 期待値の定義 */
-        final String expectedMessage = "不明な残り時間の取得元です: xxx";
+        final String expectedMessage = "[Gr002Gen11102] 不明な残り時間の取得元です: xxx";
 
         /* 準備 */
         final CarryoverIssueDto testDto = CarryoverIssueDtoTest.createIssueDto("xxx");
 
         /* テスト対象の実行 */
         final IllegalArgumentException testException = Assertions.assertThrows(IllegalArgumentException.class,
-            () -> testDto.toCarryoverIssueModel(MessageLogicTestUtil.create()));
+            () -> testDto.toCarryoverIssueModel(DailyTasksMessageSourceTestUtil.create()));
 
         /* 検証の準備 */
         final String actualMessage = testException.getMessage();

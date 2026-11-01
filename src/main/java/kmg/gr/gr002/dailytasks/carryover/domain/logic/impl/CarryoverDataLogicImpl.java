@@ -14,7 +14,7 @@ import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssueDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssuesDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverSummaryDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.CarryoverDataDao;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessageSource;
 
 /**
  * 持ち越しの解析結果と画面用の集計を読み書きするロジックの実装<br>
@@ -45,7 +45,7 @@ public class CarryoverDataLogicImpl implements CarryoverDataLogic {
      *
      * @since 0.1.0
      */
-    private final MessageLogic messageLogic;
+    private final DailyTasksMessageSource messageSource;
 
     /**
      * コンストラクタ<br>
@@ -54,13 +54,13 @@ public class CarryoverDataLogicImpl implements CarryoverDataLogic {
      *
      * @param carryoverDataDao
      *                         JSON ファイルの読み書き
-     * @param messageLogic
+     * @param messageSource
      *                         メッセージの取得
      */
-    public CarryoverDataLogicImpl(final CarryoverDataDao carryoverDataDao, final MessageLogic messageLogic) {
+    public CarryoverDataLogicImpl(final CarryoverDataDao carryoverDataDao, final DailyTasksMessageSource messageSource) {
 
         this.carryoverDataDao = carryoverDataDao;
-        this.messageLogic = messageLogic;
+        this.messageSource = messageSource;
 
     }
 
@@ -109,7 +109,7 @@ public class CarryoverDataLogicImpl implements CarryoverDataLogic {
         }
 
         /* モデルへの変換 */
-        result = issue.toCarryoverIssueModel(this.messageLogic);
+        result = issue.toCarryoverIssueModel(this.messageSource);
         return result;
 
     }
@@ -130,7 +130,7 @@ public class CarryoverDataLogicImpl implements CarryoverDataLogic {
         final CarryoverIssuesModel result;
         final CarryoverIssuesDto   issues = this.carryoverDataDao.loadIssues();
 
-        result = issues.toCarryoverIssuesModel(this.messageLogic);
+        result = issues.toCarryoverIssuesModel(this.messageSource);
         return result;
 
     }

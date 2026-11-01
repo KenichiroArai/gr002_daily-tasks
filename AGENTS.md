@@ -63,8 +63,7 @@ src/main/java/kmg/gr/gr002/dailytasks/
       types/                 # 列挙型（対象セクション TargetSectionTypes、解析の正規表現 CarryoverParsePatternTypes、解析の固定文字列 CarryoverParseTextTypes、接続設定の文字列表現 GitHubSettingsFormatTypes）
     infrastructure/          # 業務を知らない汎用ユーティリティ
       types/msg/             # メッセージの種類（Gr002GenMsgTypes、Gr002LogMsgTypes、Gr002ValMsgTypes）
-      logic/                 # メッセージの取得のインタフェース（MessageLogic）
-      logic/impl/            # メッセージの取得の実装（Spring の MessageSource を使う MessageLogicImpl）
+      context/               # メッセージリソース（KmgMessageSource を継承した DailyTasksMessageSource）
     repository/              # データアクセス層
       api/github/            # 外部 API の実装（GitHub REST API からの Issue 取得 GitHubIssueApiImpl）
       dao/carryoverdata/     # DAO の実装（持ち越しの JSON ファイルの読み書き CarryoverDataDaoImpl）
@@ -179,7 +178,7 @@ while (hasNext) {
 ```
 - **ロジック**: ロジック・ユーティリティ・モデルなどを使うが、サービスは呼ばない。メソッドごとに論理のまとまりになっており、各メソッドは基本的に互いに依存せず、サービス・ロジック・ユーティリティなどから何度も呼ばれる（例: get、read、write、exists、parse、aggregate、変換）。メソッド同士の依存は薄く、共通のパラメータだけをフィールドで共有する。インスタンス変数を共有する点がユーティリティとは異なる
 - インタフェースと実装に分ける場合は、ほかの型と同じく、インタフェースを呼ぶ側の層の `logic/`、実装を呼ばれる側の層の `logic/impl/` に置く。自層の中だけで使う部品（変換など）は、インタフェースを作らずに `logic/` に具象クラスを置いてよい
-- 名前に `Parser`、`Aggregator`、`Converter`、`Provider` などは使わず、`XxxLogic`（例: `CarryoverParseLogic`、`CarryoverAggregateLogic`、`MessageLogic`）とする
+- 名前に `Parser`、`Aggregator`、`Converter`、`Provider` などは使わず、`XxxLogic`（例: `CarryoverParseLogic`、`CarryoverAggregateLogic`）とする
 - ロジックは役割ごとに分ける。同じモデルや同じ設定を受け取ることではまとめない。基準は kb002_daily-tasks_doc の [docs/coding-rules.md](https://github.com/KenichiroArai/kb002_daily-tasks_doc/blob/main/docs/coding-rules.md) の「役割」に従う
 
 ## 層間のルール
@@ -237,7 +236,7 @@ flowchart LR
 - 受け取るのは「自層のインタフェース」（と自層の部品、infrastructure のインタフェース、`JsonMapper` などのフレームワークの部品）とする。実装は Spring が下の層から注入する
 - Spring が注入しないインスタンス変数のうち、生成時に決まるもの（出力先や `HttpClient` など）は、同じコンストラクタで初期化する。テストからフィールドを差し替える。列挙型からの取得はフィールドの初期値にしてよい
 - インスタンスの生存期間で共通な情報（複数メソッドで同じ値を使う値、そのオブジェクトが何に対する処理かを決める値）は、`initialize` で受け取りフィールドに保持する。コンストラクタでは受け取らない。依存の注入はコンストラクタのままとする。`initialize` の戻り値は `void` とし、失敗は例外で表す
-  - 共同作業者（ロジック、DAO、API、`MessageLogic`）はコンストラクタの引数とし、`initialize` の引数にしない
+  - 共同作業者（ロジック、DAO、API、`DailyTasksMessageSource`）はコンストラクタの引数とし、`initialize` の引数にしない
   - メソッドごとに変わる入力（1 件の Issue、保存する解析結果、集計そのもの）はメソッドの引数のままにする
   - 1 メソッドの中だけで使う計算結果はローカル変数のままにする
 - 状態を持つ Bean（`initialize` でフィールドを持つサービス、ロジック、外部 API、DAO）は `@Scope("prototype")` にする。シングルトンのままフィールドへ書くと、次の実行が前の設定を上書きする
@@ -277,7 +276,11 @@ flowchart LR
   - ログ: `Gr002LogMsgTypes` は `KmgFundCmnLogMsgTypes` を実装する。コードは `GR002_LOG12xxx`
   - バリデーション: `Gr002ValMsgTypes` は `KmgFundCmnValMsgTypes` と `KmgFundCmnExcMsgTypes` を実装する。コードは `GR002_VAL13xxx`。該当がなければ `NONE` だけ置く
 - メッセージの列挙型も `displayName`、`key`、`detail` の順で受け、その後ろにメッセージの値（文面）を置く。`key` はプロパティのキーであり、`get` と `getCode` は `key` を返す。文面はプロパティと列挙型のメッセージの値の両方に書く
-- 取得はインスタンス変数に注入した `infrastructure/logic/MessageLogic#get(KmgFundCmnMsgTypes)` を使う。実装は `get()` で Spring の `MessageSource` を引数なしで引くため、`{}` や `%s` はそのまま返る。kmg-fund の `KmgMessageSource`（`{0}` とログ先頭へのコード埋め込み）は使わない
+- 取得はインスタンス変数に注入した `infrastructure/context/DailyTasksMessageSource` を使う。`DailyTasksMessageSource` は kmg-fund の `KmgMessageSource` を継承し、追加ロジックは持たない
+  - ログ: `getLogMessage(KmgCmnLogMsgTypes)`。先頭に `[キー] ` を付ける（例: `[Gr002Log12000] モード={}、...`）
+  - 例外: `getExcMessage(KmgCmnExcMsgTypes)`。先頭に `[キー] ` を付ける
+  - 一般（使い方など）: `getGenMessage(KmgCmnGenMsgTypes)`。コードは埋め込まない
+  - 引数なしで取得するため、メッセージ中の `{}` や `%s` / `%d` はそのまま返る
 - ログは SLF4J の `{}`、例外は `String.format` の `%s` / `%d` を埋め込み位置に使う。取得したメッセージはいったん変数に入れてから渡す
 - 新しいメッセージは空き番号を採番し、同じ番号を再利用しない
 - 解析ルールの正規表現は messages.properties に置かず、`CarryoverParsePatternTypes` に置く。日付書式や項目名のフォールバックは `CarryoverParseTextTypes` に置く。対象セクション名は `TargetSectionTypes` にする

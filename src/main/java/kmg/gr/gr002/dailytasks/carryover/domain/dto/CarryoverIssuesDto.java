@@ -5,7 +5,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssuesModel;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.logic.MessageLogic;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessageSource;
 
 /**
  * Issue 番号と持ち越しの解析結果の対応の DTO<br>
@@ -100,19 +100,19 @@ public class CarryoverIssuesDto {
      *
      * @since 0.1.0
      *
-     * @param messageLogic
+     * @param messageSource
      *                     メッセージの取得
      *
      * @return Issue 番号と解析結果の対応
      */
-    public CarryoverIssuesModel toCarryoverIssuesModel(final MessageLogic messageLogic) {
+    public CarryoverIssuesModel toCarryoverIssuesModel(final DailyTasksMessageSource messageSource) {
 
         final CarryoverIssuesModel result = new CarryoverIssuesModel();
 
         for (final Map.Entry<Integer, CarryoverIssueDto> entry : this.issues.entrySet()) {
 
             final CarryoverIssueDto issue = entry.getValue();
-            result.put(entry.getKey(), issue.toCarryoverIssueModel(messageLogic));
+            result.put(entry.getKey(), issue.toCarryoverIssueModel(messageSource));
 
         }
 

@@ -26,7 +26,7 @@ import kmg.gr.gr002.dailytasks.carryover.domain.logic.impl.CarryoverParseLogicIm
 import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel;
 import kmg.gr.gr002.dailytasks.testutil.LogAssertions;
 import kmg.gr.gr002.dailytasks.testutil.LogCapture;
-import kmg.gr.gr002.dailytasks.testutil.MessageLogicTestUtil;
+import kmg.gr.gr002.dailytasks.testutil.DailyTasksMessageSourceTestUtil;
 import kmg.gr.gr002.dailytasks.testutil.ReflectionTestUtil;
 
 /**
@@ -442,7 +442,7 @@ public class CarryoverCollectServiceImplTest {
      */
     private static CarryoverParseLogic createParseLogic() {
 
-        final CarryoverParseLogicImpl result = new CarryoverParseLogicImpl(MessageLogicTestUtil.create());
+        final CarryoverParseLogicImpl result = new CarryoverParseLogicImpl(DailyTasksMessageSourceTestUtil.create());
         return result;
 
     }
@@ -464,7 +464,7 @@ public class CarryoverCollectServiceImplTest {
 
         final CarryoverCollectServiceImpl result = new CarryoverCollectServiceImpl(dataLogic,
             CarryoverCollectServiceImplTest.PARSE_LOGIC, issueLogic, new StubDefaultMinutesLogic(),
-            MessageLogicTestUtil.create());
+            DailyTasksMessageSourceTestUtil.create());
         return result;
 
     }
@@ -492,7 +492,7 @@ public class CarryoverCollectServiceImplTest {
         final DailyTaskIssueModel remoteIssue, final int recentFrom) throws Exception {
 
         final CarryoverCollectServiceImpl target
-            = new CarryoverCollectServiceImpl(null, null, null, null, MessageLogicTestUtil.create());
+            = new CarryoverCollectServiceImpl(null, null, null, null, DailyTasksMessageSourceTestUtil.create());
         ReflectionTestUtil.setField(target, "full", Boolean.valueOf(full));
         final int     issueNumber = remoteIssue.getNumber();
         final String  updatedAt   = remoteIssue.getUpdatedAt();
@@ -683,7 +683,7 @@ public class CarryoverCollectServiceImplTest {
 
         /* 期待値の定義 */
         final String[] expectedMsgs = {
-            "#1 を再解析します: 全件モード",
+            "[Gr002Log12019] #1 を再解析します: [Gr002Log12021] 全件モード",
         };
 
         /* 準備 */
@@ -806,7 +806,7 @@ public class CarryoverCollectServiceImplTest {
 
         /* 期待値の定義 */
         final String[] expectedMsgs = {
-            "#1 をスキップします: 更新日時一致",
+            "[Gr002Log12020] #1 をスキップします: [Gr002Log12025] 更新日時一致",
         };
 
         /* 準備 */
