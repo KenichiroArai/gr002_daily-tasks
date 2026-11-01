@@ -113,21 +113,6 @@ public class CarryoverCommandImpl implements CarryoverCommand {
     }
 
     /**
-     * 収集失敗をログに出す<br>
-     *
-     * @since 0.1.0
-     *
-     * @param exception
-     *                  収集の失敗
-     */
-    private void logFailure(final Exception exception) {
-
-        final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12015);
-        CarryoverCommandImpl.LOGGER.error(message, exception.getMessage(), exception);
-
-    }
-
-    /**
      * ログに出すモードの名前を返す<br>
      *
      * @since 0.1.0
@@ -271,12 +256,14 @@ public class CarryoverCommandImpl implements CarryoverCommand {
 
         } catch (final IllegalArgumentException e) {
 
-            this.logFailure(e);
+            final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12015);
+            CarryoverCommandImpl.LOGGER.error(message, e.getMessage(), e);
             throw e;
 
         } catch (final IOException e) {
 
-            this.logFailure(e);
+            final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12043);
+            CarryoverCommandImpl.LOGGER.error(message, e.getMessage(), e);
             throw e;
 
         }

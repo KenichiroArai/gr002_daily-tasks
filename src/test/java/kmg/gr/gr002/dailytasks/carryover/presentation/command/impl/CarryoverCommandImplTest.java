@@ -767,7 +767,7 @@ public class CarryoverCommandImplTest {
         final String[] expectedMsgs    = {
             KmgString.concat("[Gr002Log12013] 収集を開始します: モード=[Gr002Log12012] 差分、repository=owner/repo、dataDir=", Path.of("out/data").toString(),
                 "、recentCount=7、batchSize=365"),
-            "[Gr002Log12015] 収集に失敗しました: 読み込みに失敗しました",
+            "[Gr002Log12043] 収集に失敗しました: 読み込みに失敗しました",
         };
 
         /* 準備 */

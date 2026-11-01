@@ -246,7 +246,7 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
 
             for (final Path path : paths.filter(CarryoverDataDaoImpl::jsonFile).toList()) {
 
-                final String loadMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12031);
+                final String loadMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12042);
                 CarryoverDataDaoImpl.LOGGER.debug(loadMessage, path);
                 final CarryoverIssueJsonDto issueJson = this.readIssue(path);
                 final CarryoverIssueDto     issue     = issueJson.toCarryoverIssueDto();

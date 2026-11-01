@@ -340,7 +340,17 @@ public class CarryoverServiceImpl implements CarryoverService {
             /* 保存済み全件からの再構築 */
             final CarryoverSummaryModel summary = this.carryoverAggregateService.rebuildFromStored();
             this.carryoverAggregateService.saveSummary(summary);
-            this.logResult(summary);
+
+            /* 結果のログ出力 */
+            final String                  collectMessage = this.messageSource
+                .getLogMessage(Gr002LogMsgTypes.GR002_LOG12000);
+            final String                  modeName       = this.modeName();
+            final List<DailySummaryModel> days           = summary.getDays();
+            final int                     dayCount       = days.size();
+            CarryoverServiceImpl.LOGGER.info(collectMessage, modeName, this.remoteCount, this.savedCount, dayCount);
+
+            final String minutesSourceMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12001);
+            CarryoverServiceImpl.LOGGER.info(minutesSourceMessage, this.defaultCount, this.unknownCount);
             return;
 
         }
@@ -352,7 +362,14 @@ public class CarryoverServiceImpl implements CarryoverService {
         this.carryoverAggregateService.saveSummary(summary);
 
         /* 結果のログ出力 */
-        this.logResult(summary);
+        final String                  collectMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12035);
+        final String                  modeName       = this.modeName();
+        final List<DailySummaryModel> days           = summary.getDays();
+        final int                     dayCount       = days.size();
+        CarryoverServiceImpl.LOGGER.info(collectMessage, modeName, this.remoteCount, this.savedCount, dayCount);
+
+        final String minutesSourceMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12036);
+        CarryoverServiceImpl.LOGGER.info(minutesSourceMessage, this.defaultCount, this.unknownCount);
 
     }
 
@@ -489,28 +506,6 @@ public class CarryoverServiceImpl implements CarryoverService {
         this.unknownCount = 0;
         this.carryoverCollectService.initialize(source, properties.getRecentCount(), full);
         this.carryoverAggregateService.initialize(source.getDataDir());
-
-    }
-
-    /**
-     * 収集と集計の結果をログに出す<br>
-     *
-     * @since 0.1.0
-     *
-     * @param summary
-     *                画面用の集計
-     */
-    private void logResult(final CarryoverSummaryModel summary) {
-
-        final String                  collectMessage = this.messageSource
-            .getLogMessage(Gr002LogMsgTypes.GR002_LOG12000);
-        final String                  modeName       = this.modeName();
-        final List<DailySummaryModel> days           = summary.getDays();
-        final int                     dayCount       = days.size();
-        CarryoverServiceImpl.LOGGER.info(collectMessage, modeName, this.remoteCount, this.savedCount, dayCount);
-
-        final String minutesSourceMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12001);
-        CarryoverServiceImpl.LOGGER.info(minutesSourceMessage, this.defaultCount, this.unknownCount);
 
     }
 

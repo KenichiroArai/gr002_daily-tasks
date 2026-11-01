@@ -283,6 +283,9 @@ flowchart LR
   - 引数なしで取得するため、メッセージ中の `{}` や `%s` / `%d` はそのまま返る
 - ログは SLF4J の `{}`、例外は `String.format` の `%s` / `%d` を埋め込み位置に使う。取得したメッセージはいったん変数に入れてから渡す
 - 新しいメッセージは空き番号を採番し、同じ番号を再利用しない
+- ログは出力箇所ごとに固有の `Gr002LogMsgTypes` を割り当て、ユニークにする。メッセージ ID を見ればどの場所のログか分かるようにする
+- ログの出力は、ログ専用のメソッドやクラスにまとめず、該当する処理の箇所（行）で `getLogMessage` と `LOGGER.*` を書く。共通化してよいのは、ログ行そのものではない文面の断片（モード名や理由など）に限る
+- 思想の詳細は kb002_daily-tasks_doc の [docs/coding-rules.md](https://github.com/KenichiroArai/kb002_daily-tasks_doc/blob/main/docs/coding-rules.md#ログ) の「ログ」に従う
 - 解析ルールの正規表現は messages.properties に置かず、`CarryoverParsePatternTypes` に置く。日付書式や項目名のフォールバックは `CarryoverParseTextTypes` に置く。対象セクション名は `TargetSectionTypes` にする
 
 ### ルールの検査
