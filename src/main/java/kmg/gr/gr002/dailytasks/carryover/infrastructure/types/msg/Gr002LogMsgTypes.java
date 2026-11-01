@@ -13,8 +13,8 @@ import kmg.fund.infrastructure.cmn.msg.KmgFundCmnLogMsgTypes;
  * <p>
  * メッセージコードの採番規則:<br>
  * 形式: {@code GR002_LOG} + 5桁。種別はプレフィックスのみで表す。<br>
- * 1桁目（層）: {@code 0} 共通 / {@code 1} domain / {@code 2} infrastructure / {@code 3} application /
- * {@code 4} presentation / {@code 5} repository<br>
+ * 1桁目（層）: {@code 0} 共通 / {@code 1} domain / {@code 2} infrastructure / {@code 3} application / {@code 4} presentation /
+ * {@code 5} repository<br>
  * 2桁目（層内）:<br>
  * domain: {@code 0} 共通 / {@code 1} dto / {@code 2} logic / {@code 3} types<br>
  * infrastructure: {@code 0} 共通 / {@code 1} context / {@code 2} types.msg<br>
@@ -123,8 +123,7 @@ public enum Gr002LogMsgTypes implements KmgFundCmnLogMsgTypes {
      *
      * @since 0.1.0
      */
-    GR002_LOG31001("標準時間の補完結果（差分モード）", "Gr002Log31001", "差分モードの残り時間の取得元ごとの行数を出すログ",
-        "標準時間で補完した行={} 件、標準時間が未登録の行={} 件"),
+    GR002_LOG31001("標準時間の補完結果（差分モード）", "Gr002Log31001", "差分モードの残り時間の取得元ごとの行数を出すログ", "標準時間で補完した行={} 件、標準時間が未登録の行={} 件"),
 
     /**
      * 収集結果（全件モード）
@@ -138,8 +137,7 @@ public enum Gr002LogMsgTypes implements KmgFundCmnLogMsgTypes {
      *
      * @since 0.1.0
      */
-    GR002_LOG31003("標準時間の補完結果（全件モード）", "Gr002Log31003", "全件モードの残り時間の取得元ごとの行数を出すログ",
-        "標準時間で補完した行={} 件、標準時間が未登録の行={} 件"),
+    GR002_LOG31003("標準時間の補完結果（全件モード）", "Gr002Log31003", "全件モードの残り時間の取得元ごとの行数を出すログ", "標準時間で補完した行={} 件、標準時間が未登録の行={} 件"),
 
     /**
      * 参照取得結果

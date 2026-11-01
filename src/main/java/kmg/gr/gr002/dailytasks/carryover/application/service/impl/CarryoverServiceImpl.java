@@ -362,7 +362,8 @@ public class CarryoverServiceImpl implements CarryoverService {
         this.carryoverAggregateService.saveSummary(summary);
 
         /* 結果のログ出力 */
-        final String                  collectMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31002);
+        final String                  collectMessage = this.messageSource
+            .getLogMessage(Gr002LogMsgTypes.GR002_LOG31002);
         final String                  modeName       = this.modeName();
         final List<DailySummaryModel> days           = summary.getDays();
         final int                     dayCount       = days.size();

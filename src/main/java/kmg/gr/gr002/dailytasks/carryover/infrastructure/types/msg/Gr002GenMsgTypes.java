@@ -15,8 +15,8 @@ import kmg.fund.infrastructure.cmn.msg.KmgFundCmnGenMsgTypes;
  * <p>
  * メッセージコードの採番規則:<br>
  * 形式: {@code GR002_GEN} + 5桁。種別はプレフィックスのみで表す。<br>
- * 1桁目（層）: {@code 0} 共通 / {@code 1} domain / {@code 2} infrastructure / {@code 3} application /
- * {@code 4} presentation / {@code 5} repository<br>
+ * 1桁目（層）: {@code 0} 共通 / {@code 1} domain / {@code 2} infrastructure / {@code 3} application / {@code 4} presentation /
+ * {@code 5} repository<br>
  * 2桁目（層内）:<br>
  * domain: {@code 0} 共通 / {@code 1} dto / {@code 2} logic / {@code 3} types<br>
  * infrastructure: {@code 0} 共通 / {@code 1} context / {@code 2} types.msg<br>
