@@ -101,7 +101,7 @@ public class CarryoverIssuesDto {
      * @since 0.1.0
      *
      * @param messageSource
-     *                     メッセージの取得
+     *                      メッセージの取得
      *
      * @return Issue 番号と解析結果の対応
      */

@@ -77,9 +77,9 @@ public class DefaultMinutesDaoImpl implements DefaultMinutesDao {
      * @since 0.1.0
      *
      * @param jsonMapper
-     *                     JSON の変換
+     *                      JSON の変換
      * @param messageSource
-     *                     メッセージの取得
+     *                      メッセージの取得
      */
     public DefaultMinutesDaoImpl(final JsonMapper jsonMapper, final DailyTasksMessageSource messageSource) {
 

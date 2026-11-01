@@ -382,7 +382,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
      * @since 0.1.0
      *
      * @param messageSource
-     *                     メッセージの取得
+     *                      メッセージの取得
      */
     public CarryoverParseLogicImpl(final DailyTasksMessageSource messageSource) {
 

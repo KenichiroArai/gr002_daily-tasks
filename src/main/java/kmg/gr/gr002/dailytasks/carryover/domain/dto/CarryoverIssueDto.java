@@ -318,7 +318,7 @@ public class CarryoverIssueDto {
      * @since 0.1.0
      *
      * @param messageSource
-     *                     メッセージの取得
+     *                      メッセージの取得
      *
      * @return 持ち越しの解析結果
      *

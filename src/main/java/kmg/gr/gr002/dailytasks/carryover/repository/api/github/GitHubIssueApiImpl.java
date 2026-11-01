@@ -218,9 +218,9 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
      * @since 0.1.0
      *
      * @param jsonMapper
-     *                     JSON の変換
+     *                      JSON の変換
      * @param messageSource
-     *                     メッセージの取得
+     *                      メッセージの取得
      */
     public GitHubIssueApiImpl(final JsonMapper jsonMapper, final DailyTasksMessageSource messageSource) {
 

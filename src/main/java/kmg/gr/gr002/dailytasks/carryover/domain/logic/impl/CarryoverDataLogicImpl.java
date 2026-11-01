@@ -57,7 +57,8 @@ public class CarryoverDataLogicImpl implements CarryoverDataLogic {
      * @param messageSource
      *                         メッセージの取得
      */
-    public CarryoverDataLogicImpl(final CarryoverDataDao carryoverDataDao, final DailyTasksMessageSource messageSource) {
+    public CarryoverDataLogicImpl(final CarryoverDataDao carryoverDataDao,
+        final DailyTasksMessageSource messageSource) {
 
         this.carryoverDataDao = carryoverDataDao;
         this.messageSource = messageSource;

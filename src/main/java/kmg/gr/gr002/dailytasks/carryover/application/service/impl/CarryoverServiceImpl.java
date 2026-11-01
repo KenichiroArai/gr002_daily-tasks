@@ -401,7 +401,8 @@ public class CarryoverServiceImpl implements CarryoverService {
         /* 単位の収集 */
         final List<DailyTaskIssueRefModel> batch        = this.batches.get(this.batchIndex);
         final int                          batchNumber  = this.batchIndex + 1;
-        final String                       startMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12017);
+        final String                       startMessage = this.messageSource
+            .getLogMessage(Gr002LogMsgTypes.GR002_LOG12017);
         CarryoverServiceImpl.LOGGER.info(startMessage, Integer.valueOf(batchNumber), Integer.valueOf(batchCount),
             Integer.valueOf(batch.size()));
         result = this.carryoverCollectService.collectBatch(batch);
@@ -501,7 +502,8 @@ public class CarryoverServiceImpl implements CarryoverService {
      */
     private void logResult(final CarryoverSummaryModel summary) {
 
-        final String                  collectMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12000);
+        final String                  collectMessage = this.messageSource
+            .getLogMessage(Gr002LogMsgTypes.GR002_LOG12000);
         final String                  modeName       = this.modeName();
         final List<DailySummaryModel> days           = summary.getDays();
         final int                     dayCount       = days.size();
