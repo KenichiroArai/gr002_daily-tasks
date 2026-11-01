@@ -12,6 +12,21 @@ import kmg.fund.infrastructure.cmn.msg.KmgFundCmnValMsgTypes;
  * Valは、Validationの略。<br>
  * Msgは、Messageの略。
  * </p>
+ * <p>
+ * メッセージコードの採番規則:<br>
+ * 形式: {@code GR002_VAL} + 5桁。種別はプレフィックスのみで表す。<br>
+ * 1桁目（層）: {@code 0} 共通 / {@code 1} domain / {@code 2} infrastructure / {@code 3} application /
+ * {@code 4} presentation / {@code 5} repository<br>
+ * 2桁目（層内）:<br>
+ * domain: {@code 0} 共通 / {@code 1} dto / {@code 2} logic / {@code 3} types<br>
+ * infrastructure: {@code 0} 共通 / {@code 1} context / {@code 2} types.msg<br>
+ * application: {@code 0} 共通 / {@code 1} service / {@code 2} logic / {@code 3} model / {@code 4} types<br>
+ * presentation: {@code 0} 共通 / {@code 1} command / {@code 2} model / {@code 3} service / {@code 4} types<br>
+ * repository: {@code 0} 共通 / {@code 1} api.github / {@code 2} dao.carryoverdata / {@code 3} dao.defaultminutes /
+ * {@code 4} dto.json / {@code 5} types<br>
+ * 3〜5桁目: 区分内の連番 {@code 000}〜{@code 999}<br>
+ * 番号の帰属は呼び出し側の実装パッケージ。空きにした旧番号は再利用しない。
+ * </p>
  *
  * @author KenichiroArai
  *

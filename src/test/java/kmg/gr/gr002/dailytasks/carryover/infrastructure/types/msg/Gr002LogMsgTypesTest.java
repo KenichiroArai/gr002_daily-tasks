@@ -26,10 +26,10 @@ public class Gr002LogMsgTypesTest {
     public void testGet_normalCollectResult() {
 
         /* 期待値の定義 */
-        final String expectedKey = "Gr002Log12000";
+        final String expectedKey = "Gr002Log31000";
 
         /* 準備 */
-        final Gr002LogMsgTypes testTarget = Gr002LogMsgTypes.GR002_LOG12000;
+        final Gr002LogMsgTypes testTarget = Gr002LogMsgTypes.GR002_LOG31000;
 
         /* テスト対象の実行 */
         final String testResult = testTarget.get();
@@ -101,7 +101,7 @@ public class Gr002LogMsgTypesTest {
         final String expectedDetail = "差分モードの名前";
 
         /* 準備 */
-        final Gr002LogMsgTypes testTarget = Gr002LogMsgTypes.GR002_LOG12012;
+        final Gr002LogMsgTypes testTarget = Gr002LogMsgTypes.GR002_LOG31008;
 
         /* テスト対象の実行 */
         final String testResult = testTarget.getDetail();
@@ -126,7 +126,7 @@ public class Gr002LogMsgTypesTest {
         final String expectedDisplayName = "全件";
 
         /* 準備 */
-        final Gr002LogMsgTypes testTarget = Gr002LogMsgTypes.GR002_LOG12011;
+        final Gr002LogMsgTypes testTarget = Gr002LogMsgTypes.GR002_LOG31007;
 
         /* テスト対象の実行 */
         final String testResult = testTarget.getDisplayName();
@@ -148,10 +148,10 @@ public class Gr002LogMsgTypesTest {
     public void testGetEnum_normalFetched() {
 
         /* 期待値の定義 */
-        final Gr002LogMsgTypes expectedType = Gr002LogMsgTypes.GR002_LOG12010;
+        final Gr002LogMsgTypes expectedType = Gr002LogMsgTypes.GR002_LOG51000;
 
         /* 準備 */
-        final String testKey = "Gr002Log12010";
+        final String testKey = "Gr002Log51000";
 
         /* テスト対象の実行 */
         final Gr002LogMsgTypes testResult = Gr002LogMsgTypes.getEnum(testKey);
@@ -220,10 +220,10 @@ public class Gr002LogMsgTypesTest {
     public void testGetKey_normalFileNotFound() {
 
         /* 期待値の定義 */
-        final String expectedKey = "Gr002Log12009";
+        final String expectedKey = "Gr002Log53000";
 
         /* 準備 */
-        final Gr002LogMsgTypes testTarget = Gr002LogMsgTypes.GR002_LOG12009;
+        final Gr002LogMsgTypes testTarget = Gr002LogMsgTypes.GR002_LOG53000;
 
         /* テスト対象の実行 */
         final String testResult = testTarget.getKey();
@@ -248,7 +248,7 @@ public class Gr002LogMsgTypesTest {
         final String expectedValue = "標準時間で補完した行={} 件、標準時間が未登録の行={} 件";
 
         /* 準備 */
-        final Gr002LogMsgTypes testTarget = Gr002LogMsgTypes.GR002_LOG12001;
+        final Gr002LogMsgTypes testTarget = Gr002LogMsgTypes.GR002_LOG31001;
 
         /* テスト対象の実行 */
         final String testResult = testTarget.getValue();
@@ -274,7 +274,7 @@ public class Gr002LogMsgTypesTest {
             = "収集を開始します: モード={}、repository={}、dataDir={}、recentCount={}、batchSize={}";
 
         /* 準備 */
-        final Gr002LogMsgTypes testTarget = Gr002LogMsgTypes.GR002_LOG12013;
+        final Gr002LogMsgTypes testTarget = Gr002LogMsgTypes.GR002_LOG41000;
 
         /* テスト対象の実行 */
         final String testResult = testTarget.getValue();
@@ -296,10 +296,10 @@ public class Gr002LogMsgTypesTest {
     public void testGetKey_normalSummarySave() {
 
         /* 期待値の定義 */
-        final String expectedKey = "Gr002Log12034";
+        final String expectedKey = "Gr002Log52003";
 
         /* 準備 */
-        final Gr002LogMsgTypes testTarget = Gr002LogMsgTypes.GR002_LOG12034;
+        final Gr002LogMsgTypes testTarget = Gr002LogMsgTypes.GR002_LOG52003;
 
         /* テスト対象の実行 */
         final String testResult = testTarget.getKey();
@@ -321,10 +321,10 @@ public class Gr002LogMsgTypesTest {
     public void testToString_normalUnexpectedLine() {
 
         /* 期待値の定義 */
-        final String expectedKey = "Gr002Log12007";
+        final String expectedKey = "Gr002Log12005";
 
         /* 準備 */
-        final Gr002LogMsgTypes testTarget = Gr002LogMsgTypes.GR002_LOG12007;
+        final Gr002LogMsgTypes testTarget = Gr002LogMsgTypes.GR002_LOG12005;
 
         /* テスト対象の実行 */
         final String testResult = testTarget.toString();

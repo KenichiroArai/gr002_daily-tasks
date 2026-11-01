@@ -26,10 +26,10 @@ public class Gr002GenMsgTypesTest {
     public void testGet_normalUnknownArgument() {
 
         /* 期待値の定義 */
-        final String expectedKey = "Gr002Gen11101";
+        final String expectedKey = "Gr002Gen41001";
 
         /* 準備 */
-        final Gr002GenMsgTypes testTarget = Gr002GenMsgTypes.GR002_GEN11101;
+        final Gr002GenMsgTypes testTarget = Gr002GenMsgTypes.GR002_GEN41001;
 
         /* テスト対象の実行 */
         final String testResult = testTarget.get();
@@ -126,7 +126,7 @@ public class Gr002GenMsgTypesTest {
         final String expectedDisplayName = "GitHub API の中断";
 
         /* 準備 */
-        final Gr002GenMsgTypes testTarget = Gr002GenMsgTypes.GR002_GEN11105;
+        final Gr002GenMsgTypes testTarget = Gr002GenMsgTypes.GR002_GEN51002;
 
         /* テスト対象の実行 */
         final String testResult = testTarget.getDisplayName();
@@ -148,10 +148,10 @@ public class Gr002GenMsgTypesTest {
     public void testGetEnum_normalUnknownArgument() {
 
         /* 期待値の定義 */
-        final Gr002GenMsgTypes expectedType = Gr002GenMsgTypes.GR002_GEN11101;
+        final Gr002GenMsgTypes expectedType = Gr002GenMsgTypes.GR002_GEN41001;
 
         /* 準備 */
-        final String testKey = "Gr002Gen11101";
+        final String testKey = "Gr002Gen41001";
 
         /* テスト対象の実行 */
         final Gr002GenMsgTypes testResult = Gr002GenMsgTypes.getEnum(testKey);
@@ -220,10 +220,10 @@ public class Gr002GenMsgTypesTest {
     public void testGetKey_normalUsage() {
 
         /* 期待値の定義 */
-        final String expectedKey = "Gr002Gen11100";
+        final String expectedKey = "Gr002Gen41000";
 
         /* 準備 */
-        final Gr002GenMsgTypes testTarget = Gr002GenMsgTypes.GR002_GEN11100;
+        final Gr002GenMsgTypes testTarget = Gr002GenMsgTypes.GR002_GEN41000;
 
         /* テスト対象の実行 */
         final String testResult = testTarget.getKey();
@@ -248,7 +248,7 @@ public class Gr002GenMsgTypesTest {
         final String expectedValue = "不明な残り時間の取得元です: %s";
 
         /* 準備 */
-        final Gr002GenMsgTypes testTarget = Gr002GenMsgTypes.GR002_GEN11102;
+        final Gr002GenMsgTypes testTarget = Gr002GenMsgTypes.GR002_GEN11000;
 
         /* テスト対象の実行 */
         final String testResult = testTarget.getValue();
@@ -270,10 +270,10 @@ public class Gr002GenMsgTypesTest {
     public void testToString_normalCallFailed() {
 
         /* 期待値の定義 */
-        final String expectedKey = "Gr002Gen11103";
+        final String expectedKey = "Gr002Gen51000";
 
         /* 準備 */
-        final Gr002GenMsgTypes testTarget = Gr002GenMsgTypes.GR002_GEN11103;
+        final Gr002GenMsgTypes testTarget = Gr002GenMsgTypes.GR002_GEN51000;
 
         /* テスト対象の実行 */
         final String testResult = testTarget.toString();

@@ -259,7 +259,7 @@ public class CarryoverItemDto {
             // 残り時間の取得元が不明な場合
 
             // 不正な値として例外にする
-            final String template = messageSource.getExcMessage(Gr002GenMsgTypes.GR002_GEN11102);
+            final String template = messageSource.getExcMessage(Gr002GenMsgTypes.GR002_GEN11000);
             final String message  = String.format(template, this.minutesSource);
             throw new IllegalArgumentException(message);
 

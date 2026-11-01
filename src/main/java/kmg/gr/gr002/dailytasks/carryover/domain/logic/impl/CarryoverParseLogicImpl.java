@@ -430,7 +430,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
             // 日付が取得できない場合
 
             // タイトルの日付がないことを警告する
-            final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12002);
+            final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12000);
             CarryoverParseLogicImpl.LOGGER.warn(message, issue.getNumber(), issue.getTitle());
 
         }
@@ -509,7 +509,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         result = new CarryoverIssueModel(issue.getNumber(), issue.getTitle(), date, issue.getState(),
             issue.getUpdatedAt(), sections, declaredCount, items);
-        final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12026);
+        final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12007);
         CarryoverParseLogicImpl.LOGGER.debug(message, Integer.valueOf(issue.getNumber()),
             Integer.valueOf(items.size()));
         return result;
@@ -563,7 +563,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
             // 持ち越し元の日付がない場合
 
             // 日付の形式が違うことを警告する
-            final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12003);
+            final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12001);
             CarryoverParseLogicImpl.LOGGER.warn(message, number, raw);
 
         }
@@ -580,7 +580,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
             // 項目名が不明な場合
 
             // 項目名が取れないことを警告する
-            final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12004);
+            final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12002);
             CarryoverParseLogicImpl.LOGGER.warn(message, number, raw);
 
         }
@@ -608,7 +608,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
             // 解釈できない残りがある場合
 
             // 時間表記を解釈できないことを警告する
-            final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12005);
+            final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12003);
             CarryoverParseLogicImpl.LOGGER.warn(message, number, raw);
 
         }
@@ -622,7 +622,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
             // 標準時間がない場合
 
             // 取得元を不明にして項目を返す
-            final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12006);
+            final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12004);
             CarryoverParseLogicImpl.LOGGER.warn(message, number, name);
             result = new CarryoverItemModel(name, originDate, checked, 0, MinutesSourceTypes.UNKNOWN, section, raw);
             return result;
@@ -690,7 +690,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         }
 
-        final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12008);
+        final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12006);
         CarryoverParseLogicImpl.LOGGER.warn(message, number, declaredCount, parsedCount);
 
     }
@@ -737,7 +737,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         }
 
-        final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12007);
+        final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12005);
         CarryoverParseLogicImpl.LOGGER.warn(message, number, line);
 
     }

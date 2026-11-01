@@ -442,7 +442,7 @@ public class CarryoverIssueDtoTest {
     public void testToCarryoverIssueModel_semiUnknownMinutesSource() {
 
         /* 期待値の定義 */
-        final String expectedMessage = "[Gr002Gen11102] 不明な残り時間の取得元です: xxx";
+        final String expectedMessage = "[Gr002Gen11000] 不明な残り時間の取得元です: xxx";
 
         /* 準備 */
         final CarryoverIssueDto testDto = CarryoverIssueDtoTest.createIssueDto("xxx");

@@ -341,7 +341,7 @@ public class GitHubIssueApiImplTest {
         /* 期待値の定義 */
         final List<Integer> expectedNumbers = List.of(1);
         final String[]      expectedMsgs    = {
-            "[Gr002Log12010] Issue を 1 件取得しました（1 ページ）",
+            "[Gr002Log51000] Issue を 1 件取得しました（1 ページ）",
         };
 
         /* 準備 */
@@ -382,8 +382,8 @@ public class GitHubIssueApiImplTest {
 
         /* 期待値の定義 */
         final String[] expectedMsgs = {
-            "[Gr002Log12029] レート制限: remaining=5、reset=123", "[Gr002Log12030] レート制限の残りが少なくなっています: remaining=5、reset=123",
-            "[Gr002Log12028] Issue ページを取得しました: ページ=1、応答=0 件、累積=0 件", "[Gr002Log12010] Issue を 0 件取得しました（1 ページ）",
+            "[Gr002Log51002] レート制限: remaining=5、reset=123", "[Gr002Log51003] レート制限の残りが少なくなっています: remaining=5、reset=123",
+            "[Gr002Log51001] Issue ページを取得しました: ページ=1、応答=0 件、累積=0 件", "[Gr002Log51000] Issue を 0 件取得しました（1 ページ）",
         };
 
         /* 準備 */
@@ -421,8 +421,8 @@ public class GitHubIssueApiImplTest {
 
         /* 期待値の定義 */
         final String[] expectedMsgs = {
-            "[Gr002Log12029] レート制限: remaining=abc、reset=", "[Gr002Log12028] Issue ページを取得しました: ページ=1、応答=0 件、累積=0 件",
-            "[Gr002Log12010] Issue を 0 件取得しました（1 ページ）",
+            "[Gr002Log51002] レート制限: remaining=abc、reset=", "[Gr002Log51001] Issue ページを取得しました: ページ=1、応答=0 件、累積=0 件",
+            "[Gr002Log51000] Issue を 0 件取得しました（1 ページ）",
         };
 
         /* 準備 */
@@ -459,8 +459,8 @@ public class GitHubIssueApiImplTest {
 
         /* 期待値の定義 */
         final String[] expectedMsgs = {
-            "[Gr002Log12029] レート制限: remaining=50、reset=999", "[Gr002Log12028] Issue ページを取得しました: ページ=1、応答=0 件、累積=0 件",
-            "[Gr002Log12010] Issue を 0 件取得しました（1 ページ）",
+            "[Gr002Log51002] レート制限: remaining=50、reset=999", "[Gr002Log51001] Issue ページを取得しました: ページ=1、応答=0 件、累積=0 件",
+            "[Gr002Log51000] Issue を 0 件取得しました（1 ページ）",
         };
 
         /* 準備 */
@@ -494,7 +494,7 @@ public class GitHubIssueApiImplTest {
     public void testFetchPage_errorNotArray() {
 
         /* 期待値の定義 */
-        final String expectedMessage = "[Gr002Gen11104] GitHub API の応答が配列ではありません: uri=" + GitHubIssueApiImplTest.PAGE1_URI;
+        final String expectedMessage = "[Gr002Gen51001] GitHub API の応答が配列ではありません: uri=" + GitHubIssueApiImplTest.PAGE1_URI;
 
         /* 準備 */
         try (StubHttpClient testHttpClient = new StubHttpClient()) {
@@ -526,7 +526,7 @@ public class GitHubIssueApiImplTest {
     public void testFetchPage_errorStatus() {
 
         /* 期待値の定義 */
-        final String expectedMessage = "[Gr002Gen11103] GitHub API の呼び出しに失敗しました: status=403, uri="
+        final String expectedMessage = "[Gr002Gen51000] GitHub API の呼び出しに失敗しました: status=403, uri="
             + GitHubIssueApiImplTest.PAGE1_URI;
 
         /* 準備 */
@@ -801,7 +801,7 @@ public class GitHubIssueApiImplTest {
     public void testSend_errorInterrupted() {
 
         /* 期待値の定義 */
-        final String expectedMessage = "[Gr002Gen11105] GitHub API の呼び出しが中断されました";
+        final String expectedMessage = "[Gr002Gen51002] GitHub API の呼び出しが中断されました";
 
         /* 準備 */
         try (StubHttpClient testHttpClient = new StubHttpClient()) {
@@ -961,7 +961,7 @@ public class GitHubIssueApiImplTest {
     public void testFetchIssue_errorNotObject() {
 
         /* 期待値の定義 */
-        final String expectedMessage = "[Gr002Gen11106] GitHub API の応答がオブジェクトではありません: uri="
+        final String expectedMessage = "[Gr002Gen51003] GitHub API の応答がオブジェクトではありません: uri="
             + "https://api.example.com/repos/owner/repo/issues/7";
 
         /* 準備 */

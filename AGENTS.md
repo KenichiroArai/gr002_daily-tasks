@@ -272,17 +272,27 @@ flowchart LR
 
 - 使い方と例外の文面は `src/main/resources/messages.properties`、ログの文面は `src/main/resources/messages-log.properties` に置く。プロパティのキーは列挙型の `key` とする。コード付きのメッセージでは `key` を列挙定数名のパスカルケースにする。`NONE` の `key` は `"None"` とする
 - メッセージの種類は `carryover/infrastructure/types/msg` に置く。全層から参照する
-  - 一般（使い方、例外）: `Gr002GenMsgTypes` は `KmgFundCmnGenMsgTypes` と `KmgFundCmnExcMsgTypes` を実装する。コードは `GR002_GEN11xxx`
-  - ログ: `Gr002LogMsgTypes` は `KmgFundCmnLogMsgTypes` を実装する。コードは `GR002_LOG12xxx`
-  - バリデーション: `Gr002ValMsgTypes` は `KmgFundCmnValMsgTypes` と `KmgFundCmnExcMsgTypes` を実装する。コードは `GR002_VAL13xxx`。該当がなければ `NONE` だけ置く
+  - 一般（使い方、例外）: `Gr002GenMsgTypes` は `KmgFundCmnGenMsgTypes` と `KmgFundCmnExcMsgTypes` を実装する。コードは `GR002_GEN` + 5桁
+  - ログ: `Gr002LogMsgTypes` は `KmgFundCmnLogMsgTypes` を実装する。コードは `GR002_LOG` + 5桁
+  - バリデーション: `Gr002ValMsgTypes` は `KmgFundCmnValMsgTypes` と `KmgFundCmnExcMsgTypes` を実装する。コードは `GR002_VAL` + 5桁。該当がなければ `NONE` だけ置く
+- 5桁の採番規則（種別はプレフィックスのみ。旧の種別帯 11xxx/12xxx/13xxx は使わない）:
+  - 1桁目（層）: `0` 共通 / `1` domain / `2` infrastructure / `3` application / `4` presentation / `5` repository
+  - 2桁目（層内）:
+    - domain: `0` 共通 / `1` dto / `2` logic / `3` types
+    - infrastructure: `0` 共通 / `1` context / `2` types.msg
+    - application: `0` 共通 / `1` service / `2` logic / `3` model / `4` types
+    - presentation: `0` 共通 / `1` command / `2` model / `3` service / `4` types
+    - repository: `0` 共通 / `1` api.github / `2` dao.carryoverdata / `3` dao.defaultminutes / `4` dto.json / `5` types
+  - 3〜5桁目: 区分内の連番 `000`〜`999`
+  - 番号の帰属は呼び出し側の実装パッケージ。空きにした旧番号は再利用しない
 - メッセージの列挙型も `displayName`、`key`、`detail` の順で受け、その後ろにメッセージの値（文面）を置く。`key` はプロパティのキーであり、`get` と `getCode` は `key` を返す。文面はプロパティと列挙型のメッセージの値の両方に書く
 - 取得はインスタンス変数に注入した `infrastructure/context/DailyTasksMessageSource` を使う。`DailyTasksMessageSource` は kmg-fund の `KmgMessageSource` を継承し、追加ロジックは持たない
-  - ログ: `getLogMessage(KmgCmnLogMsgTypes)`。先頭に `[キー] ` を付ける（例: `[Gr002Log12000] モード={}、...`）
+  - ログ: `getLogMessage(KmgCmnLogMsgTypes)`。先頭に `[キー] ` を付ける（例: `[Gr002Log31000] モード={}、...`）
   - 例外: `getExcMessage(KmgCmnExcMsgTypes)`。先頭に `[キー] ` を付ける
   - 一般（使い方など）: `getGenMessage(KmgCmnGenMsgTypes)`。コードは埋め込まない
   - 引数なしで取得するため、メッセージ中の `{}` や `%s` / `%d` はそのまま返る
 - ログは SLF4J の `{}`、例外は `String.format` の `%s` / `%d` を埋め込み位置に使う。取得したメッセージはいったん変数に入れてから渡す
-- 新しいメッセージは空き番号を採番し、同じ番号を再利用しない
+- 新しいメッセージは区分内の空き番号を採番し、同じ番号を再利用しない
 - ログは出力箇所ごとに固有の `Gr002LogMsgTypes` を割り当て、ユニークにする。メッセージ ID を見ればどの場所のログか分かるようにする
 - ログの出力は、ログ専用のメソッドやクラスにまとめず、該当する処理の箇所（行）で `getLogMessage` と `LOGGER.*` を書く。共通化してよいのは、ログ行そのものではない文面の断片（モード名や理由など）に限る
 - 思想の詳細は kb002_daily-tasks_doc の [docs/coding-rules.md](https://github.com/KenichiroArai/kb002_daily-tasks_doc/blob/main/docs/coding-rules.md#ログ) の「ログ」に従う

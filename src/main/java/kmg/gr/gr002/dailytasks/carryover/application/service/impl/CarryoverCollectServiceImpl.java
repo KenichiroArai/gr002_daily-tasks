@@ -502,8 +502,8 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
             // 全件モードの場合
 
             // 解析し直す
-            final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12019);
-            final String reason  = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12021);
+            final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31009);
+            final String reason  = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31011);
             CarryoverCollectServiceImpl.LOGGER.debug(message, Integer.valueOf(issueNumber), reason);
             return result;
 
@@ -515,8 +515,8 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
             // 保存済みの解析結果がない場合
 
             // 解析し直す
-            final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12037);
-            final String reason  = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12022);
+            final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31016);
+            final String reason  = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31012);
             CarryoverCollectServiceImpl.LOGGER.debug(message, Integer.valueOf(issueNumber), reason);
             return result;
 
@@ -528,8 +528,8 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
             // 直近の Issue の場合
 
             // 更新日時に関係なく解析し直す
-            final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12038);
-            final String reason  = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12023);
+            final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31017);
+            final String reason  = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31013);
             CarryoverCollectServiceImpl.LOGGER.debug(message, Integer.valueOf(issueNumber), reason);
             return result;
 
@@ -544,15 +544,15 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
             // 更新日時が変わっている場合
 
             // 解析し直す
-            final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12039);
-            final String reason  = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12024);
+            final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31018);
+            final String reason  = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31014);
             CarryoverCollectServiceImpl.LOGGER.debug(message, Integer.valueOf(issueNumber), reason);
             return result;
 
         }
 
-        final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12020);
-        final String reason  = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12025);
+        final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31010);
+        final String reason  = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31015);
         CarryoverCollectServiceImpl.LOGGER.debug(message, Integer.valueOf(issueNumber), reason);
         return result;
 

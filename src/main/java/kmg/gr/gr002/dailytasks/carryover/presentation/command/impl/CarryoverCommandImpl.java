@@ -121,7 +121,7 @@ public class CarryoverCommandImpl implements CarryoverCommand {
      */
     private String modeName() {
 
-        String result = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12012);
+        String result = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31008);
 
         /* 全件モードか */
         if (!this.full) {
@@ -133,7 +133,7 @@ public class CarryoverCommandImpl implements CarryoverCommand {
 
         }
 
-        result = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12011);
+        result = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31007);
         return result;
 
     }
@@ -176,7 +176,7 @@ public class CarryoverCommandImpl implements CarryoverCommand {
 
                 case NONE -> {
 
-                    final String template = this.messageSource.getExcMessage(Gr002GenMsgTypes.GR002_GEN11101);
+                    final String template = this.messageSource.getExcMessage(Gr002GenMsgTypes.GR002_GEN41001);
                     final String message  = String.format(template, arg);
                     throw new IllegalArgumentException(message);
 
@@ -215,14 +215,14 @@ public class CarryoverCommandImpl implements CarryoverCommand {
                 // 使い方の表示の場合
 
                 // 使い方を表示して終了する
-                final String usage = this.messageSource.getGenMessage(Gr002GenMsgTypes.GR002_GEN11100);
+                final String usage = this.messageSource.getGenMessage(Gr002GenMsgTypes.GR002_GEN41000);
                 this.out.println(usage);
                 return;
 
             }
 
             /* 収集開始のログ */
-            final String startMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12013);
+            final String startMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG41000);
             final String modeName     = this.modeName();
             CarryoverCommandImpl.LOGGER.info(startMessage, modeName, this.properties.getRepository(),
                 this.properties.getDataDir(), Integer.valueOf(this.properties.getRecentCount()),
@@ -251,18 +251,18 @@ public class CarryoverCommandImpl implements CarryoverCommand {
             }
 
             /* 収集完了のログ */
-            final String completeMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12014);
+            final String completeMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG41001);
             CarryoverCommandImpl.LOGGER.info(completeMessage);
 
         } catch (final IllegalArgumentException e) {
 
-            final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12015);
+            final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG41002);
             CarryoverCommandImpl.LOGGER.error(message, e.getMessage(), e);
             throw e;
 
         } catch (final IOException e) {
 
-            final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12043);
+            final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG41003);
             CarryoverCommandImpl.LOGGER.error(message, e.getMessage(), e);
             throw e;
 

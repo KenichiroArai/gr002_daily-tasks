@@ -337,7 +337,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
 
                 }
 
-                final String pageMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12028);
+                final String pageMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG51001);
                 GitHubIssueApiImpl.LOGGER.debug(pageMessage, Integer.valueOf(page), Integer.valueOf(pageSize),
                     Integer.valueOf(result.size()));
                 page++;
@@ -347,7 +347,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
         }
 
         /* 取得件数のログ出力 */
-        final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12010);
+        final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG51000);
         GitHubIssueApiImpl.LOGGER.info(message, result.size(), page - 1);
         return result;
 
@@ -471,7 +471,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
 
                 }
 
-                final String pageMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12040);
+                final String pageMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG51004);
                 GitHubIssueApiImpl.LOGGER.debug(pageMessage, Integer.valueOf(page), Integer.valueOf(pageSize),
                     Integer.valueOf(result.size()));
                 page++;
@@ -496,7 +496,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
         Collections.reverse(result);
 
         /* 取得件数のログ出力 */
-        final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12041);
+        final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG51005);
         GitHubIssueApiImpl.LOGGER.info(message, result.size(), page - 1);
         return result;
 
@@ -597,7 +597,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
             // 応答が成功ではない場合
 
             // 取得失敗として例外にする
-            final String template = this.messageSource.getExcMessage(Gr002GenMsgTypes.GR002_GEN11103);
+            final String template = this.messageSource.getExcMessage(Gr002GenMsgTypes.GR002_GEN51000);
             final String message  = String.format(template, statusCode, uri);
             throw new IOException(message);
 
@@ -616,7 +616,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
 
             // 残数をログに出す
             final String resetValue   = reset == null ? GitHubApiTextTypes.EMPTY.getText() : reset;
-            final String debugMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12029);
+            final String debugMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG51002);
             GitHubIssueApiImpl.LOGGER.debug(debugMessage, remaining, resetValue);
 
             /* レート制限の残りが閾値以下か */
@@ -641,7 +641,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
                 // レート制限の残りが閾値以下の場合
 
                 // 警告を出す
-                final String warnMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12030);
+                final String warnMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG51003);
                 GitHubIssueApiImpl.LOGGER.warn(warnMessage, remaining, resetValue);
 
             }
@@ -661,8 +661,8 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
             // 期待する形ではない場合
 
             // 形式の不正として例外にする
-            final Gr002GenMsgTypes messageType = arrayExpected ? Gr002GenMsgTypes.GR002_GEN11104
-                : Gr002GenMsgTypes.GR002_GEN11106;
+            final Gr002GenMsgTypes messageType = arrayExpected ? Gr002GenMsgTypes.GR002_GEN51001
+                : Gr002GenMsgTypes.GR002_GEN51003;
             final String           template    = this.messageSource.getExcMessage(messageType);
             final String           message     = String.format(template, uri);
             throw new IOException(message);
@@ -774,7 +774,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
 
             final Thread currentThread = Thread.currentThread();
             currentThread.interrupt();
-            final String message = this.messageSource.getExcMessage(Gr002GenMsgTypes.GR002_GEN11105);
+            final String message = this.messageSource.getExcMessage(Gr002GenMsgTypes.GR002_GEN51002);
             throw new IOException(message, e);
 
         }

@@ -399,7 +399,7 @@ public class CarryoverCommandImplTest {
         final String       result;
         final DailyTasksMessageSource messageSource = DailyTasksMessageSourceTestUtil.create();
 
-        result = messageSource.getGenMessage(Gr002GenMsgTypes.GR002_GEN11100);
+        result = messageSource.getGenMessage(Gr002GenMsgTypes.GR002_GEN41000);
         return result;
 
     }
@@ -557,7 +557,7 @@ public class CarryoverCommandImplTest {
     public void testParseArgs_semiUnknownArgument() {
 
         /* 期待値の定義 */
-        final String expectedMessage = "[Gr002Gen11101] 不明な引数です: --unknown";
+        final String expectedMessage = "[Gr002Gen41001] 不明な引数です: --unknown";
 
         /* 準備 */
 
@@ -590,9 +590,9 @@ public class CarryoverCommandImplTest {
         final CarryoverPropertiesModel expectedProperties = CarryoverCommandImplTest.PROPERTIES;
         final String                   expectedDataDir    = Path.of("out/data").toString();
         final String[]                 expectedMsgs       = {
-            KmgString.concat("[Gr002Log12013] 収集を開始します: モード=[Gr002Log12012] 差分、repository=owner/repo、dataDir=", expectedDataDir,
+            KmgString.concat("[Gr002Log41000] 収集を開始します: モード=[Gr002Log31008] 差分、repository=owner/repo、dataDir=", expectedDataDir,
                 "、recentCount=7、batchSize=365"),
-            "[Gr002Log12014] 収集が完了しました",
+            "[Gr002Log41001] 収集が完了しました",
         };
 
         /* 準備 */
@@ -727,9 +727,9 @@ public class CarryoverCommandImplTest {
     public void testRun_semiUnknownArgument() {
 
         /* 期待値の定義 */
-        final String   expectedMessage = "[Gr002Gen11101] 不明な引数です: --unknown";
+        final String   expectedMessage = "[Gr002Gen41001] 不明な引数です: --unknown";
         final String[] expectedMsgs    = {
-            "[Gr002Log12015] 収集に失敗しました: [Gr002Gen11101] 不明な引数です: --unknown",
+            "[Gr002Log41002] 収集に失敗しました: [Gr002Gen41001] 不明な引数です: --unknown",
         };
 
         /* 準備 */
@@ -765,9 +765,9 @@ public class CarryoverCommandImplTest {
         /* 期待値の定義 */
         final String   expectedMessage = "読み込みに失敗しました";
         final String[] expectedMsgs    = {
-            KmgString.concat("[Gr002Log12013] 収集を開始します: モード=[Gr002Log12012] 差分、repository=owner/repo、dataDir=", Path.of("out/data").toString(),
+            KmgString.concat("[Gr002Log41000] 収集を開始します: モード=[Gr002Log31008] 差分、repository=owner/repo、dataDir=", Path.of("out/data").toString(),
                 "、recentCount=7、batchSize=365"),
-            "[Gr002Log12043] 収集に失敗しました: 読み込みに失敗しました",
+            "[Gr002Log41003] 収集に失敗しました: 読み込みに失敗しました",
         };
 
         /* 準備 */

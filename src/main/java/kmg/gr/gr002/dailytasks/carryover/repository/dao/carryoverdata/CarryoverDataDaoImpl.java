@@ -196,14 +196,14 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
             // 解析結果のファイルがない場合
 
             // 未保存として null を返す
-            final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12032);
+            final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG52001);
             CarryoverDataDaoImpl.LOGGER.debug(message, Integer.valueOf(number));
             return result;
 
         }
 
         /* JSON の読み込み */
-        final String loadMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12031);
+        final String loadMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG52000);
         CarryoverDataDaoImpl.LOGGER.debug(loadMessage, path);
         final CarryoverIssueJsonDto issueJson = this.readIssue(path);
 
@@ -246,7 +246,7 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
 
             for (final Path path : paths.filter(CarryoverDataDaoImpl::jsonFile).toList()) {
 
-                final String loadMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12042);
+                final String loadMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG52004);
                 CarryoverDataDaoImpl.LOGGER.debug(loadMessage, path);
                 final CarryoverIssueJsonDto issueJson = this.readIssue(path);
                 final CarryoverIssueDto     issue     = issueJson.toCarryoverIssueDto();
@@ -310,7 +310,7 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
 
         final Path                  path      = this.issuePath(issue.getNumber());
         final CarryoverIssueJsonDto issueJson = new CarryoverIssueJsonDto(issue);
-        final String                message   = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12033);
+        final String                message   = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG52002);
         CarryoverDataDaoImpl.LOGGER.debug(message, path);
         this.write(path, issueJson);
 
@@ -333,7 +333,7 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
         final Path                    path        = this.dataDir
             .resolve(CarryoverDataFileTypes.SUMMARY_FILE.getFileName());
         final CarryoverSummaryJsonDto summaryJson = new CarryoverSummaryJsonDto(summary);
-        final String                  message     = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12034);
+        final String                  message     = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG52003);
         CarryoverDataDaoImpl.LOGGER.debug(message, path);
         this.write(path, summaryJson);
 

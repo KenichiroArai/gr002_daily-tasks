@@ -683,7 +683,7 @@ public class CarryoverCollectServiceImplTest {
 
         /* 期待値の定義 */
         final String[] expectedMsgs = {
-            "[Gr002Log12019] #1 を再解析します: [Gr002Log12021] 全件モード",
+            "[Gr002Log31009] #1 を再解析します: [Gr002Log31011] 全件モード",
         };
 
         /* 準備 */
@@ -806,7 +806,7 @@ public class CarryoverCollectServiceImplTest {
 
         /* 期待値の定義 */
         final String[] expectedMsgs = {
-            "[Gr002Log12020] #1 をスキップします: [Gr002Log12025] 更新日時一致",
+            "[Gr002Log31010] #1 をスキップします: [Gr002Log31015] 更新日時一致",
         };
 
         /* 準備 */

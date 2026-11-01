@@ -128,7 +128,7 @@ public class DefaultMinutesDaoImplTest {
         /* 期待値の定義 */
         final Path     testConfig   = this.tempDir.resolve("none.json");
         final String[] expectedMsgs = {
-            KmgString.concat("[Gr002Log12009] 標準時間の設定ファイルがありません: ", testConfig.toString()),
+            KmgString.concat("[Gr002Log53000] 標準時間の設定ファイルがありません: ", testConfig.toString()),
         };
 
         /* 準備 */
