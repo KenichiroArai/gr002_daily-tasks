@@ -62,8 +62,7 @@ public enum Gr002GenMsgTypes implements KmgFundCmnGenMsgTypes, KmgFundCmnExcMsgT
      *
      * @since 0.1.0
      */
-    GR002_GEN31000("単位が残っている状態での open", "Gr002Gen31000", "単位が残っている状態で open が再度呼ばれた場合",
-        "単位が残っている状態で open は呼び出せません"),
+    GR002_GEN31000("単位が残っている状態での open", "Gr002Gen31000", "単位が残っている状態で open が再度呼ばれた場合", "単位が残っている状態で open は呼び出せません"),
 
     /* presentation.command */
 

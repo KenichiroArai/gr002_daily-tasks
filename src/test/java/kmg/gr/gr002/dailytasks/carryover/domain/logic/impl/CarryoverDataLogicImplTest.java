@@ -225,6 +225,67 @@ public class CarryoverDataLogicImplTest {
     }
 
     /**
+     * loadIssue メソッドのテスト - 正常系:保存済みの 1 件をモデルに変換する場合
+     *
+     * @since 0.1.0
+     *
+     * @throws Exception
+     *                   読み込みに失敗した場合
+     */
+    @Test
+    public void testLoadIssue_normalConvert() throws Exception {
+
+        /* 期待値の定義 */
+        final int expectedNumber = 371;
+
+        /* 準備 */
+        final CarryoverIssueDto  testDto    = new CarryoverIssueDto(371, "2026年10月06日のタスク", "2026-10-06", "open",
+            "2026-10-06T14:23:08Z", List.of("持ち越し"), null, 1, 0.0, List.of());
+        final CarryoverIssuesDto testIssues = new CarryoverIssuesDto();
+        testIssues.put(371, testDto);
+        final StubCarryoverDataDao   testData   = new StubCarryoverDataDao(testIssues);
+        final CarryoverDataLogicImpl testTarget = CarryoverDataLogicImplTest.createTarget(testData);
+
+        /* テスト対象の実行 */
+        final CarryoverIssueModel testResult = testTarget.loadIssue(371);
+
+        /* 検証の準備 */
+        final int actualNumber = testResult.getNumber();
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedNumber, actualNumber, "Issue 番号が一致しません");
+
+    }
+
+    /**
+     * loadIssue メソッドのテスト - 準正常系:保存済みの解析結果がない場合
+     *
+     * @since 0.1.0
+     *
+     * @throws Exception
+     *                   読み込みに失敗した場合
+     */
+    @Test
+    public void testLoadIssue_semiMissing() throws Exception {
+
+        /* 期待値の定義 */
+
+        /* 準備 */
+        final StubCarryoverDataDao   testData   = new StubCarryoverDataDao(new CarryoverIssuesDto());
+        final CarryoverDataLogicImpl testTarget = CarryoverDataLogicImplTest.createTarget(testData);
+
+        /* テスト対象の実行 */
+        final CarryoverIssueModel testResult = testTarget.loadIssue(371);
+
+        /* 検証の準備 */
+        final boolean actualMissing = testResult == null;
+
+        /* 検証の実施 */
+        Assertions.assertTrue(actualMissing, "未保存のときは null になる必要があります");
+
+    }
+
+    /**
      * loadIssues メソッドのテスト - 正常系:保存済みの解析結果をモデルに変換する場合
      *
      * @since 0.1.0
@@ -240,11 +301,11 @@ public class CarryoverDataLogicImplTest {
         final Path               expectedDataDir       = Path.of("docs", "data");
 
         /* 準備 */
-        final CarryoverItemDto     testItem   = new CarryoverItemDto("国語", "2026-06-18", false, 0.0, "unknown",
-            "持ち越し", "- [ ] 国語2026/06/18");
-        final CarryoverIssueDto    testDto    = new CarryoverIssueDto(371, "2026年10月06日のタスク", "2026-10-06", "open",
+        final CarryoverItemDto   testItem   = new CarryoverItemDto("国語", "2026-06-18", false, 0.0, "unknown", "持ち越し",
+            "- [ ] 国語2026/06/18");
+        final CarryoverIssueDto  testDto    = new CarryoverIssueDto(371, "2026年10月06日のタスク", "2026-10-06", "open",
             "2026-10-06T14:23:08Z", List.of("持ち越し"), null, 1, 0.0, List.of(testItem));
-        final CarryoverIssuesDto     testIssues = new CarryoverIssuesDto();
+        final CarryoverIssuesDto testIssues = new CarryoverIssuesDto();
         testIssues.put(371, testDto);
         final StubCarryoverDataDao   testData   = new StubCarryoverDataDao(testIssues);
         final CarryoverDataLogicImpl testTarget = CarryoverDataLogicImplTest.createTarget(testData);
@@ -254,11 +315,11 @@ public class CarryoverDataLogicImplTest {
         final CarryoverIssuesModel testResult = testTarget.loadIssues();
 
         /* 検証の準備 */
-        final CarryoverIssueModel    issue371             = testResult.find(371);
-        final List<CarryoverItemModel> items                = issue371.getItems();
-        final CarryoverItemModel      firstItem            = items.get(0);
-        final MinutesSourceTypes      actualMinutesSource  = firstItem.getMinutesSource();
-        final Path               actualDataDir       = testData.getDataDir();
+        final CarryoverIssueModel      issue371            = testResult.find(371);
+        final List<CarryoverItemModel> items               = issue371.getItems();
+        final CarryoverItemModel       firstItem           = items.get(0);
+        final MinutesSourceTypes       actualMinutesSource = firstItem.getMinutesSource();
+        final Path                     actualDataDir       = testData.getDataDir();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedMinutesSource, actualMinutesSource, "残り時間の取得元が一致しません");
@@ -323,12 +384,12 @@ public class CarryoverDataLogicImplTest {
         testTarget.saveIssue(testIssue);
 
         /* 検証の準備 */
-        final List<CarryoverIssueDto> savedIssues          = testData.getSavedIssues();
-        final CarryoverIssueDto       savedIssue           = savedIssues.get(0);
-        final List<CarryoverItemDto>  savedItems           = savedIssue.getItems();
-        final CarryoverItemDto        savedItem            = savedItems.get(0);
-        final String                  actualMinutesSource  = savedItem.getMinutesSource();
-        final Path   actualDataDir       = testData.getDataDir();
+        final List<CarryoverIssueDto> savedIssues         = testData.getSavedIssues();
+        final CarryoverIssueDto       savedIssue          = savedIssues.get(0);
+        final List<CarryoverItemDto>  savedItems          = savedIssue.getItems();
+        final CarryoverItemDto        savedItem           = savedItems.get(0);
+        final String                  actualMinutesSource = savedItem.getMinutesSource();
+        final Path                    actualDataDir       = testData.getDataDir();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedMinutesSource, actualMinutesSource, "残り時間の取得元が一致しません");
@@ -362,73 +423,12 @@ public class CarryoverDataLogicImplTest {
 
         /* 検証の準備 */
         final CarryoverSummaryDto savedSummary      = testData.getSavedSummary();
-        final int                  actualLatestIssue = savedSummary.getLatestIssue();
-        final Path actualDataDir     = testData.getDataDir();
+        final int                 actualLatestIssue = savedSummary.getLatestIssue();
+        final Path                actualDataDir     = testData.getDataDir();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedLatestIssue, actualLatestIssue, "最新の Issue 番号が一致しません");
         Assertions.assertEquals(expectedDataDir, actualDataDir, "出力先のディレクトリが一致しません");
-
-    }
-
-    /**
-     * loadIssue メソッドのテスト - 正常系:保存済みの 1 件をモデルに変換する場合
-     *
-     * @since 0.1.0
-     *
-     * @throws Exception
-     *                   読み込みに失敗した場合
-     */
-    @Test
-    public void testLoadIssue_normalConvert() throws Exception {
-
-        /* 期待値の定義 */
-        final int expectedNumber = 371;
-
-        /* 準備 */
-        final CarryoverIssueDto      testDto    = new CarryoverIssueDto(371, "2026年10月06日のタスク", "2026-10-06", "open",
-            "2026-10-06T14:23:08Z", List.of("持ち越し"), null, 1, 0.0, List.of());
-        final CarryoverIssuesDto     testIssues = new CarryoverIssuesDto();
-        testIssues.put(371, testDto);
-        final StubCarryoverDataDao   testData   = new StubCarryoverDataDao(testIssues);
-        final CarryoverDataLogicImpl testTarget = CarryoverDataLogicImplTest.createTarget(testData);
-
-        /* テスト対象の実行 */
-        final CarryoverIssueModel testResult = testTarget.loadIssue(371);
-
-        /* 検証の準備 */
-        final int actualNumber = testResult.getNumber();
-
-        /* 検証の実施 */
-        Assertions.assertEquals(expectedNumber, actualNumber, "Issue 番号が一致しません");
-
-    }
-
-    /**
-     * loadIssue メソッドのテスト - 準正常系:保存済みの解析結果がない場合
-     *
-     * @since 0.1.0
-     *
-     * @throws Exception
-     *                   読み込みに失敗した場合
-     */
-    @Test
-    public void testLoadIssue_semiMissing() throws Exception {
-
-        /* 期待値の定義 */
-
-        /* 準備 */
-        final StubCarryoverDataDao   testData   = new StubCarryoverDataDao(new CarryoverIssuesDto());
-        final CarryoverDataLogicImpl testTarget = CarryoverDataLogicImplTest.createTarget(testData);
-
-        /* テスト対象の実行 */
-        final CarryoverIssueModel testResult = testTarget.loadIssue(371);
-
-        /* 検証の準備 */
-        final boolean actualMissing = testResult == null;
-
-        /* 検証の実施 */
-        Assertions.assertTrue(actualMissing, "未保存のときは null になる必要があります");
 
     }
 

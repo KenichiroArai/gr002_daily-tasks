@@ -237,57 +237,6 @@ public class Gr002LogMsgTypesTest {
     }
 
     /**
-     * getValue メソッドのテスト - 正常系:補完結果の文面
-     *
-     * @since 0.1.0
-     */
-    @Test
-    public void testGetValue_normalMinutesSourceResult() {
-
-        /* 期待値の定義 */
-        final String expectedValue = "標準時間で補完した行={} 件、標準時間が未登録の行={} 件";
-
-        /* 準備 */
-        final Gr002LogMsgTypes testTarget = Gr002LogMsgTypes.GR002_LOG31001;
-
-        /* テスト対象の実行 */
-        final String testResult = testTarget.getValue();
-
-        /* 検証の準備 */
-        final String actualValue = testResult;
-
-        /* 検証の実施 */
-        Assertions.assertEquals(expectedValue, actualValue, "メッセージの値が一致しません");
-
-    }
-
-    /**
-     * getValue メソッドのテスト - 正常系:収集開始の文面
-     *
-     * @since 0.1.0
-     */
-    @Test
-    public void testGetValue_normalCollectStart() {
-
-        /* 期待値の定義 */
-        final String expectedValue
-            = "収集を開始します: モード={}、repository={}、dataDir={}、recentCount={}、batchSize={}";
-
-        /* 準備 */
-        final Gr002LogMsgTypes testTarget = Gr002LogMsgTypes.GR002_LOG41000;
-
-        /* テスト対象の実行 */
-        final String testResult = testTarget.getValue();
-
-        /* 検証の準備 */
-        final String actualValue = testResult;
-
-        /* 検証の実施 */
-        Assertions.assertEquals(expectedValue, actualValue, "メッセージの値が一致しません");
-
-    }
-
-    /**
      * getKey メソッドのテスト - 正常系:summary.json の保存のキー
      *
      * @since 0.1.0
@@ -309,6 +258,56 @@ public class Gr002LogMsgTypesTest {
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedKey, actualKey, "キーが一致しません");
+
+    }
+
+    /**
+     * getValue メソッドのテスト - 正常系:収集開始の文面
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testGetValue_normalCollectStart() {
+
+        /* 期待値の定義 */
+        final String expectedValue = "収集を開始します: モード={}、repository={}、dataDir={}、recentCount={}、batchSize={}";
+
+        /* 準備 */
+        final Gr002LogMsgTypes testTarget = Gr002LogMsgTypes.GR002_LOG41000;
+
+        /* テスト対象の実行 */
+        final String testResult = testTarget.getValue();
+
+        /* 検証の準備 */
+        final String actualValue = testResult;
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedValue, actualValue, "メッセージの値が一致しません");
+
+    }
+
+    /**
+     * getValue メソッドのテスト - 正常系:補完結果の文面
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testGetValue_normalMinutesSourceResult() {
+
+        /* 期待値の定義 */
+        final String expectedValue = "標準時間で補完した行={} 件、標準時間が未登録の行={} 件";
+
+        /* 準備 */
+        final Gr002LogMsgTypes testTarget = Gr002LogMsgTypes.GR002_LOG31001;
+
+        /* テスト対象の実行 */
+        final String testResult = testTarget.getValue();
+
+        /* 検証の準備 */
+        final String actualValue = testResult;
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedValue, actualValue, "メッセージの値が一致しません");
 
     }
 

@@ -29,8 +29,8 @@ import kmg.gr.gr002.dailytasks.carryover.presentation.service.CarryoverService;
 /**
  * 持ち越しの収集・集計を統合するサービスの実装<br>
  * <p>
- * presentation 層のサービスを実装する。収集と集計は役割ごとのサービスへ分け、{@link #open()} のあと単位ごとに {@link #collect()} と
- * {@link #aggregate()} から決まった順で呼ぶ。
+ * presentation 層のサービスを実装する。収集と集計は役割ごとのサービスへ分け、{@link #open()} のあと単位ごとに {@link #collect()} と {@link #aggregate()}
+ * から決まった順で呼ぶ。
  * </p>
  *
  * @author KenichiroArai
@@ -407,15 +407,13 @@ public class CarryoverServiceImpl implements CarryoverService {
         final int                          batchNumber  = this.batchIndex + 1;
         final String                       startMessage = this.messageSource
             .getLogMessage(Gr002LogMsgTypes.GR002_LOG31005);
-        CarryoverServiceImpl.LOGGER.info(startMessage, Integer.valueOf(batchNumber), Integer.valueOf(batchCount),
-            Integer.valueOf(batch.size()));
+        CarryoverServiceImpl.LOGGER.info(startMessage, batchNumber, batchCount, batch.size());
         result = this.carryoverCollectService.collectBatch(batch);
         final List<CarryoverIssueModel> collected = this.carryoverCollectService.getBatchIssues();
         this.batchIssues = collected;
         final int    reusedCount   = collected.size() - result;
         final String finishMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31006);
-        CarryoverServiceImpl.LOGGER.info(finishMessage, Integer.valueOf(batchNumber), Integer.valueOf(batchCount),
-            Integer.valueOf(result), Integer.valueOf(reusedCount));
+        CarryoverServiceImpl.LOGGER.info(finishMessage, batchNumber, batchCount, result, reusedCount);
 
         /* 件数の累計 */
         this.savedCount = this.savedCount + result;
@@ -518,14 +516,14 @@ public class CarryoverServiceImpl implements CarryoverService {
      * @return true：次の単位がある、false：単位が残っていない
      *
      * @throws IOException
-     *                                  取得または読み込みに失敗した場合
+     *                               取得または読み込みに失敗した場合
      * @throws IllegalStateException
-     *                                  単位が残っている状態で再度呼ばれた場合
+     *                               単位が残っている状態で再度呼ばれた場合
      */
     @Override
     public boolean open() throws IOException {
 
-        boolean result = false;
+        final boolean result;
 
         /* 単位が残っているか */
         final boolean remaining = this.hasNext();
@@ -555,8 +553,7 @@ public class CarryoverServiceImpl implements CarryoverService {
         this.remoteCount = refs.size();
         this.batches = CarryoverServiceImpl.split(refs, this.batchSize);
         final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31004);
-        CarryoverServiceImpl.LOGGER.info(message, Integer.valueOf(this.remoteCount),
-            Integer.valueOf(this.batches.size()));
+        CarryoverServiceImpl.LOGGER.info(message, this.remoteCount, this.batches.size());
 
         result = this.hasNext();
         return result;

@@ -197,7 +197,7 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
 
             // 未保存として null を返す
             final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG52001);
-            CarryoverDataDaoImpl.LOGGER.debug(message, Integer.valueOf(number));
+            CarryoverDataDaoImpl.LOGGER.debug(message, number);
             return result;
 
         }

@@ -338,8 +338,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
                 }
 
                 final String pageMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG51001);
-                GitHubIssueApiImpl.LOGGER.debug(pageMessage, Integer.valueOf(page), Integer.valueOf(pageSize),
-                    Integer.valueOf(result.size()));
+                GitHubIssueApiImpl.LOGGER.debug(pageMessage, page, pageSize, result.size());
                 page++;
 
             } while (pageSize >= GitHubIssueApiImpl.PER_PAGE);
@@ -472,8 +471,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
                 }
 
                 final String pageMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG51004);
-                GitHubIssueApiImpl.LOGGER.debug(pageMessage, Integer.valueOf(page), Integer.valueOf(pageSize),
-                    Integer.valueOf(result.size()));
+                GitHubIssueApiImpl.LOGGER.debug(pageMessage, page, pageSize, result.size());
                 page++;
 
                 /* 上限に達したか */

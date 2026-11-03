@@ -445,7 +445,7 @@ public class StubHttpClient extends HttpClient {
         final Object[]                  response  = this.responses.removeFirst();
         final Map<String, List<String>> headerMap = (Map<String, List<String>>) response[2];
         final HttpResponse<T>           result    = (HttpResponse<T>) new StubHttpResponse(request,
-            ((Integer) response[0]).intValue(), (String) response[1], headerMap);
+            ((Integer) response[0]), (String) response[1], headerMap);
         return result;
 
     }

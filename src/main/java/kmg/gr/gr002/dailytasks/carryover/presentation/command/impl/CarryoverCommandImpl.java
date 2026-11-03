@@ -225,8 +225,7 @@ public class CarryoverCommandImpl implements CarryoverCommand {
             final String startMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG41000);
             final String modeName     = this.modeName();
             CarryoverCommandImpl.LOGGER.info(startMessage, modeName, this.properties.getRepository(),
-                this.properties.getDataDir(), Integer.valueOf(this.properties.getRecentCount()),
-                Integer.valueOf(this.properties.getBatchSize()));
+                this.properties.getDataDir(), this.properties.getRecentCount(), this.properties.getBatchSize());
 
             /* 収集と集計の実行 */
             final CarryoverService service = this.carryoverService.getObject();

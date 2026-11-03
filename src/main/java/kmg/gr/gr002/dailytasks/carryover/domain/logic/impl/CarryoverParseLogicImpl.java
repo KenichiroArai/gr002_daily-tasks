@@ -510,8 +510,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
         result = new CarryoverIssueModel(issue.getNumber(), issue.getTitle(), date, issue.getState(),
             issue.getUpdatedAt(), sections, declaredCount, items);
         final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12007);
-        CarryoverParseLogicImpl.LOGGER.debug(message, Integer.valueOf(issue.getNumber()),
-            Integer.valueOf(items.size()));
+        CarryoverParseLogicImpl.LOGGER.debug(message, issue.getNumber(), items.size());
         return result;
 
     }

@@ -23,23 +23,6 @@ import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverItemDto;
 public class CarryoverIssueJsonDtoTest {
 
     /**
-     * テスト対象を作成する<br>
-     *
-     * @since 0.1.0
-     *
-     * @return テスト対象
-     */
-    private static CarryoverIssueJsonDto createTarget() {
-
-        final CarryoverItemJsonDto  item   = new CarryoverItemJsonDto("国語", "2026-06-18", false, 8.5, "parsed", "持ち越し",
-            "- [ ] 国語2026/06/18（残り時間：8.5分）");
-        final CarryoverIssueJsonDto result = new CarryoverIssueJsonDto(371, "2026年10月06日のタスク", "2026-10-06", "open",
-            "2026-10-06T14:23:08Z", List.of("持ち越し"), 1, 1, 8.5, List.of(item));
-        return result;
-
-    }
-
-    /**
      * 解析結果の DTO を作成する<br>
      *
      * @since 0.1.0
@@ -52,6 +35,23 @@ public class CarryoverIssueJsonDtoTest {
             "- [x] 音楽2026/08/18（残り時間：11.5分）");
         final CarryoverIssueDto result = new CarryoverIssueDto(371, "2026年10月06日のタスク", "2026-10-06", "open",
             "2026-10-06T14:23:08Z", List.of("持ち越し"), 1, 1, 11.5, List.of(item));
+        return result;
+
+    }
+
+    /**
+     * テスト対象を作成する<br>
+     *
+     * @since 0.1.0
+     *
+     * @return テスト対象
+     */
+    private static CarryoverIssueJsonDto createTarget() {
+
+        final CarryoverItemJsonDto  item   = new CarryoverItemJsonDto("国語", "2026-06-18", false, 8.5, "parsed", "持ち越し",
+            "- [ ] 国語2026/06/18（残り時間：8.5分）");
+        final CarryoverIssueJsonDto result = new CarryoverIssueJsonDto(371, "2026年10月06日のタスク", "2026-10-06", "open",
+            "2026-10-06T14:23:08Z", List.of("持ち越し"), 1, 1, 8.5, List.of(item));
         return result;
 
     }

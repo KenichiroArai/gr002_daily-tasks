@@ -126,8 +126,8 @@ public class DailyTaskIssueLogicImplTest {
 
             for (final GitHubIssueDto issue : this.issues) {
 
-                result.add(new GitHubIssueRefDto(issue.getNumber(), issue.getTitle(), issue.getState(),
-                    issue.getUpdatedAt()));
+                result.add(
+                    new GitHubIssueRefDto(issue.getNumber(), issue.getTitle(), issue.getState(), issue.getUpdatedAt()));
 
             }
 
@@ -219,7 +219,7 @@ public class DailyTaskIssueLogicImplTest {
         final String expectedTitle = "2026年10月06日のタスク";
 
         /* 準備 */
-        final StubGitHubIssueApi     testGitHub = new StubGitHubIssueApi(
+        final StubGitHubIssueApi      testGitHub = new StubGitHubIssueApi(
             List.of(new GitHubIssueDto(371, "2026年10月06日のタスク", "open", "2026-10-06T14:23:08Z", "本文")));
         final DailyTaskIssueLogicImpl testTarget = DailyTaskIssueLogicImplTest.createTarget(testGitHub);
 
@@ -228,8 +228,8 @@ public class DailyTaskIssueLogicImplTest {
         final List<DailyTaskIssueModel> testResult = testTarget.fetchAllIssues();
 
         /* 検証の準備 */
-        final DailyTaskIssueModel firstIssue = testResult.get(0);
-        final String actualTitle = firstIssue.getTitle();
+        final DailyTaskIssueModel firstIssue  = testResult.get(0);
+        final String              actualTitle = firstIssue.getTitle();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedTitle, actualTitle, "タイトルが一致しません");
@@ -252,7 +252,7 @@ public class DailyTaskIssueLogicImplTest {
         final String expectedToken      = "test-token";
 
         /* 準備 */
-        final StubGitHubIssueApi     testGitHub = new StubGitHubIssueApi(List.of());
+        final StubGitHubIssueApi      testGitHub = new StubGitHubIssueApi(List.of());
         final DailyTaskIssueLogicImpl testTarget = DailyTaskIssueLogicImplTest.createTarget(testGitHub);
 
         /* テスト対象の実行 */
@@ -260,9 +260,9 @@ public class DailyTaskIssueLogicImplTest {
         testTarget.fetchAllIssues();
 
         /* 検証の準備 */
-        final GitHubSettingsDto settings = testGitHub.getSettings();
-        final String actualRepository = settings.getRepository();
-        final String actualToken = settings.getToken();
+        final GitHubSettingsDto settings         = testGitHub.getSettings();
+        final String            actualRepository = settings.getRepository();
+        final String            actualToken      = settings.getToken();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedRepository, actualRepository, "対象リポジトリが一致しません");
@@ -285,9 +285,9 @@ public class DailyTaskIssueLogicImplTest {
         final String expectedBody = "本文";
 
         /* 準備 */
-        final StubGitHubIssueApi     testGitHub = new StubGitHubIssueApi(List.of(
-            new GitHubIssueDto(1, "別のタスク", "open", "2026-10-01T00:00:00Z", "別"),
-            new GitHubIssueDto(7, "2026年10月06日のタスク", "open", "2026-10-06T14:23:08Z", "本文")));
+        final StubGitHubIssueApi      testGitHub = new StubGitHubIssueApi(
+            List.of(new GitHubIssueDto(1, "別のタスク", "open", "2026-10-01T00:00:00Z", "別"),
+                new GitHubIssueDto(7, "2026年10月06日のタスク", "open", "2026-10-06T14:23:08Z", "本文")));
         final DailyTaskIssueLogicImpl testTarget = DailyTaskIssueLogicImplTest.createTarget(testGitHub);
 
         /* テスト対象の実行 */
@@ -316,7 +316,7 @@ public class DailyTaskIssueLogicImplTest {
         final int expectedNumber = 7;
 
         /* 準備 */
-        final StubGitHubIssueApi     testGitHub = new StubGitHubIssueApi(
+        final StubGitHubIssueApi      testGitHub = new StubGitHubIssueApi(
             List.of(new GitHubIssueDto(7, "2026年10月06日のタスク", "open", "2026-10-06T14:23:08Z", "本文")));
         final DailyTaskIssueLogicImpl testTarget = DailyTaskIssueLogicImplTest.createTarget(testGitHub);
 
@@ -324,7 +324,7 @@ public class DailyTaskIssueLogicImplTest {
         final List<DailyTaskIssueRefModel> testResult = testTarget.fetchIssueRefs();
 
         /* 検証の準備 */
-        final DailyTaskIssueRefModel firstRef    = testResult.get(0);
+        final DailyTaskIssueRefModel firstRef     = testResult.get(0);
         final int                    actualNumber = firstRef.getNumber();
         final boolean                actualNoDate = firstRef.getDate() == null;
 
@@ -348,7 +348,7 @@ public class DailyTaskIssueLogicImplTest {
         /* 期待値の定義 */
 
         /* 準備 */
-        final StubGitHubIssueApi     testGitHub = new StubGitHubIssueApi(List.of());
+        final StubGitHubIssueApi      testGitHub = new StubGitHubIssueApi(List.of());
         final DailyTaskIssueLogicImpl testTarget = DailyTaskIssueLogicImplTest.createTarget(testGitHub);
 
         /* テスト対象の実行 */
@@ -377,10 +377,10 @@ public class DailyTaskIssueLogicImplTest {
         final List<Integer> expectedNumbers = List.of(2, 3);
 
         /* 準備 */
-        final StubGitHubIssueApi testGitHub = new StubGitHubIssueApi(List.of(
-            new GitHubIssueDto(1, "1日のタスク", "closed", "u1", "本文"),
-            new GitHubIssueDto(2, "2日のタスク", "closed", "u2", "本文"),
-            new GitHubIssueDto(3, "3日のタスク", "open", "u3", "本文")));
+        final StubGitHubIssueApi      testGitHub = new StubGitHubIssueApi(
+            List.of(new GitHubIssueDto(1, "1日のタスク", "closed", "u1", "本文"),
+                new GitHubIssueDto(2, "2日のタスク", "closed", "u2", "本文"),
+                new GitHubIssueDto(3, "3日のタスク", "open", "u3", "本文")));
         final DailyTaskIssueLogicImpl testTarget = DailyTaskIssueLogicImplTest.createTarget(testGitHub);
 
         /* テスト対象の実行 */

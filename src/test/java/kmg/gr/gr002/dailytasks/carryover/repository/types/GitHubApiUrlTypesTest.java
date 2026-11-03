@@ -65,31 +65,6 @@ public class GitHubApiUrlTypesTest {
     }
 
     /**
-     * getDetail メソッドのテスト - 正常系:Issue 一覧の書式
-     *
-     * @since 0.1.0
-     */
-    @Test
-    public void testGetDetail_normalValue() {
-
-        /* 期待値の定義 */
-        final String expectedDetail = "Issue 一覧を取得する URL の書式";
-
-        /* 準備 */
-        final GitHubApiUrlTypes testTarget = GitHubApiUrlTypes.ISSUES_QUERY;
-
-        /* テスト対象の実行 */
-        final String testResult = testTarget.getDetail();
-
-        /* 検証の準備 */
-        final String actualDetail = testResult;
-
-        /* 検証の実施 */
-        Assertions.assertEquals(expectedDetail, actualDetail, "詳細情報が一致しません");
-
-    }
-
-    /**
      * getDetail メソッドのテスト - 正常系:Issue 一覧（作成降順）の書式
      *
      * @since 0.1.0
@@ -115,28 +90,27 @@ public class GitHubApiUrlTypesTest {
     }
 
     /**
-     * getUrl メソッドのテスト - 正常系:Issue 一覧（作成降順）の書式
+     * getDetail メソッドのテスト - 正常系:Issue 一覧の書式
      *
      * @since 0.1.0
      */
     @Test
-    public void testGetUrl_normalIssuesQueryDesc() {
+    public void testGetDetail_normalValue() {
 
         /* 期待値の定義 */
-        final String expectedUrl
-            = "%s/repos/%s/issues?state=all&sort=created&direction=desc&per_page=%d&page=%d";
+        final String expectedDetail = "Issue 一覧を取得する URL の書式";
 
         /* 準備 */
-        final GitHubApiUrlTypes testTarget = GitHubApiUrlTypes.ISSUES_QUERY_DESC;
+        final GitHubApiUrlTypes testTarget = GitHubApiUrlTypes.ISSUES_QUERY;
 
         /* テスト対象の実行 */
-        final String testResult = testTarget.getUrl();
+        final String testResult = testTarget.getDetail();
 
         /* 検証の準備 */
-        final String actualUrl = testResult;
+        final String actualDetail = testResult;
 
         /* 検証の実施 */
-        Assertions.assertEquals(expectedUrl, actualUrl, "URL が一致しません");
+        Assertions.assertEquals(expectedDetail, actualDetail, "詳細情報が一致しません");
 
     }
 
@@ -259,6 +233,31 @@ public class GitHubApiUrlTypesTest {
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedKey, actualKey, "キーが一致しません");
+
+    }
+
+    /**
+     * getUrl メソッドのテスト - 正常系:Issue 一覧（作成降順）の書式
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testGetUrl_normalIssuesQueryDesc() {
+
+        /* 期待値の定義 */
+        final String expectedUrl = "%s/repos/%s/issues?state=all&sort=created&direction=desc&per_page=%d&page=%d";
+
+        /* 準備 */
+        final GitHubApiUrlTypes testTarget = GitHubApiUrlTypes.ISSUES_QUERY_DESC;
+
+        /* テスト対象の実行 */
+        final String testResult = testTarget.getUrl();
+
+        /* 検証の準備 */
+        final String actualUrl = testResult;
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedUrl, actualUrl, "URL が一致しません");
 
     }
 

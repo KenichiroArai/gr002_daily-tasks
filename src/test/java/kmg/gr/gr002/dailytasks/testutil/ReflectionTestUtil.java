@@ -94,9 +94,9 @@ public final class ReflectionTestUtil {
     @SuppressWarnings("unchecked")
     public static <T> T getField(final Object target, final String name) throws ReflectiveOperationException {
 
-        final T result;
-        final Class<?> type = target.getClass();
-        final Field field = type.getDeclaredField(name);
+        final T        result;
+        final Class<?> type  = target.getClass();
+        final Field    field = type.getDeclaredField(name);
 
         field.setAccessible(true);
         result = (T) field.get(target);
@@ -124,7 +124,7 @@ public final class ReflectionTestUtil {
     @SuppressWarnings("unchecked")
     public static <T> T getStaticField(final Class<?> clazz, final String name) throws ReflectiveOperationException {
 
-        final T result;
+        final T     result;
         final Field field = clazz.getDeclaredField(name);
 
         field.setAccessible(true);
@@ -160,9 +160,9 @@ public final class ReflectionTestUtil {
     public static <T> T invoke(final Object target, final String name, final Class<?>[] parameterTypes,
         final Object... args) throws Exception {
 
-        final T result;
-        final Class<?> type = target.getClass();
-        final Method method = ReflectionTestUtil.findMethod(type, name, parameterTypes);
+        final T        result;
+        final Class<?> type   = target.getClass();
+        final Method   method = ReflectionTestUtil.findMethod(type, name, parameterTypes);
 
         result = ReflectionTestUtil.invokeMethod(method, target, args);
         return result;
@@ -256,7 +256,7 @@ public final class ReflectionTestUtil {
     public static <T> T invokeStatic(final Class<?> clazz, final String name, final Class<?>[] parameterTypes,
         final Object... args) throws Exception {
 
-        final T result;
+        final T      result;
         final Method method = ReflectionTestUtil.findMethod(clazz, name, parameterTypes);
 
         result = ReflectionTestUtil.invokeMethod(method, null, args);
@@ -280,8 +280,8 @@ public final class ReflectionTestUtil {
 
         try {
 
-            final Class<?> type = target.getClass();
-            final Field field = type.getDeclaredField(name);
+            final Class<?> type  = target.getClass();
+            final Field    field = type.getDeclaredField(name);
             field.setAccessible(true);
             field.set(target, value);
 

@@ -68,9 +68,9 @@ public class ArchitectureTest {
             @Override
             public void check(final JavaClass item, final ConditionEvents events) {
 
-                final Set<JavaConstructor> constructors     = item.getConstructors();
-                final int                  constructorCount = constructors.size();
-                int autowiredCount = 0;
+                final Set<JavaConstructor> constructors = item.getConstructors();
+                final int              constructorCount = constructors.size();
+                int                    autowiredCount   = 0;
 
                 for (final JavaConstructor constructor : constructors) {
 
@@ -89,24 +89,24 @@ public class ArchitectureTest {
                 }
 
                 /* コンストラクタが1つで Autowired が付いているか */
-                if (constructorCount <= 1 && autowiredCount > 0) {
+                if ((constructorCount <= 1) && (autowiredCount > 0)) {
 
                     // コンストラクタが1つで Autowired が付いている場合
 
                     // 違反として記録する
-                    events.add(SimpleConditionEvent.violated(item, KmgString.concat(item.getFullName(),
-                        " has a single constructor annotated with Autowired")));
+                    events.add(SimpleConditionEvent.violated(item,
+                        KmgString.concat(item.getFullName(), " has a single constructor annotated with Autowired")));
 
                 }
 
                 /* コンストラクタが複数で Autowired が1つではないか */
-                if (constructorCount >= 2 && autowiredCount != 1) {
+                if ((constructorCount >= 2) && (autowiredCount != 1)) {
 
                     // コンストラクタが複数で Autowired が1つではない場合
 
                     // 違反として記録する
-                    events.add(SimpleConditionEvent.violated(item, KmgString.concat(item.getFullName(),
-                        " must annotate exactly one constructor with Autowired")));
+                    events.add(SimpleConditionEvent.violated(item,
+                        KmgString.concat(item.getFullName(), " must annotate exactly one constructor with Autowired")));
 
                 }
 
@@ -173,9 +173,9 @@ public class ArchitectureTest {
         /* 期待値の定義 */
 
         /* 準備 */
-        final ArchRule noAutowiredFields = ArchRuleDefinition.classes().that().areAnnotatedWith(Component.class).or()
-            .areAnnotatedWith(Service.class).or().areAnnotatedWith(Repository.class)
-            .should(ArchitectureTest.NO_AUTOWIRED_FIELDS);
+        final ArchRule noAutowiredFields                = ArchRuleDefinition.classes().that()
+            .areAnnotatedWith(Component.class).or().areAnnotatedWith(Service.class).or()
+            .areAnnotatedWith(Repository.class).should(ArchitectureTest.NO_AUTOWIRED_FIELDS);
         final ArchRule constructorAutowiredMatchesCount = ArchRuleDefinition.classes().that()
             .areAnnotatedWith(Component.class).or().areAnnotatedWith(Service.class).or()
             .areAnnotatedWith(Repository.class).should(ArchitectureTest.CONSTRUCTOR_AUTOWIRED_MATCHES_COUNT);

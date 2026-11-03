@@ -137,6 +137,64 @@ public class CarryoverDataDaoImplTest {
     Path tempDir;
 
     /**
+     * loadIssue メソッドのテスト - 正常系:保存した 1 件を読み込む場合
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     入出力エラーが発生した場合
+     */
+    @Test
+    public void testLoadIssue_normalFile() throws IOException {
+
+        /* 期待値の定義 */
+        final int expectedNumber = 7;
+
+        /* 準備 */
+        final CarryoverDataDaoImpl testTarget = CarryoverDataDaoImplTest.createTarget();
+        testTarget.initialize(this.tempDir);
+        testTarget.saveIssue(CarryoverDataDaoImplTest.createIssue(expectedNumber));
+
+        /* テスト対象の実行 */
+        final CarryoverIssueDto testResult = testTarget.loadIssue(expectedNumber);
+
+        /* 検証の準備 */
+        final int actualNumber = testResult.getNumber();
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedNumber, actualNumber, "Issue 番号が一致しません");
+
+    }
+
+    /**
+     * loadIssue メソッドのテスト - 準正常系:ファイルがない場合
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     入出力エラーが発生した場合
+     */
+    @Test
+    public void testLoadIssue_semiMissing() throws IOException {
+
+        /* 期待値の定義 */
+
+        /* 準備 */
+        final CarryoverDataDaoImpl testTarget = CarryoverDataDaoImplTest.createTarget();
+        testTarget.initialize(this.tempDir);
+
+        /* テスト対象の実行 */
+        final CarryoverIssueDto testResult = testTarget.loadIssue(7);
+
+        /* 検証の準備 */
+        final boolean actualMissing = testResult == null;
+
+        /* 検証の実施 */
+        Assertions.assertTrue(actualMissing, "ファイルがないときは null になる必要があります");
+
+    }
+
+    /**
      * loadIssues メソッドのテスト - 異常系:JSON が不正な場合
      *
      * @since 0.1.0
@@ -195,13 +253,13 @@ public class CarryoverDataDaoImplTest {
         final CarryoverIssuesDto testResult = testTarget.loadIssues();
 
         /* 検証の準備 */
-        final Set<Integer>     actualNumbers       = testResult.numbers();
-        final CarryoverIssueDto       found               = testResult.find(371);
-        final List<CarryoverItemDto>  items               = found.getItems();
-        final CarryoverItemDto        actualItem          = items.get(0);
-        final double           actualMinutes       = actualItem.getMinutes();
-        final String           actualMinutesSource = actualItem.getMinutesSource();
-        final boolean          actualChecked       = actualItem.isChecked();
+        final Set<Integer>           actualNumbers       = testResult.numbers();
+        final CarryoverIssueDto      found               = testResult.find(371);
+        final List<CarryoverItemDto> items               = found.getItems();
+        final CarryoverItemDto       actualItem          = items.get(0);
+        final double                 actualMinutes       = actualItem.getMinutes();
+        final String                 actualMinutesSource = actualItem.getMinutesSource();
+        final boolean                actualChecked       = actualItem.isChecked();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedNumbers, actualNumbers, "Issue 番号が一致しません");
@@ -262,16 +320,15 @@ public class CarryoverDataDaoImplTest {
         testTarget.saveIssue(CarryoverDataDaoImplTest.createIssue(7));
 
         /* 検証の準備 */
-        final Path    issuesDir      = this.tempDir.resolve("issues");
-        final Path    issueFile      = issuesDir.resolve("0007.json");
-        final String  actualJson     = Files.readString(issueFile, StandardCharsets.UTF_8);
+        final Path    issuesDir        = this.tempDir.resolve("issues");
+        final Path    issueFile        = issuesDir.resolve("0007.json");
+        final String  actualJson       = Files.readString(issueFile, StandardCharsets.UTF_8);
         final boolean actualStartsWith = actualJson.startsWith(expectedFirstLines);
         final boolean actualHasCr      = actualJson.contains("\r");
         final boolean actualEndsWithLf = actualJson.endsWith("}\n");
 
         /* 検証の実施 */
-        Assertions.assertTrue(actualStartsWith,
-            KmgString.concat("JSON の先頭が一致しません: ", actualJson));
+        Assertions.assertTrue(actualStartsWith, KmgString.concat("JSON の先頭が一致しません: ", actualJson));
         Assertions.assertFalse(actualHasCr, "改行は LF である必要があります");
         Assertions.assertTrue(actualEndsWithLf, "末尾は改行である必要があります");
 
@@ -325,14 +382,14 @@ public class CarryoverDataDaoImplTest {
             """;
 
         /* 準備 */
-        final CarryoverDataDaoImpl     testTarget    = CarryoverDataDaoImplTest.createTarget();
-        final ItemStatDto              testStat      = new ItemStatDto(1, 30, 0, 0);
-        final ItemStatDto              testEmptyStat = new ItemStatDto(0, 0, 0, 0);
-        final ItemStatsDto testByItem = new ItemStatsDto();
+        final CarryoverDataDaoImpl testTarget    = CarryoverDataDaoImplTest.createTarget();
+        final ItemStatDto          testStat      = new ItemStatDto(1, 30, 0, 0);
+        final ItemStatDto          testEmptyStat = new ItemStatDto(0, 0, 0, 0);
+        final ItemStatsDto         testByItem    = new ItemStatsDto();
         testByItem.add("英語", testStat);
         testByItem.add("国語", testEmptyStat);
-        final DailySummaryDto testDay = new DailySummaryDto("2026-03-24", 175, null, testStat, testByItem,
-            new ItemStatsDto());
+        final DailySummaryDto testDay
+            = new DailySummaryDto("2026-03-24", 175, null, testStat, testByItem, new ItemStatsDto());
 
         /* テスト対象の実行 */
         testTarget.initialize(this.tempDir);
@@ -432,64 +489,6 @@ public class CarryoverDataDaoImplTest {
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedJson, actualJson, "JSON が一致しません");
-
-    }
-
-    /**
-     * loadIssue メソッドのテスト - 正常系:保存した 1 件を読み込む場合
-     *
-     * @since 0.1.0
-     *
-     * @throws IOException
-     *                     入出力エラーが発生した場合
-     */
-    @Test
-    public void testLoadIssue_normalFile() throws IOException {
-
-        /* 期待値の定義 */
-        final int expectedNumber = 7;
-
-        /* 準備 */
-        final CarryoverDataDaoImpl testTarget = CarryoverDataDaoImplTest.createTarget();
-        testTarget.initialize(this.tempDir);
-        testTarget.saveIssue(CarryoverDataDaoImplTest.createIssue(expectedNumber));
-
-        /* テスト対象の実行 */
-        final CarryoverIssueDto testResult = testTarget.loadIssue(expectedNumber);
-
-        /* 検証の準備 */
-        final int actualNumber = testResult.getNumber();
-
-        /* 検証の実施 */
-        Assertions.assertEquals(expectedNumber, actualNumber, "Issue 番号が一致しません");
-
-    }
-
-    /**
-     * loadIssue メソッドのテスト - 準正常系:ファイルがない場合
-     *
-     * @since 0.1.0
-     *
-     * @throws IOException
-     *                     入出力エラーが発生した場合
-     */
-    @Test
-    public void testLoadIssue_semiMissing() throws IOException {
-
-        /* 期待値の定義 */
-
-        /* 準備 */
-        final CarryoverDataDaoImpl testTarget = CarryoverDataDaoImplTest.createTarget();
-        testTarget.initialize(this.tempDir);
-
-        /* テスト対象の実行 */
-        final CarryoverIssueDto testResult = testTarget.loadIssue(7);
-
-        /* 検証の準備 */
-        final boolean actualMissing = testResult == null;
-
-        /* 検証の実施 */
-        Assertions.assertTrue(actualMissing, "ファイルがないときは null になる必要があります");
 
     }
 

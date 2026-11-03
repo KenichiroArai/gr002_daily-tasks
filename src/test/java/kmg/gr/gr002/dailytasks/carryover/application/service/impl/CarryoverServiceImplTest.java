@@ -29,9 +29,9 @@ import kmg.gr.gr002.dailytasks.carryover.application.types.MinutesSourceTypes;
 import kmg.gr.gr002.dailytasks.carryover.domain.logic.impl.CarryoverAggregateLogicImpl;
 import kmg.gr.gr002.dailytasks.carryover.domain.logic.impl.CarryoverParseLogicImpl;
 import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel;
+import kmg.gr.gr002.dailytasks.testutil.DailyTasksMessageSourceTestUtil;
 import kmg.gr.gr002.dailytasks.testutil.LogAssertions;
 import kmg.gr.gr002.dailytasks.testutil.LogCapture;
-import kmg.gr.gr002.dailytasks.testutil.DailyTasksMessageSourceTestUtil;
 import kmg.gr.gr002.dailytasks.testutil.ReflectionTestUtil;
 
 /**
@@ -890,21 +890,6 @@ public class CarryoverServiceImplTest {
     }
 
     /**
-     * テスト用の標準時間を作る<br>
-     *
-     * @since 0.1.0
-     *
-     * @return 項目ごとの標準時間
-     */
-    private static DefaultMinutesModel defaultMinutes() {
-
-        final DefaultMinutesModel result = new DefaultMinutesModel();
-        result.add("国語", 15.0);
-        return result;
-
-    }
-
-    /**
      * #1 から指定件数までの Issue を作成する<br>
      * <p>
      * Issue #N の日付は 2026年03月N日、更新日時は uN とする。
@@ -923,8 +908,7 @@ public class CarryoverServiceImplTest {
             = IntStream.rangeClosed(1, count)
                 .mapToObj(number -> new DailyTaskIssueModel(number,
                     String.format("2026年03月%02d日のタスク", Integer.valueOf(number)), "closed",
-                    KmgString.concat("u", String.valueOf(number)),
-                    "## 負債\n- [ ] 英語2026/03/01（残り時間：10分）"))
+                    KmgString.concat("u", String.valueOf(number)), "## 負債\n- [ ] 英語2026/03/01（残り時間：10分）"))
                 .toList();
         return result;
 
@@ -972,6 +956,21 @@ public class CarryoverServiceImplTest {
     }
 
     /**
+     * テスト用の標準時間を作る<br>
+     *
+     * @since 0.1.0
+     *
+     * @return 項目ごとの標準時間
+     */
+    private static DefaultMinutesModel defaultMinutes() {
+
+        final DefaultMinutesModel result = new DefaultMinutesModel();
+        result.add("国語", 15.0);
+        return result;
+
+    }
+
+    /**
      * テスト用の標準時間で Issue を解析する<br>
      *
      * @since 0.1.0
@@ -1005,7 +1004,8 @@ public class CarryoverServiceImplTest {
         final int      expectedDays  = 12;
         final String[] expectedMsgs  = {
             "[Gr002Log31004] 参照を取得しました: 参照=10 件、バッチ=1 件", "[Gr002Log31005] バッチを開始します: 1/1、対象=10 件",
-            "[Gr002Log31006] バッチが完了しました: 1/1、再解析=10 件、再利用=0 件", "[Gr002Log31000] モード=[Gr002Log31008] 差分、取得=10 件、解析・保存=10 件、集計=12 日",
+            "[Gr002Log31006] バッチが完了しました: 1/1、再解析=10 件、再利用=0 件",
+            "[Gr002Log31000] モード=[Gr002Log31008] 差分、取得=10 件、解析・保存=10 件、集計=12 日",
             "[Gr002Log31001] 標準時間で補完した行=0 件、標準時間が未登録の行=0 件",
         };
 
@@ -1056,7 +1056,8 @@ public class CarryoverServiceImplTest {
         final int      expectedCount = 2;
         final String[] expectedMsgs  = {
             "[Gr002Log31004] 参照を取得しました: 参照=2 件、バッチ=1 件", "[Gr002Log31005] バッチを開始します: 1/1、対象=2 件",
-            "[Gr002Log31006] バッチが完了しました: 1/1、再解析=2 件、再利用=0 件", "[Gr002Log31000] モード=[Gr002Log31008] 差分、取得=2 件、解析・保存=2 件、集計=2 日",
+            "[Gr002Log31006] バッチが完了しました: 1/1、再解析=2 件、再利用=0 件",
+            "[Gr002Log31000] モード=[Gr002Log31008] 差分、取得=2 件、解析・保存=2 件、集計=2 日",
             "[Gr002Log31001] 標準時間で補完した行=1 件、標準時間が未登録の行=0 件",
         };
 
@@ -1105,7 +1106,8 @@ public class CarryoverServiceImplTest {
         final int           expectedDays         = 2;
         final String[]      expectedMsgs         = {
             "[Gr002Log31004] 参照を取得しました: 参照=2 件、バッチ=1 件", "[Gr002Log31005] バッチを開始します: 1/1、対象=2 件",
-            "[Gr002Log31006] バッチが完了しました: 1/1、再解析=2 件、再利用=0 件", "[Gr002Log31002] モード=[Gr002Log31007] 全件、取得=2 件、解析・保存=2 件、集計=2 日",
+            "[Gr002Log31006] バッチが完了しました: 1/1、再解析=2 件、再利用=0 件",
+            "[Gr002Log31002] モード=[Gr002Log31007] 全件、取得=2 件、解析・保存=2 件、集計=2 日",
             "[Gr002Log31003] 標準時間で補完した行=1 件、標準時間が未登録の行=0 件",
         };
 
@@ -1126,12 +1128,12 @@ public class CarryoverServiceImplTest {
             testTarget.aggregate();
 
             /* 検証の準備 */
-            final String[]      actualMsgs         = testLog.getMessages();
-            final int           actualCount        = testResult;
-            final List<Integer> actualSavedNumbers = testDataLogic.getSavedNumbers();
+            final String[]                actualMsgs         = testLog.getMessages();
+            final int                     actualCount        = testResult;
+            final List<Integer>           actualSavedNumbers = testDataLogic.getSavedNumbers();
             final CarryoverSummaryModel   savedSummary       = testDataLogic.getSavedSummary();
-            final List<DailySummaryModel>  days               = savedSummary.getDays();
-            final int                      actualDays         = days.size();
+            final List<DailySummaryModel> days               = savedSummary.getDays();
+            final int                     actualDays         = days.size();
 
             /* 検証の実施 */
             Assertions.assertEquals(expectedCount, actualCount, "解析件数が一致しません");
@@ -1140,181 +1142,6 @@ public class CarryoverServiceImplTest {
             LogAssertions.assertMessages(expectedMsgs, actualMsgs);
 
         }
-
-    }
-
-    /**
-     * collect メソッドのテスト - 正常系:差分モードでは最新件数を単位に分け、最終単位のあとで保存済み全件から集計する
-     *
-     * @since 0.1.0
-     *
-     * @throws IOException
-     *                     入出力エラーが発生した場合
-     */
-    @Test
-    public void testCollect_normalTwoBatches() throws IOException {
-
-        /* 期待値の定義 */
-        final List<Integer> expectedFirstLoaded  = List.of(3, 4, 5, 6, 7, 8);
-        final List<Integer> expectedFirstFetched = List.of(3, 4, 5, 6, 7, 8);
-        final int           expectedSecondDays   = 12;
-        final String[]      expectedMsgs         = {
-            "[Gr002Log31004] 参照を取得しました: 参照=10 件、バッチ=2 件", "[Gr002Log31005] バッチを開始します: 1/2、対象=6 件",
-            "[Gr002Log31006] バッチが完了しました: 1/2、再解析=6 件、再利用=0 件", "[Gr002Log31005] バッチを開始します: 2/2、対象=4 件",
-            "[Gr002Log31006] バッチが完了しました: 2/2、再解析=4 件、再利用=0 件", "[Gr002Log31000] モード=[Gr002Log31008] 差分、取得=10 件、解析・保存=10 件、集計=12 日",
-            "[Gr002Log31001] 標準時間で補完した行=0 件、標準時間が未登録の行=0 件", "[Gr002Log31000] モード=[Gr002Log31008] 差分、取得=10 件、解析・保存=10 件、集計=12 日",
-            "[Gr002Log31001] 標準時間で補完した行=0 件、標準時間が未登録の行=0 件",
-        };
-
-        /* 準備 */
-        final List<DailyTaskIssueModel> testIssues     = CarryoverServiceImplTest.createIssues(12);
-        final StubDailyTaskIssueLogic   testIssueLogic = new StubDailyTaskIssueLogic(testIssues);
-        final StubCarryoverDataLogic    testDataLogic  = new StubCarryoverDataLogic();
-        testDataLogic.store(CarryoverServiceImplTest.parse(testIssues.get(0)));
-        testDataLogic.store(CarryoverServiceImplTest.parse(testIssues.get(1)));
-        final CarryoverPropertiesModel testProperties = new CarryoverPropertiesModel("owner/repo", "test-token",
-            "docs/data", "config/default-minutes.json", 10, 6);
-        final CarryoverServiceImpl testTarget
-            = CarryoverServiceImplTest.createTarget(testIssueLogic, new StubDefaultMinutesLogic(), testDataLogic);
-
-        /* テスト対象の実行 */
-        try (LogCapture testLog = new LogCapture(CarryoverServiceImpl.class)) {
-
-            testTarget.initialize(testProperties, false);
-
-            /* 索引を開き、次の単位があるか */
-            final boolean testFirstHasNext = testTarget.open();
-
-            testTarget.collect();
-            testTarget.aggregate();
-
-            /* 検証の準備 */
-            final List<Integer>           actualFirstLoaded  = List.copyOf(testDataLogic.getLoadedNumbers());
-            final List<Integer>           actualFirstFetched = List.copyOf(testIssueLogic.getFetchedNumbers());
-            final CarryoverSummaryModel   firstSummary       = testDataLogic.getSavedSummary();
-
-            /* 検証の実施 */
-            Assertions.assertTrue(testFirstHasNext, "1 単位目がある必要があります");
-            Assertions.assertEquals(expectedFirstLoaded, actualFirstLoaded, "1 単位目に読んだ Issue 番号が一致しません");
-            Assertions.assertEquals(expectedFirstFetched, actualFirstFetched, "1 単位目に取得した Issue 番号が一致しません");
-            Assertions.assertNull(firstSummary, "差分モードでは最終単位の前に集計を保存しない必要があります");
-
-            /* 次の単位があるか */
-            final boolean testHasNext = testTarget.hasNext();
-
-            testTarget.collect();
-            testTarget.aggregate();
-            final int testExtra = testTarget.collect();
-            testTarget.aggregate();
-
-            /* 検証の準備 */
-            final String[]                actualMsgs       = testLog.getMessages();
-            final CarryoverSummaryModel   secondSummary    = testDataLogic.getSavedSummary();
-            final List<DailySummaryModel> secondDays       = secondSummary.getDays();
-            final int                     actualSecondDays = secondDays.size();
-            final int                     actualExtra      = testExtra;
-            final boolean                 actualHasNext    = testHasNext;
-
-            /* 検証の実施 */
-            Assertions.assertTrue(actualHasNext, "2 単位目がある必要があります");
-            Assertions.assertEquals(expectedSecondDays, actualSecondDays, "2 単位目の日数が一致しません");
-            Assertions.assertEquals(0, actualExtra, "単位のあとの収集は 0 件になる必要があります");
-            LogAssertions.assertMessages(expectedMsgs, actualMsgs);
-
-        }
-
-    }
-
-    /**
-     * collect メソッドのテスト - 正常系:単位が 1 未満のときは全件を 1 単位にし、日付がない Issue は日別にしない場合
-     *
-     * @since 0.1.0
-     *
-     * @throws IOException
-     *                     入出力エラーが発生した場合
-     */
-    @Test
-    public void testCollect_normalUndatedAndSingleBatch() throws IOException {
-
-        /* 期待値の定義 */
-        final int expectedDays        = 1;
-        final int expectedLatestIssue = 2;
-        final int expectedSaved       = 2;
-
-        /* 準備 */
-        final List<DailyTaskIssueModel> testIssues = List.of(CarryoverServiceImplTest.ISSUE1,
-            new DailyTaskIssueModel(2, "メモ", "open", "u2", "本文"));
-        final StubDailyTaskIssueLogic   testIssueLogic = new StubDailyTaskIssueLogic(testIssues);
-        final StubCarryoverDataLogic    testDataLogic  = new StubCarryoverDataLogic();
-        final CarryoverPropertiesModel  testProperties = new CarryoverPropertiesModel("owner/repo", "test-token",
-            "docs/data", "config/default-minutes.json", 10, 0);
-        final CarryoverServiceImpl      testTarget
-            = CarryoverServiceImplTest.createTarget(testIssueLogic, new StubDefaultMinutesLogic(), testDataLogic);
-
-        /* テスト対象の実行 */
-        testTarget.initialize(testProperties, true);
-        final boolean testHasNext = testTarget.open();
-        final int     testSaved   = testTarget.collect();
-        testTarget.aggregate();
-        final boolean testNext = testTarget.hasNext();
-
-        /* 検証の準備 */
-        final CarryoverSummaryModel   savedSummary = testDataLogic.getSavedSummary();
-        final List<DailySummaryModel> days         = savedSummary.getDays();
-        final int                     actualDays   = days.size();
-        final int                     actualLatest = savedSummary.getLatestIssue();
-        final int                     actualSaved  = testSaved;
-
-        /* 検証の実施 */
-        Assertions.assertTrue(testHasNext, "単位がある必要があります");
-        Assertions.assertFalse(testNext, "次の単位はない必要があります");
-        Assertions.assertEquals(expectedSaved, actualSaved, "解析件数が一致しません");
-        Assertions.assertEquals(expectedDays, actualDays, "日数が一致しません");
-        Assertions.assertEquals(expectedLatestIssue, actualLatest, "最新の Issue 番号が一致しません");
-
-    }
-
-    /**
-     * collect メソッドのテスト - 正常系:日付がない Issue を最後の単位にする場合
-     *
-     * @since 0.1.0
-     *
-     * @throws IOException
-     *                     入出力エラーが発生した場合
-     */
-    @Test
-    public void testCollect_normalUndatedBatch() throws IOException {
-
-        /* 期待値の定義 */
-        final int expectedDays = 1;
-
-        /* 準備 */
-        final List<DailyTaskIssueModel> testIssues = List.of(CarryoverServiceImplTest.ISSUE1,
-            new DailyTaskIssueModel(9, "メモ", "open", "u9", "本文"));
-        final StubDailyTaskIssueLogic   testIssueLogic = new StubDailyTaskIssueLogic(testIssues);
-        final StubCarryoverDataLogic    testDataLogic  = new StubCarryoverDataLogic();
-        final CarryoverPropertiesModel  testProperties = new CarryoverPropertiesModel("owner/repo", "test-token",
-            "docs/data", "config/default-minutes.json", 10, 1);
-        final CarryoverServiceImpl      testTarget
-            = CarryoverServiceImplTest.createTarget(testIssueLogic, new StubDefaultMinutesLogic(), testDataLogic);
-
-        /* テスト対象の実行 */
-        testTarget.initialize(testProperties, false);
-        testTarget.open();
-        testTarget.collect();
-        testTarget.aggregate();
-        testTarget.collect();
-        testTarget.aggregate();
-
-        /* 検証の準備 */
-        final CarryoverSummaryModel   savedSummary = testDataLogic.getSavedSummary();
-        final List<DailySummaryModel> days         = savedSummary.getDays();
-        final int                     actualDays   = days.size();
-        final int                     actualLatest = savedSummary.getLatestIssue();
-
-        /* 検証の実施 */
-        Assertions.assertEquals(expectedDays, actualDays, "日数が一致しません");
-        Assertions.assertEquals(9, actualLatest, "最新の Issue 番号が一致しません");
 
     }
 
@@ -1433,6 +1260,213 @@ public class CarryoverServiceImplTest {
     }
 
     /**
+     * collect メソッドのテスト - 正常系:差分モードでは最新件数を単位に分け、最終単位のあとで保存済み全件から集計する
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     入出力エラーが発生した場合
+     */
+    @Test
+    public void testCollect_normalTwoBatches() throws IOException {
+
+        /* 期待値の定義 */
+        final List<Integer> expectedFirstLoaded  = List.of(3, 4, 5, 6, 7, 8);
+        final List<Integer> expectedFirstFetched = List.of(3, 4, 5, 6, 7, 8);
+        final int           expectedSecondDays   = 12;
+        final String[]      expectedMsgs         = {
+            "[Gr002Log31004] 参照を取得しました: 参照=10 件、バッチ=2 件", "[Gr002Log31005] バッチを開始します: 1/2、対象=6 件",
+            "[Gr002Log31006] バッチが完了しました: 1/2、再解析=6 件、再利用=0 件", "[Gr002Log31005] バッチを開始します: 2/2、対象=4 件",
+            "[Gr002Log31006] バッチが完了しました: 2/2、再解析=4 件、再利用=0 件",
+            "[Gr002Log31000] モード=[Gr002Log31008] 差分、取得=10 件、解析・保存=10 件、集計=12 日",
+            "[Gr002Log31001] 標準時間で補完した行=0 件、標準時間が未登録の行=0 件",
+            "[Gr002Log31000] モード=[Gr002Log31008] 差分、取得=10 件、解析・保存=10 件、集計=12 日",
+            "[Gr002Log31001] 標準時間で補完した行=0 件、標準時間が未登録の行=0 件",
+        };
+
+        /* 準備 */
+        final List<DailyTaskIssueModel> testIssues     = CarryoverServiceImplTest.createIssues(12);
+        final StubDailyTaskIssueLogic   testIssueLogic = new StubDailyTaskIssueLogic(testIssues);
+        final StubCarryoverDataLogic    testDataLogic  = new StubCarryoverDataLogic();
+        testDataLogic.store(CarryoverServiceImplTest.parse(testIssues.get(0)));
+        testDataLogic.store(CarryoverServiceImplTest.parse(testIssues.get(1)));
+        final CarryoverPropertiesModel testProperties = new CarryoverPropertiesModel("owner/repo", "test-token",
+            "docs/data", "config/default-minutes.json", 10, 6);
+        final CarryoverServiceImpl     testTarget     = CarryoverServiceImplTest.createTarget(testIssueLogic,
+            new StubDefaultMinutesLogic(), testDataLogic);
+
+        /* テスト対象の実行 */
+        try (LogCapture testLog = new LogCapture(CarryoverServiceImpl.class)) {
+
+            testTarget.initialize(testProperties, false);
+
+            /* 索引を開き、次の単位があるか */
+            final boolean testFirstHasNext = testTarget.open();
+
+            testTarget.collect();
+            testTarget.aggregate();
+
+            /* 検証の準備 */
+            final List<Integer>         actualFirstLoaded  = List.copyOf(testDataLogic.getLoadedNumbers());
+            final List<Integer>         actualFirstFetched = List.copyOf(testIssueLogic.getFetchedNumbers());
+            final CarryoverSummaryModel firstSummary       = testDataLogic.getSavedSummary();
+
+            /* 検証の実施 */
+            Assertions.assertTrue(testFirstHasNext, "1 単位目がある必要があります");
+            Assertions.assertEquals(expectedFirstLoaded, actualFirstLoaded, "1 単位目に読んだ Issue 番号が一致しません");
+            Assertions.assertEquals(expectedFirstFetched, actualFirstFetched, "1 単位目に取得した Issue 番号が一致しません");
+            Assertions.assertNull(firstSummary, "差分モードでは最終単位の前に集計を保存しない必要があります");
+
+            /* 次の単位があるか */
+            final boolean testHasNext = testTarget.hasNext();
+
+            testTarget.collect();
+            testTarget.aggregate();
+            final int testExtra = testTarget.collect();
+            testTarget.aggregate();
+
+            /* 検証の準備 */
+            final String[]                actualMsgs       = testLog.getMessages();
+            final CarryoverSummaryModel   secondSummary    = testDataLogic.getSavedSummary();
+            final List<DailySummaryModel> secondDays       = secondSummary.getDays();
+            final int                     actualSecondDays = secondDays.size();
+            final int                     actualExtra      = testExtra;
+            final boolean                 actualHasNext    = testHasNext;
+
+            /* 検証の実施 */
+            Assertions.assertTrue(actualHasNext, "2 単位目がある必要があります");
+            Assertions.assertEquals(expectedSecondDays, actualSecondDays, "2 単位目の日数が一致しません");
+            Assertions.assertEquals(0, actualExtra, "単位のあとの収集は 0 件になる必要があります");
+            LogAssertions.assertMessages(expectedMsgs, actualMsgs);
+
+        }
+
+    }
+
+    /**
+     * collect メソッドのテスト - 正常系:単位が 1 未満のときは全件を 1 単位にし、日付がない Issue は日別にしない場合
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     入出力エラーが発生した場合
+     */
+    @Test
+    public void testCollect_normalUndatedAndSingleBatch() throws IOException {
+
+        /* 期待値の定義 */
+        final int expectedDays        = 1;
+        final int expectedLatestIssue = 2;
+        final int expectedSaved       = 2;
+
+        /* 準備 */
+        final List<DailyTaskIssueModel> testIssues     = List.of(CarryoverServiceImplTest.ISSUE1,
+            new DailyTaskIssueModel(2, "メモ", "open", "u2", "本文"));
+        final StubDailyTaskIssueLogic   testIssueLogic = new StubDailyTaskIssueLogic(testIssues);
+        final StubCarryoverDataLogic    testDataLogic  = new StubCarryoverDataLogic();
+        final CarryoverPropertiesModel  testProperties = new CarryoverPropertiesModel("owner/repo", "test-token",
+            "docs/data", "config/default-minutes.json", 10, 0);
+        final CarryoverServiceImpl      testTarget     = CarryoverServiceImplTest.createTarget(testIssueLogic,
+            new StubDefaultMinutesLogic(), testDataLogic);
+
+        /* テスト対象の実行 */
+        testTarget.initialize(testProperties, true);
+        final boolean testHasNext = testTarget.open();
+        final int     testSaved   = testTarget.collect();
+        testTarget.aggregate();
+        final boolean testNext = testTarget.hasNext();
+
+        /* 検証の準備 */
+        final CarryoverSummaryModel   savedSummary = testDataLogic.getSavedSummary();
+        final List<DailySummaryModel> days         = savedSummary.getDays();
+        final int                     actualDays   = days.size();
+        final int                     actualLatest = savedSummary.getLatestIssue();
+        final int                     actualSaved  = testSaved;
+
+        /* 検証の実施 */
+        Assertions.assertTrue(testHasNext, "単位がある必要があります");
+        Assertions.assertFalse(testNext, "次の単位はない必要があります");
+        Assertions.assertEquals(expectedSaved, actualSaved, "解析件数が一致しません");
+        Assertions.assertEquals(expectedDays, actualDays, "日数が一致しません");
+        Assertions.assertEquals(expectedLatestIssue, actualLatest, "最新の Issue 番号が一致しません");
+
+    }
+
+    /**
+     * collect メソッドのテスト - 正常系:日付がない Issue を最後の単位にする場合
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     入出力エラーが発生した場合
+     */
+    @Test
+    public void testCollect_normalUndatedBatch() throws IOException {
+
+        /* 期待値の定義 */
+        final int expectedDays = 1;
+
+        /* 準備 */
+        final List<DailyTaskIssueModel> testIssues     = List.of(CarryoverServiceImplTest.ISSUE1,
+            new DailyTaskIssueModel(9, "メモ", "open", "u9", "本文"));
+        final StubDailyTaskIssueLogic   testIssueLogic = new StubDailyTaskIssueLogic(testIssues);
+        final StubCarryoverDataLogic    testDataLogic  = new StubCarryoverDataLogic();
+        final CarryoverPropertiesModel  testProperties = new CarryoverPropertiesModel("owner/repo", "test-token",
+            "docs/data", "config/default-minutes.json", 10, 1);
+        final CarryoverServiceImpl      testTarget     = CarryoverServiceImplTest.createTarget(testIssueLogic,
+            new StubDefaultMinutesLogic(), testDataLogic);
+
+        /* テスト対象の実行 */
+        testTarget.initialize(testProperties, false);
+        testTarget.open();
+        testTarget.collect();
+        testTarget.aggregate();
+        testTarget.collect();
+        testTarget.aggregate();
+
+        /* 検証の準備 */
+        final CarryoverSummaryModel   savedSummary = testDataLogic.getSavedSummary();
+        final List<DailySummaryModel> days         = savedSummary.getDays();
+        final int                     actualDays   = days.size();
+        final int                     actualLatest = savedSummary.getLatestIssue();
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedDays, actualDays, "日数が一致しません");
+        Assertions.assertEquals(9, actualLatest, "最新の Issue 番号が一致しません");
+
+    }
+
+    /**
+     * countBySource メソッドのテスト - 正常系:取得元ごとの行数を数える場合
+     *
+     * @since 0.1.0
+     *
+     * @throws Exception
+     *                   例外が発生した場合
+     */
+    @Test
+    public void testCountBySource_normalCount() throws Exception {
+
+        /* 期待値の定義 */
+        final long expectedCount = 1;
+
+        /* 準備 */
+        final CarryoverIssuesModel testIssues = new CarryoverIssuesModel();
+        testIssues.put(1, CarryoverServiceImplTest.parse(CarryoverServiceImplTest.ISSUE1));
+        testIssues.put(2, CarryoverServiceImplTest.parse(CarryoverServiceImplTest.ISSUE2));
+
+        /* テスト対象の実行 */
+        final long testResult = CarryoverServiceImplTest.countBySource(testIssues.values(), MinutesSourceTypes.PARSED);
+
+        /* 検証の準備 */
+        final long actualCount = testResult;
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedCount, actualCount, "行数が一致しません");
+
+    }
+
+    /**
      * open メソッドのテスト - 異常系:単位が残っている状態で再度呼ぶ場合
      *
      * @since 0.1.0
@@ -1501,36 +1535,6 @@ public class CarryoverServiceImplTest {
         /* 検証の実施 */
         Assertions.assertTrue(actualSecondOpen, "再取得後に単位がある必要があります");
         Assertions.assertEquals(expectedSteps, actualSteps, "呼び出しの順が一致しません");
-
-    }
-
-    /**
-     * countBySource メソッドのテスト - 正常系:取得元ごとの行数を数える場合
-     *
-     * @since 0.1.0
-     *
-     * @throws Exception
-     *                   例外が発生した場合
-     */
-    @Test
-    public void testCountBySource_normalCount() throws Exception {
-
-        /* 期待値の定義 */
-        final long expectedCount = 1;
-
-        /* 準備 */
-        final CarryoverIssuesModel testIssues = new CarryoverIssuesModel();
-        testIssues.put(1, CarryoverServiceImplTest.parse(CarryoverServiceImplTest.ISSUE1));
-        testIssues.put(2, CarryoverServiceImplTest.parse(CarryoverServiceImplTest.ISSUE2));
-
-        /* テスト対象の実行 */
-        final long testResult = CarryoverServiceImplTest.countBySource(testIssues.values(), MinutesSourceTypes.PARSED);
-
-        /* 検証の準備 */
-        final long actualCount = testResult;
-
-        /* 検証の実施 */
-        Assertions.assertEquals(expectedCount, actualCount, "行数が一致しません");
 
     }
 

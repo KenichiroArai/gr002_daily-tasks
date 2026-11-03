@@ -86,9 +86,9 @@ public interface CarryoverService {
      * @return true：次の単位がある、false：単位が残っていない
      *
      * @throws IOException
-     *                                  取得または読み込みに失敗した場合
+     *                               取得または読み込みに失敗した場合
      * @throws IllegalStateException
-     *                                  単位が残っている状態で再度呼ばれた場合
+     *                               単位が残っている状態で再度呼ばれた場合
      */
     boolean open() throws IOException;
 

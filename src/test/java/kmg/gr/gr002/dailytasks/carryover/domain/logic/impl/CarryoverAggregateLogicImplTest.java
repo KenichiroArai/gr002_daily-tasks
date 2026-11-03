@@ -6,12 +6,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverAggregationModel;
-import kmg.gr.gr002.dailytasks.carryover.application.service.impl.CarryoverAggregateServiceImpl;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverItemModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSummaryModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailySummaryModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.ItemStatModel;
+import kmg.gr.gr002.dailytasks.carryover.application.service.impl.CarryoverAggregateServiceImpl;
 import kmg.gr.gr002.dailytasks.carryover.application.types.MinutesSourceTypes;
 import kmg.gr.gr002.dailytasks.testutil.DailyTasksMessageSourceTestUtil;
 
@@ -73,6 +73,63 @@ public class CarryoverAggregateLogicImplTest {
     }
 
     /**
+     * add メソッドのテスト - 正常系:2 単位に分けて足すと一括の集計と一致する場合
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testAdd_normalTwoBatches() {
+
+        /* 期待値の定義 */
+        final List<CarryoverIssueModel> expectedIssues
+            = List.of(CarryoverAggregateLogicImplTest.createIssue(174, "2026-03-23", List.of(), List.of()),
+                CarryoverAggregateLogicImplTest.createIssue(175, "2026-03-24", List.of("負債"),
+                    List.of(CarryoverAggregateLogicImplTest.createItem("国語"))),
+                CarryoverAggregateLogicImplTest.createIssue(176, null, List.of("負債"),
+                    List.of(CarryoverAggregateLogicImplTest.createItem("音楽"))));
+
+        /* 準備 */
+        final CarryoverAggregateLogicImpl testTarget      = new CarryoverAggregateLogicImpl(
+            DailyTasksMessageSourceTestUtil.create());
+        final CarryoverAggregationModel   testAggregation = new CarryoverAggregationModel();
+        final CarryoverSummaryModel       expectedSummary = testTarget.aggregate(expectedIssues);
+
+        /* テスト対象の実行 */
+        testTarget.add(testAggregation, expectedIssues.get(0));
+        final CarryoverSummaryModel firstSummary = testTarget.toSummary(testAggregation);
+        testTarget.add(testAggregation, expectedIssues.get(1));
+        testTarget.add(testAggregation, expectedIssues.get(2));
+        final CarryoverSummaryModel testResult = testTarget.toSummary(testAggregation);
+        testTarget.add(testAggregation,
+            CarryoverAggregateLogicImplTest.createIssue(100, "2026-03-25", List.of("負債"), List.of()));
+
+        /* 検証の準備 */
+        final List<DailySummaryModel> firstDays         = firstSummary.getDays();
+        final boolean                 actualFirstEmpty  = firstDays.isEmpty();
+        final int                     actualFirstLatest = firstSummary.getLatestIssue();
+        final List<DailySummaryModel> actualDays        = testResult.getDays();
+        final List<DailySummaryModel> expectedDays      = expectedSummary.getDays();
+
+        @SuppressWarnings("null")
+        final List<String> actualDates = actualDays.stream().map(DailySummaryModel::getDate).toList();
+
+        @SuppressWarnings("null")
+        final List<String> expectedDates  = expectedDays.stream().map(DailySummaryModel::getDate).toList();
+        final int          actualLatest   = testResult.getLatestIssue();
+        final int          expectedLatest = expectedSummary.getLatestIssue();
+        final List<String> actualItems    = testResult.getItems();
+        final List<String> expectedItems  = expectedSummary.getItems();
+
+        /* 検証の実施 */
+        Assertions.assertTrue(actualFirstEmpty, "追跡を始める前の単位は日別 0 件になる必要があります");
+        Assertions.assertEquals(174, actualFirstLatest, "日付のない Issue の前の最大番号が一致しません");
+        Assertions.assertEquals(expectedDates, actualDates, "日付が一致しません");
+        Assertions.assertEquals(expectedLatest, actualLatest, "最新の Issue 番号が一致しません");
+        Assertions.assertEquals(expectedItems, actualItems, "項目名が一致しません");
+
+    }
+
+    /**
      * aggregate メソッドのテスト - 正常系:対象セクションが現れた日以降を日付順に集計する場合
      *
      * @since 0.1.0
@@ -96,7 +153,8 @@ public class CarryoverAggregateLogicImplTest {
                     CarryoverAggregateLogicImplTest.createItem("音楽"))),
             CarryoverAggregateLogicImplTest.createIssue(174, "2026-03-23", List.of(), List.of()),
             CarryoverAggregateLogicImplTest.createIssue(1, null, List.of("負債"), List.of()));
-        final CarryoverAggregateLogicImpl testTarget = new CarryoverAggregateLogicImpl(DailyTasksMessageSourceTestUtil.create());
+        final CarryoverAggregateLogicImpl testTarget = new CarryoverAggregateLogicImpl(
+            DailyTasksMessageSourceTestUtil.create());
 
         /* テスト対象の実行 */
         final CarryoverSummaryModel testResult = testTarget.aggregate(testIssues);
@@ -108,10 +166,10 @@ public class CarryoverAggregateLogicImplTest {
         final List<String>  actualDates       = days.stream().map(DailySummaryModel::getDate).toList();
         final List<Integer> actualCounts      = days.stream().map(day -> {
 
-            final ItemStatModel total = day.getTotal();
-            return total.getCount();
+                                                  final ItemStatModel total = day.getTotal();
+                                                  return total.getCount();
 
-        }).toList();
+                                              }).toList();
         final List<String>  actualItems       = testResult.getItems();
         final int           actualLatestIssue = testResult.getLatestIssue();
 
@@ -119,6 +177,34 @@ public class CarryoverAggregateLogicImplTest {
         Assertions.assertEquals(expectedDates, actualDates, "日付が一致しません");
         Assertions.assertEquals(expectedCounts, actualCounts, "件数が一致しません");
         Assertions.assertEquals(expectedItems, actualItems, "項目名が一致しません");
+        Assertions.assertEquals(expectedLatestIssue, actualLatestIssue, "最新の Issue 番号が一致しません");
+
+    }
+
+    /**
+     * aggregate メソッドのテスト - 正常系:集計サービスが一括の集計を返す場合
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testAggregate_normalService() {
+
+        /* 期待値の定義 */
+        final int expectedLatestIssue = 175;
+
+        /* 準備 */
+        final CarryoverIssueModel           testIssue  = CarryoverAggregateLogicImplTest.createIssue(175, "2026-03-24",
+            List.of("負債"), List.of(CarryoverAggregateLogicImplTest.createItem("国語")));
+        final CarryoverAggregateServiceImpl testTarget = new CarryoverAggregateServiceImpl(
+            new CarryoverAggregateLogicImpl(DailyTasksMessageSourceTestUtil.create()), null);
+
+        /* テスト対象の実行 */
+        final CarryoverSummaryModel testResult = testTarget.aggregate(List.of(testIssue));
+
+        /* 検証の準備 */
+        final int actualLatestIssue = testResult.getLatestIssue();
+
+        /* 検証の実施 */
         Assertions.assertEquals(expectedLatestIssue, actualLatestIssue, "最新の Issue 番号が一致しません");
 
     }
@@ -135,103 +221,20 @@ public class CarryoverAggregateLogicImplTest {
         final int expectedLatestIssue = 0;
 
         /* 準備 */
-        final CarryoverAggregateLogicImpl testTarget = new CarryoverAggregateLogicImpl(DailyTasksMessageSourceTestUtil.create());
+        final CarryoverAggregateLogicImpl testTarget
+            = new CarryoverAggregateLogicImpl(DailyTasksMessageSourceTestUtil.create());
 
         /* テスト対象の実行 */
         final CarryoverSummaryModel testResult = testTarget.aggregate(List.of());
 
         /* 検証の準備 */
-        final int     actualLatestIssue = testResult.getLatestIssue();
-        final List<DailySummaryModel> days             = testResult.getDays();
-        final boolean                  actualDaysEmpty = days.isEmpty();
+        final int                     actualLatestIssue = testResult.getLatestIssue();
+        final List<DailySummaryModel> days              = testResult.getDays();
+        final boolean                 actualDaysEmpty   = days.isEmpty();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedLatestIssue, actualLatestIssue, "最新の Issue 番号が一致しません");
         Assertions.assertTrue(actualDaysEmpty, "日別の集計は空になる必要があります");
-
-    }
-
-    /**
-     * add メソッドのテスト - 正常系:2 単位に分けて足すと一括の集計と一致する場合
-     *
-     * @since 0.1.0
-     */
-    @Test
-    public void testAdd_normalTwoBatches() {
-
-        /* 期待値の定義 */
-        final List<CarryoverIssueModel> expectedIssues = List.of(
-            CarryoverAggregateLogicImplTest.createIssue(174, "2026-03-23", List.of(), List.of()),
-            CarryoverAggregateLogicImplTest.createIssue(175, "2026-03-24", List.of("負債"),
-                List.of(CarryoverAggregateLogicImplTest.createItem("国語"))),
-            CarryoverAggregateLogicImplTest.createIssue(176, null, List.of("負債"),
-                List.of(CarryoverAggregateLogicImplTest.createItem("音楽"))));
-
-        /* 準備 */
-        final CarryoverAggregateLogicImpl testTarget     = new CarryoverAggregateLogicImpl(DailyTasksMessageSourceTestUtil.create());
-        final CarryoverAggregationModel   testAggregation = new CarryoverAggregationModel();
-        final CarryoverSummaryModel       expectedSummary = testTarget.aggregate(expectedIssues);
-
-        /* テスト対象の実行 */
-        testTarget.add(testAggregation, expectedIssues.get(0));
-        final CarryoverSummaryModel firstSummary = testTarget.toSummary(testAggregation);
-        testTarget.add(testAggregation, expectedIssues.get(1));
-        testTarget.add(testAggregation, expectedIssues.get(2));
-        final CarryoverSummaryModel testResult = testTarget.toSummary(testAggregation);
-        testTarget.add(testAggregation,
-            CarryoverAggregateLogicImplTest.createIssue(100, "2026-03-25", List.of("負債"), List.of()));
-
-        /* 検証の準備 */
-        final List<DailySummaryModel> firstDays       = firstSummary.getDays();
-        final boolean                 actualFirstEmpty = firstDays.isEmpty();
-        final int                     actualFirstLatest = firstSummary.getLatestIssue();
-        final List<DailySummaryModel> actualDays       = testResult.getDays();
-        final List<DailySummaryModel> expectedDays     = expectedSummary.getDays();
-
-        @SuppressWarnings("null")
-        final List<String>            actualDates      = actualDays.stream().map(DailySummaryModel::getDate).toList();
-
-        @SuppressWarnings("null")
-        final List<String>            expectedDates    = expectedDays.stream().map(DailySummaryModel::getDate).toList();
-        final int                     actualLatest     = testResult.getLatestIssue();
-        final int                     expectedLatest   = expectedSummary.getLatestIssue();
-        final List<String>            actualItems      = testResult.getItems();
-        final List<String>            expectedItems    = expectedSummary.getItems();
-
-        /* 検証の実施 */
-        Assertions.assertTrue(actualFirstEmpty, "追跡を始める前の単位は日別 0 件になる必要があります");
-        Assertions.assertEquals(174, actualFirstLatest, "日付のない Issue の前の最大番号が一致しません");
-        Assertions.assertEquals(expectedDates, actualDates, "日付が一致しません");
-        Assertions.assertEquals(expectedLatest, actualLatest, "最新の Issue 番号が一致しません");
-        Assertions.assertEquals(expectedItems, actualItems, "項目名が一致しません");
-
-    }
-
-    /**
-     * aggregate メソッドのテスト - 正常系:集計サービスが一括の集計を返す場合
-     *
-     * @since 0.1.0
-     */
-    @Test
-    public void testAggregate_normalService() {
-
-        /* 期待値の定義 */
-        final int expectedLatestIssue = 175;
-
-        /* 準備 */
-        final CarryoverIssueModel testIssue = CarryoverAggregateLogicImplTest.createIssue(175, "2026-03-24",
-            List.of("負債"), List.of(CarryoverAggregateLogicImplTest.createItem("国語")));
-        final CarryoverAggregateServiceImpl testTarget = new CarryoverAggregateServiceImpl(
-            new CarryoverAggregateLogicImpl(DailyTasksMessageSourceTestUtil.create()), null);
-
-        /* テスト対象の実行 */
-        final CarryoverSummaryModel testResult = testTarget.aggregate(List.of(testIssue));
-
-        /* 検証の準備 */
-        final int actualLatestIssue = testResult.getLatestIssue();
-
-        /* 検証の実施 */
-        Assertions.assertEquals(expectedLatestIssue, actualLatestIssue, "最新の Issue 番号が一致しません");
 
     }
 

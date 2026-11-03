@@ -141,7 +141,7 @@ public class DefaultMinutesLogicImplTest {
         final Path   expectedConfigFile = Path.of("config", "default-minutes.json");
 
         /* 準備 */
-        final DefaultMinutesDto      testMinutes        = new DefaultMinutesDto();
+        final DefaultMinutesDto testMinutes = new DefaultMinutesDto();
         testMinutes.add("音楽", 15.0);
         final StubDefaultMinutesDao   testDefaultMinutes = new StubDefaultMinutesDao(testMinutes);
         final DefaultMinutesLogicImpl testTarget         = DefaultMinutesLogicImplTest.createTarget(testDefaultMinutes);

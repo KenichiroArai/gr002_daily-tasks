@@ -504,7 +504,7 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
             // 解析し直す
             final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31009);
             final String reason  = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31011);
-            CarryoverCollectServiceImpl.LOGGER.debug(message, Integer.valueOf(issueNumber), reason);
+            CarryoverCollectServiceImpl.LOGGER.debug(message, issueNumber, reason);
             return result;
 
         }
@@ -517,7 +517,7 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
             // 解析し直す
             final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31016);
             final String reason  = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31012);
-            CarryoverCollectServiceImpl.LOGGER.debug(message, Integer.valueOf(issueNumber), reason);
+            CarryoverCollectServiceImpl.LOGGER.debug(message, issueNumber, reason);
             return result;
 
         }
@@ -530,7 +530,7 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
             // 更新日時に関係なく解析し直す
             final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31017);
             final String reason  = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31013);
-            CarryoverCollectServiceImpl.LOGGER.debug(message, Integer.valueOf(issueNumber), reason);
+            CarryoverCollectServiceImpl.LOGGER.debug(message, issueNumber, reason);
             return result;
 
         }
@@ -546,14 +546,14 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
             // 解析し直す
             final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31018);
             final String reason  = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31014);
-            CarryoverCollectServiceImpl.LOGGER.debug(message, Integer.valueOf(issueNumber), reason);
+            CarryoverCollectServiceImpl.LOGGER.debug(message, issueNumber, reason);
             return result;
 
         }
 
         final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31010);
         final String reason  = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31015);
-        CarryoverCollectServiceImpl.LOGGER.debug(message, Integer.valueOf(issueNumber), reason);
+        CarryoverCollectServiceImpl.LOGGER.debug(message, issueNumber, reason);
         return result;
 
     }

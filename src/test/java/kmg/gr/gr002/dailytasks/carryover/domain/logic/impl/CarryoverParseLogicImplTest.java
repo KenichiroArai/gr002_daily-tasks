@@ -11,9 +11,9 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverItemModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DefaultMinutesModel;
 import kmg.gr.gr002.dailytasks.carryover.application.types.MinutesSourceTypes;
+import kmg.gr.gr002.dailytasks.testutil.DailyTasksMessageSourceTestUtil;
 import kmg.gr.gr002.dailytasks.testutil.LogAssertions;
 import kmg.gr.gr002.dailytasks.testutil.LogCapture;
-import kmg.gr.gr002.dailytasks.testutil.DailyTasksMessageSourceTestUtil;
 import kmg.gr.gr002.dailytasks.testutil.ReflectionTestUtil;
 
 /**
@@ -36,22 +36,6 @@ public class CarryoverParseLogicImplTest {
      * @since 0.1.0
      */
     private static final DefaultMinutesModel DEFAULT_MINUTES = CarryoverParseLogicImplTest.defaultMinutes();
-
-    /**
-     * テスト用の標準時間を作る<br>
-     *
-     * @since 0.1.0
-     *
-     * @return 項目ごとの標準時間
-     */
-    private static DefaultMinutesModel defaultMinutes() {
-
-        final DefaultMinutesModel result = new DefaultMinutesModel();
-        result.add("国語", 15.0);
-        result.add("マラソン日記", 0.0);
-        return result;
-
-    }
 
     /**
      * private の addSection メソッドを呼び出す<br>
@@ -104,6 +88,22 @@ public class CarryoverParseLogicImplTest {
 
         final CarryoverParseLogicImpl result = new CarryoverParseLogicImpl(DailyTasksMessageSourceTestUtil.create());
         result.initialize(CarryoverParseLogicImplTest.DEFAULT_MINUTES);
+        return result;
+
+    }
+
+    /**
+     * テスト用の標準時間を作る<br>
+     *
+     * @since 0.1.0
+     *
+     * @return 項目ごとの標準時間
+     */
+    private static DefaultMinutesModel defaultMinutes() {
+
+        final DefaultMinutesModel result = new DefaultMinutesModel();
+        result.add("国語", 15.0);
+        result.add("マラソン日記", 0.0);
         return result;
 
     }
@@ -554,15 +554,15 @@ public class CarryoverParseLogicImplTest {
             testResult = testTarget.parse(testIssue);
 
             /* 検証の準備 */
-            final String[]     actualMsgs          = testLog.getMessages();
-            final String       actualDate          = testResult.getDate();
-            final List<String> actualSections      = testResult.getSections();
-            final Integer      actualDeclaredCount = testResult.getDeclaredCount();
-            final int          actualCount         = testResult.getCount();
-            final double       actualMinutes       = testResult.getMinutes();
+            final String[]                 actualMsgs          = testLog.getMessages();
+            final String                   actualDate          = testResult.getDate();
+            final List<String>             actualSections      = testResult.getSections();
+            final Integer                  actualDeclaredCount = testResult.getDeclaredCount();
+            final int                      actualCount         = testResult.getCount();
+            final double                   actualMinutes       = testResult.getMinutes();
             final List<CarryoverItemModel> items               = testResult.getItems();
             final CarryoverItemModel       secondItem          = items.get(1);
-            final boolean                   actualSecondChecked = secondItem.isChecked();
+            final boolean                  actualSecondChecked = secondItem.isChecked();
 
             /* 検証の実施 */
             Assertions.assertEquals(expectedDate, actualDate, "日付が一致しません");

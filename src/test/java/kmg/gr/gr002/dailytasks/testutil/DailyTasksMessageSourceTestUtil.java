@@ -10,8 +10,7 @@ import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessag
 /**
  * テスト用のメッセージリソースの生成<br>
  * <p>
- * Spring Boot を起動せずに、本番と同じ messages.properties と messages-log.properties を読む
- * {@link DailyTasksMessageSource} を作る。
+ * Spring Boot を起動せずに、本番と同じ messages.properties と messages-log.properties を読む {@link DailyTasksMessageSource} を作る。
  * </p>
  *
  * @author KenichiroArai

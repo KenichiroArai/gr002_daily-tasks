@@ -25,6 +25,26 @@ import kmg.gr.gr002.dailytasks.carryover.domain.dto.ItemStatsDto;
 public class DailySummaryJsonDtoTest {
 
     /**
+     * 日別の集計の DTO を作成する<br>
+     *
+     * @since 0.1.0
+     *
+     * @return 日別の集計の DTO
+     */
+    private static DailySummaryDto createDayDto() {
+
+        final ItemStatDto  total         = new ItemStatDto(2, 26.5, 1, 11.5);
+        final ItemStatsDto byItem        = new ItemStatsDto();
+        final ItemStatsDto byOriginMonth = new ItemStatsDto();
+        byItem.add("音楽", new ItemStatDto(1, 11.5, 1, 11.5));
+        byItem.add("国語", new ItemStatDto(1, 15.0, 0, 0.0));
+        byOriginMonth.add("2026-08", new ItemStatDto(1, 11.5, 1, 11.5));
+        final DailySummaryDto result = new DailySummaryDto("2026-10-06", 371, 2, total, byItem, byOriginMonth);
+        return result;
+
+    }
+
+    /**
      * テスト対象を作成する<br>
      *
      * @since 0.1.0
@@ -38,28 +58,8 @@ public class DailySummaryJsonDtoTest {
         byItem.add("英語", new ItemStatJsonDto(1, 30, 0, 0));
         byItem.add("国語", new ItemStatJsonDto(1, 15, 1, 15));
         byOriginMonth.add("2026-03", new ItemStatJsonDto(2, 45, 1, 15));
-        final DailySummaryJsonDto result = new DailySummaryJsonDto("2026-03-24", 175, 2,
-            new ItemStatJsonDto(2, 45, 1, 15), byItem, byOriginMonth);
-        return result;
-
-    }
-
-    /**
-     * 日別の集計の DTO を作成する<br>
-     *
-     * @since 0.1.0
-     *
-     * @return 日別の集計の DTO
-     */
-    private static DailySummaryDto createDayDto() {
-
-        final ItemStatDto     total         = new ItemStatDto(2, 26.5, 1, 11.5);
-        final ItemStatsDto    byItem        = new ItemStatsDto();
-        final ItemStatsDto    byOriginMonth = new ItemStatsDto();
-        byItem.add("音楽", new ItemStatDto(1, 11.5, 1, 11.5));
-        byItem.add("国語", new ItemStatDto(1, 15.0, 0, 0.0));
-        byOriginMonth.add("2026-08", new ItemStatDto(1, 11.5, 1, 11.5));
-        final DailySummaryDto result = new DailySummaryDto("2026-10-06", 371, 2, total, byItem, byOriginMonth);
+        final DailySummaryJsonDto result
+            = new DailySummaryJsonDto("2026-03-24", 175, 2, new ItemStatJsonDto(2, 45, 1, 15), byItem, byOriginMonth);
         return result;
 
     }
@@ -108,8 +108,8 @@ public class DailySummaryJsonDtoTest {
         final DailySummaryJsonDto testResult = new DailySummaryJsonDto(testDto);
 
         /* 検証の準備 */
-        final ItemStatsJsonDto byOriginMonth       = testResult.getByOriginMonth();
-        final ItemStatJsonDto  actualStat          = byOriginMonth.find("2026-08");
+        final ItemStatsJsonDto byOriginMonth        = testResult.getByOriginMonth();
+        final ItemStatJsonDto  actualStat           = byOriginMonth.find("2026-08");
         final double           actualCheckedMinutes = actualStat.getCheckedMinutes();
 
         /* 検証の実施 */
@@ -139,6 +139,35 @@ public class DailySummaryJsonDtoTest {
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedDeclaredCount, actualDeclaredCount, "残数が一致しません");
+
+    }
+
+    /**
+     * JSON オブジェクトとしての集計を確認する<br>
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testGetByItem_normalJsonObject() {
+
+        /* 期待値の定義 */
+        final int expectedCount = 1;
+
+        /* 準備 */
+        final DailySummaryJsonDto testTarget = DailySummaryJsonDtoTest.createTarget();
+
+        /* テスト対象の実行 */
+        final ItemStatsJsonDto byItem     = testTarget.getByItem();
+        final boolean          testResult = byItem.isEmpty();
+
+        /* 検証の準備 */
+        final Map<String, ItemStatJsonDto> stats       = byItem.toJsonObject();
+        final ItemStatJsonDto              english     = stats.get("英語");
+        final int                          actualCount = english.getCount();
+
+        /* 検証の実施 */
+        Assertions.assertFalse(testResult, "項目ごとの集計は空ではない必要があります");
+        Assertions.assertEquals(expectedCount, actualCount, "項目ごとの件数が一致しません");
 
     }
 
@@ -289,35 +318,6 @@ public class DailySummaryJsonDtoTest {
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedTotal, actualTotal, "全体の集計が一致しません");
-
-    }
-
-    /**
-     * JSON オブジェクトとしての集計を確認する<br>
-     *
-     * @since 0.1.0
-     */
-    @Test
-    public void testGetByItem_normalJsonObject() {
-
-        /* 期待値の定義 */
-        final int expectedCount = 1;
-
-        /* 準備 */
-        final DailySummaryJsonDto testTarget = DailySummaryJsonDtoTest.createTarget();
-
-        /* テスト対象の実行 */
-        final ItemStatsJsonDto byItem = testTarget.getByItem();
-        final boolean testResult = byItem.isEmpty();
-
-        /* 検証の準備 */
-        final Map<String, ItemStatJsonDto> stats = byItem.toJsonObject();
-        final ItemStatJsonDto english = stats.get("英語");
-        final int actualCount = english.getCount();
-
-        /* 検証の実施 */
-        Assertions.assertFalse(testResult, "項目ごとの集計は空ではない必要があります");
-        Assertions.assertEquals(expectedCount, actualCount, "項目ごとの件数が一致しません");
 
     }
 

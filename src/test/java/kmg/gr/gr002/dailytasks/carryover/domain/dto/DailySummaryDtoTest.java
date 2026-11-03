@@ -33,9 +33,34 @@ public class DailySummaryDtoTest {
         byItem.add("英語", new ItemStatDto(1, 30, 0, 0));
         byItem.add("国語", new ItemStatDto(1, 15, 1, 15));
         byOriginMonth.add("2026-03", new ItemStatDto(2, 45, 1, 15));
-        final DailySummaryDto result = new DailySummaryDto("2026-03-24", 175, 2, new ItemStatDto(2, 45, 1, 15), byItem,
-            byOriginMonth);
+        final DailySummaryDto result
+            = new DailySummaryDto("2026-03-24", 175, 2, new ItemStatDto(2, 45, 1, 15), byItem, byOriginMonth);
         return result;
+
+    }
+
+    /**
+     * 項目ごとの集計が空でないことを確認する<br>
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testGetByItem_normalNotEmpty() {
+
+        /* 期待値の定義 */
+
+        /* 準備 */
+        final DailySummaryDto testTarget = DailySummaryDtoTest.createTarget();
+
+        /* テスト対象の実行 */
+        final ItemStatsDto byItem     = testTarget.getByItem();
+        final boolean      testResult = byItem.isEmpty();
+
+        /* 検証の準備 */
+        final boolean actualEmpty = testResult;
+
+        /* 検証の実施 */
+        Assertions.assertFalse(actualEmpty, "項目ごとの集計は空ではない必要があります");
 
     }
 
@@ -186,31 +211,6 @@ public class DailySummaryDtoTest {
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedTotal, actualTotal, "全体の集計が一致しません");
-
-    }
-
-    /**
-     * 項目ごとの集計が空でないことを確認する<br>
-     *
-     * @since 0.1.0
-     */
-    @Test
-    public void testGetByItem_normalNotEmpty() {
-
-        /* 期待値の定義 */
-
-        /* 準備 */
-        final DailySummaryDto testTarget = DailySummaryDtoTest.createTarget();
-
-        /* テスト対象の実行 */
-        final ItemStatsDto byItem = testTarget.getByItem();
-        final boolean testResult = byItem.isEmpty();
-
-        /* 検証の準備 */
-        final boolean actualEmpty = testResult;
-
-        /* 検証の実施 */
-        Assertions.assertFalse(actualEmpty, "項目ごとの集計は空ではない必要があります");
 
     }
 

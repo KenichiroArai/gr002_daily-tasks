@@ -24,9 +24,9 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueRefMode
 import kmg.gr.gr002.dailytasks.carryover.application.model.DefaultMinutesModel;
 import kmg.gr.gr002.dailytasks.carryover.domain.logic.impl.CarryoverParseLogicImpl;
 import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel;
+import kmg.gr.gr002.dailytasks.testutil.DailyTasksMessageSourceTestUtil;
 import kmg.gr.gr002.dailytasks.testutil.LogAssertions;
 import kmg.gr.gr002.dailytasks.testutil.LogCapture;
-import kmg.gr.gr002.dailytasks.testutil.DailyTasksMessageSourceTestUtil;
 import kmg.gr.gr002.dailytasks.testutil.ReflectionTestUtil;
 
 /**
@@ -146,20 +146,6 @@ public class CarryoverCollectServiceImplTest {
         }
 
         /**
-         * 保存済みの解析結果を登録する<br>
-         *
-         * @since 0.1.0
-         *
-         * @param issue
-         *              解析結果
-         */
-        private void store(final CarryoverIssueModel issue) {
-
-            this.storedIssues.put(issue.getNumber(), issue);
-
-        }
-
-        /**
          * 集計は保存しない<br>
          *
          * @since 0.1.0
@@ -171,6 +157,20 @@ public class CarryoverCollectServiceImplTest {
         public void saveSummary(final CarryoverSummaryModel summary) {
 
             // 収集サービスは集計を保存しない
+
+        }
+
+        /**
+         * 保存済みの解析結果を登録する<br>
+         *
+         * @since 0.1.0
+         *
+         * @param issue
+         *              解析結果
+         */
+        private void store(final CarryoverIssueModel issue) {
+
+            this.storedIssues.put(issue.getNumber(), issue);
 
         }
 
@@ -373,21 +373,6 @@ public class CarryoverCollectServiceImplTest {
     private static final DefaultMinutesModel DEFAULT_MINUTES = CarryoverCollectServiceImplTest.defaultMinutes();
 
     /**
-     * テスト用の標準時間を作る<br>
-     *
-     * @since 0.1.0
-     *
-     * @return 項目ごとの標準時間
-     */
-    private static DefaultMinutesModel defaultMinutes() {
-
-        final DefaultMinutesModel result = new DefaultMinutesModel();
-        result.add("国語", 15.0);
-        return result;
-
-    }
-
-    /**
      * テスト用の Issue #1（時間表記なし、更新日時 u1）
      *
      * @since 0.1.0
@@ -426,8 +411,7 @@ public class CarryoverCollectServiceImplTest {
             = IntStream.rangeClosed(1, count)
                 .mapToObj(number -> new DailyTaskIssueModel(number,
                     String.format("2026年03月%02d日のタスク", Integer.valueOf(number)), "closed",
-                    KmgString.concat("u", String.valueOf(number)),
-                    "## 負債\n- [ ] 英語2026/03/01（残り時間：10分）"))
+                    KmgString.concat("u", String.valueOf(number)), "## 負債\n- [ ] 英語2026/03/01（残り時間：10分）"))
                 .toList();
         return result;
 
@@ -462,9 +446,24 @@ public class CarryoverCollectServiceImplTest {
     private static CarryoverCollectServiceImpl createTarget(final DailyTaskIssueLogic issueLogic,
         final CarryoverDataLogic dataLogic) {
 
-        final CarryoverCollectServiceImpl result = new CarryoverCollectServiceImpl(dataLogic,
-            CarryoverCollectServiceImplTest.PARSE_LOGIC, issueLogic, new StubDefaultMinutesLogic(),
-            DailyTasksMessageSourceTestUtil.create());
+        final CarryoverCollectServiceImpl result
+            = new CarryoverCollectServiceImpl(dataLogic, CarryoverCollectServiceImplTest.PARSE_LOGIC, issueLogic,
+                new StubDefaultMinutesLogic(), DailyTasksMessageSourceTestUtil.create());
+        return result;
+
+    }
+
+    /**
+     * テスト用の標準時間を作る<br>
+     *
+     * @since 0.1.0
+     *
+     * @return 項目ごとの標準時間
+     */
+    private static DefaultMinutesModel defaultMinutes() {
+
+        final DefaultMinutesModel result = new DefaultMinutesModel();
+        result.add("国語", 15.0);
         return result;
 
     }
@@ -599,15 +598,14 @@ public class CarryoverCollectServiceImplTest {
         final int expectedRemote = 2;
 
         /* 準備 */
-        final DailyTaskIssueModel testNewer = new DailyTaskIssueModel(2, "2026年03月25日のタスク", "open", "u2",
-            "## 負債\n- [ ] 国語2026/03/20");
+        final DailyTaskIssueModel                                    testNewer     = new DailyTaskIssueModel(2,
+            "2026年03月25日のタスク", "open", "u2", "## 負債\n- [ ] 国語2026/03/20");
         final CarryoverCollectServiceImplTest.StubCarryoverDataLogic testDataLogic
-            = new CarryoverCollectServiceImplTest.StubCarryoverDataLogic();
+                                                                                   = new CarryoverCollectServiceImplTest.StubCarryoverDataLogic();
         testDataLogic.store(CarryoverCollectServiceImplTest.parse(CarryoverCollectServiceImplTest.ISSUE1));
-        final CarryoverCollectServiceImpl testTarget = CarryoverCollectServiceImplTest.createTarget(
-            new CarryoverCollectServiceImplTest.StubDailyTaskIssueLogic(
-                List.of(CarryoverCollectServiceImplTest.ISSUE1, testNewer)),
-            testDataLogic);
+        final CarryoverCollectServiceImpl testTarget
+            = CarryoverCollectServiceImplTest.createTarget(new CarryoverCollectServiceImplTest.StubDailyTaskIssueLogic(
+                List.of(CarryoverCollectServiceImplTest.ISSUE1, testNewer)), testDataLogic);
 
         /* テスト対象の実行 */
         testTarget.initialize(new CarryoverSourceModel(CarryoverCollectServiceImplTest.PROPERTIES), 1, false);
@@ -615,11 +613,11 @@ public class CarryoverCollectServiceImplTest {
         final int testResult = testTarget.analyze();
 
         /* 検証の準備 */
-        final int                    actualCount  = testResult;
-        final int                    actualRemote = testTarget.getRemoteCount();
-        final CarryoverIssuesModel   actualIssues = testTarget.getIssues();
-        final CarryoverIssueModel    kept         = actualIssues.find(1);
-        final boolean                actualKept   = kept != null;
+        final int                  actualCount  = testResult;
+        final int                  actualRemote = testTarget.getRemoteCount();
+        final CarryoverIssuesModel actualIssues = testTarget.getIssues();
+        final CarryoverIssueModel  kept         = actualIssues.find(1);
+        final boolean              actualKept   = kept != null;
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedCount, actualCount, "解析件数が一致しません");
@@ -640,29 +638,28 @@ public class CarryoverCollectServiceImplTest {
     public void testCollectBatch_normalReuseStored() throws Exception {
 
         /* 期待値の定義 */
-        final int           expectedSaved  = 0;
-        final List<Integer> expectedBatch  = List.of(1);
+        final int           expectedSaved = 0;
+        final List<Integer> expectedBatch = List.of(1);
 
         /* 準備 */
         final CarryoverCollectServiceImplTest.StubCarryoverDataLogic testDataLogic
             = new CarryoverCollectServiceImplTest.StubCarryoverDataLogic();
         testDataLogic.store(CarryoverCollectServiceImplTest.parse(CarryoverCollectServiceImplTest.ISSUE1));
-        final CarryoverCollectServiceImpl testTarget = CarryoverCollectServiceImplTest.createTarget(
-            new CarryoverCollectServiceImplTest.StubDailyTaskIssueLogic(
-                List.of(CarryoverCollectServiceImplTest.ISSUE1)),
-            testDataLogic);
+        final CarryoverCollectServiceImpl testTarget
+            = CarryoverCollectServiceImplTest.createTarget(new CarryoverCollectServiceImplTest.StubDailyTaskIssueLogic(
+                List.of(CarryoverCollectServiceImplTest.ISSUE1)), testDataLogic);
         testTarget.initialize(new CarryoverSourceModel(CarryoverCollectServiceImplTest.PROPERTIES), 10, false);
         ReflectionTestUtil.setField(testTarget, "recentFrom", Integer.valueOf(2));
-        final DailyTaskIssueRefModel testRef = new DailyTaskIssueRefModel(1, "2026年03月24日のタスク", "closed", "u1",
-            "2026-03-24");
+        final DailyTaskIssueRefModel testRef
+            = new DailyTaskIssueRefModel(1, "2026年03月24日のタスク", "closed", "u1", "2026-03-24");
 
         /* テスト対象の実行 */
         final int testResult = testTarget.collectBatch(List.of(testRef));
 
         /* 検証の準備 */
-        final int                    actualSaved = testResult;
-        final List<CarryoverIssueModel> batch    = testTarget.getBatchIssues();
-        final List<Integer>          actualBatch = batch.stream().map(CarryoverIssueModel::getNumber).toList();
+        final int                       actualSaved = testResult;
+        final List<CarryoverIssueModel> batch       = testTarget.getBatchIssues();
+        final List<Integer>             actualBatch = batch.stream().map(CarryoverIssueModel::getNumber).toList();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedSaved, actualSaved, "再解析件数は 0 である必要があります");

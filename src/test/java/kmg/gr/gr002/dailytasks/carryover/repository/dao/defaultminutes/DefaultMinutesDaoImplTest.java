@@ -11,10 +11,9 @@ import org.junit.jupiter.api.io.TempDir;
 import kmg.core.infrastructure.type.KmgString;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DefaultMinutesModel;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.DefaultMinutesDto;
-
+import kmg.gr.gr002.dailytasks.testutil.DailyTasksMessageSourceTestUtil;
 import kmg.gr.gr002.dailytasks.testutil.LogAssertions;
 import kmg.gr.gr002.dailytasks.testutil.LogCapture;
-import kmg.gr.gr002.dailytasks.testutil.DailyTasksMessageSourceTestUtil;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -39,7 +38,8 @@ public class DefaultMinutesDaoImplTest {
      */
     private static DefaultMinutesDaoImpl createTarget() {
 
-        final DefaultMinutesDaoImpl result = new DefaultMinutesDaoImpl(new JsonMapper(), DailyTasksMessageSourceTestUtil.create());
+        final DefaultMinutesDaoImpl result
+            = new DefaultMinutesDaoImpl(new JsonMapper(), DailyTasksMessageSourceTestUtil.create());
         return result;
 
     }
@@ -106,8 +106,8 @@ public class DefaultMinutesDaoImplTest {
         final DefaultMinutesDto testResult = testTarget.load();
 
         /* 検証の準備 */
-        final DefaultMinutesModel minutes = testResult.toDefaultMinutesModel();
-        final Double actualMinutes = minutes.find("高校数学");
+        final DefaultMinutesModel minutes       = testResult.toDefaultMinutesModel();
+        final Double              actualMinutes = minutes.find("高校数学");
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedMinutes, actualMinutes, "標準時間が一致しません");
@@ -141,9 +141,9 @@ public class DefaultMinutesDaoImplTest {
             final DefaultMinutesDto testResult = testTarget.load();
 
             /* 検証の準備 */
-            final String[] actualMsgs    = testLog.getMessages();
-            final DefaultMinutesModel minutes = testResult.toDefaultMinutesModel();
-            final Double actualMinutes = minutes.find("国語");
+            final String[]            actualMsgs    = testLog.getMessages();
+            final DefaultMinutesModel minutes       = testResult.toDefaultMinutesModel();
+            final Double              actualMinutes = minutes.find("国語");
 
             /* 検証の実施 */
             Assertions.assertNull(actualMinutes, "標準時間は未登録になる必要があります");

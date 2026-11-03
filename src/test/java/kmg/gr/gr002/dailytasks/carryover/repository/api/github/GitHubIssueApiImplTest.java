@@ -17,15 +17,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.Level;
-
 import kmg.core.infrastructure.type.KmgString;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubIssueDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubIssueRefDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubSettingsDto;
 import kmg.gr.gr002.dailytasks.carryover.repository.types.GitHubApiUrlTypes;
+import kmg.gr.gr002.dailytasks.testutil.DailyTasksMessageSourceTestUtil;
 import kmg.gr.gr002.dailytasks.testutil.LogAssertions;
 import kmg.gr.gr002.dailytasks.testutil.LogCapture;
-import kmg.gr.gr002.dailytasks.testutil.DailyTasksMessageSourceTestUtil;
 import kmg.gr.gr002.dailytasks.testutil.ReflectionTestUtil;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
@@ -161,7 +160,8 @@ public class GitHubIssueApiImplTest {
      */
     private static boolean hasToken(final GitHubSettingsDto settings) throws Exception {
 
-        final GitHubIssueApiImpl target = new GitHubIssueApiImpl(new JsonMapper(), DailyTasksMessageSourceTestUtil.create());
+        final GitHubIssueApiImpl target
+            = new GitHubIssueApiImpl(new JsonMapper(), DailyTasksMessageSourceTestUtil.create());
         target.initialize(settings);
         final boolean result = ReflectionTestUtil.<Boolean>invoke(target, "hasToken", new Class<?>[] {});
         return result;
@@ -315,9 +315,9 @@ public class GitHubIssueApiImplTest {
             final List<GitHubIssueDto> testResult = testTarget.fetchAllIssues();
 
             /* 検証の準備 */
-            final int actualSize         = testResult.size();
+            final int               actualSize         = testResult.size();
             final List<HttpRequest> requests           = testHttpClient.getRequests();
-            final int                actualRequestCount = requests.size();
+            final int               actualRequestCount = requests.size();
 
             /* 検証の実施 */
             Assertions.assertEquals(expectedSize, actualSize, "Issue の件数が一致しません");
@@ -328,7 +328,7 @@ public class GitHubIssueApiImplTest {
     }
 
     /**
-     * fetchAllIssues メソッドのテスト - 正常系:1 ページでプルリクエストを除外する場合
+     * fetchAllIssues メソッドのテスト - 正常系:レート制限の残りが十分な場合は警告しない
      *
      * @since 0.1.0
      *
@@ -336,33 +336,30 @@ public class GitHubIssueApiImplTest {
      *                     入出力エラーが発生した場合
      */
     @Test
-    public void testFetchAllIssues_normalSinglePageWithoutPullRequest() throws IOException {
+    public void testFetchAllIssues_normalRateLimitOk() throws IOException {
 
         /* 期待値の定義 */
-        final List<Integer> expectedNumbers = List.of(1);
-        final String[]      expectedMsgs    = {
-            "[Gr002Log51000] Issue を 1 件取得しました（1 ページ）",
+        final String[] expectedMsgs = {
+            "[Gr002Log51002] レート制限: remaining=50、reset=999", "[Gr002Log51001] Issue ページを取得しました: ページ=1、応答=0 件、累積=0 件",
+            "[Gr002Log51000] Issue を 0 件取得しました（1 ページ）",
         };
 
         /* 準備 */
         try (StubHttpClient testHttpClient = new StubHttpClient();
-            LogCapture testLog = new LogCapture(GitHubIssueApiImpl.class)) {
+            LogCapture testLog = new LogCapture(GitHubIssueApiImpl.class, Level.DEBUG)) {
 
-            testHttpClient.addResponse(200, KmgString.concat("[", GitHubIssueApiImplTest.issueJson(1),
-                ",{\"number\":2,\"pull_request\":{}}]"));
+            testHttpClient.addResponse(200, "[]",
+                Map.of("X-RateLimit-Remaining", List.of("50"), "X-RateLimit-Reset", List.of("999")));
             final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
             testTarget.initialize(GitHubIssueApiImplTest.createSettings(null));
 
             /* テスト対象の実行 */
-            final List<GitHubIssueDto> testResult = testTarget.fetchAllIssues();
+            testTarget.fetchAllIssues();
 
             /* 検証の準備 */
-            final String[]      actualMsgs    = testLog.getMessages();
-            @SuppressWarnings("null")
-            final List<Integer> actualNumbers = testResult.stream().map(GitHubIssueDto::getNumber).toList();
+            final String[] actualMsgs = testLog.getMessages();
 
             /* 検証の実施 */
-            Assertions.assertEquals(expectedNumbers, actualNumbers, "Issue 番号が一致しません");
             LogAssertions.assertMessages(expectedMsgs, actualMsgs);
 
         }
@@ -390,8 +387,8 @@ public class GitHubIssueApiImplTest {
         try (StubHttpClient testHttpClient = new StubHttpClient();
             LogCapture testLog = new LogCapture(GitHubIssueApiImpl.class, Level.DEBUG)) {
 
-            testHttpClient.addResponse(200, "[]", Map.of("X-RateLimit-Remaining", List.of("5"), "X-RateLimit-Reset",
-                List.of("123")));
+            testHttpClient.addResponse(200, "[]",
+                Map.of("X-RateLimit-Remaining", List.of("5"), "X-RateLimit-Reset", List.of("123")));
             final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
             testTarget.initialize(GitHubIssueApiImplTest.createSettings(null));
 
@@ -402,6 +399,48 @@ public class GitHubIssueApiImplTest {
             final String[] actualMsgs = testLog.getMessages();
 
             /* 検証の実施 */
+            LogAssertions.assertMessages(expectedMsgs, actualMsgs);
+
+        }
+
+    }
+
+    /**
+     * fetchAllIssues メソッドのテスト - 正常系:1 ページでプルリクエストを除外する場合
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     入出力エラーが発生した場合
+     */
+    @Test
+    public void testFetchAllIssues_normalSinglePageWithoutPullRequest() throws IOException {
+
+        /* 期待値の定義 */
+        final List<Integer> expectedNumbers = List.of(1);
+        final String[]      expectedMsgs    = {
+            "[Gr002Log51000] Issue を 1 件取得しました（1 ページ）",
+        };
+
+        /* 準備 */
+        try (StubHttpClient testHttpClient = new StubHttpClient();
+            LogCapture testLog = new LogCapture(GitHubIssueApiImpl.class)) {
+
+            testHttpClient.addResponse(200,
+                KmgString.concat("[", GitHubIssueApiImplTest.issueJson(1), ",{\"number\":2,\"pull_request\":{}}]"));
+            final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
+            testTarget.initialize(GitHubIssueApiImplTest.createSettings(null));
+
+            /* テスト対象の実行 */
+            final List<GitHubIssueDto> testResult = testTarget.fetchAllIssues();
+
+            /* 検証の準備 */
+            final String[]      actualMsgs    = testLog.getMessages();
+            @SuppressWarnings("null")
+            final List<Integer> actualNumbers = testResult.stream().map(GitHubIssueDto::getNumber).toList();
+
+            /* 検証の実施 */
+            Assertions.assertEquals(expectedNumbers, actualNumbers, "Issue 番号が一致しません");
             LogAssertions.assertMessages(expectedMsgs, actualMsgs);
 
         }
@@ -447,7 +486,40 @@ public class GitHubIssueApiImplTest {
     }
 
     /**
-     * fetchAllIssues メソッドのテスト - 正常系:レート制限の残りが十分な場合は警告しない
+     * fetchIssue メソッドのテスト - 異常系:応答がオブジェクトではない場合
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testFetchIssue_errorNotObject() {
+
+        /* 期待値の定義 */
+        final String expectedMessage = "[Gr002Gen51003] GitHub API の応答がオブジェクトではありません: uri="
+            + "https://api.example.com/repos/owner/repo/issues/7";
+
+        /* 準備 */
+        try (StubHttpClient testHttpClient = new StubHttpClient()) {
+
+            testHttpClient.addResponse(200, "[]");
+            final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
+            testTarget.initialize(GitHubIssueApiImplTest.createSettings("token"));
+
+            /* テスト対象の実行 */
+            final IOException testException
+                = Assertions.assertThrows(IOException.class, () -> testTarget.fetchIssue(7));
+
+            /* 検証の準備 */
+            final String actualMessage = testException.getMessage();
+
+            /* 検証の実施 */
+            Assertions.assertEquals(expectedMessage, actualMessage, "例外のメッセージが一致しません");
+
+        }
+
+    }
+
+    /**
+     * fetchIssue メソッドのテスト - 正常系:Issue を 1 件取得する場合
      *
      * @since 0.1.0
      *
@@ -455,31 +527,70 @@ public class GitHubIssueApiImplTest {
      *                     入出力エラーが発生した場合
      */
     @Test
-    public void testFetchAllIssues_normalRateLimitOk() throws IOException {
+    public void testFetchIssue_normalValue() throws IOException {
 
         /* 期待値の定義 */
-        final String[] expectedMsgs = {
-            "[Gr002Log51002] レート制限: remaining=50、reset=999", "[Gr002Log51001] Issue ページを取得しました: ページ=1、応答=0 件、累積=0 件",
-            "[Gr002Log51000] Issue を 0 件取得しました（1 ページ）",
-        };
+        final String expectedBody = "本文";
 
         /* 準備 */
-        try (StubHttpClient testHttpClient = new StubHttpClient();
-            LogCapture testLog = new LogCapture(GitHubIssueApiImpl.class, Level.DEBUG)) {
+        try (StubHttpClient testHttpClient = new StubHttpClient()) {
 
-            testHttpClient.addResponse(200, "[]", Map.of("X-RateLimit-Remaining", List.of("50"), "X-RateLimit-Reset",
-                List.of("999")));
+            testHttpClient.addResponse(200, GitHubIssueApiImplTest.issueJson(7));
+            final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
+            testTarget.initialize(GitHubIssueApiImplTest.createSettings("token"));
+
+            /* テスト対象の実行 */
+            final GitHubIssueDto testResult = testTarget.fetchIssue(7);
+
+            /* 検証の準備 */
+            final String actualBody = testResult.getBody();
+
+            /* 検証の実施 */
+            Assertions.assertEquals(expectedBody, actualBody, "本文が一致しません");
+
+        }
+
+    }
+
+    /**
+     * fetchIssueRefs メソッドのテスト - 正常系:本文を持たない参照を返す場合
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     入出力エラーが発生した場合
+     */
+    @Test
+    public void testFetchIssueRefs_normalWithoutBody() throws IOException {
+
+        /* 期待値の定義 */
+        final int    expectedNumber    = 1;
+        final String expectedTitle     = "2026年10月06日のタスク";
+        final String expectedState     = "open";
+        final String expectedUpdatedAt = "2026-10-06T14:23:08Z";
+
+        /* 準備 */
+        try (StubHttpClient testHttpClient = new StubHttpClient()) {
+
+            testHttpClient.addResponse(200, KmgString.concat("[", GitHubIssueApiImplTest.issueJson(1), "]"));
             final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
             testTarget.initialize(GitHubIssueApiImplTest.createSettings(null));
 
             /* テスト対象の実行 */
-            testTarget.fetchAllIssues();
+            final List<GitHubIssueRefDto> testResult = testTarget.fetchIssueRefs();
 
             /* 検証の準備 */
-            final String[] actualMsgs = testLog.getMessages();
+            final GitHubIssueRefDto actualRef       = testResult.get(0);
+            final int               actualNumber    = actualRef.getNumber();
+            final String            actualTitle     = actualRef.getTitle();
+            final String            actualState     = actualRef.getState();
+            final String            actualUpdatedAt = actualRef.getUpdatedAt();
 
             /* 検証の実施 */
-            LogAssertions.assertMessages(expectedMsgs, actualMsgs);
+            Assertions.assertEquals(expectedNumber, actualNumber, "Issue 番号が一致しません");
+            Assertions.assertEquals(expectedTitle, actualTitle, "タイトルが一致しません");
+            Assertions.assertEquals(expectedState, actualState, "状態が一致しません");
+            Assertions.assertEquals(expectedUpdatedAt, actualUpdatedAt, "更新日時が一致しません");
 
         }
 
@@ -494,7 +605,8 @@ public class GitHubIssueApiImplTest {
     public void testFetchPage_errorNotArray() {
 
         /* 期待値の定義 */
-        final String expectedMessage = "[Gr002Gen51001] GitHub API の応答が配列ではありません: uri=" + GitHubIssueApiImplTest.PAGE1_URI;
+        final String expectedMessage
+            = "[Gr002Gen51001] GitHub API の応答が配列ではありません: uri=" + GitHubIssueApiImplTest.PAGE1_URI;
 
         /* 準備 */
         try (StubHttpClient testHttpClient = new StubHttpClient()) {
@@ -526,8 +638,8 @@ public class GitHubIssueApiImplTest {
     public void testFetchPage_errorStatus() {
 
         /* 期待値の定義 */
-        final String expectedMessage = "[Gr002Gen51000] GitHub API の呼び出しに失敗しました: status=403, uri="
-            + GitHubIssueApiImplTest.PAGE1_URI;
+        final String expectedMessage
+            = "[Gr002Gen51000] GitHub API の呼び出しに失敗しました: status=403, uri=" + GitHubIssueApiImplTest.PAGE1_URI;
 
         /* 準備 */
         try (StubHttpClient testHttpClient = new StubHttpClient()) {
@@ -575,9 +687,9 @@ public class GitHubIssueApiImplTest {
                 1);
 
             /* 検証の準備 */
-            final List<HttpRequest> requests = testHttpClient.getRequests();
-            final HttpRequest       request  = requests.get(0);
-            final HttpHeaders       headers  = request.headers();
+            final List<HttpRequest> requests            = testHttpClient.getRequests();
+            final HttpRequest       request             = requests.get(0);
+            final HttpHeaders       headers             = request.headers();
             final Optional<String>  actualAuthorization = headers.firstValue("Authorization");
 
             /* 検証の実施 */
@@ -613,16 +725,167 @@ public class GitHubIssueApiImplTest {
                 GitHubIssueApiImplTest.createSettings("test-token"), 1);
 
             /* 検証の準備 */
-            final List<HttpRequest> requests = testHttpClient.getRequests();
-            final HttpRequest       request  = requests.get(0);
-            final HttpHeaders       headers  = request.headers();
-            final URI               uri      = request.uri();
+            final List<HttpRequest> requests            = testHttpClient.getRequests();
+            final HttpRequest       request             = requests.get(0);
+            final HttpHeaders       headers             = request.headers();
+            final URI               uri                 = request.uri();
             final Optional<String>  actualAuthorization = headers.firstValue("Authorization");
             final String            actualUri           = uri.toString();
 
             /* 検証の実施 */
             Assertions.assertEquals(expectedAuthorization, actualAuthorization, "認証ヘッダが一致しません");
             Assertions.assertEquals(expectedUri, actualUri, "URL が一致しません");
+
+        }
+
+    }
+
+    /**
+     * fetchRecentIssueRefs メソッドのテスト - 正常系:上限件数で打ち切り作成昇順で返す場合
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     入出力エラーが発生した場合
+     */
+    @Test
+    public void testFetchRecentIssueRefs_normalLimitAsc() throws IOException {
+
+        /* 期待値の定義 */
+        final List<Integer> expectedNumbers = List.of(2, 3);
+        final String        expectedUri     = GitHubIssueApiImplTest.PAGE1_DESC_URI;
+
+        /* 準備 */
+        try (StubHttpClient testHttpClient = new StubHttpClient()) {
+
+            testHttpClient.addResponse(200, KmgString.concat("[", GitHubIssueApiImplTest.issueJson(3), ",",
+                GitHubIssueApiImplTest.issueJson(2), ",", GitHubIssueApiImplTest.issueJson(1), "]"));
+            final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
+            testTarget.initialize(GitHubIssueApiImplTest.createSettings(null));
+
+            /* テスト対象の実行 */
+            final List<GitHubIssueRefDto> testResult = testTarget.fetchRecentIssueRefs(2);
+
+            /* 検証の準備 */
+            final List<Integer> actualNumbers = testResult.stream().map(GitHubIssueRefDto::getNumber).toList();
+            final URI           actualUri     = testHttpClient.getRequests().get(0).uri();
+
+            /* 検証の実施 */
+            Assertions.assertEquals(expectedNumbers, actualNumbers, "Issue 番号が一致しません");
+            Assertions.assertEquals(expectedUri, actualUri.toString(), "作成降順の URL である必要があります");
+
+        }
+
+    }
+
+    /**
+     * fetchRecentIssueRefs メソッドのテスト - 正常系:上限に達する前に最終ページで打ち切る場合
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     入出力エラーが発生した場合
+     */
+    @Test
+    public void testFetchRecentIssueRefs_normalShortPage() throws IOException {
+
+        /* 期待値の定義 */
+        final List<Integer> expectedNumbers = List.of(1, 2);
+        final int           expectedPages   = 1;
+
+        /* 準備 */
+        try (StubHttpClient testHttpClient = new StubHttpClient()) {
+
+            testHttpClient.addResponse(200, KmgString.concat("[", GitHubIssueApiImplTest.issueJson(2), ",",
+                GitHubIssueApiImplTest.issueJson(1), "]"));
+            final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
+            testTarget.initialize(GitHubIssueApiImplTest.createSettings(null));
+
+            /* テスト対象の実行 */
+            final List<GitHubIssueRefDto> testResult = testTarget.fetchRecentIssueRefs(10);
+
+            /* 検証の準備 */
+            final List<Integer> actualNumbers = testResult.stream().map(GitHubIssueRefDto::getNumber).toList();
+            final int           actualPages   = testHttpClient.getRequests().size();
+
+            /* 検証の実施 */
+            Assertions.assertEquals(expectedNumbers, actualNumbers, "Issue 番号が一致しません");
+            Assertions.assertEquals(expectedPages, actualPages, "ページ数が一致しません");
+
+        }
+
+    }
+
+    /**
+     * fetchRecentIssueRefs メソッドのテスト - 正常系:プルリクエストを除いて次ページから足りる件数を取る場合
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     入出力エラーが発生した場合
+     */
+    @Test
+    public void testFetchRecentIssueRefs_normalSkipPullRequest() throws IOException {
+
+        /* 期待値の定義 */
+        final List<Integer> expectedNumbers = List.of(1);
+        final int           expectedPages   = 2;
+
+        /* 準備 */
+        try (StubHttpClient testHttpClient = new StubHttpClient()) {
+
+            final String page1
+                = IntStream.rangeClosed(1, 100).mapToObj(number -> "{\"number\":" + number + ",\"pull_request\":{}}")
+                    .collect(Collectors.joining(",", "[", "]"));
+            testHttpClient.addResponse(200, page1);
+            testHttpClient.addResponse(200, KmgString.concat("[", GitHubIssueApiImplTest.issueJson(1), "]"));
+            final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
+            testTarget.initialize(GitHubIssueApiImplTest.createSettings(null));
+
+            /* テスト対象の実行 */
+            final List<GitHubIssueRefDto> testResult = testTarget.fetchRecentIssueRefs(1);
+
+            /* 検証の準備 */
+            final List<Integer> actualNumbers = testResult.stream().map(GitHubIssueRefDto::getNumber).toList();
+            final int           actualPages   = testHttpClient.getRequests().size();
+
+            /* 検証の実施 */
+            Assertions.assertEquals(expectedNumbers, actualNumbers, "Issue 番号が一致しません");
+            Assertions.assertEquals(expectedPages, actualPages, "ページ数が一致しません");
+
+        }
+
+    }
+
+    /**
+     * fetchRecentIssueRefs メソッドのテスト - 準正常系:上限が 1 未満のときは空を返す場合
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     入出力エラーが発生した場合
+     */
+    @Test
+    public void testFetchRecentIssueRefs_semiLimitBelowOne() throws IOException {
+
+        /* 期待値の定義 */
+
+        /* 準備 */
+        try (StubHttpClient testHttpClient = new StubHttpClient()) {
+
+            final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
+            testTarget.initialize(GitHubIssueApiImplTest.createSettings(null));
+
+            /* テスト対象の実行 */
+            final List<GitHubIssueRefDto> testResult = testTarget.fetchRecentIssueRefs(0);
+
+            /* 検証の準備 */
+            final boolean actualEmpty = testResult.isEmpty();
+            final int     actualPages = testHttpClient.getRequests().size();
+
+            /* 検証の実施 */
+            Assertions.assertTrue(actualEmpty, "参照は空になる必要があります");
+            Assertions.assertEquals(0, actualPages, "API を呼ばない必要があります");
 
         }
 
@@ -646,7 +909,8 @@ public class GitHubIssueApiImplTest {
         final JsonMapper testJsonMapper = new JsonMapper();
 
         /* テスト対象の実行 */
-        final GitHubIssueApiImpl testTarget = new GitHubIssueApiImpl(testJsonMapper, DailyTasksMessageSourceTestUtil.create());
+        final GitHubIssueApiImpl testTarget
+            = new GitHubIssueApiImpl(testJsonMapper, DailyTasksMessageSourceTestUtil.create());
 
         /* 検証の準備 */
         final String     actualApiBaseUrl = ReflectionTestUtil.getField(testTarget, "apiBaseUrl");
@@ -880,8 +1144,8 @@ public class GitHubIssueApiImplTest {
         final String expectedValue = "本文";
 
         /* 準備 */
-        final JsonMapper mapper = new JsonMapper();
-        final JsonNode testNode = mapper.readTree("{\"body\":\"本文\"}");
+        final JsonMapper mapper   = new JsonMapper();
+        final JsonNode   testNode = mapper.readTree("{\"body\":\"本文\"}");
 
         /* テスト対象の実行 */
         final String testResult = GitHubIssueApiImplTest.textOrEmpty(testNode, "body");
@@ -909,8 +1173,8 @@ public class GitHubIssueApiImplTest {
         final String expectedValue = "";
 
         /* 準備 */
-        final JsonMapper mapper = new JsonMapper();
-        final JsonNode testNode = mapper.readTree("{}");
+        final JsonMapper mapper   = new JsonMapper();
+        final JsonNode   testNode = mapper.readTree("{}");
 
         /* テスト対象の実行 */
         final String testResult = GitHubIssueApiImplTest.textOrEmpty(testNode, "body");
@@ -938,8 +1202,8 @@ public class GitHubIssueApiImplTest {
         final String expectedValue = "";
 
         /* 準備 */
-        final JsonMapper mapper = new JsonMapper();
-        final JsonNode testNode = mapper.readTree("{\"body\":null}");
+        final JsonMapper mapper   = new JsonMapper();
+        final JsonNode   testNode = mapper.readTree("{\"body\":null}");
 
         /* テスト対象の実行 */
         final String testResult = GitHubIssueApiImplTest.textOrEmpty(testNode, "body");
@@ -949,266 +1213,6 @@ public class GitHubIssueApiImplTest {
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedValue, actualValue, "値が一致しません");
-
-    }
-
-    /**
-     * fetchIssue メソッドのテスト - 異常系:応答がオブジェクトではない場合
-     *
-     * @since 0.1.0
-     */
-    @Test
-    public void testFetchIssue_errorNotObject() {
-
-        /* 期待値の定義 */
-        final String expectedMessage = "[Gr002Gen51003] GitHub API の応答がオブジェクトではありません: uri="
-            + "https://api.example.com/repos/owner/repo/issues/7";
-
-        /* 準備 */
-        try (StubHttpClient testHttpClient = new StubHttpClient()) {
-
-            testHttpClient.addResponse(200, "[]");
-            final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
-            testTarget.initialize(GitHubIssueApiImplTest.createSettings("token"));
-
-            /* テスト対象の実行 */
-            final IOException testException = Assertions.assertThrows(IOException.class, () -> testTarget.fetchIssue(7));
-
-            /* 検証の準備 */
-            final String actualMessage = testException.getMessage();
-
-            /* 検証の実施 */
-            Assertions.assertEquals(expectedMessage, actualMessage, "例外のメッセージが一致しません");
-
-        }
-
-    }
-
-    /**
-     * fetchIssueRefs メソッドのテスト - 正常系:本文を持たない参照を返す場合
-     *
-     * @since 0.1.0
-     *
-     * @throws IOException
-     *                     入出力エラーが発生した場合
-     */
-    @Test
-    public void testFetchIssueRefs_normalWithoutBody() throws IOException {
-
-        /* 期待値の定義 */
-        final int    expectedNumber    = 1;
-        final String expectedTitle     = "2026年10月06日のタスク";
-        final String expectedState     = "open";
-        final String expectedUpdatedAt = "2026-10-06T14:23:08Z";
-
-        /* 準備 */
-        try (StubHttpClient testHttpClient = new StubHttpClient()) {
-
-            testHttpClient.addResponse(200, KmgString.concat("[", GitHubIssueApiImplTest.issueJson(1), "]"));
-            final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
-            testTarget.initialize(GitHubIssueApiImplTest.createSettings(null));
-
-            /* テスト対象の実行 */
-            final List<GitHubIssueRefDto> testResult = testTarget.fetchIssueRefs();
-
-            /* 検証の準備 */
-            final GitHubIssueRefDto actualRef    = testResult.get(0);
-            final int               actualNumber    = actualRef.getNumber();
-            final String            actualTitle     = actualRef.getTitle();
-            final String            actualState     = actualRef.getState();
-            final String            actualUpdatedAt = actualRef.getUpdatedAt();
-
-            /* 検証の実施 */
-            Assertions.assertEquals(expectedNumber, actualNumber, "Issue 番号が一致しません");
-            Assertions.assertEquals(expectedTitle, actualTitle, "タイトルが一致しません");
-            Assertions.assertEquals(expectedState, actualState, "状態が一致しません");
-            Assertions.assertEquals(expectedUpdatedAt, actualUpdatedAt, "更新日時が一致しません");
-
-        }
-
-    }
-
-    /**
-     * fetchRecentIssueRefs メソッドのテスト - 正常系:上限件数で打ち切り作成昇順で返す場合
-     *
-     * @since 0.1.0
-     *
-     * @throws IOException
-     *                     入出力エラーが発生した場合
-     */
-    @Test
-    public void testFetchRecentIssueRefs_normalLimitAsc() throws IOException {
-
-        /* 期待値の定義 */
-        final List<Integer> expectedNumbers = List.of(2, 3);
-        final String        expectedUri     = GitHubIssueApiImplTest.PAGE1_DESC_URI;
-
-        /* 準備 */
-        try (StubHttpClient testHttpClient = new StubHttpClient()) {
-
-            testHttpClient.addResponse(200, KmgString.concat("[", GitHubIssueApiImplTest.issueJson(3), ",",
-                GitHubIssueApiImplTest.issueJson(2), ",", GitHubIssueApiImplTest.issueJson(1), "]"));
-            final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
-            testTarget.initialize(GitHubIssueApiImplTest.createSettings(null));
-
-            /* テスト対象の実行 */
-            final List<GitHubIssueRefDto> testResult = testTarget.fetchRecentIssueRefs(2);
-
-            /* 検証の準備 */
-            final List<Integer> actualNumbers = testResult.stream().map(GitHubIssueRefDto::getNumber).toList();
-            final URI           actualUri     = testHttpClient.getRequests().get(0).uri();
-
-            /* 検証の実施 */
-            Assertions.assertEquals(expectedNumbers, actualNumbers, "Issue 番号が一致しません");
-            Assertions.assertEquals(expectedUri, actualUri.toString(), "作成降順の URL である必要があります");
-
-        }
-
-    }
-
-    /**
-     * fetchRecentIssueRefs メソッドのテスト - 正常系:プルリクエストを除いて次ページから足りる件数を取る場合
-     *
-     * @since 0.1.0
-     *
-     * @throws IOException
-     *                     入出力エラーが発生した場合
-     */
-    @Test
-    public void testFetchRecentIssueRefs_normalSkipPullRequest() throws IOException {
-
-        /* 期待値の定義 */
-        final List<Integer> expectedNumbers = List.of(1);
-        final int           expectedPages   = 2;
-
-        /* 準備 */
-        try (StubHttpClient testHttpClient = new StubHttpClient()) {
-
-            final String page1 = IntStream.rangeClosed(1, 100).mapToObj(number -> "{\"number\":"
-                + number + ",\"pull_request\":{}}").collect(Collectors.joining(",", "[", "]"));
-            testHttpClient.addResponse(200, page1);
-            testHttpClient.addResponse(200, KmgString.concat("[", GitHubIssueApiImplTest.issueJson(1), "]"));
-            final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
-            testTarget.initialize(GitHubIssueApiImplTest.createSettings(null));
-
-            /* テスト対象の実行 */
-            final List<GitHubIssueRefDto> testResult = testTarget.fetchRecentIssueRefs(1);
-
-            /* 検証の準備 */
-            final List<Integer> actualNumbers = testResult.stream().map(GitHubIssueRefDto::getNumber).toList();
-            final int           actualPages   = testHttpClient.getRequests().size();
-
-            /* 検証の実施 */
-            Assertions.assertEquals(expectedNumbers, actualNumbers, "Issue 番号が一致しません");
-            Assertions.assertEquals(expectedPages, actualPages, "ページ数が一致しません");
-
-        }
-
-    }
-
-    /**
-     * fetchRecentIssueRefs メソッドのテスト - 準正常系:上限が 1 未満のときは空を返す場合
-     *
-     * @since 0.1.0
-     *
-     * @throws IOException
-     *                     入出力エラーが発生した場合
-     */
-    @Test
-    public void testFetchRecentIssueRefs_semiLimitBelowOne() throws IOException {
-
-        /* 期待値の定義 */
-
-        /* 準備 */
-        try (StubHttpClient testHttpClient = new StubHttpClient()) {
-
-            final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
-            testTarget.initialize(GitHubIssueApiImplTest.createSettings(null));
-
-            /* テスト対象の実行 */
-            final List<GitHubIssueRefDto> testResult = testTarget.fetchRecentIssueRefs(0);
-
-            /* 検証の準備 */
-            final boolean actualEmpty = testResult.isEmpty();
-            final int     actualPages = testHttpClient.getRequests().size();
-
-            /* 検証の実施 */
-            Assertions.assertTrue(actualEmpty, "参照は空になる必要があります");
-            Assertions.assertEquals(0, actualPages, "API を呼ばない必要があります");
-
-        }
-
-    }
-
-    /**
-     * fetchRecentIssueRefs メソッドのテスト - 正常系:上限に達する前に最終ページで打ち切る場合
-     *
-     * @since 0.1.0
-     *
-     * @throws IOException
-     *                     入出力エラーが発生した場合
-     */
-    @Test
-    public void testFetchRecentIssueRefs_normalShortPage() throws IOException {
-
-        /* 期待値の定義 */
-        final List<Integer> expectedNumbers = List.of(1, 2);
-        final int           expectedPages   = 1;
-
-        /* 準備 */
-        try (StubHttpClient testHttpClient = new StubHttpClient()) {
-
-            testHttpClient.addResponse(200, KmgString.concat("[", GitHubIssueApiImplTest.issueJson(2), ",",
-                GitHubIssueApiImplTest.issueJson(1), "]"));
-            final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
-            testTarget.initialize(GitHubIssueApiImplTest.createSettings(null));
-
-            /* テスト対象の実行 */
-            final List<GitHubIssueRefDto> testResult = testTarget.fetchRecentIssueRefs(10);
-
-            /* 検証の準備 */
-            final List<Integer> actualNumbers = testResult.stream().map(GitHubIssueRefDto::getNumber).toList();
-            final int           actualPages   = testHttpClient.getRequests().size();
-
-            /* 検証の実施 */
-            Assertions.assertEquals(expectedNumbers, actualNumbers, "Issue 番号が一致しません");
-            Assertions.assertEquals(expectedPages, actualPages, "ページ数が一致しません");
-
-        }
-
-    }
-
-    /**
-     * fetchIssue メソッドのテスト - 正常系:Issue を 1 件取得する場合
-     *
-     * @since 0.1.0
-     *
-     * @throws IOException
-     *                     入出力エラーが発生した場合
-     */
-    @Test
-    public void testFetchIssue_normalValue() throws IOException {
-
-        /* 期待値の定義 */
-        final String expectedBody = "本文";
-
-        /* 準備 */
-        try (StubHttpClient testHttpClient = new StubHttpClient()) {
-
-            testHttpClient.addResponse(200, GitHubIssueApiImplTest.issueJson(7));
-            final GitHubIssueApiImpl testTarget = GitHubIssueApiImplTest.createTarget(testHttpClient);
-            testTarget.initialize(GitHubIssueApiImplTest.createSettings("token"));
-
-            /* テスト対象の実行 */
-            final GitHubIssueDto testResult = testTarget.fetchIssue(7);
-
-            /* 検証の準備 */
-            final String actualBody = testResult.getBody();
-
-            /* 検証の実施 */
-            Assertions.assertEquals(expectedBody, actualBody, "本文が一致しません");
-
-        }
 
     }
 
@@ -1231,8 +1235,8 @@ public class GitHubIssueApiImplTest {
         final String expectedBody      = "本文";
 
         /* 準備 */
-        final JsonMapper mapper = new JsonMapper();
-        final JsonNode testNode = mapper.readTree(GitHubIssueApiImplTest.issueJson(371));
+        final JsonMapper mapper   = new JsonMapper();
+        final JsonNode   testNode = mapper.readTree(GitHubIssueApiImplTest.issueJson(371));
 
         /* テスト対象の実行 */
         final GitHubIssueDto testResult = GitHubIssueApiImplTest.toIssue(testNode);

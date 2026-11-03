@@ -193,8 +193,7 @@ public class CarryoverAggregateLogicImpl implements CarryoverAggregateLogic {
         final CarryoverSummaryModel   result          = new CarryoverSummaryModel(latestIssue, rankedItemNames, days);
         final String                  message         = this.messageSource
             .getLogMessage(Gr002LogMsgTypes.GR002_LOG12008);
-        CarryoverAggregateLogicImpl.LOGGER.debug(message, Integer.valueOf(days.size()), Integer.valueOf(latestIssue),
-            Integer.valueOf(rankedItemNames.size()));
+        CarryoverAggregateLogicImpl.LOGGER.debug(message, days.size(), latestIssue, rankedItemNames.size());
         return result;
 
     }

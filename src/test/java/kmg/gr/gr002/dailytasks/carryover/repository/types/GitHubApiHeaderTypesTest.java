@@ -165,28 +165,6 @@ public class GitHubApiHeaderTypesTest {
     }
 
     /**
-     * getInitValue メソッドのテスト - 正常系:指定無しを返す場合
-     *
-     * @since 0.1.0
-     */
-    @Test
-    public void testGetInitValue_normalNone() {
-
-        /* 期待値の定義 */
-        final GitHubApiHeaderTypes expectedType = GitHubApiHeaderTypes.NONE;
-
-        /* テスト対象の実行 */
-        final GitHubApiHeaderTypes testResult = GitHubApiHeaderTypes.getInitValue();
-
-        /* 検証の準備 */
-        final GitHubApiHeaderTypes actualType = testResult;
-
-        /* 検証の実施 */
-        Assertions.assertEquals(expectedType, actualType, "初期値が一致しません");
-
-    }
-
-    /**
      * getHeader メソッドのテスト - 正常系:レート制限の残数
      *
      * @since 0.1.0
@@ -208,6 +186,28 @@ public class GitHubApiHeaderTypesTest {
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedHeader, actualHeader, "ヘッダが一致しません");
+
+    }
+
+    /**
+     * getInitValue メソッドのテスト - 正常系:指定無しを返す場合
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testGetInitValue_normalNone() {
+
+        /* 期待値の定義 */
+        final GitHubApiHeaderTypes expectedType = GitHubApiHeaderTypes.NONE;
+
+        /* テスト対象の実行 */
+        final GitHubApiHeaderTypes testResult = GitHubApiHeaderTypes.getInitValue();
+
+        /* 検証の準備 */
+        final GitHubApiHeaderTypes actualType = testResult;
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedType, actualType, "初期値が一致しません");
 
     }
 

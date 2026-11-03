@@ -216,7 +216,7 @@ public class CarryoverPropertiesModel {
     public String toString() {
 
         final String result = String.format(CarryoverPropertiesFormatTypes.TO_STRING.getFormat(), this.repository,
-            this.dataDir, this.defaultMinutesFile, Integer.valueOf(this.recentCount), Integer.valueOf(this.batchSize));
+            this.dataDir, this.defaultMinutesFile, this.recentCount, this.batchSize);
         return result;
 
     }

@@ -25,25 +25,6 @@ import kmg.gr.gr002.dailytasks.carryover.domain.dto.ItemStatsDto;
 public class CarryoverSummaryJsonDtoTest {
 
     /**
-     * テスト対象を作成する<br>
-     *
-     * @since 0.1.0
-     *
-     * @return テスト対象
-     */
-    private static CarryoverSummaryJsonDto createTarget() {
-
-        final ItemStatJsonDto         total  = new ItemStatJsonDto(1, 30, 0, 0);
-        final ItemStatsJsonDto        byItem = new ItemStatsJsonDto();
-        byItem.add("英語", total);
-        final DailySummaryJsonDto     day    = new DailySummaryJsonDto("2026-03-24", 175, null, total, byItem,
-            new ItemStatsJsonDto());
-        final CarryoverSummaryJsonDto result = new CarryoverSummaryJsonDto(374, List.of("英語"), List.of(day));
-        return result;
-
-    }
-
-    /**
      * 画面用の集計の DTO を作成する<br>
      *
      * @since 0.1.0
@@ -52,14 +33,33 @@ public class CarryoverSummaryJsonDtoTest {
      */
     private static CarryoverSummaryDto createSummaryDto() {
 
-        final ItemStatDto         total         = new ItemStatDto(2, 26.5, 1, 11.5);
-        final ItemStatsDto        byItem        = new ItemStatsDto();
-        final ItemStatsDto        byOriginMonth = new ItemStatsDto();
+        final ItemStatDto  total         = new ItemStatDto(2, 26.5, 1, 11.5);
+        final ItemStatsDto byItem        = new ItemStatsDto();
+        final ItemStatsDto byOriginMonth = new ItemStatsDto();
         byItem.add("音楽", new ItemStatDto(1, 11.5, 1, 11.5));
         byItem.add("国語", new ItemStatDto(1, 15.0, 0, 0.0));
         byOriginMonth.add("2026-08", new ItemStatDto(1, 11.5, 1, 11.5));
         final DailySummaryDto     day    = new DailySummaryDto("2026-10-06", 371, 2, total, byItem, byOriginMonth);
         final CarryoverSummaryDto result = new CarryoverSummaryDto(371, List.of("音楽", "国語"), List.of(day));
+        return result;
+
+    }
+
+    /**
+     * テスト対象を作成する<br>
+     *
+     * @since 0.1.0
+     *
+     * @return テスト対象
+     */
+    private static CarryoverSummaryJsonDto createTarget() {
+
+        final ItemStatJsonDto  total  = new ItemStatJsonDto(1, 30, 0, 0);
+        final ItemStatsJsonDto byItem = new ItemStatsJsonDto();
+        byItem.add("英語", total);
+        final DailySummaryJsonDto     day    = new DailySummaryJsonDto("2026-03-24", 175, null, total, byItem,
+            new ItemStatsJsonDto());
+        final CarryoverSummaryJsonDto result = new CarryoverSummaryJsonDto(374, List.of("英語"), List.of(day));
         return result;
 
     }

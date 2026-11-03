@@ -46,8 +46,8 @@ public class CarryoverItemJsonDtoTest {
         final String expectedRaw = "- [x] 音楽2026/08/18（残り時間：11.5分）";
 
         /* 準備 */
-        final CarryoverItemDto testItem = new CarryoverItemDto("音楽", "2026-08-18", true, 11.5, "parsed", "持ち越し",
-            expectedRaw);
+        final CarryoverItemDto testItem
+            = new CarryoverItemDto("音楽", "2026-08-18", true, 11.5, "parsed", "持ち越し", expectedRaw);
 
         /* テスト対象の実行 */
         final CarryoverItemJsonDto testResult = new CarryoverItemJsonDto(testItem);
