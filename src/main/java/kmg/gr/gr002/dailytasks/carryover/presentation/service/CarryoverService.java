@@ -34,7 +34,8 @@ public interface CarryoverService {
     /**
      * 次の単位の Issue を取得して解析し、Issue ごとの JSON を出力する<br>
      * <p>
-     * {@link #hasNext()} が true のあとで呼ぶ。差分モードでは、最新の指定件数（設定の recentCount）だけを取得して解析し直す。集計は {@link #aggregate()} で行う。
+     * {@link #open()} のあと、{@link #hasNext()} が true のときに呼ぶ。差分モードでは、最新の指定件数（設定の recentCount）だけを取得して解析し直す。集計は
+     * {@link #aggregate()} で行う。{@link #open()} 前に呼ぶと 0 を返す。
      * </p>
      *
      * @since 0.1.0
@@ -49,17 +50,14 @@ public interface CarryoverService {
     /**
      * 次の単位があるかを返す<br>
      * <p>
-     * 最初の呼び出しで、本文を持たない索引を作り、設定の batchSize 件ずつに分ける。
+     * {@link #open()} のあとで呼ぶ。{@link #open()} 前は false を返す。
      * </p>
      *
      * @since 0.1.0
      *
      * @return true：次の単位がある、false：単位が残っていない
-     *
-     * @throws IOException
-     *                     取得または読み込みに失敗した場合
      */
-    boolean hasNext() throws IOException;
+    boolean hasNext();
 
     /**
      * 収集の設定とモードを受け取り、フィールドに保持する<br>
@@ -75,5 +73,23 @@ public interface CarryoverService {
      *                   true：全件モード（すべての Issue を解析し直す）、false：差分モード
      */
     void initialize(CarryoverPropertiesModel properties, boolean full);
+
+    /**
+     * 本文を持たない索引を作り、設定の batchSize 件ずつに分ける<br>
+     * <p>
+     * {@link #initialize(CarryoverPropertiesModel, boolean)} のあと、{@link #collect()} の前に呼ぶ。単位が残っているときは
+     * {@link IllegalStateException} を投げる。単位が残っていないとき（未取得や消化済み）は状態を戻して取得する。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @return true：次の単位がある、false：単位が残っていない
+     *
+     * @throws IOException
+     *                                  取得または読み込みに失敗した場合
+     * @throws IllegalStateException
+     *                                  単位が残っている状態で再度呼ばれた場合
+     */
+    boolean open() throws IOException;
 
 }

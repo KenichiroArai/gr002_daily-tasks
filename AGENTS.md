@@ -152,14 +152,14 @@ repository 層のデータアクセスは、取得元によって次の 2 つに
 | サービス | `service/` | `XxxService` / `XxxServiceImpl` | `@Service` | 一連の流れを行う |
 | ロジック | `logic/` | `XxxLogic` / `XxxLogicImpl` | `@Component` | 個々の処理を行い、何度も呼ばれる |
 
-- **サービス**: サービス・ロジック・ユーティリティ・モデルなどを使い、一連の流れを行う。初期化、主処理、サブ処理、終了処理のように、処理（メソッド）の流れがはっきりしている。役割が複数あるときは統合サービスを残し、役割ごとのサービスに分ける（例: コマンドが呼ぶのは `initialize` と、単位ごとの `collect` / `aggregate` まで。`collect` はその単位の取得、解析、保存を行い、`aggregate` はそこまでの集計を足して `summary.json` を上書きする）。呼び出し元（コマンド）が呼ぶのは役割までとする。`ObjectProvider` から取るのはループの外の 1 回で、単位が続くあいだは同じインスタンスで次を繰り返す
+- **サービス**: サービス・ロジック・ユーティリティ・モデルなどを使い、一連の流れを行う。初期化、主処理、サブ処理、終了処理のように、処理（メソッド）の流れがはっきりしている。役割が複数あるときは統合サービスを残し、役割ごとのサービスに分ける（例: コマンドが呼ぶのは `initialize`、`open`、単位ごとの `collect` / `aggregate` まで。`open` は索引を作り単位に分け、`collect` はその単位の取得、解析、保存を行い、`aggregate` はそこまでの集計を足して `summary.json` を上書きする）。呼び出し元（コマンド）が呼ぶのは役割までとする。`ObjectProvider` から取るのはループの外の 1 回で、単位が続くあいだは同じインスタンスで次を繰り返す
 
 ```java
 /* 収集と集計の実行 */
 service.initialize(this.properties, this.full);
 
-/* 次の単位があるか */
-boolean hasNext = service.hasNext();
+/* 索引を開き、次の単位があるか */
+boolean hasNext = service.open();
 
 while (hasNext) {
 

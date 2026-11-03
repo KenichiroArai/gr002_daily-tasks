@@ -1022,6 +1022,7 @@ public class CarryoverServiceImplTest {
         try (LogCapture testLog = new LogCapture(CarryoverServiceImpl.class)) {
 
             testTarget.initialize(CarryoverServiceImplTest.PROPERTIES, false);
+            testTarget.open();
             final int testResult = testTarget.collect();
             testTarget.aggregate();
 
@@ -1071,6 +1072,7 @@ public class CarryoverServiceImplTest {
         try (LogCapture testLog = new LogCapture(CarryoverServiceImpl.class)) {
 
             testTarget.initialize(CarryoverServiceImplTest.PROPERTIES, false);
+            testTarget.open();
             final int testResult = testTarget.collect();
             testTarget.aggregate();
 
@@ -1119,6 +1121,7 @@ public class CarryoverServiceImplTest {
         try (LogCapture testLog = new LogCapture(CarryoverServiceImpl.class)) {
 
             testTarget.initialize(CarryoverServiceImplTest.PROPERTIES, true);
+            testTarget.open();
             final int testResult = testTarget.collect();
             testTarget.aggregate();
 
@@ -1179,8 +1182,8 @@ public class CarryoverServiceImplTest {
 
             testTarget.initialize(testProperties, false);
 
-            /* 次の単位があるか */
-            final boolean testFirstHasNext = testTarget.hasNext();
+            /* 索引を開き、次の単位があるか */
+            final boolean testFirstHasNext = testTarget.open();
 
             testTarget.collect();
             testTarget.aggregate();
@@ -1250,7 +1253,7 @@ public class CarryoverServiceImplTest {
 
         /* テスト対象の実行 */
         testTarget.initialize(testProperties, true);
-        final boolean testHasNext = testTarget.hasNext();
+        final boolean testHasNext = testTarget.open();
         final int     testSaved   = testTarget.collect();
         testTarget.aggregate();
         final boolean testNext = testTarget.hasNext();
@@ -1297,6 +1300,7 @@ public class CarryoverServiceImplTest {
 
         /* テスト対象の実行 */
         testTarget.initialize(testProperties, false);
+        testTarget.open();
         testTarget.collect();
         testTarget.aggregate();
         testTarget.collect();
@@ -1337,6 +1341,7 @@ public class CarryoverServiceImplTest {
 
         /* テスト対象の実行 */
         testTarget.initialize(CarryoverServiceImplTest.PROPERTIES, false);
+        testTarget.open();
         testTarget.collect();
         testTarget.aggregate();
 
@@ -1371,6 +1376,7 @@ public class CarryoverServiceImplTest {
 
         /* テスト対象の実行 */
         testTarget.initialize(CarryoverServiceImplTest.PROPERTIES, true);
+        testTarget.open();
         testTarget.collect();
         testTarget.aggregate();
 
@@ -1409,6 +1415,7 @@ public class CarryoverServiceImplTest {
 
         /* テスト対象の実行 */
         testTarget.initialize(CarryoverServiceImplTest.PROPERTIES, true);
+        testTarget.open();
         testTarget.collect();
 
         /* 検証の準備 */
@@ -1422,6 +1429,78 @@ public class CarryoverServiceImplTest {
         Assertions.assertEquals(expectedToken, actualToken, "トークンが一致しません");
         Assertions.assertEquals(expectedMinutesFile, actualMinutesFile, "標準時間の設定ファイルが一致しません");
         Assertions.assertEquals(expectedDataDir, actualDataDir, "保存先が一致しません");
+
+    }
+
+    /**
+     * open メソッドのテスト - 異常系:単位が残っている状態で再度呼ぶ場合
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     入出力エラーが発生した場合
+     */
+    @Test
+    public void testOpen_errorRemaining() throws IOException {
+
+        /* 期待値の定義 */
+        final String expectedMessage = "[Gr002Gen31000] 単位が残っている状態で open は呼び出せません";
+
+        /* 準備 */
+        final StubDailyTaskIssueLogic testIssueLogic = new StubDailyTaskIssueLogic(
+            List.of(CarryoverServiceImplTest.ISSUE1));
+        final CarryoverServiceImpl    testTarget     = CarryoverServiceImplTest.createTarget(testIssueLogic,
+            new StubDefaultMinutesLogic(), new StubCarryoverDataLogic());
+        testTarget.initialize(CarryoverServiceImplTest.PROPERTIES, true);
+        testTarget.open();
+
+        /* テスト対象の実行 */
+        final IllegalStateException testException
+            = Assertions.assertThrows(IllegalStateException.class, testTarget::open);
+
+        /* 検証の準備 */
+        final String actualMessage = testException.getMessage();
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedMessage, actualMessage, "例外のメッセージが一致しません");
+
+    }
+
+    /**
+     * open メソッドのテスト - 正常系:単位を消化したあと再度呼ぶと再取得する場合
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     入出力エラーが発生した場合
+     */
+    @Test
+    public void testOpen_normalReopenAfterFinished() throws IOException {
+
+        /* 期待値の定義 */
+        final List<String> expectedSteps = List.of("collect.initialize", "aggregate.initialize", "fetchRefs",
+            "collectBatch", "rebuildFromStored", "saveSummary", "fetchRefs");
+
+        /* 準備 */
+        final List<String>         testSteps  = new ArrayList<>();
+        final CarryoverServiceImpl testTarget = new CarryoverServiceImpl(
+            new CarryoverServiceImplTest.RecordingAggregateService(testSteps),
+            new CarryoverServiceImplTest.RecordingCollectService(testSteps), DailyTasksMessageSourceTestUtil.create());
+
+        /* テスト対象の実行 */
+        testTarget.initialize(CarryoverServiceImplTest.PROPERTIES, false);
+        testTarget.open();
+        testTarget.collect();
+        testTarget.aggregate();
+        final boolean testSecondOpen = testTarget.open();
+
+        /* 検証の準備 */
+        final List<String> actualSteps      = testSteps;
+        final boolean      actualSecondOpen = testSecondOpen;
+
+        /* 検証の実施 */
+        Assertions.assertTrue(actualSecondOpen, "再取得後に単位がある必要があります");
+        Assertions.assertEquals(expectedSteps, actualSteps, "呼び出しの順が一致しません");
 
     }
 

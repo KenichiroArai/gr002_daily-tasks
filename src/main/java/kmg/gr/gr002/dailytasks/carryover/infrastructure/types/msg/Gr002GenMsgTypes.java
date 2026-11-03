@@ -55,6 +55,16 @@ public enum Gr002GenMsgTypes implements KmgFundCmnGenMsgTypes, KmgFundCmnExcMsgT
      */
     GR002_GEN11000("不明な残り時間の取得元", "Gr002Gen11000", "残り時間の取得元が不明な場合", "不明な残り時間の取得元です: %s"),
 
+    /* application.service */
+
+    /**
+     * 単位が残っている状態での open
+     *
+     * @since 0.1.0
+     */
+    GR002_GEN31000("単位が残っている状態での open", "Gr002Gen31000", "単位が残っている状態で open が再度呼ばれた場合",
+        "単位が残っている状態で open は呼び出せません"),
+
     /* presentation.command */
 
     /**

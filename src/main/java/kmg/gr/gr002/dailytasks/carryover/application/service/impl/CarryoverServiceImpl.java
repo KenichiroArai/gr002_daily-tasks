@@ -21,6 +21,7 @@ import kmg.gr.gr002.dailytasks.carryover.application.service.CarryoverAggregateS
 import kmg.gr.gr002.dailytasks.carryover.application.service.CarryoverCollectService;
 import kmg.gr.gr002.dailytasks.carryover.application.types.MinutesSourceTypes;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessageSource;
+import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002GenMsgTypes;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTypes;
 import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel;
 import kmg.gr.gr002.dailytasks.carryover.presentation.service.CarryoverService;
@@ -28,7 +29,8 @@ import kmg.gr.gr002.dailytasks.carryover.presentation.service.CarryoverService;
 /**
  * 持ち越しの収集・集計を統合するサービスの実装<br>
  * <p>
- * presentation 層のサービスを実装する。収集と集計は役割ごとのサービスへ分け、単位ごとに {@link #collect()} と {@link #aggregate()} から決まった順で呼ぶ。
+ * presentation 層のサービスを実装する。収集と集計は役割ごとのサービスへ分け、{@link #open()} のあと単位ごとに {@link #collect()} と
+ * {@link #aggregate()} から決まった順で呼ぶ。
  * </p>
  *
  * @author KenichiroArai
@@ -232,13 +234,6 @@ public class CarryoverServiceImpl implements CarryoverService {
     private boolean full;
 
     /**
-     * 索引を作ったか
-     *
-     * @since 0.1.0
-     */
-    private boolean opened;
-
-    /**
      * 取得したリモートの Issue の件数
      *
      * @since 0.1.0
@@ -377,7 +372,8 @@ public class CarryoverServiceImpl implements CarryoverService {
     /**
      * 次の単位の Issue を取得して解析し、Issue ごとの JSON を出力する<br>
      * <p>
-     * {@link #hasNext()} が true のあとで呼ぶ。差分モードでは、最新の指定件数（設定の recentCount）だけを取得して解析し直す。集計は {@link #aggregate()} で行う。
+     * {@link #open()} のあと、{@link #hasNext()} が true のときに呼ぶ。差分モードでは、最新の指定件数（設定の recentCount）だけを取得して解析し直す。集計は
+     * {@link #aggregate()} で行う。{@link #open()} 前に呼ぶと 0 を返す。
      * </p>
      *
      * @since 0.1.0
@@ -391,16 +387,6 @@ public class CarryoverServiceImpl implements CarryoverService {
     public int collect() throws IOException {
 
         int result = 0;
-
-        /* 索引をまだ作っていないか */
-        if (!this.opened) {
-
-            // 索引をまだ作っていない場合
-
-            // 索引を作り、単位に分ける
-            this.open();
-
-        }
 
         /* 単位が残っているか */
         final int     batchCount = this.batches.size();
@@ -445,33 +431,18 @@ public class CarryoverServiceImpl implements CarryoverService {
     /**
      * 次の単位があるかを返す<br>
      * <p>
-     * 最初の呼び出しで、本文を持たない索引を作り、設定の batchSize 件ずつに分ける。
+     * {@link #open()} のあとで呼ぶ。{@link #open()} 前は false を返す。
      * </p>
      *
      * @since 0.1.0
      *
      * @return true：次の単位がある、false：単位が残っていない
-     *
-     * @throws IOException
-     *                     取得または読み込みに失敗した場合
      */
     @Override
-    public boolean hasNext() throws IOException {
+    public boolean hasNext() {
 
-        boolean result = false;
-
-        /* 索引をまだ作っていないか */
-        if (!this.opened) {
-
-            // 索引をまだ作っていない場合
-
-            // 索引を作り、単位に分ける
-            this.open();
-
-        }
-
-        final int batchCount = this.batches.size();
-        result = this.batchIndex < batchCount;
+        final int     batchCount = this.batches.size();
+        final boolean result     = this.batchIndex < batchCount;
         return result;
 
     }
@@ -496,7 +467,6 @@ public class CarryoverServiceImpl implements CarryoverService {
         final CarryoverSourceModel source = new CarryoverSourceModel(properties);
         this.full = full;
         this.batchSize = properties.getBatchSize();
-        this.opened = false;
         this.batchIndex = 0;
         this.batchAggregated = false;
         this.batchIssues = List.of();
@@ -538,21 +508,58 @@ public class CarryoverServiceImpl implements CarryoverService {
 
     /**
      * 本文を持たない索引を作り、単位に分ける<br>
+     * <p>
+     * {@link #initialize(CarryoverPropertiesModel, boolean)} のあと、{@link #collect()} の前に呼ぶ。単位が残っているときは
+     * {@link IllegalStateException} を投げる。単位が残っていないとき（未取得や消化済み）は状態を戻して取得する。
+     * </p>
      *
      * @since 0.1.0
      *
+     * @return true：次の単位がある、false：単位が残っていない
+     *
      * @throws IOException
-     *                     取得または読み込みに失敗した場合
+     *                                  取得または読み込みに失敗した場合
+     * @throws IllegalStateException
+     *                                  単位が残っている状態で再度呼ばれた場合
      */
-    private void open() throws IOException {
+    @Override
+    public boolean open() throws IOException {
 
+        boolean result = false;
+
+        /* 単位が残っているか */
+        final boolean remaining = this.hasNext();
+
+        if (remaining) {
+
+            // 単位が残っている場合
+
+            // 二重呼び出しとして例外を投げる
+            final String message = this.messageSource.getExcMessage(Gr002GenMsgTypes.GR002_GEN31000);
+            throw new IllegalStateException(message);
+
+        }
+
+        /* 単位状態の初期化 */
+        this.batchIndex = 0;
+        this.batchAggregated = false;
+        this.batchIssues = List.of();
+        this.batches = List.of();
+        this.savedCount = 0;
+        this.remoteCount = 0;
+        this.defaultCount = 0;
+        this.unknownCount = 0;
+
+        /* 索引の作成と単位への分割 */
         final List<DailyTaskIssueRefModel> refs = this.carryoverCollectService.fetchRefs();
         this.remoteCount = refs.size();
         this.batches = CarryoverServiceImpl.split(refs, this.batchSize);
-        this.opened = true;
         final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31004);
         CarryoverServiceImpl.LOGGER.info(message, Integer.valueOf(this.remoteCount),
             Integer.valueOf(this.batches.size()));
+
+        result = this.hasNext();
+        return result;
 
     }
 

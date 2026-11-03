@@ -21,7 +21,7 @@ import kmg.gr.gr002.dailytasks.carryover.presentation.types.CommandOptionTypes;
  * 持ち越しの収集コマンドの実装<br>
  * <p>
  * 入力の窓口として、設定ファイル（application.properties）の値とコマンドライン引数を presentation 層のサービス（application 層が実装する）へ引き継ぐ。Spring Boot の起動後に
- * {@link CommandLineRunner} として実行される。単位が続くあいだ、収集のあと集計を呼ぶ。daily-tasks-git のルートをカレントディレクトリとして実行する。
+ * {@link CommandLineRunner} として実行される。索引を開いたあと、単位が続くあいだ、収集のあと集計を呼ぶ。daily-tasks-git のルートをカレントディレクトリとして実行する。
  * </p>
  *
  * @author KenichiroArai
@@ -232,8 +232,8 @@ public class CarryoverCommandImpl implements CarryoverCommand {
             final CarryoverService service = this.carryoverService.getObject();
             service.initialize(this.properties, this.full);
 
-            /* 次の単位があるか */
-            boolean hasNext = service.hasNext();
+            /* 索引を開き、次の単位があるか */
+            boolean hasNext = service.open();
 
             while (hasNext) {
 

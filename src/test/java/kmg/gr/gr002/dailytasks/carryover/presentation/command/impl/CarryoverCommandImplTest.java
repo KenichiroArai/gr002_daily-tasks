@@ -208,6 +208,22 @@ public class CarryoverCommandImplTest {
         }
 
         /**
+         * 索引を開き、次の単位があるかを返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @return 単位が残っている場合は true
+         */
+        @Override
+        public boolean open() {
+
+            this.steps.add("open");
+            final boolean result = this.batchIndex < this.batchCount;
+            return result;
+
+        }
+
+        /**
          * 単位の数を設定する<br>
          *
          * @since 0.1.0
@@ -586,7 +602,7 @@ public class CarryoverCommandImplTest {
 
         /* 期待値の定義 */
         final List<Boolean>            expectedCalls      = List.of(Boolean.FALSE);
-        final List<String>             expectedSteps      = List.of("initialize", "collect", "aggregate");
+        final List<String>             expectedSteps      = List.of("initialize", "open", "collect", "aggregate");
         final CarryoverPropertiesModel expectedProperties = CarryoverCommandImplTest.PROPERTIES;
         final String                   expectedDataDir    = Path.of("out/data").toString();
         final String[]                 expectedMsgs       = {
@@ -634,7 +650,7 @@ public class CarryoverCommandImplTest {
 
         /* 期待値の定義 */
         final List<Boolean> expectedCalls = List.of(Boolean.TRUE);
-        final List<String>  expectedSteps = List.of("initialize", "collect", "aggregate");
+        final List<String>  expectedSteps = List.of("initialize", "open", "collect", "aggregate");
 
         /* 準備 */
         final StubCarryoverService testService = new StubCarryoverService();
@@ -805,7 +821,7 @@ public class CarryoverCommandImplTest {
     public void testRun_normalTwoBatches() throws IOException {
 
         /* 期待値の定義 */
-        final List<String> expectedSteps = List.of("initialize", "collect", "aggregate", "collect", "aggregate");
+        final List<String> expectedSteps = List.of("initialize", "open", "collect", "aggregate", "collect", "aggregate");
 
         /* 準備 */
         final StubCarryoverService testService = new StubCarryoverService();
