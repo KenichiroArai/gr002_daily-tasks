@@ -242,6 +242,9 @@ public class CarryoverServiceImpl implements CarryoverService {
 
     /**
      * 解析して保存した Issue の件数の累計
+     * <p>
+     * このインスタンスの生存期間で累計する。{@link #initialize(CarryoverPropertiesModel, boolean)} でのみクリアする。
+     * </p>
      *
      * @since 0.1.0
      */
@@ -439,8 +442,9 @@ public class CarryoverServiceImpl implements CarryoverService {
     @Override
     public boolean hasNext() {
 
+        final boolean result;
         final int     batchCount = this.batches.size();
-        final boolean result     = this.batchIndex < batchCount;
+        result = this.batchIndex < batchCount;
         return result;
 
     }
@@ -448,7 +452,8 @@ public class CarryoverServiceImpl implements CarryoverService {
     /**
      * 収集の設定とモードを受け取り、フィールドに保持する<br>
      * <p>
-     * 設定はデータの取得元と保存先に変換し、収集と集計のサービスへ渡す。
+     * 設定はデータの取得元と保存先に変換し、収集と集計のサービスへ渡す。このインスタンスの状態をすべてクリアする。解析して保存した Issue
+     * の件数の累計もここでだけクリアする。
      * </p>
      *
      * @since 0.1.0
@@ -465,16 +470,30 @@ public class CarryoverServiceImpl implements CarryoverService {
         final CarryoverSourceModel source = new CarryoverSourceModel(properties);
         this.full = full;
         this.batchSize = properties.getBatchSize();
+        this.initializeUnitState();
+        this.savedCount = 0;
+        this.carryoverCollectService.initialize(source, properties.getRecentCount(), full);
+        this.carryoverAggregateService.initialize(source.getDataDir());
+
+    }
+
+    /**
+     * 単位状態を初期化する<br>
+     * <p>
+     * 単位の番号、解析結果、分割済み参照、取得件数と補完・不明の件数を初期値に戻す。解析して保存した Issue の件数の累計は戻さない。
+     * </p>
+     *
+     * @since 0.1.0
+     */
+    private void initializeUnitState() {
+
         this.batchIndex = 0;
         this.batchAggregated = false;
         this.batchIssues = List.of();
         this.batches = List.of();
-        this.savedCount = 0;
         this.remoteCount = 0;
         this.defaultCount = 0;
         this.unknownCount = 0;
-        this.carryoverCollectService.initialize(source, properties.getRecentCount(), full);
-        this.carryoverAggregateService.initialize(source.getDataDir());
 
     }
 
@@ -487,7 +506,7 @@ public class CarryoverServiceImpl implements CarryoverService {
      */
     private String modeName() {
 
-        String result = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31008);
+        final String result;
 
         /* 全件モードか */
         if (!this.full) {
@@ -495,6 +514,7 @@ public class CarryoverServiceImpl implements CarryoverService {
             // 全件モードではない場合
 
             // 差分の名前を返す
+            result = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31008);
             return result;
 
         }
@@ -508,7 +528,8 @@ public class CarryoverServiceImpl implements CarryoverService {
      * 本文を持たない索引を作り、単位に分ける<br>
      * <p>
      * {@link #initialize(CarryoverPropertiesModel, boolean)} のあと、{@link #collect()} の前に呼ぶ。単位が残っているときは
-     * {@link IllegalStateException} を投げる。単位が残っていないとき（未取得や消化済み）は状態を戻して取得する。
+     * {@link IllegalStateException} を投げる。単位が残っていないとき（未取得や消化済み）は単位状態を戻して取得する。解析して保存した Issue
+     * の件数の累計は戻さない。
      * </p>
      *
      * @since 0.1.0
@@ -539,14 +560,7 @@ public class CarryoverServiceImpl implements CarryoverService {
         }
 
         /* 単位状態の初期化 */
-        this.batchIndex = 0;
-        this.batchAggregated = false;
-        this.batchIssues = List.of();
-        this.batches = List.of();
-        this.savedCount = 0;
-        this.remoteCount = 0;
-        this.defaultCount = 0;
-        this.unknownCount = 0;
+        this.initializeUnitState();
 
         /* 索引の作成と単位への分割 */
         final List<DailyTaskIssueRefModel> refs = this.carryoverCollectService.fetchRefs();
