@@ -659,6 +659,7 @@ public class CarryoverCollectServiceImplTest {
         /* 検証の準備 */
         final int                       actualSaved = testResult;
         final List<CarryoverIssueModel> batch       = testTarget.getBatchIssues();
+        @SuppressWarnings("null")
         final List<Integer>             actualBatch = batch.stream().map(CarryoverIssueModel::getNumber).toList();
 
         /* 検証の実施 */

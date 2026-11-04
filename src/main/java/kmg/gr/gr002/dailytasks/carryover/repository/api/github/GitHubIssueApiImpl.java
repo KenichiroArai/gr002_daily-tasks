@@ -401,9 +401,10 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
     private JsonNode fetchPage(final HttpClient httpClient, final int page, final GitHubApiUrlTypes queryType)
         throws IOException {
 
-        final URI      uri    = URI.create(String.format(queryType.getUrl(), this.apiBaseUrl,
+        final JsonNode result;
+        final URI      uri = URI.create(String.format(queryType.getUrl(), this.apiBaseUrl,
             this.settings.getRepository(), GitHubIssueApiImpl.PER_PAGE, page));
-        final JsonNode result = this.fetchResponse(httpClient, uri, true);
+        result = this.fetchResponse(httpClient, uri, true);
         return result;
 
     }
@@ -625,7 +626,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
                 final int remainingCount = Integer.parseInt(remaining);
                 warn = remainingCount <= GitHubIssueApiImpl.RATE_LIMIT_WARN_THRESHOLD;
 
-            } catch (final NumberFormatException e) {
+            } catch (@SuppressWarnings("unused") final NumberFormatException e) {
 
                 // 数にできない場合
 

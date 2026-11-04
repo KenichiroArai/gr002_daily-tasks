@@ -387,6 +387,7 @@ public class DailyTaskIssueLogicImplTest {
         final List<DailyTaskIssueRefModel> testResult = testTarget.fetchRecentIssueRefs(2);
 
         /* 検証の準備 */
+        @SuppressWarnings("null")
         final List<Integer> actualNumbers = testResult.stream().map(DailyTaskIssueRefModel::getNumber).toList();
 
         /* 検証の実施 */

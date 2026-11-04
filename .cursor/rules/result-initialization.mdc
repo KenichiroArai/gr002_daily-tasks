@@ -1,0 +1,39 @@
+---
+description: result の初期値はガードで返すときだけ置く
+globs: src/main/java/**/*.java
+alwaysApply: false
+---
+
+# result の初期化
+
+`src/main/java` の戻り値 `result` について、次を守る。詳細は `AGENTS.md` の「メソッドの戻り値」と kb002 の `docs/coding-rules.md`。
+
+- メソッド先頭で `result` を宣言する
+- **初期値は、その値をガード節などで早期 return するときだけ**置く
+- 後で必ず上書きするだけの初期値は書かない（`null` / `false` / `0` のダミーも禁止）
+- 初期値なしのときは宣言だけし、値が決まったところで代入する。各経路の代入が 1 回なら `final`
+- 累積（`result++` / `result +=`）の開始値は初期化してよい
+
+```java
+// ❌ 読まれない初期化
+boolean result = false;
+result = this.hasNext();
+return result;
+
+// ✅ 宣言と代入をまとめる
+boolean result = this.hasNext();
+return result;
+
+// ✅ 宣言だけ → 代入（経路が分かれるとき）
+final boolean result;
+result = this.hasNext();
+return result;
+
+// ✅ ガードで初期値を返すときだけ初期化してよい
+int result = 0;
+if (batch.isEmpty()) {
+    return result;
+}
+result = this.collectBatch(batch);
+return result;
+```

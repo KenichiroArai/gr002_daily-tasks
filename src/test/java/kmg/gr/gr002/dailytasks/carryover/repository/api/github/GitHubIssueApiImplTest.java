@@ -767,6 +767,7 @@ public class GitHubIssueApiImplTest {
             final List<GitHubIssueRefDto> testResult = testTarget.fetchRecentIssueRefs(2);
 
             /* 検証の準備 */
+            @SuppressWarnings("null")
             final List<Integer> actualNumbers = testResult.stream().map(GitHubIssueRefDto::getNumber).toList();
             final URI           actualUri     = testHttpClient.getRequests().get(0).uri();
 
@@ -805,6 +806,7 @@ public class GitHubIssueApiImplTest {
             final List<GitHubIssueRefDto> testResult = testTarget.fetchRecentIssueRefs(10);
 
             /* 検証の準備 */
+            @SuppressWarnings("null")
             final List<Integer> actualNumbers = testResult.stream().map(GitHubIssueRefDto::getNumber).toList();
             final int           actualPages   = testHttpClient.getRequests().size();
 
@@ -846,6 +848,7 @@ public class GitHubIssueApiImplTest {
             final List<GitHubIssueRefDto> testResult = testTarget.fetchRecentIssueRefs(1);
 
             /* 検証の準備 */
+            @SuppressWarnings("null")
             final List<Integer> actualNumbers = testResult.stream().map(GitHubIssueRefDto::getNumber).toList();
             final int           actualPages   = testHttpClient.getRequests().size();
 
