@@ -6,6 +6,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -567,7 +568,7 @@ public class GitHubIssueApiImplTest {
         final int    expectedNumber    = 1;
         final String expectedTitle     = "2026年10月06日のタスク";
         final String expectedState     = "open";
-        final String expectedUpdatedAt = "2026-10-06T14:23:08Z";
+        final Instant expectedUpdatedAt = Instant.parse("2026-10-06T14:23:08Z");
 
         /* 準備 */
         try (StubHttpClient testHttpClient = new StubHttpClient()) {
@@ -584,7 +585,7 @@ public class GitHubIssueApiImplTest {
             final int               actualNumber    = actualRef.getNumber();
             final String            actualTitle     = actualRef.getTitle();
             final String            actualState     = actualRef.getState();
-            final String            actualUpdatedAt = actualRef.getUpdatedAt();
+            final Instant            actualUpdatedAt = actualRef.getUpdatedAt();
 
             /* 検証の実施 */
             Assertions.assertEquals(expectedNumber, actualNumber, "Issue 番号が一致しません");
@@ -1234,7 +1235,7 @@ public class GitHubIssueApiImplTest {
         final int    expectedNumber    = 371;
         final String expectedTitle     = "2026年10月06日のタスク";
         final String expectedState     = "open";
-        final String expectedUpdatedAt = "2026-10-06T14:23:08Z";
+        final Instant expectedUpdatedAt = Instant.parse("2026-10-06T14:23:08Z");
         final String expectedBody      = "本文";
 
         /* 準備 */
@@ -1248,7 +1249,7 @@ public class GitHubIssueApiImplTest {
         final int    actualNumber    = testResult.getNumber();
         final String actualTitle     = testResult.getTitle();
         final String actualState     = testResult.getState();
-        final String actualUpdatedAt = testResult.getUpdatedAt();
+        final Instant actualUpdatedAt = testResult.getUpdatedAt();
         final String actualBody      = testResult.getBody();
 
         /* 検証の実施 */
@@ -1257,6 +1258,64 @@ public class GitHubIssueApiImplTest {
         Assertions.assertEquals(expectedState, actualState, "状態が一致しません");
         Assertions.assertEquals(expectedUpdatedAt, actualUpdatedAt, "更新日時が一致しません");
         Assertions.assertEquals(expectedBody, actualBody, "本文が一致しません");
+
+    }
+
+    /**
+     * parseUpdatedAt メソッドのテスト - 更新日時の文字列が null の場合
+     *
+     * @since 0.1.0
+     *
+     * @throws Exception
+     *                   例外
+     */
+    @Test
+    public void testParseUpdatedAt_semiNull() throws Exception {
+
+        /* 期待値の定義 */
+        final Instant expected = null;
+
+        /* 準備 */
+
+        /* テスト対象の実行 */
+        final Instant testResult = ReflectionTestUtil.invokeStatic(GitHubIssueApiImpl.class, "parseUpdatedAt", new Class<?>[] {
+            String.class
+        }, (String) null);
+
+        /* 検証の準備 */
+        final Instant actual = testResult;
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expected, actual, "変換結果が一致しません");
+
+    }
+
+    /**
+     * parseUpdatedAt メソッドのテスト - 更新日時の文字列が空の場合
+     *
+     * @since 0.1.0
+     *
+     * @throws Exception
+     *                   例外
+     */
+    @Test
+    public void testParseUpdatedAt_semiBlank() throws Exception {
+
+        /* 期待値の定義 */
+        final Instant expected = null;
+
+        /* 準備 */
+
+        /* テスト対象の実行 */
+        final Instant testResult = ReflectionTestUtil.invokeStatic(GitHubIssueApiImpl.class, "parseUpdatedAt", new Class<?>[] {
+            String.class
+        }, " ");
+
+        /* 検証の準備 */
+        final Instant actual = testResult;
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expected, actual, "変換結果が一致しません");
 
     }
 

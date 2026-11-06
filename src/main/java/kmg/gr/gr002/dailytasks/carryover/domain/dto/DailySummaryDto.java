@@ -1,5 +1,7 @@
 package kmg.gr.gr002.dailytasks.carryover.domain.dto;
 
+import java.time.LocalDate;
+
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailySummaryModel;
 
 /**
@@ -31,11 +33,11 @@ public class DailySummaryDto {
     private final ItemStatsDto byOriginMonth;
 
     /**
-     * その日の日付（yyyy-MM-dd）
+     * その日の日付
      *
      * @since 0.1.0
      */
-    private final String date;
+    private final LocalDate date;
 
     /**
      * 本文の「残：N」の値。記載がない場合は null
@@ -85,7 +87,7 @@ public class DailySummaryDto {
      * @since 0.1.0
      *
      * @param date
-     *                      その日の日付（yyyy-MM-dd）
+     *                      その日の日付
      * @param issue
      *                      Issue 番号
      * @param declaredCount
@@ -97,7 +99,7 @@ public class DailySummaryDto {
      * @param byOriginMonth
      *                      持ち越し元の月ごとの集計（キーは yyyy-MM）
      */
-    public DailySummaryDto(final String date, final int issue, final Integer declaredCount, final ItemStatDto total,
+    public DailySummaryDto(final LocalDate date, final int issue, final Integer declaredCount, final ItemStatDto total,
         final ItemStatsDto byItem, final ItemStatsDto byOriginMonth) {
 
         this.date = date;
@@ -142,11 +144,11 @@ public class DailySummaryDto {
      *
      * @since 0.1.0
      *
-     * @return その日の日付（yyyy-MM-dd）
+     * @return その日の日付
      */
-    public String getDate() {
+    public LocalDate getDate() {
 
-        final String result = this.date;
+        final LocalDate result = this.date;
         return result;
 
     }

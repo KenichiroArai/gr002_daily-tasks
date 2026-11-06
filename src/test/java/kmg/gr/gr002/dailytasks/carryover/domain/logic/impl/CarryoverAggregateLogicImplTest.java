@@ -1,5 +1,7 @@
 package kmg.gr.gr002.dailytasks.carryover.domain.logic.impl;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
@@ -49,7 +51,7 @@ public class CarryoverAggregateLogicImplTest {
         final List<CarryoverItemModel> items) {
 
         final CarryoverIssueModel result
-            = new CarryoverIssueModel(number, "title", date, "closed", "2026-10-06T00:00:00Z", sections, null, items);
+            = new CarryoverIssueModel(number, "title", (date == null) ? null : LocalDate.parse(date), "closed", Instant.parse("2026-10-06T00:00:00Z"), sections, null, items);
         return result;
 
     }
@@ -67,7 +69,7 @@ public class CarryoverAggregateLogicImplTest {
     private static CarryoverItemModel createItem(final String name) {
 
         final CarryoverItemModel result
-            = new CarryoverItemModel(name, "2026-06-18", false, 15, MinutesSourceTypes.PARSED, "持ち越し", "raw");
+            = new CarryoverItemModel(name, LocalDate.parse("2026-06-18"), false, 15, MinutesSourceTypes.PARSED, "持ち越し", "raw");
         return result;
 
     }
@@ -111,10 +113,10 @@ public class CarryoverAggregateLogicImplTest {
         final List<DailySummaryModel> expectedDays      = expectedSummary.getDays();
 
         @SuppressWarnings("null")
-        final List<String> actualDates = actualDays.stream().map(DailySummaryModel::getDate).toList();
+        final List<LocalDate> actualDates = actualDays.stream().map(DailySummaryModel::getDate).toList();
 
         @SuppressWarnings("null")
-        final List<String> expectedDates  = expectedDays.stream().map(DailySummaryModel::getDate).toList();
+        final List<LocalDate> expectedDates  = expectedDays.stream().map(DailySummaryModel::getDate).toList();
         final int          actualLatest   = testResult.getLatestIssue();
         final int          expectedLatest = expectedSummary.getLatestIssue();
         final List<String> actualItems    = testResult.getItems();
@@ -138,7 +140,7 @@ public class CarryoverAggregateLogicImplTest {
     public void testAggregate_normalFromFirstSection() {
 
         /* 期待値の定義 */
-        final List<String>  expectedDates       = List.of("2026-03-24", "2026-03-25", "2026-03-26");
+        final List<LocalDate> expectedDates     = List.of(LocalDate.parse("2026-03-24"), LocalDate.parse("2026-03-25"), LocalDate.parse("2026-03-26"));
         final List<Integer> expectedCounts      = List.of(2, 0, 1);
         final List<String>  expectedItems       = List.of("音楽", "国語");
         final int           expectedLatestIssue = 177;
@@ -163,7 +165,7 @@ public class CarryoverAggregateLogicImplTest {
         final List<DailySummaryModel> days = testResult.getDays();
 
         @SuppressWarnings("null")
-        final List<String>  actualDates       = days.stream().map(DailySummaryModel::getDate).toList();
+        final List<LocalDate>  actualDates       = days.stream().map(DailySummaryModel::getDate).toList();
         final List<Integer> actualCounts      = days.stream().map(day -> {
 
                                                   final ItemStatModel total = day.getTotal();

@@ -1,5 +1,8 @@
 package kmg.gr.gr002.dailytasks.carryover.application.model;
 
+import java.time.Instant;
+import java.time.LocalDate;
+
 /**
  * 日々のタスク Issue の参照（本文なし）<br>
  * <p>
@@ -15,11 +18,11 @@ package kmg.gr.gr002.dailytasks.carryover.application.model;
 public class DailyTaskIssueRefModel {
 
     /**
-     * タイトルから取得した日付（yyyy-MM-dd）。取得できない場合は null
+     * タイトルから取得した日付。取得できない場合は null
      *
      * @since 0.1.0
      */
-    private final String date;
+    private final LocalDate date;
 
     /**
      * Issue 番号
@@ -43,11 +46,11 @@ public class DailyTaskIssueRefModel {
     private final String title;
 
     /**
-     * Issue の更新日時（ISO-8601）
+     * Issue の更新日時。欠落時は null
      *
      * @since 0.1.0
      */
-    private final String updatedAt;
+    private final Instant updatedAt;
 
     /**
      * コンストラクタ<br>
@@ -61,12 +64,12 @@ public class DailyTaskIssueRefModel {
      * @param state
      *                  Issue の状態（open / closed）
      * @param updatedAt
-     *                  Issue の更新日時（ISO-8601）
+     *                  Issue の更新日時。欠落時は null
      * @param date
-     *                  タイトルから取得した日付（yyyy-MM-dd）。取得できない場合は null
+     *                  タイトルから取得した日付。取得できない場合は null
      */
-    public DailyTaskIssueRefModel(final int number, final String title, final String state, final String updatedAt,
-        final String date) {
+    public DailyTaskIssueRefModel(final int number, final String title, final String state, final Instant updatedAt,
+        final LocalDate date) {
 
         this.number = number;
         this.title = title;
@@ -81,11 +84,11 @@ public class DailyTaskIssueRefModel {
      *
      * @since 0.1.0
      *
-     * @return 日付（yyyy-MM-dd）。取得できない場合は null
+     * @return 日付。取得できない場合は null
      */
-    public String getDate() {
+    public LocalDate getDate() {
 
-        final String result = this.date;
+        final LocalDate result = this.date;
         return result;
 
     }
@@ -137,11 +140,11 @@ public class DailyTaskIssueRefModel {
      *
      * @since 0.1.0
      *
-     * @return Issue の更新日時（ISO-8601）
+     * @return Issue の更新日時。欠落時は null
      */
-    public String getUpdatedAt() {
+    public Instant getUpdatedAt() {
 
-        final String result = this.updatedAt;
+        final Instant result = this.updatedAt;
         return result;
 
     }

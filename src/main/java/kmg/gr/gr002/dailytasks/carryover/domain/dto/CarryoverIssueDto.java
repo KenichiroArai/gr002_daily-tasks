@@ -1,5 +1,7 @@
 package kmg.gr.gr002.dailytasks.carryover.domain.dto;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
@@ -48,11 +50,11 @@ public class CarryoverIssueDto {
     private final int count;
 
     /**
-     * その日の日付（yyyy-MM-dd）。タイトルから取得できない場合は null
+     * その日の日付。タイトルから取得できない場合は null
      *
      * @since 0.1.0
      */
-    private final String date;
+    private final LocalDate date;
 
     /**
      * 本文の「残：N」の値。記載がない場合は null
@@ -104,11 +106,11 @@ public class CarryoverIssueDto {
     private final String title;
 
     /**
-     * Issue の更新日時（ISO-8601）
+     * Issue の更新日時。欠落時は null
      *
      * @since 0.1.0
      */
-    private final String updatedAt;
+    private final Instant updatedAt;
 
     /**
      * 持ち越しの解析結果から保存用の DTO を作る<br>
@@ -139,11 +141,11 @@ public class CarryoverIssueDto {
      * @param title
      *                      Issue タイトル
      * @param date
-     *                      その日の日付（yyyy-MM-dd）。タイトルから取得できない場合は null
+     *                      その日の日付。タイトルから取得できない場合は null
      * @param state
      *                      Issue の状態（open / closed）
      * @param updatedAt
-     *                      Issue の更新日時（ISO-8601）
+     *                      Issue の更新日時。欠落時は null
      * @param sections
      *                      本文にあった対象セクション名
      * @param declaredCount
@@ -155,8 +157,8 @@ public class CarryoverIssueDto {
      * @param items
      *                      持ち越し項目
      */
-    public CarryoverIssueDto(final int number, final String title, final String date, final String state,
-        final String updatedAt, final List<String> sections, final Integer declaredCount, final int count,
+    public CarryoverIssueDto(final int number, final String title, final LocalDate date, final String state,
+        final Instant updatedAt, final List<String> sections, final Integer declaredCount, final int count,
         final double minutes, final List<CarryoverItemDto> items) {
 
         this.number = number;
@@ -191,11 +193,11 @@ public class CarryoverIssueDto {
      *
      * @since 0.1.0
      *
-     * @return その日の日付（yyyy-MM-dd）。タイトルから取得できない場合は null
+     * @return その日の日付。タイトルから取得できない場合は null
      */
-    public String getDate() {
+    public LocalDate getDate() {
 
-        final String result = this.date;
+        final LocalDate result = this.date;
         return result;
 
     }
@@ -303,11 +305,11 @@ public class CarryoverIssueDto {
      *
      * @since 0.1.0
      *
-     * @return Issue の更新日時（ISO-8601）
+     * @return Issue の更新日時。欠落時は null
      */
-    public String getUpdatedAt() {
+    public Instant getUpdatedAt() {
 
-        final String result = this.updatedAt;
+        final Instant result = this.updatedAt;
         return result;
 
     }

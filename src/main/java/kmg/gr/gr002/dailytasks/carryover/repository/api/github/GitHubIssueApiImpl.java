@@ -7,6 +7,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -85,6 +86,47 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
     private static final Duration TIMEOUT = Duration.ofSeconds(30);
 
     /**
+     * 更新日時の文字列を日時に変換する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param text
+     *             更新日時の文字列（ISO-8601）
+     *
+     * @return 更新日時。文字列が null または空の場合は null
+     */
+    private static Instant parseUpdatedAt(final String text) {
+
+        Instant result = null;
+
+        /* 文字列がないか */
+        if (text == null) {
+
+            // 文字列がない場合
+
+            // 日時なしとする
+            return result;
+
+        }
+
+        /* 文字列が空か */
+        final boolean blank = text.isBlank();
+
+        if (blank) {
+
+            // 文字列が空の場合
+
+            // 日時なしとする
+            return result;
+
+        }
+
+        result = Instant.parse(text);
+        return result;
+
+    }
+
+    /**
      * 文字列の項目を返す<br>
      *
      * @since 0.1.0
@@ -147,7 +189,8 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
         result = new GitHubIssueDto(number,
             GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.TITLE.getFieldName()),
             GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.STATE.getFieldName()),
-            GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.UPDATED_AT.getFieldName()),
+            GitHubIssueApiImpl
+                .parseUpdatedAt(GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.UPDATED_AT.getFieldName())),
             GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.BODY.getFieldName()));
         return result;
 
@@ -172,7 +215,8 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
         result = new GitHubIssueRefDto(number,
             GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.TITLE.getFieldName()),
             GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.STATE.getFieldName()),
-            GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.UPDATED_AT.getFieldName()));
+            GitHubIssueApiImpl
+                .parseUpdatedAt(GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.UPDATED_AT.getFieldName())));
         return result;
 
     }

@@ -1,9 +1,12 @@
 package kmg.gr.gr002.dailytasks.carryover.repository.dto.json;
 
+import java.time.LocalDate;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverItemDto;
+import kmg.gr.gr002.dailytasks.testutil.ReflectionTestUtil;
 
 /**
  * {@link CarryoverItemJsonDto} のテスト<br>
@@ -47,7 +50,7 @@ public class CarryoverItemJsonDtoTest {
 
         /* 準備 */
         final CarryoverItemDto testItem
-            = new CarryoverItemDto("音楽", "2026-08-18", true, 11.5, "parsed", "持ち越し", expectedRaw);
+            = new CarryoverItemDto("音楽", LocalDate.parse("2026-08-18"), true, 11.5, "parsed", "持ち越し", expectedRaw);
 
         /* テスト対象の実行 */
         final CarryoverItemJsonDto testResult = new CarryoverItemJsonDto(testItem);
@@ -260,4 +263,88 @@ public class CarryoverItemJsonDtoTest {
 
     }
 
+    /**
+     * parseDate メソッドのテスト - 日付の文字列が null の場合
+     *
+     * @since 0.1.0
+     *
+     * @throws Exception
+     *                   例外
+     */
+    @Test
+    public void testParseDate_semiNull() throws Exception {
+
+        /* 期待値の定義 */
+        final LocalDate expected = null;
+
+        /* 準備 */
+
+        /* テスト対象の実行 */
+        final LocalDate testResult = ReflectionTestUtil.invokeStatic(CarryoverItemJsonDto.class, "parseDate", new Class<?>[] {
+            String.class
+        }, (String) null);
+
+        /* 検証の準備 */
+        final LocalDate actual = testResult;
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expected, actual, "変換結果が一致しません");
+
+    }
+    /**
+     * parseDate メソッドのテスト - 日付の文字列が空の場合
+     *
+     * @since 0.1.0
+     *
+     * @throws Exception
+     *                   例外
+     */
+    @Test
+    public void testParseDate_semiBlank() throws Exception {
+
+        /* 期待値の定義 */
+        final LocalDate expected = null;
+
+        /* 準備 */
+
+        /* テスト対象の実行 */
+        final LocalDate testResult = ReflectionTestUtil.invokeStatic(CarryoverItemJsonDto.class, "parseDate", new Class<?>[] {
+            String.class
+        }, " ");
+
+        /* 検証の準備 */
+        final LocalDate actual = testResult;
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expected, actual, "変換結果が一致しません");
+
+    }
+    /**
+     * toText メソッドのテスト - 日付が null の場合
+     *
+     * @since 0.1.0
+     *
+     * @throws Exception
+     *                   例外
+     */
+    @Test
+    public void testToText_semiNullDate() throws Exception {
+
+        /* 期待値の定義 */
+        final String expected = null;
+
+        /* 準備 */
+
+        /* テスト対象の実行 */
+        final String testResult = ReflectionTestUtil.invokeStatic(CarryoverItemJsonDto.class, "toText", new Class<?>[] {
+            LocalDate.class
+        }, (LocalDate) null);
+
+        /* 検証の準備 */
+        final String actual = testResult;
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expected, actual, "変換結果が一致しません");
+
+    }
 }

@@ -1,5 +1,7 @@
 package kmg.gr.gr002.dailytasks.carryover.domain.dto;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
@@ -33,10 +35,10 @@ public class CarryoverIssueDtoTest {
      */
     private static CarryoverIssueModel createIssue() {
 
-        final CarryoverItemModel  item   = new CarryoverItemModel("音楽", "2026-08-18", true, 11.5,
+        final CarryoverItemModel  item   = new CarryoverItemModel("音楽", LocalDate.parse("2026-08-18"), true, 11.5,
             MinutesSourceTypes.PARSED, "持ち越し", "- [x] 音楽2026/08/18（残り時間：11.5分）");
-        final CarryoverIssueModel result = new CarryoverIssueModel(371, "2026年10月06日のタスク", "2026-10-06", "open",
-            "2026-10-06T14:23:08Z", List.of("持ち越し"), 1, List.of(item));
+        final CarryoverIssueModel result = new CarryoverIssueModel(371, "2026年10月06日のタスク", LocalDate.parse("2026-10-06"), "open",
+            Instant.parse("2026-10-06T14:23:08Z"), List.of("持ち越し"), 1, List.of(item));
         return result;
 
     }
@@ -53,10 +55,10 @@ public class CarryoverIssueDtoTest {
      */
     private static CarryoverIssueDto createIssueDto(final String minutesSource) {
 
-        final CarryoverItemDto  item   = new CarryoverItemDto("国語", "2026-06-18", false, 15.0, minutesSource, "持ち越し",
+        final CarryoverItemDto  item   = new CarryoverItemDto("国語", LocalDate.parse("2026-06-18"), false, 15.0, minutesSource, "持ち越し",
             "- [ ] 国語2026/06/18");
-        final CarryoverIssueDto result = new CarryoverIssueDto(371, "2026年10月06日のタスク", "2026-10-06", "open",
-            "2026-10-06T14:23:08Z", List.of("持ち越し"), 1, 1, 15.0, List.of(item));
+        final CarryoverIssueDto result = new CarryoverIssueDto(371, "2026年10月06日のタスク", LocalDate.parse("2026-10-06"), "open",
+            Instant.parse("2026-10-06T14:23:08Z"), List.of("持ち越し"), 1, 1, 15.0, List.of(item));
         return result;
 
     }
@@ -70,10 +72,10 @@ public class CarryoverIssueDtoTest {
      */
     private static CarryoverIssueDto createTarget() {
 
-        final CarryoverItemDto  item   = new CarryoverItemDto("国語", "2026-06-18", false, 8.5, "parsed", "持ち越し",
+        final CarryoverItemDto  item   = new CarryoverItemDto("国語", LocalDate.parse("2026-06-18"), false, 8.5, "parsed", "持ち越し",
             "- [ ] 国語2026/06/18（残り時間：8.5分）");
-        final CarryoverIssueDto result = new CarryoverIssueDto(371, "2026年10月06日のタスク", "2026-10-06", "open",
-            "2026-10-06T14:23:08Z", List.of("持ち越し"), 1, 1, 8.5, List.of(item));
+        final CarryoverIssueDto result = new CarryoverIssueDto(371, "2026年10月06日のタスク", LocalDate.parse("2026-10-06"), "open",
+            Instant.parse("2026-10-06T14:23:08Z"), List.of("持ち越し"), 1, 1, 8.5, List.of(item));
         return result;
 
     }
@@ -164,16 +166,16 @@ public class CarryoverIssueDtoTest {
     public void testGetDate_normalValue() {
 
         /* 期待値の定義 */
-        final String expectedDate = "2026-10-06";
+        final LocalDate expectedDate = LocalDate.parse("2026-10-06");
 
         /* 準備 */
         final CarryoverIssueDto testTarget = CarryoverIssueDtoTest.createTarget();
 
         /* テスト対象の実行 */
-        final String testResult = testTarget.getDate();
+        final LocalDate testResult = testTarget.getDate();
 
         /* 検証の準備 */
-        final String actualDate = testResult;
+        final LocalDate actualDate = testResult;
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedDate, actualDate, "その日の日付が一致しません");
@@ -365,16 +367,16 @@ public class CarryoverIssueDtoTest {
     public void testGetUpdatedAt_normalValue() {
 
         /* 期待値の定義 */
-        final String expectedUpdatedAt = "2026-10-06T14:23:08Z";
+        final Instant expectedUpdatedAt = Instant.parse("2026-10-06T14:23:08Z");
 
         /* 準備 */
         final CarryoverIssueDto testTarget = CarryoverIssueDtoTest.createTarget();
 
         /* テスト対象の実行 */
-        final String testResult = testTarget.getUpdatedAt();
+        final Instant testResult = testTarget.getUpdatedAt();
 
         /* 検証の準備 */
-        final String actualUpdatedAt = testResult;
+        final Instant actualUpdatedAt = testResult;
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedUpdatedAt, actualUpdatedAt, "更新日時が一致しません");
@@ -390,7 +392,7 @@ public class CarryoverIssueDtoTest {
     public void testToCarryoverIssueModel_normalIssue() {
 
         /* 期待値の定義 */
-        final String expectedUpdatedAt = "2026-10-06T14:23:08Z";
+        final Instant expectedUpdatedAt = Instant.parse("2026-10-06T14:23:08Z");
 
         /* 準備 */
         final CarryoverIssueDto testDto = CarryoverIssueDtoTest.createIssueDto("default");
@@ -399,7 +401,7 @@ public class CarryoverIssueDtoTest {
         final CarryoverIssueModel testResult = testDto.toCarryoverIssueModel(DailyTasksMessageSourceTestUtil.create());
 
         /* 検証の準備 */
-        final String actualUpdatedAt = testResult.getUpdatedAt();
+        final Instant actualUpdatedAt = testResult.getUpdatedAt();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedUpdatedAt, actualUpdatedAt, "更新日時が一致しません");

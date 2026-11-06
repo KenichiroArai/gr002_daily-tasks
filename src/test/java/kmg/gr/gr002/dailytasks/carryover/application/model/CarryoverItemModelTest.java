@@ -1,5 +1,7 @@
 package kmg.gr.gr002.dailytasks.carryover.application.model;
 
+import java.time.LocalDate;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +30,7 @@ public class CarryoverItemModelTest {
      */
     private static CarryoverItemModel createItem() {
 
-        final CarryoverItemModel result = new CarryoverItemModel("音楽", "2026-08-18", true, 11.5,
+        final CarryoverItemModel result = new CarryoverItemModel("音楽", LocalDate.parse("2026-08-18"), true, 11.5,
             MinutesSourceTypes.PARSED, "持ち越し", "- [x] 音楽2026/08/18（残り時間：11.5分）");
         return result;
 
@@ -118,16 +120,16 @@ public class CarryoverItemModelTest {
     public void testGetOriginDate_normalValue() {
 
         /* 期待値の定義 */
-        final String expectedOriginDate = "2026-08-18";
+        final LocalDate expectedOriginDate = LocalDate.parse("2026-08-18");
 
         /* 準備 */
         final CarryoverItemModel testTarget = CarryoverItemModelTest.createItem();
 
         /* テスト対象の実行 */
-        final String testResult = testTarget.getOriginDate();
+        final LocalDate testResult = testTarget.getOriginDate();
 
         /* 検証の準備 */
-        final String actualOriginDate = testResult;
+        final LocalDate actualOriginDate = testResult;
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedOriginDate, actualOriginDate, "持ち越し元の日付が一致しません");

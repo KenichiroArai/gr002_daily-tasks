@@ -1,5 +1,6 @@
 package kmg.gr.gr002.dailytasks.carryover.domain.logic.impl;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -161,7 +162,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
     }
 
     /**
-     * 年・月・日を yyyy-MM-dd 形式にする<br>
+     * 年・月・日から日付を作る<br>
      *
      * @since 0.1.0
      *
@@ -172,12 +173,11 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
      * @param day
      *              日
      *
-     * @return yyyy-MM-dd 形式の日付
+     * @return 日付
      */
-    private static String formatDate(final String year, final String month, final String day) {
+    private static LocalDate formatDate(final String year, final String month, final String day) {
 
-        final String result = String.format(CarryoverParseTextTypes.DATE.getText(), Integer.valueOf(year),
-            Integer.valueOf(month), Integer.valueOf(day));
+        final LocalDate result = LocalDate.of(Integer.valueOf(year), Integer.valueOf(month), Integer.valueOf(day));
         return result;
 
     }
@@ -328,11 +328,11 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
      * @param title
      *              Issue タイトル
      *
-     * @return 日付（yyyy-MM-dd）。取得できない場合は null
+     * @return 日付。取得できない場合は null
      */
-    private static String titleDate(final String title) {
+    private static LocalDate titleDate(final String title) {
 
-        String result = null;
+        LocalDate result = null;
 
         /* タイトルがないか */
         if (title == null) {
@@ -422,7 +422,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
         final CarryoverIssueModel result;
 
         /* 日付の取得 */
-        final String date = CarryoverParseLogicImpl.titleDate(issue.getTitle());
+        final LocalDate date = CarryoverParseLogicImpl.titleDate(issue.getTitle());
 
         /* 日付が取得できたか */
         if (date == null) {
@@ -540,7 +540,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         /* 項目名・持ち越し元の日付・残りの部分の分割 */
         String        namePart     = content;
-        String        originDate   = null;
+        LocalDate     originDate   = null;
         String        rest         = content;
         final Matcher datedMatcher = CarryoverParseLogicImpl.DATED_CONTENT.matcher(content);
 
@@ -643,12 +643,12 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
      * @param title
      *              Issue タイトル
      *
-     * @return 日付（yyyy-MM-dd）。取得できない場合は null
+     * @return 日付。取得できない場合は null
      */
     @Override
-    public String parseTitleDate(final String title) {
+    public LocalDate parseTitleDate(final String title) {
 
-        final String result = CarryoverParseLogicImpl.titleDate(title);
+        final LocalDate result = CarryoverParseLogicImpl.titleDate(title);
         return result;
 
     }

@@ -1,5 +1,7 @@
 package kmg.gr.gr002.dailytasks.carryover.repository.dto.json;
 
+import java.time.LocalDate;
+
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.DailySummaryDto;
@@ -17,6 +19,35 @@ import kmg.gr.gr002.dailytasks.carryover.domain.dto.DailySummaryDto;
     "date", "issue", "declaredCount", "total", "byItem", "byOriginMonth"
 })
 public class DailySummaryJsonDto {
+
+    /**
+     * 日付を文字列に変換する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param date
+     *             日付
+     *
+     * @return 日付の文字列（yyyy-MM-dd）。日付が null の場合は null
+     */
+    private static String toText(final LocalDate date) {
+
+        String result = null;
+
+        /* 日付がないか */
+        if (date == null) {
+
+            // 日付がない場合
+
+            // 文字列なしとする
+            return result;
+
+        }
+
+        result = date.toString();
+        return result;
+
+    }
 
     /**
      * 項目ごとの集計（キーは項目名）
@@ -73,7 +104,7 @@ public class DailySummaryJsonDto {
      */
     public DailySummaryJsonDto(final DailySummaryDto day) {
 
-        this(day.getDate(), day.getIssue(), day.getDeclaredCount(), new ItemStatJsonDto(day.getTotal()),
+        this(DailySummaryJsonDto.toText(day.getDate()), day.getIssue(), day.getDeclaredCount(), new ItemStatJsonDto(day.getTotal()),
             new ItemStatsJsonDto(day.getByItem()), new ItemStatsJsonDto(day.getByOriginMonth()));
 
     }

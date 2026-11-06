@@ -1,5 +1,7 @@
 package kmg.gr.gr002.dailytasks.carryover.application.model;
 
+import java.time.Instant;
+
 /**
  * 日々のタスク Issue（取得したままの内容）<br>
  *
@@ -40,11 +42,11 @@ public class DailyTaskIssueModel {
     private final String title;
 
     /**
-     * Issue の更新日時（ISO-8601）
+     * Issue の更新日時。欠落時は null
      *
      * @since 0.1.0
      */
-    private final String updatedAt;
+    private final Instant updatedAt;
 
     /**
      * コンストラクタ<br>
@@ -58,11 +60,11 @@ public class DailyTaskIssueModel {
      * @param state
      *                  Issue の状態（open / closed）
      * @param updatedAt
-     *                  Issue の更新日時（ISO-8601）
+     *                  Issue の更新日時。欠落時は null
      * @param body
      *                  Issue 本文
      */
-    public DailyTaskIssueModel(final int number, final String title, final String state, final String updatedAt,
+    public DailyTaskIssueModel(final int number, final String title, final String state, final Instant updatedAt,
         final String body) {
 
         this.number = number;
@@ -134,11 +136,11 @@ public class DailyTaskIssueModel {
      *
      * @since 0.1.0
      *
-     * @return Issue の更新日時（ISO-8601）
+     * @return Issue の更新日時。欠落時は null
      */
-    public String getUpdatedAt() {
+    public Instant getUpdatedAt() {
 
-        final String result = this.updatedAt;
+        final Instant result = this.updatedAt;
         return result;
 
     }

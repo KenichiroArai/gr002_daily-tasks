@@ -1,5 +1,7 @@
 package kmg.gr.gr002.dailytasks.carryover.domain.logic.impl;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,7 +74,7 @@ public class CarryoverParseLogicImplTest {
      */
     private static DailyTaskIssueModel createIssue(final String title, final String body) {
 
-        final DailyTaskIssueModel result = new DailyTaskIssueModel(371, title, "open", "2026-10-06T14:23:08Z", body);
+        final DailyTaskIssueModel result = new DailyTaskIssueModel(371, title, "open", Instant.parse("2026-10-06T14:23:08Z"), body);
         return result;
 
     }
@@ -125,9 +127,9 @@ public class CarryoverParseLogicImplTest {
      * @throws Exception
      *                   例外が発生した場合
      */
-    private static String formatDate(final String year, final String month, final String day) throws Exception {
+    private static LocalDate formatDate(final String year, final String month, final String day) throws Exception {
 
-        final String result
+        final LocalDate result
             = ReflectionTestUtil.invokeStatic(CarryoverParseLogicImpl.class, "formatDate", new Class<?>[] {
                 String.class, String.class, String.class
             }, year, month, day);
@@ -224,10 +226,10 @@ public class CarryoverParseLogicImplTest {
      *
      * @return 日付
      */
-    private static String parseTitleDate(final String title) {
+    private static LocalDate parseTitleDate(final String title) {
 
         final CarryoverParseLogicImpl target = new CarryoverParseLogicImpl(DailyTasksMessageSourceTestUtil.create());
-        final String                  result = target.parseTitleDate(title);
+        final LocalDate                  result = target.parseTitleDate(title);
         return result;
 
     }
@@ -396,15 +398,15 @@ public class CarryoverParseLogicImplTest {
     public void testFormatDate_normalZeroPadding() throws Exception {
 
         /* 期待値の定義 */
-        final String expectedDate = "2026-06-05";
+        final LocalDate expectedDate = LocalDate.parse("2026-06-05");
 
         /* 準備 */
 
         /* テスト対象の実行 */
-        final String testResult = CarryoverParseLogicImplTest.formatDate("2026", "6", "5");
+        final LocalDate testResult = CarryoverParseLogicImplTest.formatDate("2026", "6", "5");
 
         /* 検証の準備 */
-        final String actualDate = testResult;
+        final LocalDate actualDate = testResult;
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedDate, actualDate, "日付が一致しません");
@@ -532,7 +534,7 @@ public class CarryoverParseLogicImplTest {
     public void testParse_normalCarryover() {
 
         /* 期待値の定義 */
-        final String       expectedDate          = "2026-10-06";
+        final LocalDate       expectedDate          = LocalDate.parse("2026-10-06");
         final List<String> expectedSections      = List.of("持ち越し");
         final Integer      expectedDeclaredCount = 2;
         final int          expectedCount         = 2;
@@ -555,7 +557,7 @@ public class CarryoverParseLogicImplTest {
 
             /* 検証の準備 */
             final String[]                 actualMsgs          = testLog.getMessages();
-            final String                   actualDate          = testResult.getDate();
+            final LocalDate                   actualDate          = testResult.getDate();
             final List<String>             actualSections      = testResult.getSections();
             final Integer                  actualDeclaredCount = testResult.getDeclaredCount();
             final int                      actualCount         = testResult.getCount();
@@ -690,7 +692,7 @@ public class CarryoverParseLogicImplTest {
 
             /* 検証の準備 */
             final String[] actualMsgs = testLog.getMessages();
-            final String   actualDate = testResult.getDate();
+            final LocalDate   actualDate = testResult.getDate();
 
             /* 検証の実施 */
             Assertions.assertNull(actualDate, "日付は null になる必要があります");
@@ -788,7 +790,7 @@ public class CarryoverParseLogicImplTest {
 
         /* 期待値の定義 */
         final String             expectedName          = "国語";
-        final String             expectedOriginDate    = "2026-06-18";
+        final LocalDate             expectedOriginDate    = LocalDate.parse("2026-06-18");
         final double             expectedMinutes       = 4;
         final MinutesSourceTypes expectedMinutesSource = MinutesSourceTypes.PARSED;
         final String             expectedSection       = "持ち越し";
@@ -802,7 +804,7 @@ public class CarryoverParseLogicImplTest {
 
         /* 検証の準備 */
         final String             actualName          = testResult.getName();
-        final String             actualOriginDate    = testResult.getOriginDate();
+        final LocalDate             actualOriginDate    = testResult.getOriginDate();
         final double             actualMinutes       = testResult.getMinutes();
         final MinutesSourceTypes actualMinutesSource = testResult.getMinutesSource();
         final String             actualSection       = testResult.getSection();
@@ -966,7 +968,7 @@ public class CarryoverParseLogicImplTest {
             /* 検証の準備 */
             final String[] actualMsgs       = testLog.getMessages();
             final String   actualName       = testResult.getName();
-            final String   actualOriginDate = testResult.getOriginDate();
+            final LocalDate   actualOriginDate = testResult.getOriginDate();
             final double   actualMinutes    = testResult.getMinutes();
 
             /* 検証の実施 */
@@ -1213,16 +1215,16 @@ public class CarryoverParseLogicImplTest {
     public void testParseTitleDate_normalDate() throws Exception {
 
         /* 期待値の定義 */
-        final String expectedDate = "2026-10-06";
+        final LocalDate expectedDate = LocalDate.parse("2026-10-06");
 
         /* 準備 */
         final String testTitle = "2026年10月6日のタスク";
 
         /* テスト対象の実行 */
-        final String testResult = CarryoverParseLogicImplTest.parseTitleDate(testTitle);
+        final LocalDate testResult = CarryoverParseLogicImplTest.parseTitleDate(testTitle);
 
         /* 検証の準備 */
-        final String actualDate = testResult;
+        final LocalDate actualDate = testResult;
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedDate, actualDate, "日付が一致しません");
@@ -1246,10 +1248,10 @@ public class CarryoverParseLogicImplTest {
         final String testTitle = "タスク";
 
         /* テスト対象の実行 */
-        final String testResult = CarryoverParseLogicImplTest.parseTitleDate(testTitle);
+        final LocalDate testResult = CarryoverParseLogicImplTest.parseTitleDate(testTitle);
 
         /* 検証の準備 */
-        final String actualDate = testResult;
+        final LocalDate actualDate = testResult;
 
         /* 検証の実施 */
         Assertions.assertNull(actualDate, "日付は null になる必要があります");
@@ -1273,10 +1275,10 @@ public class CarryoverParseLogicImplTest {
         final String testTitle = null;
 
         /* テスト対象の実行 */
-        final String testResult = CarryoverParseLogicImplTest.parseTitleDate(testTitle);
+        final LocalDate testResult = CarryoverParseLogicImplTest.parseTitleDate(testTitle);
 
         /* 検証の準備 */
-        final String actualDate = testResult;
+        final LocalDate actualDate = testResult;
 
         /* 検証の実施 */
         Assertions.assertNull(actualDate, "日付は null になる必要があります");

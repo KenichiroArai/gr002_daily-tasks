@@ -1,5 +1,7 @@
 package kmg.gr.gr002.dailytasks.carryover.domain.dto;
 
+import java.time.LocalDate;
+
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverItemModel;
 import kmg.gr.gr002.dailytasks.carryover.application.types.MinutesSourceTypes;
 import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessageSource;
@@ -68,11 +70,11 @@ public class CarryoverItemDto {
     private final String name;
 
     /**
-     * 持ち越し元の日付（yyyy-MM-dd）。日付がない行は null
+     * 持ち越し元の日付。日付がない行は null
      *
      * @since 0.1.0
      */
-    private final String originDate;
+    private final LocalDate originDate;
 
     /**
      * 元の行
@@ -111,7 +113,7 @@ public class CarryoverItemDto {
      * @param name
      *                      項目名（正規化済み）
      * @param originDate
-     *                      持ち越し元の日付（yyyy-MM-dd）。日付がない行は null
+     *                      持ち越し元の日付。日付がない行は null
      * @param checked
      *                      チェック済みか
      * @param minutes
@@ -123,7 +125,7 @@ public class CarryoverItemDto {
      * @param raw
      *                      元の行
      */
-    public CarryoverItemDto(final String name, final String originDate, final boolean checked, final double minutes,
+    public CarryoverItemDto(final String name, final LocalDate originDate, final boolean checked, final double minutes,
         final String minutesSource, final String section, final String raw) {
 
         this.name = name;
@@ -183,11 +185,11 @@ public class CarryoverItemDto {
      *
      * @since 0.1.0
      *
-     * @return 持ち越し元の日付（yyyy-MM-dd）。日付がない行は null
+     * @return 持ち越し元の日付。日付がない行は null
      */
-    public String getOriginDate() {
+    public LocalDate getOriginDate() {
 
-        final String result = this.originDate;
+        final LocalDate result = this.originDate;
         return result;
 
     }

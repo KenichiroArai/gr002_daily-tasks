@@ -1,5 +1,6 @@
 package kmg.gr.gr002.dailytasks.carryover.application.model;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
@@ -24,7 +25,7 @@ public class CarryoverSummaryModelTest {
      *
      * @since 0.1.0
      */
-    private static final DailySummaryModel DAY = new DailySummaryModel("2026-10-06", 371, null);
+    private static final DailySummaryModel DAY = new DailySummaryModel(LocalDate.parse("2026-10-06"), 371, null);
 
     /**
      * テスト用の集計を作成する<br>

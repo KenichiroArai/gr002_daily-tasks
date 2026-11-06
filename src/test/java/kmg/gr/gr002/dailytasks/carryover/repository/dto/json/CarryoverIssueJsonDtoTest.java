@@ -1,5 +1,7 @@
 package kmg.gr.gr002.dailytasks.carryover.repository.dto.json;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
@@ -7,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssueDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverItemDto;
+import kmg.gr.gr002.dailytasks.testutil.ReflectionTestUtil;
 
 /**
  * {@link CarryoverIssueJsonDto} のテスト<br>
@@ -31,10 +34,10 @@ public class CarryoverIssueJsonDtoTest {
      */
     private static CarryoverIssueDto createIssueDto() {
 
-        final CarryoverItemDto  item   = new CarryoverItemDto("音楽", "2026-08-18", true, 11.5, "parsed", "持ち越し",
+        final CarryoverItemDto  item   = new CarryoverItemDto("音楽", LocalDate.parse("2026-08-18"), true, 11.5, "parsed", "持ち越し",
             "- [x] 音楽2026/08/18（残り時間：11.5分）");
-        final CarryoverIssueDto result = new CarryoverIssueDto(371, "2026年10月06日のタスク", "2026-10-06", "open",
-            "2026-10-06T14:23:08Z", List.of("持ち越し"), 1, 1, 11.5, List.of(item));
+        final CarryoverIssueDto result = new CarryoverIssueDto(371, "2026年10月06日のタスク", LocalDate.parse("2026-10-06"), "open",
+            Instant.parse("2026-10-06T14:23:08Z"), List.of("持ち越し"), 1, 1, 11.5, List.of(item));
         return result;
 
     }
@@ -353,11 +356,151 @@ public class CarryoverIssueJsonDtoTest {
         final CarryoverIssueDto testResult = testJson.toCarryoverIssueDto();
 
         /* 検証の準備 */
-        final String actualUpdatedAt = testResult.getUpdatedAt();
+        final Instant actualUpdatedAt = testResult.getUpdatedAt();
 
         /* 検証の実施 */
-        Assertions.assertEquals(expectedUpdatedAt, actualUpdatedAt, "更新日時が一致しません");
+        Assertions.assertEquals(Instant.parse(expectedUpdatedAt), actualUpdatedAt, "更新日時が一致しません");
 
     }
 
+    /**
+     * parseDate メソッドのテスト - 日付の文字列が null の場合
+     *
+     * @since 0.1.0
+     *
+     * @throws Exception
+     *                   例外
+     */
+    @Test
+    public void testParseDate_semiNull() throws Exception {
+
+        /* 期待値の定義 */
+        final LocalDate expected = null;
+
+        /* 準備 */
+
+        /* テスト対象の実行 */
+        final LocalDate testResult = ReflectionTestUtil.invokeStatic(CarryoverIssueJsonDto.class, "parseDate", new Class<?>[] {
+            String.class
+        }, (String) null);
+
+        /* 検証の準備 */
+        final LocalDate actual = testResult;
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expected, actual, "変換結果が一致しません");
+
+    }
+    /**
+     * parseDate メソッドのテスト - 日付の文字列が空の場合
+     *
+     * @since 0.1.0
+     *
+     * @throws Exception
+     *                   例外
+     */
+    @Test
+    public void testParseDate_semiBlank() throws Exception {
+
+        /* 期待値の定義 */
+        final LocalDate expected = null;
+
+        /* 準備 */
+
+        /* テスト対象の実行 */
+        final LocalDate testResult = ReflectionTestUtil.invokeStatic(CarryoverIssueJsonDto.class, "parseDate", new Class<?>[] {
+            String.class
+        }, " ");
+
+        /* 検証の準備 */
+        final LocalDate actual = testResult;
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expected, actual, "変換結果が一致しません");
+
+    }
+    /**
+     * parseInstant メソッドのテスト - 日時の文字列が null の場合
+     *
+     * @since 0.1.0
+     *
+     * @throws Exception
+     *                   例外
+     */
+    @Test
+    public void testParseInstant_semiNull() throws Exception {
+
+        /* 期待値の定義 */
+        final Instant expected = null;
+
+        /* 準備 */
+
+        /* テスト対象の実行 */
+        final Instant testResult = ReflectionTestUtil.invokeStatic(CarryoverIssueJsonDto.class, "parseInstant", new Class<?>[] {
+            String.class
+        }, (String) null);
+
+        /* 検証の準備 */
+        final Instant actual = testResult;
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expected, actual, "変換結果が一致しません");
+
+    }
+    /**
+     * parseInstant メソッドのテスト - 日時の文字列が空の場合
+     *
+     * @since 0.1.0
+     *
+     * @throws Exception
+     *                   例外
+     */
+    @Test
+    public void testParseInstant_semiBlank() throws Exception {
+
+        /* 期待値の定義 */
+        final Instant expected = null;
+
+        /* 準備 */
+
+        /* テスト対象の実行 */
+        final Instant testResult = ReflectionTestUtil.invokeStatic(CarryoverIssueJsonDto.class, "parseInstant", new Class<?>[] {
+            String.class
+        }, " ");
+
+        /* 検証の準備 */
+        final Instant actual = testResult;
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expected, actual, "変換結果が一致しません");
+
+    }
+    /**
+     * toText メソッドのテスト - 値が null の場合
+     *
+     * @since 0.1.0
+     *
+     * @throws Exception
+     *                   例外
+     */
+    @Test
+    public void testToText_semiNullValue() throws Exception {
+
+        /* 期待値の定義 */
+        final String expected = null;
+
+        /* 準備 */
+
+        /* テスト対象の実行 */
+        final String testResult = ReflectionTestUtil.invokeStatic(CarryoverIssueJsonDto.class, "toText", new Class<?>[] {
+            Object.class
+        }, (Object) null);
+
+        /* 検証の準備 */
+        final String actual = testResult;
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expected, actual, "変換結果が一致しません");
+
+    }
 }

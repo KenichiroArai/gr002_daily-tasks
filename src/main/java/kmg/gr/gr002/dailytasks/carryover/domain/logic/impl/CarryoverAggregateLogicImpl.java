@@ -1,5 +1,6 @@
 package kmg.gr.gr002.dailytasks.carryover.domain.logic.impl;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -79,7 +80,7 @@ public class CarryoverAggregateLogicImpl implements CarryoverAggregateLogic {
         aggregation.updateLatest(issue.getNumber());
 
         /* 日付がないか */
-        final String date = issue.getDate();
+        final LocalDate date = issue.getDate();
 
         if (date == null) {
 
@@ -153,7 +154,7 @@ public class CarryoverAggregateLogicImpl implements CarryoverAggregateLogic {
         for (final CarryoverIssueModel issue : issues) {
 
             /* 日付があるか */
-            final String date = issue.getDate();
+            final LocalDate date = issue.getDate();
 
             if (date != null) {
 

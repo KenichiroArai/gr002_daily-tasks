@@ -1,5 +1,7 @@
 package kmg.gr.gr002.dailytasks.carryover.application.model;
 
+import java.time.LocalDate;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +36,7 @@ public class ItemStatModelTest {
     private static CarryoverItemModel createItem(final boolean checked, final double minutes) {
 
         final CarryoverItemModel result
-            = new CarryoverItemModel("国語", "2026-06-18", checked, minutes, MinutesSourceTypes.PARSED, "持ち越し", "raw");
+            = new CarryoverItemModel("国語", LocalDate.parse("2026-06-18"), checked, minutes, MinutesSourceTypes.PARSED, "持ち越し", "raw");
         return result;
 
     }

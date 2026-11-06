@@ -1,5 +1,8 @@
 package kmg.gr.gr002.dailytasks.carryover.application.model;
 
+import java.time.LocalDate;
+import java.time.YearMonth;
+
 /**
  * 日別の持ち越しの集計<br>
  *
@@ -26,11 +29,11 @@ public class DailySummaryModel {
     private final ItemStatsModel byOriginMonth;
 
     /**
-     * その日の日付（yyyy-MM-dd）
+     * その日の日付
      *
      * @since 0.1.0
      */
-    private final String date;
+    private final LocalDate date;
 
     /**
      * 本文の「残：N」の値。記載がない場合は null
@@ -59,13 +62,13 @@ public class DailySummaryModel {
      * @since 0.1.0
      *
      * @param date
-     *                      その日の日付（yyyy-MM-dd）
+     *                      その日の日付
      * @param issue
      *                      Issue 番号
      * @param declaredCount
      *                      本文の「残：N」の値。記載がない場合は null
      */
-    public DailySummaryModel(final String date, final int issue, final Integer declaredCount) {
+    public DailySummaryModel(final LocalDate date, final int issue, final Integer declaredCount) {
 
         this.date = date;
         this.issue = issue;
@@ -92,7 +95,7 @@ public class DailySummaryModel {
         itemStat.add(item);
 
         /* 持ち越し元の日付があるか */
-        final String originDate = item.getOriginDate();
+        final LocalDate originDate = item.getOriginDate();
 
         if (originDate == null) {
 
@@ -104,8 +107,8 @@ public class DailySummaryModel {
         }
 
         /* 持ち越し元の月ごとの集計 */
-        final String        month     = originDate.substring(0, 7);
-        final ItemStatModel monthStat = this.byOriginMonth.findOrCreate(month);
+        final YearMonth     month     = YearMonth.from(originDate);
+        final ItemStatModel monthStat = this.byOriginMonth.findOrCreate(month.toString());
         monthStat.add(item);
 
     }
@@ -143,11 +146,11 @@ public class DailySummaryModel {
      *
      * @since 0.1.0
      *
-     * @return その日の日付（yyyy-MM-dd）
+     * @return その日の日付
      */
-    public String getDate() {
+    public LocalDate getDate() {
 
-        final String result = this.date;
+        final LocalDate result = this.date;
         return result;
 
     }

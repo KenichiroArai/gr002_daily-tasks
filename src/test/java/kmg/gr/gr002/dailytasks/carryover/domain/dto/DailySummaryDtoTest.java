@@ -1,5 +1,6 @@
 package kmg.gr.gr002.dailytasks.carryover.domain.dto;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
@@ -34,7 +35,7 @@ public class DailySummaryDtoTest {
         byItem.add("国語", new ItemStatDto(1, 15, 1, 15));
         byOriginMonth.add("2026-03", new ItemStatDto(2, 45, 1, 15));
         final DailySummaryDto result
-            = new DailySummaryDto("2026-03-24", 175, 2, new ItemStatDto(2, 45, 1, 15), byItem, byOriginMonth);
+            = new DailySummaryDto(LocalDate.parse("2026-03-24"), 175, 2, new ItemStatDto(2, 45, 1, 15), byItem, byOriginMonth);
         return result;
 
     }
@@ -123,16 +124,16 @@ public class DailySummaryDtoTest {
     public void testGetDate_normalValue() {
 
         /* 期待値の定義 */
-        final String expectedDate = "2026-03-24";
+        final LocalDate expectedDate = LocalDate.parse("2026-03-24");
 
         /* 準備 */
         final DailySummaryDto testTarget = DailySummaryDtoTest.createTarget();
 
         /* テスト対象の実行 */
-        final String testResult = testTarget.getDate();
+        final LocalDate testResult = testTarget.getDate();
 
         /* 検証の準備 */
-        final String actualDate = testResult;
+        final LocalDate actualDate = testResult;
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedDate, actualDate, "その日の日付が一致しません");

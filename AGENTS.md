@@ -253,13 +253,16 @@ flowchart LR
   - repository は domain の DTO を入出力に使い、JSON の形（`repository/dto/json/`）へは変換先のコンストラクタで変換する。JSON から DTO へ戻すときは、読み戻しが必要な JSON 用 DTO のメソッドで行う
 - JSON の形（Jackson のアノテーション）は `repository/dto/json/` だけが持つ。domain の DTO には付けない
 - GitHub API の応答のように、JSON の形の型を作らずに読み取れるものは、外部 API の実装が domain の DTO を直接作ってよい
+- 日付・日時・パスなど意味のある値は、JSON／設定の入り口・出口以外では本来の型で保持する
+  - 日付のみ（`date` / `originDate`）は `LocalDate`、更新日時（`updatedAt`）は `Instant`、持ち越し元の月は `YearMonth`（集計キーへの格納時は ISO 文字列）、パスは `Path`
+  - 文字列への変換・パースは境界（API 実装、`repository/dto/json/*JsonDto`、設定コンストラクタ）に閉じる。Model と domain の DTO では文字列のまま日付・日時を持たない
 
 ### 設定値の引き継ぎ
 
 - 設定値も業務データと同じく、上の層から下の層へ引き継ぎ、境界ごとに呼ぶ側の層の型に変換して渡す。どこからでも参照できる共有の設定（infrastructure の設定クラスなど）は作らない。引き継ぎは `initialize` で行い、受け取った側はフィールドに保持する。メソッドごとの対象は引数で渡す
 - 値の出どころは入力の窓口である presentation（コマンドライン引数・設定ファイル `src/main/resources/application.properties`）とする。設定ファイルは presentation だけが読み込む
   - 設定ファイルの `carryover.*` は `presentation/model/CarryoverPropertiesModel`（`@ConfigurationProperties`、コンストラクタでバインド）で受け取る。`@ConfigurationProperties` のクラスは presentation にだけ置く
-  - 型の変換（文字列から `Path` など）は設定のクラスのコンストラクタで 1 回だけ行い、オリジナルの値と変換後の値をコメントで分けてフィールドに持つ。ゲッターは変換後の型で値を返すだけにする
+  - 型の変換（文字列から `Path`・日付・日時など）は境界のコンストラクタ／API 実装で 1 回だけ行い、オリジナルの値と変換後の値をコメントで分けてフィールドに持つ。ゲッターは変換後の型で値を返すだけにする
   - トークンは `carryover.token=${GITHUB_TOKEN:}` として環境変数 `GITHUB_TOKEN` から設定する
   - `@Value` で設定値を個別に取得しない。`Environment` を各層から参照しない
   - presentation → application: `presentation/model/CarryoverPropertiesModel`

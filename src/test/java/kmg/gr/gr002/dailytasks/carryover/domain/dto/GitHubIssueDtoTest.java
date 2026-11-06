@@ -1,5 +1,7 @@
 package kmg.gr.gr002.dailytasks.carryover.domain.dto;
 
+import java.time.Instant;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +30,7 @@ public class GitHubIssueDtoTest {
      */
     private static GitHubIssueDto createTarget() {
 
-        final GitHubIssueDto result = new GitHubIssueDto(371, "2026年10月06日のタスク", "open", "2026-10-06T14:23:08Z", "本文");
+        final GitHubIssueDto result = new GitHubIssueDto(371, "2026年10月06日のタスク", "open", Instant.parse("2026-10-06T14:23:08Z"), "本文");
         return result;
 
     }
@@ -142,16 +144,16 @@ public class GitHubIssueDtoTest {
     public void testGetUpdatedAt_normalValue() {
 
         /* 期待値の定義 */
-        final String expectedUpdatedAt = "2026-10-06T14:23:08Z";
+        final Instant expectedUpdatedAt = Instant.parse("2026-10-06T14:23:08Z");
 
         /* 準備 */
         final GitHubIssueDto testTarget = GitHubIssueDtoTest.createTarget();
 
         /* テスト対象の実行 */
-        final String testResult = testTarget.getUpdatedAt();
+        final Instant testResult = testTarget.getUpdatedAt();
 
         /* 検証の準備 */
-        final String actualUpdatedAt = testResult;
+        final Instant actualUpdatedAt = testResult;
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedUpdatedAt, actualUpdatedAt, "更新日時が一致しません");
@@ -170,7 +172,7 @@ public class GitHubIssueDtoTest {
         final String expectedBody = "本文";
 
         /* 準備 */
-        final GitHubIssueDto testDto = new GitHubIssueDto(371, "2026年10月06日のタスク", "open", "2026-10-06T14:23:08Z", "本文");
+        final GitHubIssueDto testDto = new GitHubIssueDto(371, "2026年10月06日のタスク", "open", Instant.parse("2026-10-06T14:23:08Z"), "本文");
 
         /* テスト対象の実行 */
         final DailyTaskIssueModel testResult = testDto.toDailyTaskIssueModel();
@@ -195,7 +197,7 @@ public class GitHubIssueDtoTest {
         final int expectedNumber = 371;
 
         /* 準備 */
-        final GitHubIssueDto testDto = new GitHubIssueDto(371, "2026年10月06日のタスク", "open", "2026-10-06T14:23:08Z", "本文");
+        final GitHubIssueDto testDto = new GitHubIssueDto(371, "2026年10月06日のタスク", "open", Instant.parse("2026-10-06T14:23:08Z"), "本文");
 
         /* テスト対象の実行 */
         final DailyTaskIssueModel testResult = testDto.toDailyTaskIssueModel();

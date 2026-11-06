@@ -1,6 +1,8 @@
 package kmg.gr.gr002.dailytasks.carryover.domain.logic.impl;
 
 import java.nio.file.Path;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -239,8 +241,8 @@ public class CarryoverDataLogicImplTest {
         final int expectedNumber = 371;
 
         /* 準備 */
-        final CarryoverIssueDto  testDto    = new CarryoverIssueDto(371, "2026年10月06日のタスク", "2026-10-06", "open",
-            "2026-10-06T14:23:08Z", List.of("持ち越し"), null, 1, 0.0, List.of());
+        final CarryoverIssueDto  testDto    = new CarryoverIssueDto(371, "2026年10月06日のタスク", LocalDate.parse("2026-10-06"), "open",
+            Instant.parse("2026-10-06T14:23:08Z"), List.of("持ち越し"), null, 1, 0.0, List.of());
         final CarryoverIssuesDto testIssues = new CarryoverIssuesDto();
         testIssues.put(371, testDto);
         final StubCarryoverDataDao   testData   = new StubCarryoverDataDao(testIssues);
@@ -301,10 +303,10 @@ public class CarryoverDataLogicImplTest {
         final Path               expectedDataDir       = Path.of("docs", "data");
 
         /* 準備 */
-        final CarryoverItemDto   testItem   = new CarryoverItemDto("国語", "2026-06-18", false, 0.0, "unknown", "持ち越し",
+        final CarryoverItemDto   testItem   = new CarryoverItemDto("国語", LocalDate.parse("2026-06-18"), false, 0.0, "unknown", "持ち越し",
             "- [ ] 国語2026/06/18");
-        final CarryoverIssueDto  testDto    = new CarryoverIssueDto(371, "2026年10月06日のタスク", "2026-10-06", "open",
-            "2026-10-06T14:23:08Z", List.of("持ち越し"), null, 1, 0.0, List.of(testItem));
+        final CarryoverIssueDto  testDto    = new CarryoverIssueDto(371, "2026年10月06日のタスク", LocalDate.parse("2026-10-06"), "open",
+            Instant.parse("2026-10-06T14:23:08Z"), List.of("持ち越し"), null, 1, 0.0, List.of(testItem));
         final CarryoverIssuesDto testIssues = new CarryoverIssuesDto();
         testIssues.put(371, testDto);
         final StubCarryoverDataDao   testData   = new StubCarryoverDataDao(testIssues);
@@ -374,10 +376,10 @@ public class CarryoverDataLogicImplTest {
         /* 準備 */
         final StubCarryoverDataDao   testData   = new StubCarryoverDataDao(new CarryoverIssuesDto());
         final CarryoverDataLogicImpl testTarget = CarryoverDataLogicImplTest.createTarget(testData);
-        final CarryoverItemModel     testItem   = new CarryoverItemModel("音楽", "2026-08-18", false, 11.5,
+        final CarryoverItemModel     testItem   = new CarryoverItemModel("音楽", LocalDate.parse("2026-08-18"), false, 11.5,
             MinutesSourceTypes.PARSED, "持ち越し", "- [ ] 音楽2026/08/18（残り時間：11.5分）");
-        final CarryoverIssueModel    testIssue  = new CarryoverIssueModel(371, "2026年10月06日のタスク", "2026-10-06", "open",
-            "2026-10-06T14:23:08Z", List.of("持ち越し"), 1, List.of(testItem));
+        final CarryoverIssueModel    testIssue  = new CarryoverIssueModel(371, "2026年10月06日のタスク", LocalDate.parse("2026-10-06"), "open",
+            Instant.parse("2026-10-06T14:23:08Z"), List.of("持ち越し"), 1, List.of(testItem));
 
         /* テスト対象の実行 */
         testTarget.initialize(Path.of("docs", "data"));

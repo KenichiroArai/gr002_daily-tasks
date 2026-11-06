@@ -1,9 +1,12 @@
 package kmg.gr.gr002.dailytasks.carryover.application.service.impl;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -238,7 +241,7 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
 
             /* 解析し直す必要があるか */
             final CarryoverIssueModel stored      = this.issues.find(number);
-            final String              updatedAt   = remoteIssue.getUpdatedAt();
+            final Instant             updatedAt   = remoteIssue.getUpdatedAt();
             final boolean             needsUpdate = this.needsUpdate(stored, number, updatedAt, this.recentFrom);
 
             if (!needsUpdate) {
@@ -293,7 +296,7 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
 
             final int                 number    = ref.getNumber();
             final CarryoverIssueModel stored    = this.carryoverDataLogic.loadIssue(number);
-            final String              updatedAt = ref.getUpdatedAt();
+            final Instant             updatedAt = ref.getUpdatedAt();
 
             /* 解析し直す必要があるか */
             final boolean needsUpdate = this.needsUpdate(stored, number, updatedAt, this.recentFrom);
@@ -391,7 +394,7 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
 
         for (final DailyTaskIssueRefModel fetchedRef : fetched) {
 
-            final String date = this.carryoverParseLogic.parseTitleDate(fetchedRef.getTitle());
+            final LocalDate date = this.carryoverParseLogic.parseTitleDate(fetchedRef.getTitle());
             result.add(new DailyTaskIssueRefModel(fetchedRef.getNumber(), fetchedRef.getTitle(), fetchedRef.getState(),
                 fetchedRef.getUpdatedAt(), date));
 
@@ -491,7 +494,7 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
      * @return true：解析し直す、false：保存済みの解析結果を使う
      */
     @SuppressWarnings("hiding")
-    private boolean needsUpdate(final CarryoverIssueModel stored, final int issueNumber, final String updatedAt,
+    private boolean needsUpdate(final CarryoverIssueModel stored, final int issueNumber, final Instant updatedAt,
         final int recentFrom) {
 
         boolean result = true;
@@ -535,8 +538,8 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
 
         }
 
-        final String storedUpdatedAt = stored.getUpdatedAt();
-        result = !updatedAt.equals(storedUpdatedAt);
+        final Instant storedUpdatedAt = stored.getUpdatedAt();
+        result = !Objects.equals(updatedAt, storedUpdatedAt);
 
         /* 更新日時が変わっているか */
         if (result) {

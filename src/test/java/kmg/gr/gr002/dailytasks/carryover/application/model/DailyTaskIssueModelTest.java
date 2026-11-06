@@ -1,5 +1,7 @@
 package kmg.gr.gr002.dailytasks.carryover.application.model;
 
+import java.time.Instant;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +29,7 @@ public class DailyTaskIssueModelTest {
     private static DailyTaskIssueModel createIssue() {
 
         final DailyTaskIssueModel result
-            = new DailyTaskIssueModel(371, "2026年10月06日のタスク", "open", "2026-10-06T14:23:08Z", "## 持ち越し");
+            = new DailyTaskIssueModel(371, "2026年10月06日のタスク", "open", Instant.parse("2026-10-06T14:23:08Z"), "## 持ち越し");
         return result;
 
     }
@@ -141,16 +143,16 @@ public class DailyTaskIssueModelTest {
     public void testGetUpdatedAt_normalValue() {
 
         /* 期待値の定義 */
-        final String expectedUpdatedAt = "2026-10-06T14:23:08Z";
+        final Instant expectedUpdatedAt = Instant.parse("2026-10-06T14:23:08Z");
 
         /* 準備 */
         final DailyTaskIssueModel testTarget = DailyTaskIssueModelTest.createIssue();
 
         /* テスト対象の実行 */
-        final String testResult = testTarget.getUpdatedAt();
+        final Instant testResult = testTarget.getUpdatedAt();
 
         /* 検証の準備 */
-        final String actualUpdatedAt = testResult;
+        final Instant actualUpdatedAt = testResult;
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedUpdatedAt, actualUpdatedAt, "更新日時が一致しません");

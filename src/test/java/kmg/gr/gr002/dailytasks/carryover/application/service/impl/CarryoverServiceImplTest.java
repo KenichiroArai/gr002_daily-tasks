@@ -2,6 +2,7 @@ package kmg.gr.gr002.dailytasks.carryover.application.service.impl;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -838,7 +839,7 @@ public class CarryoverServiceImplTest {
      * @since 0.1.0
      */
     private static final DailyTaskIssueModel ISSUE1
-        = new DailyTaskIssueModel(1, "2026年03月24日のタスク", "closed", "u1", "## 負債\n- [ ] 国語2026/03/20");
+        = new DailyTaskIssueModel(1, "2026年03月24日のタスク", "closed", Instant.parse("2026-03-01T00:00:00Z"), "## 負債\n- [ ] 国語2026/03/20");
 
     /**
      * テスト用の Issue #2（時間表記あり、更新日時 u2）
@@ -846,7 +847,7 @@ public class CarryoverServiceImplTest {
      * @since 0.1.0
      */
     private static final DailyTaskIssueModel ISSUE2
-        = new DailyTaskIssueModel(2, "2026年03月25日のタスク", "open", "u2", "## 負債\n- [ ] 英語2026/03/20（残り時間：10分）");
+        = new DailyTaskIssueModel(2, "2026年03月25日のタスク", "open", Instant.parse("2026-03-02T00:00:00Z"), "## 負債\n- [ ] 英語2026/03/20（残り時間：10分）");
 
     /**
      * テスト用の Issue 本文の解析
@@ -908,7 +909,7 @@ public class CarryoverServiceImplTest {
             = IntStream.rangeClosed(1, count)
                 .mapToObj(number -> new DailyTaskIssueModel(number,
                     String.format("2026年03月%02d日のタスク", Integer.valueOf(number)), "closed",
-                    KmgString.concat("u", String.valueOf(number)), "## 負債\n- [ ] 英語2026/03/01（残り時間：10分）"))
+                    Instant.parse("2026-03-01T00:00:00Z").plusSeconds(number), "## 負債\n- [ ] 英語2026/03/01（残り時間：10分）"))
                 .toList();
         return result;
 
@@ -1361,7 +1362,7 @@ public class CarryoverServiceImplTest {
 
         /* 準備 */
         final List<DailyTaskIssueModel> testIssues     = List.of(CarryoverServiceImplTest.ISSUE1,
-            new DailyTaskIssueModel(2, "メモ", "open", "u2", "本文"));
+            new DailyTaskIssueModel(2, "メモ", "open", Instant.parse("2026-03-02T00:00:00Z"), "本文"));
         final StubDailyTaskIssueLogic   testIssueLogic = new StubDailyTaskIssueLogic(testIssues);
         final StubCarryoverDataLogic    testDataLogic  = new StubCarryoverDataLogic();
         final CarryoverPropertiesModel  testProperties = new CarryoverPropertiesModel("owner/repo", "test-token",
@@ -1408,7 +1409,7 @@ public class CarryoverServiceImplTest {
 
         /* 準備 */
         final List<DailyTaskIssueModel> testIssues     = List.of(CarryoverServiceImplTest.ISSUE1,
-            new DailyTaskIssueModel(9, "メモ", "open", "u9", "本文"));
+            new DailyTaskIssueModel(9, "メモ", "open", Instant.parse("2026-03-09T00:00:00Z"), "本文"));
         final StubDailyTaskIssueLogic   testIssueLogic = new StubDailyTaskIssueLogic(testIssues);
         final StubCarryoverDataLogic    testDataLogic  = new StubCarryoverDataLogic();
         final CarryoverPropertiesModel  testProperties = new CarryoverPropertiesModel("owner/repo", "test-token",

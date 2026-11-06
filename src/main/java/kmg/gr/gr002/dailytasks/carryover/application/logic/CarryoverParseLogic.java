@@ -1,5 +1,7 @@
 package kmg.gr.gr002.dailytasks.carryover.application.logic;
 
+import java.time.LocalDate;
+
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DefaultMinutesModel;
@@ -51,8 +53,8 @@ public interface CarryoverParseLogic {
      * @param title
      *              Issue タイトル
      *
-     * @return 日付（yyyy-MM-dd）。取得できない場合は null
+     * @return 日付。取得できない場合は null
      */
-    String parseTitleDate(String title);
+    LocalDate parseTitleDate(String title);
 
 }

@@ -1,5 +1,7 @@
 package kmg.gr.gr002.dailytasks.carryover.repository.dto.json;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -27,6 +29,117 @@ import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverItemDto;
     "number", "title", "date", "state", "updatedAt", "sections", "declaredCount", "count", "minutes", "items"
 })
 public class CarryoverIssueJsonDto {
+
+    /**
+     * 日付の文字列を日付に変換する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param text
+     *             日付の文字列（yyyy-MM-dd）
+     *
+     * @return 日付。文字列が null または空の場合は null
+     */
+    private static LocalDate parseDate(final String text) {
+
+        LocalDate result = null;
+
+        /* 文字列がないか */
+        if (text == null) {
+
+            // 文字列がない場合
+
+            // 日付なしとする
+            return result;
+
+        }
+
+        /* 文字列が空か */
+        final boolean blank = text.isBlank();
+
+        if (blank) {
+
+            // 文字列が空の場合
+
+            // 日付なしとする
+            return result;
+
+        }
+
+        result = LocalDate.parse(text);
+        return result;
+
+    }
+
+    /**
+     * 日時の文字列を日時に変換する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param text
+     *             日時の文字列（ISO-8601）
+     *
+     * @return 日時。文字列が null または空の場合は null
+     */
+    private static Instant parseInstant(final String text) {
+
+        Instant result = null;
+
+        /* 文字列がないか */
+        if (text == null) {
+
+            // 文字列がない場合
+
+            // 日時なしとする
+            return result;
+
+        }
+
+        /* 文字列が空か */
+        final boolean blank = text.isBlank();
+
+        if (blank) {
+
+            // 文字列が空の場合
+
+            // 日時なしとする
+            return result;
+
+        }
+
+        result = Instant.parse(text);
+        return result;
+
+    }
+
+    /**
+     * 日付または日時を文字列に変換する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param value
+     *              日付または日時
+     *
+     * @return 文字列。値が null の場合は null
+     */
+    private static String toText(final Object value) {
+
+        String result = null;
+
+        /* 値がないか */
+        if (value == null) {
+
+            // 値がない場合
+
+            // 文字列なしとする
+            return result;
+
+        }
+
+        result = value.toString();
+        return result;
+
+    }
 
     /**
      * 持ち越し項目を JSON の形にする<br>
@@ -128,8 +241,8 @@ public class CarryoverIssueJsonDto {
      */
     public CarryoverIssueJsonDto(final CarryoverIssueDto issue) {
 
-        this(issue.getNumber(), issue.getTitle(), issue.getDate(), issue.getState(), issue.getUpdatedAt(),
-            issue.getSections(), issue.getDeclaredCount(), issue.getCount(), issue.getMinutes(),
+        this(issue.getNumber(), issue.getTitle(), CarryoverIssueJsonDto.toText(issue.getDate()), issue.getState(),
+            CarryoverIssueJsonDto.toText(issue.getUpdatedAt()), issue.getSections(), issue.getDeclaredCount(), issue.getCount(), issue.getMinutes(),
             CarryoverIssueJsonDto.toItemJsons(issue));
 
     }
@@ -335,7 +448,10 @@ public class CarryoverIssueJsonDto {
         final List<CarryoverItemDto>     carryoverItemDto = itemJsons.stream()
             .map(CarryoverItemJsonDto::toCarryoverItemDto).toList();
 
-        result = new CarryoverIssueDto(this.number, this.title, this.date, this.state, this.updatedAt, this.sections,
+        final LocalDate                  dateValue        = CarryoverIssueJsonDto.parseDate(this.date);
+        final Instant                    updatedAtValue   = CarryoverIssueJsonDto.parseInstant(this.updatedAt);
+
+        result = new CarryoverIssueDto(this.number, this.title, dateValue, this.state, updatedAtValue, this.sections,
             this.declaredCount, this.count, this.minutes, carryoverItemDto);
         return result;
 

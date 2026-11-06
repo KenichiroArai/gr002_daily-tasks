@@ -1,5 +1,7 @@
 package kmg.gr.gr002.dailytasks.carryover.domain.dto;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
@@ -35,11 +37,11 @@ public class CarryoverSummaryDtoTest {
     private static CarryoverSummaryModel createSummary() {
 
         final CarryoverSummaryModel    result;
-        final CarryoverItemModel       item      = new CarryoverItemModel("音楽", "2026-08-18", true, 11.5,
+        final CarryoverItemModel       item      = new CarryoverItemModel("音楽", LocalDate.parse("2026-08-18"), true, 11.5,
             MinutesSourceTypes.PARSED, "持ち越し", "- [x] 音楽2026/08/18（残り時間：11.5分）");
-        final CarryoverIssueModel      issue     = new CarryoverIssueModel(371, "2026年10月06日のタスク", "2026-10-06", "open",
-            "2026-10-06T14:23:08Z", List.of("持ち越し"), 1, List.of(item));
-        final DailySummaryModel        day       = new DailySummaryModel("2026-10-06", 371, 1);
+        final CarryoverIssueModel      issue     = new CarryoverIssueModel(371, "2026年10月06日のタスク", LocalDate.parse("2026-10-06"), "open",
+            Instant.parse("2026-10-06T14:23:08Z"), List.of("持ち越し"), 1, List.of(item));
+        final DailySummaryModel        day       = new DailySummaryModel(LocalDate.parse("2026-10-06"), 371, 1);
         final List<CarryoverItemModel> items     = issue.getItems();
         final CarryoverItemModel       firstItem = items.get(0);
 
@@ -61,7 +63,7 @@ public class CarryoverSummaryDtoTest {
         final ItemStatDto  total  = new ItemStatDto(1, 30, 0, 0);
         final ItemStatsDto byItem = new ItemStatsDto();
         byItem.add("英語", total);
-        final DailySummaryDto     day    = new DailySummaryDto("2026-03-24", 175, null, total, byItem,
+        final DailySummaryDto     day    = new DailySummaryDto(LocalDate.parse("2026-03-24"), 175, null, total, byItem,
             new ItemStatsDto());
         final CarryoverSummaryDto result = new CarryoverSummaryDto(374, List.of("英語"), List.of(day));
         return result;
@@ -188,7 +190,7 @@ public class CarryoverSummaryDtoTest {
     public void testGetDays_normalValue() {
 
         /* 期待値の定義 */
-        final List<String> expectedDays = List.of("2026-03-24");
+        final List<LocalDate> expectedDays = List.of(LocalDate.parse("2026-03-24"));
 
         /* 準備 */
         final CarryoverSummaryDto testTarget = CarryoverSummaryDtoTest.createTarget();
@@ -198,7 +200,7 @@ public class CarryoverSummaryDtoTest {
 
         /* 検証の準備 */
         @SuppressWarnings("null")
-        final List<String> actualDays = testResult.stream().map(DailySummaryDto::getDate).toList();
+        final List<LocalDate> actualDays = testResult.stream().map(DailySummaryDto::getDate).toList();
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedDays, actualDays, "日別の集計が一致しません");

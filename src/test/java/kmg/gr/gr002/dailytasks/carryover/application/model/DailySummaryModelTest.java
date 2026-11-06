@@ -1,5 +1,6 @@
 package kmg.gr.gr002.dailytasks.carryover.application.model;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -37,7 +38,7 @@ public class DailySummaryModelTest {
     private static CarryoverItemModel createItem(final String name, final String originDate) {
 
         final CarryoverItemModel result
-            = new CarryoverItemModel(name, originDate, false, 15, MinutesSourceTypes.PARSED, "持ち越し", "raw");
+            = new CarryoverItemModel(name, (originDate == null) ? null : LocalDate.parse(originDate), false, 15, MinutesSourceTypes.PARSED, "持ち越し", "raw");
         return result;
 
     }
@@ -51,7 +52,7 @@ public class DailySummaryModelTest {
      */
     private static DailySummaryModel createSummary() {
 
-        final DailySummaryModel result = new DailySummaryModel("2026-10-06", 371, 3);
+        final DailySummaryModel result = new DailySummaryModel(LocalDate.parse("2026-10-06"), 371, 3);
         result.add(DailySummaryModelTest.createItem("国語", "2026-06-18"));
         result.add(DailySummaryModelTest.createItem("国語", "2026-08-01"));
         result.add(DailySummaryModelTest.createItem("音楽", "2026-08-18"));
@@ -71,7 +72,7 @@ public class DailySummaryModelTest {
         final int expectedMonthCount = 1;
 
         /* 準備 */
-        final DailySummaryModel testTarget = new DailySummaryModel("2026-10-06", 371, null);
+        final DailySummaryModel testTarget = new DailySummaryModel(LocalDate.parse("2026-10-06"), 371, null);
 
         /* テスト対象の実行 */
         testTarget.add(DailySummaryModelTest.createItem("国語", "2026-06-18"));
@@ -97,7 +98,7 @@ public class DailySummaryModelTest {
         /* 期待値の定義 */
 
         /* 準備 */
-        final DailySummaryModel testTarget = new DailySummaryModel("2026-10-06", 371, null);
+        final DailySummaryModel testTarget = new DailySummaryModel(LocalDate.parse("2026-10-06"), 371, null);
 
         /* テスト対象の実行 */
         testTarget.add(DailySummaryModelTest.createItem("国語", null));
@@ -174,16 +175,16 @@ public class DailySummaryModelTest {
     public void testGetDate_normalValue() {
 
         /* 期待値の定義 */
-        final String expectedDate = "2026-10-06";
+        final LocalDate expectedDate = LocalDate.parse("2026-10-06");
 
         /* 準備 */
         final DailySummaryModel testTarget = DailySummaryModelTest.createSummary();
 
         /* テスト対象の実行 */
-        final String testResult = testTarget.getDate();
+        final LocalDate testResult = testTarget.getDate();
 
         /* 検証の準備 */
-        final String actualDate = testResult;
+        final LocalDate actualDate = testResult;
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedDate, actualDate, "日付が一致しません");

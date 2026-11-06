@@ -1,5 +1,6 @@
 package kmg.gr.gr002.dailytasks.carryover.repository.dto.json;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.DailySummaryDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.ItemStatDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.ItemStatsDto;
+import kmg.gr.gr002.dailytasks.testutil.ReflectionTestUtil;
 
 /**
  * {@link DailySummaryJsonDto} のテスト<br>
@@ -39,7 +41,7 @@ public class DailySummaryJsonDtoTest {
         byItem.add("音楽", new ItemStatDto(1, 11.5, 1, 11.5));
         byItem.add("国語", new ItemStatDto(1, 15.0, 0, 0.0));
         byOriginMonth.add("2026-08", new ItemStatDto(1, 11.5, 1, 11.5));
-        final DailySummaryDto result = new DailySummaryDto("2026-10-06", 371, 2, total, byItem, byOriginMonth);
+        final DailySummaryDto result = new DailySummaryDto(LocalDate.parse("2026-10-06"), 371, 2, total, byItem, byOriginMonth);
         return result;
 
     }
@@ -321,4 +323,32 @@ public class DailySummaryJsonDtoTest {
 
     }
 
+    /**
+     * toText メソッドのテスト - 日付が null の場合
+     *
+     * @since 0.1.0
+     *
+     * @throws Exception
+     *                   例外
+     */
+    @Test
+    public void testToText_semiNullDate() throws Exception {
+
+        /* 期待値の定義 */
+        final String expected = null;
+
+        /* 準備 */
+
+        /* テスト対象の実行 */
+        final String testResult = ReflectionTestUtil.invokeStatic(DailySummaryJsonDto.class, "toText", new Class<?>[] {
+            LocalDate.class
+        }, (LocalDate) null);
+
+        /* 検証の準備 */
+        final String actual = testResult;
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expected, actual, "変換結果が一致しません");
+
+    }
 }

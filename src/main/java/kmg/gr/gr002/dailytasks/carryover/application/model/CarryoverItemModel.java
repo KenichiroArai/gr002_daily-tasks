@@ -1,5 +1,7 @@
 package kmg.gr.gr002.dailytasks.carryover.application.model;
 
+import java.time.LocalDate;
+
 import kmg.gr.gr002.dailytasks.carryover.application.types.MinutesSourceTypes;
 
 /**
@@ -45,11 +47,11 @@ public class CarryoverItemModel {
     private final String name;
 
     /**
-     * 持ち越し元の日付（yyyy-MM-dd）。日付がない行は null
+     * 持ち越し元の日付。日付がない行は null
      *
      * @since 0.1.0
      */
-    private final String originDate;
+    private final LocalDate originDate;
 
     /**
      * 元の行
@@ -73,7 +75,7 @@ public class CarryoverItemModel {
      * @param name
      *                      項目名（正規化済み）
      * @param originDate
-     *                      持ち越し元の日付（yyyy-MM-dd）。日付がない行は null
+     *                      持ち越し元の日付。日付がない行は null
      * @param checked
      *                      チェック済みか
      * @param minutes
@@ -85,7 +87,7 @@ public class CarryoverItemModel {
      * @param raw
      *                      元の行
      */
-    public CarryoverItemModel(final String name, final String originDate, final boolean checked, final double minutes,
+    public CarryoverItemModel(final String name, final LocalDate originDate, final boolean checked, final double minutes,
         final MinutesSourceTypes minutesSource, final String section, final String raw) {
 
         this.name = name;
@@ -145,11 +147,11 @@ public class CarryoverItemModel {
      *
      * @since 0.1.0
      *
-     * @return 持ち越し元の日付（yyyy-MM-dd）。日付がない行は null
+     * @return 持ち越し元の日付。日付がない行は null
      */
-    public String getOriginDate() {
+    public LocalDate getOriginDate() {
 
-        final String result = this.originDate;
+        final LocalDate result = this.originDate;
         return result;
 
     }

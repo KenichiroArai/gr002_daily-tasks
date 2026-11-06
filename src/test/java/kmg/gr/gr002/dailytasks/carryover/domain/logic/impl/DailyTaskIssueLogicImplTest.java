@@ -1,5 +1,6 @@
 package kmg.gr.gr002.dailytasks.carryover.domain.logic.impl;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,7 +95,7 @@ public class DailyTaskIssueLogicImplTest {
         @Override
         public GitHubIssueDto fetchIssue(final int number) {
 
-            GitHubIssueDto result = new GitHubIssueDto(number, "", "", "", "");
+            GitHubIssueDto result = new GitHubIssueDto(number, "", "", null, "");
 
             for (final GitHubIssueDto issue : this.issues) {
 
@@ -220,7 +221,7 @@ public class DailyTaskIssueLogicImplTest {
 
         /* 準備 */
         final StubGitHubIssueApi      testGitHub = new StubGitHubIssueApi(
-            List.of(new GitHubIssueDto(371, "2026年10月06日のタスク", "open", "2026-10-06T14:23:08Z", "本文")));
+            List.of(new GitHubIssueDto(371, "2026年10月06日のタスク", "open", Instant.parse("2026-10-06T14:23:08Z"), "本文")));
         final DailyTaskIssueLogicImpl testTarget = DailyTaskIssueLogicImplTest.createTarget(testGitHub);
 
         /* テスト対象の実行 */
@@ -286,8 +287,8 @@ public class DailyTaskIssueLogicImplTest {
 
         /* 準備 */
         final StubGitHubIssueApi      testGitHub = new StubGitHubIssueApi(
-            List.of(new GitHubIssueDto(1, "別のタスク", "open", "2026-10-01T00:00:00Z", "別"),
-                new GitHubIssueDto(7, "2026年10月06日のタスク", "open", "2026-10-06T14:23:08Z", "本文")));
+            List.of(new GitHubIssueDto(1, "別のタスク", "open", Instant.parse("2026-10-01T00:00:00Z"), "別"),
+                new GitHubIssueDto(7, "2026年10月06日のタスク", "open", Instant.parse("2026-10-06T14:23:08Z"), "本文")));
         final DailyTaskIssueLogicImpl testTarget = DailyTaskIssueLogicImplTest.createTarget(testGitHub);
 
         /* テスト対象の実行 */
@@ -317,7 +318,7 @@ public class DailyTaskIssueLogicImplTest {
 
         /* 準備 */
         final StubGitHubIssueApi      testGitHub = new StubGitHubIssueApi(
-            List.of(new GitHubIssueDto(7, "2026年10月06日のタスク", "open", "2026-10-06T14:23:08Z", "本文")));
+            List.of(new GitHubIssueDto(7, "2026年10月06日のタスク", "open", Instant.parse("2026-10-06T14:23:08Z"), "本文")));
         final DailyTaskIssueLogicImpl testTarget = DailyTaskIssueLogicImplTest.createTarget(testGitHub);
 
         /* テスト対象の実行 */
@@ -378,9 +379,9 @@ public class DailyTaskIssueLogicImplTest {
 
         /* 準備 */
         final StubGitHubIssueApi      testGitHub = new StubGitHubIssueApi(
-            List.of(new GitHubIssueDto(1, "1日のタスク", "closed", "u1", "本文"),
-                new GitHubIssueDto(2, "2日のタスク", "closed", "u2", "本文"),
-                new GitHubIssueDto(3, "3日のタスク", "open", "u3", "本文")));
+            List.of(new GitHubIssueDto(1, "1日のタスク", "closed", Instant.parse("2026-03-01T00:00:00Z"), "本文"),
+                new GitHubIssueDto(2, "2日のタスク", "closed", Instant.parse("2026-03-02T00:00:00Z"), "本文"),
+                new GitHubIssueDto(3, "3日のタスク", "open", Instant.parse("2026-03-03T00:00:00Z"), "本文")));
         final DailyTaskIssueLogicImpl testTarget = DailyTaskIssueLogicImplTest.createTarget(testGitHub);
 
         /* テスト対象の実行 */

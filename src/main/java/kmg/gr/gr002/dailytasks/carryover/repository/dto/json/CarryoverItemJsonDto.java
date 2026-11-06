@@ -1,5 +1,7 @@
 package kmg.gr.gr002.dailytasks.carryover.repository.dto.json;
 
+import java.time.LocalDate;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -19,6 +21,76 @@ import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverItemDto;
     "name", "originDate", "checked", "minutes", "minutesSource", "section", "raw"
 })
 public class CarryoverItemJsonDto {
+
+    /**
+     * 日付の文字列を日付に変換する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param text
+     *             日付の文字列（yyyy-MM-dd）
+     *
+     * @return 日付。文字列が null または空の場合は null
+     */
+    private static LocalDate parseDate(final String text) {
+
+        LocalDate result = null;
+
+        /* 文字列がないか */
+        if (text == null) {
+
+            // 文字列がない場合
+
+            // 日付なしとする
+            return result;
+
+        }
+
+        /* 文字列が空か */
+        final boolean blank = text.isBlank();
+
+        if (blank) {
+
+            // 文字列が空の場合
+
+            // 日付なしとする
+            return result;
+
+        }
+
+        result = LocalDate.parse(text);
+        return result;
+
+    }
+
+    /**
+     * 日付を文字列に変換する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param date
+     *             日付
+     *
+     * @return 日付の文字列（yyyy-MM-dd）。日付が null の場合は null
+     */
+    private static String toText(final LocalDate date) {
+
+        String result = null;
+
+        /* 日付がないか */
+        if (date == null) {
+
+            // 日付がない場合
+
+            // 文字列なしとする
+            return result;
+
+        }
+
+        result = date.toString();
+        return result;
+
+    }
 
     /**
      * チェック済みか
@@ -79,7 +151,7 @@ public class CarryoverItemJsonDto {
      */
     public CarryoverItemJsonDto(final CarryoverItemDto item) {
 
-        this(item.getName(), item.getOriginDate(), item.isChecked(), item.getMinutes(), item.getMinutesSource(),
+        this(item.getName(), CarryoverItemJsonDto.toText(item.getOriginDate()), item.isChecked(), item.getMinutes(), item.getMinutesSource(),
             item.getSection(), item.getRaw());
 
     }
@@ -227,8 +299,9 @@ public class CarryoverItemJsonDto {
      */
     public CarryoverItemDto toCarryoverItemDto() {
 
-        final CarryoverItemDto result = new CarryoverItemDto(this.name, this.originDate, this.checked, this.minutes,
-            this.minutesSource, this.section, this.raw);
+        final LocalDate        originDateValue = CarryoverItemJsonDto.parseDate(this.originDate);
+        final CarryoverItemDto result          = new CarryoverItemDto(this.name, originDateValue, this.checked,
+            this.minutes, this.minutesSource, this.section, this.raw);
         return result;
 
     }
