@@ -87,8 +87,8 @@ public class CarryoverItemModel {
      * @param raw
      *                      元の行
      */
-    public CarryoverItemModel(final String name, final LocalDate originDate, final boolean checked, final double minutes,
-        final MinutesSourceTypes minutesSource, final String section, final String raw) {
+    public CarryoverItemModel(final String name, final LocalDate originDate, final boolean checked,
+        final double minutes, final MinutesSourceTypes minutesSource, final String section, final String raw) {
 
         this.name = name;
         this.originDate = originDate;

@@ -178,7 +178,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
      */
     private static LocalDate formatDate(final String year, final String month, final String day) {
 
-        final LocalDate result = LocalDate.of(Integer.valueOf(year), Integer.valueOf(month), Integer.valueOf(day));
+        final LocalDate result = LocalDate.of(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day));
         return result;
 
     }

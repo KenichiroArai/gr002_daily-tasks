@@ -94,6 +94,26 @@ public class CarryoverIssueJsonDto {
     }
 
     /**
+     * 持ち越し項目を JSON の形にする<br>
+     *
+     * @since 0.1.0
+     *
+     * @param issue
+     *              持ち越しの解析結果
+     *
+     * @return JSON の形の持ち越し項目
+     */
+    private static List<CarryoverItemJsonDto> toItemJsons(final CarryoverIssueDto issue) {
+
+        final List<CarryoverItemJsonDto> result;
+        final List<CarryoverItemDto>     items = issue.getItems();
+
+        result = items.stream().map(CarryoverItemJsonDto::new).toList();
+        return result;
+
+    }
+
+    /**
      * 日付または日時を文字列に変換する<br>
      *
      * @since 0.1.0
@@ -118,26 +138,6 @@ public class CarryoverIssueJsonDto {
         }
 
         result = value.toString();
-        return result;
-
-    }
-
-    /**
-     * 持ち越し項目を JSON の形にする<br>
-     *
-     * @since 0.1.0
-     *
-     * @param issue
-     *              持ち越しの解析結果
-     *
-     * @return JSON の形の持ち越し項目
-     */
-    private static List<CarryoverItemJsonDto> toItemJsons(final CarryoverIssueDto issue) {
-
-        final List<CarryoverItemJsonDto> result;
-        final List<CarryoverItemDto>     items = issue.getItems();
-
-        result = items.stream().map(CarryoverItemJsonDto::new).toList();
         return result;
 
     }
@@ -223,8 +223,8 @@ public class CarryoverIssueJsonDto {
     public CarryoverIssueJsonDto(final CarryoverIssueDto issue) {
 
         this(issue.getNumber(), issue.getTitle(), CarryoverIssueJsonDto.toText(issue.getDate()), issue.getState(),
-            CarryoverIssueJsonDto.toText(issue.getUpdatedAt()), issue.getSections(), issue.getDeclaredCount(), issue.getCount(), issue.getMinutes(),
-            CarryoverIssueJsonDto.toItemJsons(issue));
+            CarryoverIssueJsonDto.toText(issue.getUpdatedAt()), issue.getSections(), issue.getDeclaredCount(),
+            issue.getCount(), issue.getMinutes(), CarryoverIssueJsonDto.toItemJsons(issue));
 
     }
 
@@ -429,8 +429,8 @@ public class CarryoverIssueJsonDto {
         final List<CarryoverItemDto>     carryoverItemDto = itemJsons.stream()
             .map(CarryoverItemJsonDto::toCarryoverItemDto).toList();
 
-        final LocalDate                  dateValue        = CarryoverIssueJsonDto.parseDate(this.date);
-        final Instant                    updatedAtValue   = CarryoverIssueJsonDto.parseInstant(this.updatedAt);
+        final LocalDate dateValue      = CarryoverIssueJsonDto.parseDate(this.date);
+        final Instant   updatedAtValue = CarryoverIssueJsonDto.parseInstant(this.updatedAt);
 
         result = new CarryoverIssueDto(this.number, this.title, dateValue, this.state, updatedAtValue, this.sections,
             this.declaredCount, this.count, this.minutes, carryoverItemDto);

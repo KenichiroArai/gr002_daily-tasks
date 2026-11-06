@@ -204,8 +204,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
 
         result = new GitHubIssueRefDto(number,
             GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.TITLE.getFieldName()),
-            GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.STATE.getFieldName()),
-            GitHubIssueApiImpl
+            GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.STATE.getFieldName()), GitHubIssueApiImpl
                 .parseUpdatedAt(GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.UPDATED_AT.getFieldName())));
         return result;
 

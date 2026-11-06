@@ -104,8 +104,9 @@ public class DailySummaryJsonDto {
      */
     public DailySummaryJsonDto(final DailySummaryDto day) {
 
-        this(DailySummaryJsonDto.toText(day.getDate()), day.getIssue(), day.getDeclaredCount(), new ItemStatJsonDto(day.getTotal()),
-            new ItemStatsJsonDto(day.getByItem()), new ItemStatsJsonDto(day.getByOriginMonth()));
+        this(DailySummaryJsonDto.toText(day.getDate()), day.getIssue(), day.getDeclaredCount(),
+            new ItemStatJsonDto(day.getTotal()), new ItemStatsJsonDto(day.getByItem()),
+            new ItemStatsJsonDto(day.getByOriginMonth()));
 
     }
 

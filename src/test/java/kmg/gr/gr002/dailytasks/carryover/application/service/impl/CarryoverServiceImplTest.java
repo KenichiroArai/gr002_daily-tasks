@@ -11,7 +11,6 @@ import java.util.stream.IntStream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import kmg.core.infrastructure.type.KmgString;
 import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverDataLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverParseLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.logic.DailyTaskIssueLogic;

@@ -142,8 +142,8 @@ public class CarryoverItemJsonDto {
      */
     public CarryoverItemJsonDto(final CarryoverItemDto item) {
 
-        this(item.getName(), CarryoverItemJsonDto.toText(item.getOriginDate()), item.isChecked(), item.getMinutes(), item.getMinutesSource(),
-            item.getSection(), item.getRaw());
+        this(item.getName(), CarryoverItemJsonDto.toText(item.getOriginDate()), item.isChecked(), item.getMinutes(),
+            item.getMinutesSource(), item.getSection(), item.getRaw());
 
     }
 

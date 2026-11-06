@@ -453,8 +453,7 @@ public class CarryoverServiceImpl implements CarryoverService {
     /**
      * 収集の設定とモードを受け取り、フィールドに保持する<br>
      * <p>
-     * 設定はデータの取得元と保存先に変換し、収集と集計のサービスへ渡す。このインスタンスの状態をすべてクリアする。解析して保存した Issue
-     * の件数の累計もここでだけクリアする。
+     * 設定はデータの取得元と保存先に変換し、収集と集計のサービスへ渡す。このインスタンスの状態をすべてクリアする。解析して保存した Issue の件数の累計もここでだけクリアする。
      * </p>
      *
      * @since 0.1.0
@@ -529,8 +528,7 @@ public class CarryoverServiceImpl implements CarryoverService {
      * 本文を持たない索引を作り、単位に分ける<br>
      * <p>
      * {@link #initialize(CarryoverPropertiesModel, boolean)} のあと、{@link #collect()} の前に呼ぶ。単位が残っているときは
-     * {@link IllegalStateException} を投げる。単位が残っていないとき（未取得や消化済み）は単位状態を戻して取得する。解析して保存した Issue
-     * の件数の累計は戻さない。
+     * {@link IllegalStateException} を投げる。単位が残っていないとき（未取得や消化済み）は単位状態を戻して取得する。解析して保存した Issue の件数の累計は戻さない。
      * </p>
      *
      * @since 0.1.0
