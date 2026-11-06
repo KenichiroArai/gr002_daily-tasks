@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import kmg.core.infrastructure.utils.KmgListUtils;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverItemModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSourceModel;
@@ -136,7 +137,7 @@ public class CarryoverServiceImpl implements CarryoverService {
         }
 
         /* 日付がない参照があるか */
-        final boolean hasUndated = !undated.isEmpty();
+        final boolean hasUndated = KmgListUtils.isNotEmpty(undated);
 
         if (hasUndated) {
 
@@ -148,7 +149,7 @@ public class CarryoverServiceImpl implements CarryoverService {
         }
 
         /* 参照がないか */
-        final boolean empty = result.isEmpty();
+        final boolean empty = KmgListUtils.isEmpty(result);
 
         if (empty) {
 

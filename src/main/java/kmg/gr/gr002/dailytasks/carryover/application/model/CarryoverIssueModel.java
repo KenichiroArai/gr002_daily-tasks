@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 
+import kmg.core.infrastructure.type.KmgString;
+import kmg.core.infrastructure.utils.KmgListUtils;
 import kmg.gr.gr002.dailytasks.carryover.application.types.IssueStateTypes;
 
 /**
@@ -260,7 +262,7 @@ public class CarryoverIssueModel {
      */
     public boolean hasSection() {
 
-        final boolean result = !this.sections.isEmpty();
+        final boolean result = KmgListUtils.isNotEmpty(this.sections);
         return result;
 
     }
@@ -277,7 +279,7 @@ public class CarryoverIssueModel {
         final boolean result;
         final String  openState = IssueStateTypes.OPEN.getState();
 
-        result = openState.equals(this.state);
+        result = KmgString.equals(openState, this.state);
         return result;
 
     }

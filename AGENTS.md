@@ -428,6 +428,39 @@ final String expected = "prefix "
     + "suffix";
 ```
 
+### kmg-core / kmg-fund のユーティリティ
+
+- 共通型は kmg-fund を優先し、kmg-fund に無いものだけ kmg-core から import する（既存方針）
+- 文字列の空・空白判定は `KmgString.isEmpty` / `isBlank` / `isNotEmpty` / `isNotBlank` を使う。`String.isEmpty` / `isBlank` は使わない。null 判定と blank 判定を分けている場合は `KmgString.isBlank` にまとめる
+- 文字列の比較は `KmgString.equals` / `equalsIgnoreCase` を使う（両方 null のときは false）
+- 実行時の文字列結合は前述の「文字列の結合」のとおり `KmgString.concat` を使う
+- `List` / `Map` / 配列の空判定は `KmgListUtils` / `KmgMapUtils` / `KmgArrayUtils` の `isEmpty` / `isNotEmpty` を使う。`list.isEmpty()` や `map.isEmpty()` は使わない
+- 日付・日時の書式変換は、対応する API があるときだけ `KmgLocalDateUtils` / `KmgLocalDateTimeUtils` を使う（現状は `yyyy/MM/dd` および `yyyy/MM/dd HH:mm:ss.SSS`）。JSON 境界の ISO `yyyy-MM-dd` と `Instant` の ISO-8601 は対応 API がないため、JDK の `LocalDate.parse` / `toString` / `Instant.parse` を使い、独自ラッパーは作らない
+- 対象外は次のとおり。`strip` / `replaceAll`、URL・ファイル名・例外文面の埋め込み用の `String.format`、タイトル日付の正規表現解析、ドメインの `XxxTypes` が持つ空文字定数（`CarryoverParseTextTypes.EMPTY` など。`KmgString.EMPTY` へ機械置換しない）
+
+```java
+// 望ましくない形式:
+if (text == null) {
+    return result;
+}
+if (text.isBlank()) {
+    return result;
+}
+
+// 望ましい形式:
+if (KmgString.isBlank(text)) {
+    return result;
+}
+```
+
+```java
+// 望ましくない形式:
+final boolean empty = refs.isEmpty();
+
+// 望ましい形式:
+final boolean empty = KmgListUtils.isEmpty(refs);
+```
+
 ### 初期化
 
 - 生成時に決まるインスタンス変数の初期化はコンストラクタで行う。ブレークポイントを置いてデバッグしやすくするためである。依存も同じコンストラクタの引数で受け、`private final` のフィールドへ代入する。コンストラクタが1つのときは `@Autowired` を付けない。フィールドには `@Autowired` を付けない
@@ -867,7 +900,7 @@ public class SampleClass {
 - [ ] JSON 形式の後方互換の確認（変更時は全件モードで再生成）
 - [ ] テストの追加 / 更新（命名・実装順序・検証方法を含む）
 - [ ] `mvn test` で JaCoCo カバレッジ 100% を維持
-- [ ] コーディングルール（戻り値 `result`、`result` は戻り値以外に使わない、読まれない初期代入は書かない、不要な `Integer.valueOf(int)` は書かない、早期リターン、処理コメント、`record` 禁止、実行時の文字列結合は `KmgString.concat`、生成時の初期化はコンストラクタまたは static 初期化子、共通の情報は `initialize`）の順守
+- [ ] コーディングルール（戻り値 `result`、`result` は戻り値以外に使わない、読まれない初期代入は書かない、不要な `Integer.valueOf(int)` は書かない、早期リターン、処理コメント、`record` 禁止、実行時の文字列結合は `KmgString.concat`、文字列・コレクションの空判定は `KmgString` / `KmgListUtils` / `KmgMapUtils` / `KmgArrayUtils`、日付・日時は対応 API があるときだけ `KmgLocalDateUtils` / `KmgLocalDateTimeUtils`、生成時の初期化はコンストラクタまたは static 初期化子、共通の情報は `initialize`）の順守
 - [ ] アクセス修飾子の順守（公開しないものは `private`、修飾子なしは原則禁止）
 - [ ] Javadoc の追加 / 更新（`{@inheritDoc}` は使わない）
 - [ ] 解析ルールを変更した場合、`declaredCount` との食い違いと補完件数のログを確認し、kb002_daily-tasks_doc の仕様を更新
@@ -894,6 +927,8 @@ public class SampleClass {
 - 深いネストのままガード節を使わずに実装すること
 - テストメソッドに複数ケースを詰め込むこと
 - 実行時の文字列結合を `+` や `StringBuilder` で行うこと（`KmgString.concat` を使う。数値演算、`String.format`、リテラル内の `+`、コンパイル時に 1 つの文字列になる定数式は除く）
+- 文字列の空・空白判定を `String.isEmpty` / `isBlank` で行うこと、コレクションの空判定を `List.isEmpty` / `Map.isEmpty` で行うこと（`KmgString` / `KmgListUtils` / `KmgMapUtils` / `KmgArrayUtils` を使う）
+- kmg-core に対応する日付・日時 API があるのに使わず、同じ書式の変換を独自に書くこと。対応 API がない書式（ISO `yyyy-MM-dd`、`Instant` の ISO-8601 など）で独自ラッパーを作ること
 
 ## 参考リンク
 

@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import kmg.core.infrastructure.utils.KmgMapUtils;
+
 /**
  * キーごとの集計値<br>
  * <p>
@@ -117,7 +119,7 @@ public class ItemStatsModel {
      */
     public boolean isEmpty() {
 
-        final boolean result = this.stats.isEmpty();
+        final boolean result = KmgMapUtils.isEmpty(this.stats);
         return result;
 
     }

@@ -99,18 +99,8 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
 
         Instant result = null;
 
-        /* 文字列がないか */
-        if (text == null) {
-
-            // 文字列がない場合
-
-            // 日時なしとする
-            return result;
-
-        }
-
         /* 文字列が空か */
-        final boolean blank = text.isBlank();
+        final boolean blank = KmgString.isBlank(text);
 
         if (blank) {
 
@@ -725,20 +715,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
      */
     private boolean hasToken() {
 
-        boolean      result = false;
-        final String token  = this.settings.getToken();
-
-        /* トークンがないか */
-        if (token == null) {
-
-            // トークンがない場合
-
-            // トークンなしとする
-            return result;
-
-        }
-
-        result = !token.isBlank();
+        final boolean result = KmgString.isNotBlank(this.settings.getToken());
         return result;
 
     }

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import kmg.core.infrastructure.type.KmgString;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssueDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverItemDto;
 
@@ -44,18 +45,8 @@ public class CarryoverIssueJsonDto {
 
         LocalDate result = null;
 
-        /* 文字列がないか */
-        if (text == null) {
-
-            // 文字列がない場合
-
-            // 日付なしとする
-            return result;
-
-        }
-
         /* 文字列が空か */
-        final boolean blank = text.isBlank();
+        final boolean blank = KmgString.isBlank(text);
 
         if (blank) {
 
@@ -85,18 +76,8 @@ public class CarryoverIssueJsonDto {
 
         Instant result = null;
 
-        /* 文字列がないか */
-        if (text == null) {
-
-            // 文字列がない場合
-
-            // 日時なしとする
-            return result;
-
-        }
-
         /* 文字列が空か */
-        final boolean blank = text.isBlank();
+        final boolean blank = KmgString.isBlank(text);
 
         if (blank) {
 

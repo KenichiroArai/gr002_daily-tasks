@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import kmg.core.infrastructure.utils.KmgMapUtils;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.ItemStatsDto;
 
 /**
@@ -134,7 +135,7 @@ public class ItemStatsJsonDto {
      */
     public boolean isEmpty() {
 
-        final boolean result = this.stats.isEmpty();
+        final boolean result = KmgMapUtils.isEmpty(this.stats);
         return result;
 
     }

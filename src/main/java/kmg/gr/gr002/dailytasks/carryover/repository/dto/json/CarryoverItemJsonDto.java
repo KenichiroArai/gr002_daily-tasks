@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import kmg.core.infrastructure.type.KmgString;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverItemDto;
 
 /**
@@ -36,18 +37,8 @@ public class CarryoverItemJsonDto {
 
         LocalDate result = null;
 
-        /* 文字列がないか */
-        if (text == null) {
-
-            // 文字列がない場合
-
-            // 日付なしとする
-            return result;
-
-        }
-
         /* 文字列が空か */
-        final boolean blank = text.isBlank();
+        final boolean blank = KmgString.isBlank(text);
 
         if (blank) {
 

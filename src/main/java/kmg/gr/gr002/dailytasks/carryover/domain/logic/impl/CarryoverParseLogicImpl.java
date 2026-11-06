@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import kmg.core.infrastructure.type.KmgString;
 import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverParseLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverItemModel;
@@ -208,10 +209,10 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
             result = CarryoverParseLogicImpl.TRAILING_OPEN_PARENTHESES.matcher(result)
                 .replaceAll(CarryoverParseTextTypes.EMPTY.getText()).strip();
 
-        } while (!result.equals(previous));
+        } while (!KmgString.equals(result, previous));
 
         /* 項目名が残っているか */
-        final boolean named = !result.isEmpty();
+        final boolean named = KmgString.isNotEmpty(result);
 
         if (named) {
 
@@ -499,7 +500,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
             }
 
             final String  uncheckedText = CarryoverParseTextTypes.UNCHECKED.getText();
-            final boolean checked       = !uncheckedText.equals(checkboxMatcher.group(1));
+            final boolean checked       = !KmgString.equals(uncheckedText, checkboxMatcher.group(1));
             items.add(this.parseItem(issue.getNumber(), currentSection, checked, checkboxMatcher.group(2), line));
 
         }
@@ -572,7 +573,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
         /* 項目名が不明か */
         final String  unknownText = CarryoverParseTextTypes.UNKNOWN.getText();
-        final boolean unknownName = unknownText.equals(name);
+        final boolean unknownName = KmgString.equals(unknownText, name);
 
         if (unknownName) {
 
@@ -600,7 +601,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
         }
 
         /* 解釈できない残りがあるか */
-        final boolean restLeft = !rest.isBlank();
+        final boolean restLeft = KmgString.isNotBlank(rest);
 
         if (restLeft) {
 
@@ -712,7 +713,7 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
         final String stripped = line.strip();
 
         /* 空行か */
-        final boolean blank = stripped.isEmpty();
+        final boolean blank = KmgString.isEmpty(stripped);
 
         if (blank) {
 

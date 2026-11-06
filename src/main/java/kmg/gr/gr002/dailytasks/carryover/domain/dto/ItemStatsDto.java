@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import kmg.core.infrastructure.utils.KmgMapUtils;
 import kmg.gr.gr002.dailytasks.carryover.application.model.ItemStatsModel;
 
 /**
@@ -132,7 +133,7 @@ public class ItemStatsDto {
      */
     public boolean isEmpty() {
 
-        final boolean result = this.stats.isEmpty();
+        final boolean result = KmgMapUtils.isEmpty(this.stats);
         return result;
 
     }
