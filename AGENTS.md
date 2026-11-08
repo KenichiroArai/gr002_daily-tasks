@@ -360,7 +360,7 @@ java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.1.0.jar --full
 - return 文は `return result;` に統一する
 - メソッドの戻り値を、そのまま次のメソッドの呼び出し先にしない。いったん変数に受ける。引数としての単独の呼び出しは分けない。コンストラクタの `this(...)` で連鎖している引数は、private な static メソッドへ切り出す
 - 定型（`Stream`、Builder、`Comparator` の連結、`replaceAll().strip()` など）はそのままにしてよい。ストリームを始める前の自前メソッドの戻り値は変数に受ける
-- このルールは画面（mk002_daily-tasks_web-next の TypeScript）にも共通する。共通ルールは kb002_daily-tasks_doc の [docs/coding-rules.md](https://github.com/KenichiroArai/kb002_daily-tasks_doc/blob/main/docs/coding-rules.md) の「戻り値」と「メソッド呼び出し」を参照する
+- このルールは画面（mk002_daily-tasks_web-next の TypeScript）にも共通する。共通ルールは kb002_daily-tasks_doc の [docs/coding-rules.md](https://github.com/KenichiroArai/kb002_daily-tasks_doc/blob/main/docs/coding-rules.md) の「戻り値」「ローカル変数」「メソッド呼び出し」を参照する
 
 ```java
 // 望ましくない形式（読まれない初期化）:
@@ -393,6 +393,14 @@ return result;
 ```
 
 ガード節で初期値を返す場合は、現行どおり初期化してよい（例: `int result = 0;` のあと早期 return）。
+
+### ローカル変数
+
+- `result` 以外のローカル変数は、使う直前で宣言する
+- 使用するブロック（分岐・try など）の内側に限り定義し、外側へ広げない
+- 代入した初期値をその後読まないときは、初期化しない
+- 例外として、戻り値 `result` は「メソッドの戻り値」のとおりメソッドの先頭で宣言する
+- 共通ルールは kb002_daily-tasks_doc の [docs/coding-rules.md](https://github.com/KenichiroArai/kb002_daily-tasks_doc/blob/main/docs/coding-rules.md) の「ローカル変数」を参照する
 
 ### ボックス化
 
@@ -900,7 +908,7 @@ public class SampleClass {
 - [ ] JSON 形式の後方互換の確認（変更時は全件モードで再生成）
 - [ ] テストの追加 / 更新（命名・実装順序・検証方法を含む）
 - [ ] `mvn test` で JaCoCo カバレッジ 100% を維持
-- [ ] コーディングルール（戻り値 `result`、`result` は戻り値以外に使わない、読まれない初期代入は書かない、不要な `Integer.valueOf(int)` は書かない、早期リターン、処理コメント、`record` 禁止、実行時の文字列結合は `KmgString.concat`、文字列・コレクションの空判定は `KmgString` / `KmgListUtils` / `KmgMapUtils` / `KmgArrayUtils`、日付・日時は対応 API があるときだけ `KmgLocalDateUtils` / `KmgLocalDateTimeUtils`、生成時の初期化はコンストラクタまたは static 初期化子、共通の情報は `initialize`）の順守
+- [ ] コーディングルール（戻り値 `result`、`result` は戻り値以外に使わない、読まれない初期代入は書かない、ローカル変数は直前・最小スコープで未使用初期化なし（`result` は先頭）、不要な `Integer.valueOf(int)` は書かない、早期リターン、処理コメント、`record` 禁止、実行時の文字列結合は `KmgString.concat`、文字列・コレクションの空判定は `KmgString` / `KmgListUtils` / `KmgMapUtils` / `KmgArrayUtils`、日付・日時は対応 API があるときだけ `KmgLocalDateUtils` / `KmgLocalDateTimeUtils`、生成時の初期化はコンストラクタまたは static 初期化子、共通の情報は `initialize`）の順守
 - [ ] アクセス修飾子の順守（公開しないものは `private`、修飾子なしは原則禁止）
 - [ ] Javadoc の追加 / 更新（`{@inheritDoc}` は使わない）
 - [ ] 解析ルールを変更した場合、`declaredCount` との食い違いと補完件数のログを確認し、kb002_daily-tasks_doc の仕様を更新

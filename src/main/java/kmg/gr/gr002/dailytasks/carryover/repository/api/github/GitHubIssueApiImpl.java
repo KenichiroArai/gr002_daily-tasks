@@ -341,9 +341,10 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
         final List<JsonNode> result = new ArrayList<>();
 
         int page = 1;
-        int pageSize;
 
         try (HttpClient httpClient = this.httpClientSupplier.get()) {
+
+            int pageSize;
 
             do {
 
@@ -463,9 +464,10 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
         final List<JsonNode> result = new ArrayList<>();
 
         int page = 1;
-        int pageSize;
 
         try (HttpClient httpClient = this.httpClientSupplier.get()) {
+
+            int pageSize;
 
             do {
 
@@ -637,9 +639,7 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
 
         /* レート制限のログ */
         final String remainingHeader = GitHubApiHeaderTypes.RATE_LIMIT_REMAINING.getHeader();
-        final String resetHeader     = GitHubApiHeaderTypes.RATE_LIMIT_RESET.getHeader();
         final String remaining       = response.headers().firstValue(remainingHeader).orElse(null);
-        final String reset           = response.headers().firstValue(resetHeader).orElse(null);
 
         /* レート制限のヘッダがあるか */
         if (remaining != null) {
@@ -647,34 +647,32 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
             // レート制限のヘッダがある場合
 
             // 残数をログに出す
+            final String resetHeader  = GitHubApiHeaderTypes.RATE_LIMIT_RESET.getHeader();
+            final String reset        = response.headers().firstValue(resetHeader).orElse(null);
             final String resetValue   = reset == null ? GitHubApiTextTypes.EMPTY.getText() : reset;
             final String debugMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG51002);
             GitHubIssueApiImpl.LOGGER.debug(debugMessage, remaining, resetValue);
 
             /* レート制限の残りが閾値以下か */
-            boolean warn = false;
-
             try {
 
                 final int remainingCount = Integer.parseInt(remaining);
-                warn = remainingCount <= GitHubIssueApiImpl.RATE_LIMIT_WARN_THRESHOLD;
+
+                if (remainingCount <= GitHubIssueApiImpl.RATE_LIMIT_WARN_THRESHOLD) {
+
+                    // レート制限の残りが閾値以下の場合
+
+                    // 警告を出す
+                    final String warnMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG51003);
+                    GitHubIssueApiImpl.LOGGER.warn(warnMessage, remaining, resetValue);
+
+                }
 
             } catch (@SuppressWarnings("unused") final NumberFormatException e) {
 
                 // 数にできない場合
 
                 // 警告は出さない
-                warn = false;
-
-            }
-
-            if (warn) {
-
-                // レート制限の残りが閾値以下の場合
-
-                // 警告を出す
-                final String warnMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG51003);
-                GitHubIssueApiImpl.LOGGER.warn(warnMessage, remaining, resetValue);
 
             }
 

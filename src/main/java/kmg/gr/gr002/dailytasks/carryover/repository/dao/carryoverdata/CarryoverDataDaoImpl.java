@@ -354,7 +354,7 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
      */
     private void write(final Path path, final Object value) throws IOException {
 
-        String json = null;
+        final String json;
 
         try {
 
