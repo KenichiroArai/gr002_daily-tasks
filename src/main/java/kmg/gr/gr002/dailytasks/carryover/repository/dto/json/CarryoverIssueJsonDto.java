@@ -32,6 +32,24 @@ import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverItemDto;
 public class CarryoverIssueJsonDto {
 
     /**
+     * 解析結果の日付を文字列にする<br>
+     *
+     * @since 0.1.0
+     *
+     * @param issue
+     *              持ち越しの解析結果
+     *
+     * @return 日付の文字列。日付がない場合は null
+     */
+    private static String dateText(final CarryoverIssueDto issue) {
+
+        final LocalDate date   = issue.getDate();
+        final String    result = CarryoverIssueJsonDto.toText(date);
+        return result;
+
+    }
+
+    /**
      * 日付の文字列を日付に変換する<br>
      *
      * @since 0.1.0
@@ -89,24 +107,6 @@ public class CarryoverIssueJsonDto {
         }
 
         result = Instant.parse(text);
-        return result;
-
-    }
-
-    /**
-     * 解析結果の日付を文字列にする<br>
-     *
-     * @since 0.1.0
-     *
-     * @param issue
-     *              持ち越しの解析結果
-     *
-     * @return 日付の文字列。日付がない場合は null
-     */
-    private static String dateText(final CarryoverIssueDto issue) {
-
-        final LocalDate date   = issue.getDate();
-        final String    result = CarryoverIssueJsonDto.toText(date);
         return result;
 
     }
@@ -259,8 +259,8 @@ public class CarryoverIssueJsonDto {
     public CarryoverIssueJsonDto(final CarryoverIssueDto issue) {
 
         this(issue.getNumber(), issue.getTitle(), CarryoverIssueJsonDto.dateText(issue), issue.getState(),
-            CarryoverIssueJsonDto.updatedAtText(issue), issue.getSections(), issue.getDeclaredCount(),
-            issue.getCount(), issue.getMinutes(), CarryoverIssueJsonDto.toItemJsons(issue));
+            CarryoverIssueJsonDto.updatedAtText(issue), issue.getSections(), issue.getDeclaredCount(), issue.getCount(),
+            issue.getMinutes(), CarryoverIssueJsonDto.toItemJsons(issue));
 
     }
 

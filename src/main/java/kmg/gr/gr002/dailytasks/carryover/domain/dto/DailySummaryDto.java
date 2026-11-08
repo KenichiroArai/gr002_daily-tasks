@@ -21,24 +21,6 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.ItemStatsModel;
 public class DailySummaryDto {
 
     /**
-     * 持ち越し元の月ごとの集計を保存用の DTO にする<br>
-     *
-     * @since 0.1.0
-     *
-     * @param day
-     *            日別の集計
-     *
-     * @return 持ち越し元の月ごとの集計
-     */
-    private static ItemStatsDto byOriginMonthOf(final DailySummaryModel day) {
-
-        final ItemStatsModel byOriginMonth = day.getByOriginMonth();
-        final ItemStatsDto   result        = new ItemStatsDto(byOriginMonth);
-        return result;
-
-    }
-
-    /**
      * 項目ごとの集計を保存用の DTO にする<br>
      *
      * @since 0.1.0
@@ -52,6 +34,24 @@ public class DailySummaryDto {
 
         final ItemStatsModel byItem = day.getByItem();
         final ItemStatsDto   result = new ItemStatsDto(byItem);
+        return result;
+
+    }
+
+    /**
+     * 持ち越し元の月ごとの集計を保存用の DTO にする<br>
+     *
+     * @since 0.1.0
+     *
+     * @param day
+     *            日別の集計
+     *
+     * @return 持ち越し元の月ごとの集計
+     */
+    private static ItemStatsDto byOriginMonthOf(final DailySummaryModel day) {
+
+        final ItemStatsModel byOriginMonth = day.getByOriginMonth();
+        final ItemStatsDto   result        = new ItemStatsDto(byOriginMonth);
         return result;
 
     }

@@ -23,24 +23,6 @@ import kmg.gr.gr002.dailytasks.carryover.domain.dto.ItemStatsDto;
 public class DailySummaryJsonDto {
 
     /**
-     * 持ち越し元の月ごとの集計を JSON の形にする<br>
-     *
-     * @since 0.1.0
-     *
-     * @param day
-     *            日別の集計
-     *
-     * @return 持ち越し元の月ごとの集計
-     */
-    private static ItemStatsJsonDto byOriginMonthJson(final DailySummaryDto day) {
-
-        final ItemStatsDto     byOriginMonth = day.getByOriginMonth();
-        final ItemStatsJsonDto result        = new ItemStatsJsonDto(byOriginMonth);
-        return result;
-
-    }
-
-    /**
      * 項目ごとの集計を JSON の形にする<br>
      *
      * @since 0.1.0
@@ -59,6 +41,24 @@ public class DailySummaryJsonDto {
     }
 
     /**
+     * 持ち越し元の月ごとの集計を JSON の形にする<br>
+     *
+     * @since 0.1.0
+     *
+     * @param day
+     *            日別の集計
+     *
+     * @return 持ち越し元の月ごとの集計
+     */
+    private static ItemStatsJsonDto byOriginMonthJson(final DailySummaryDto day) {
+
+        final ItemStatsDto     byOriginMonth = day.getByOriginMonth();
+        final ItemStatsJsonDto result        = new ItemStatsJsonDto(byOriginMonth);
+        return result;
+
+    }
+
+    /**
      * 日別の集計の日付を文字列にする<br>
      *
      * @since 0.1.0
@@ -72,6 +72,24 @@ public class DailySummaryJsonDto {
 
         final LocalDate date   = day.getDate();
         final String    result = DailySummaryJsonDto.toText(date);
+        return result;
+
+    }
+
+    /**
+     * 全体の集計を JSON の形にする<br>
+     *
+     * @since 0.1.0
+     *
+     * @param day
+     *            日別の集計
+     *
+     * @return 全体の集計
+     */
+    private static ItemStatJsonDto totalJson(final DailySummaryDto day) {
+
+        final ItemStatDto     total  = day.getTotal();
+        final ItemStatJsonDto result = new ItemStatJsonDto(total);
         return result;
 
     }
@@ -101,24 +119,6 @@ public class DailySummaryJsonDto {
         }
 
         result = date.toString();
-        return result;
-
-    }
-
-    /**
-     * 全体の集計を JSON の形にする<br>
-     *
-     * @since 0.1.0
-     *
-     * @param day
-     *            日別の集計
-     *
-     * @return 全体の集計
-     */
-    private static ItemStatJsonDto totalJson(final DailySummaryDto day) {
-
-        final ItemStatDto     total  = day.getTotal();
-        final ItemStatJsonDto result = new ItemStatJsonDto(total);
         return result;
 
     }

@@ -22,6 +22,55 @@ import kmg.core.infrastructure.type.KmgString;
 public final class ReflectionTestUtil {
 
     /**
+     * クラスとその親クラスからフィールドを探す<br>
+     *
+     * @since 0.1.0
+     *
+     * @param clazz
+     *              探し始めるクラス
+     * @param name
+     *              フィールド名
+     *
+     * @return 見つかったフィールド
+     *
+     * @throws NoSuchFieldException
+     *                              フィールドが見つからない場合
+     */
+    private static Field findField(final Class<?> clazz, final String name) throws NoSuchFieldException {
+
+        Field result = null;
+
+        /* 親クラスへさかのぼって探す */
+        for (Class<?> current = clazz; current != null; current = current.getSuperclass()) {
+
+            try {
+
+                result = current.getDeclaredField(name);
+                break;
+
+            } catch (@SuppressWarnings("unused") final NoSuchFieldException e) {
+
+                // 親クラスで探し直す
+
+            }
+
+        }
+
+        /* フィールドが見つかったか */
+        if (result == null) {
+
+            // フィールドが見つからない場合
+
+            // 見つからない例外にする
+            throw new NoSuchFieldException(KmgString.concat(clazz.getName(), ".", name));
+
+        }
+
+        return result;
+
+    }
+
+    /**
      * クラスとその親クラスからメソッドを探し、アクセスできるようにする<br>
      *
      * @since 0.1.0
@@ -94,9 +143,8 @@ public final class ReflectionTestUtil {
     @SuppressWarnings("unchecked")
     public static <T> T getField(final Object target, final String name) throws ReflectiveOperationException {
 
-        final T        result;
-        final Class<?> type  = target.getClass();
-        final Field    field = type.getDeclaredField(name);
+        final T     result;
+        final Field field = ReflectionTestUtil.findField(target.getClass(), name);
 
         field.setAccessible(true);
         result = (T) field.get(target);
@@ -280,8 +328,7 @@ public final class ReflectionTestUtil {
 
         try {
 
-            final Class<?> type  = target.getClass();
-            final Field    field = type.getDeclaredField(name);
+            final Field field = ReflectionTestUtil.findField(target.getClass(), name);
             field.setAccessible(true);
             field.set(target, value);
 

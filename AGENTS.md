@@ -65,7 +65,7 @@ src/main/java/kmg/gr/gr002/dailytasks/
       types/msg/             # メッセージの種類（Gr002GenMsgTypes、Gr002LogMsgTypes、Gr002ValMsgTypes）
       context/               # メッセージリソース（KmgMessageSource を継承した DailyTasksMessageSource）
     repository/              # データアクセス層
-      api/github/            # 外部 API の実装（GitHub REST API からの Issue 取得 GitHubIssueApiImpl）
+      api/github/            # 外部 API の実装（GitHubApiClient / GitHubIssueClient / GitHubIssueApiImpl）
       dao/carryoverdata/     # DAO の実装（持ち越しの JSON ファイルの読み書き CarryoverDataDaoImpl）
       dao/defaultminutes/    # DAO の実装（標準時間の設定ファイルの読み込み DefaultMinutesDaoImpl）
       dto/json/              # JSON ファイルの形（Jackson のアノテーションを持つのはここだけ）。domain の DTO との変換もここ

@@ -24,6 +24,24 @@ import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverItemDto;
 public class CarryoverItemJsonDto {
 
     /**
+     * 持ち越し元の日付を文字列にする<br>
+     *
+     * @since 0.1.0
+     *
+     * @param item
+     *             持ち越し項目
+     *
+     * @return 日付の文字列（yyyy-MM-dd）。日付がない場合は null
+     */
+    private static String originDateText(final CarryoverItemDto item) {
+
+        final LocalDate originDate = item.getOriginDate();
+        final String    result     = CarryoverItemJsonDto.toText(originDate);
+        return result;
+
+    }
+
+    /**
      * 日付の文字列を日付に変換する<br>
      *
      * @since 0.1.0
@@ -50,24 +68,6 @@ public class CarryoverItemJsonDto {
         }
 
         result = LocalDate.parse(text);
-        return result;
-
-    }
-
-    /**
-     * 持ち越し元の日付を文字列にする<br>
-     *
-     * @since 0.1.0
-     *
-     * @param item
-     *             持ち越し項目
-     *
-     * @return 日付の文字列（yyyy-MM-dd）。日付がない場合は null
-     */
-    private static String originDateText(final CarryoverItemDto item) {
-
-        final LocalDate originDate = item.getOriginDate();
-        final String    result     = CarryoverItemJsonDto.toText(originDate);
         return result;
 
     }
