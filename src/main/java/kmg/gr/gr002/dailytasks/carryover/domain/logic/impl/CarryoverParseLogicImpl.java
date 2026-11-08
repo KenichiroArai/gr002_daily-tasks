@@ -204,10 +204,11 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
         do {
 
             previous = result;
-            result = CarryoverParseLogicImpl.TRAILING_PARENTHESES.matcher(result)
-                .replaceAll(CarryoverParseTextTypes.EMPTY.getText()).strip();
-            result = CarryoverParseLogicImpl.TRAILING_OPEN_PARENTHESES.matcher(result)
-                .replaceAll(CarryoverParseTextTypes.EMPTY.getText()).strip();
+            final Matcher trailingParenthesesMatcher = CarryoverParseLogicImpl.TRAILING_PARENTHESES.matcher(result);
+            result = trailingParenthesesMatcher.replaceAll(CarryoverParseTextTypes.EMPTY.getText()).strip();
+            final Matcher trailingOpenParenthesesMatcher
+                = CarryoverParseLogicImpl.TRAILING_OPEN_PARENTHESES.matcher(result);
+            result = trailingOpenParenthesesMatcher.replaceAll(CarryoverParseTextTypes.EMPTY.getText()).strip();
 
         } while (!KmgString.equals(result, previous));
 

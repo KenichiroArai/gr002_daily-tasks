@@ -3,6 +3,8 @@ package kmg.gr.gr002.dailytasks.carryover.domain.dto;
 import java.time.LocalDate;
 
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailySummaryModel;
+import kmg.gr.gr002.dailytasks.carryover.application.model.ItemStatModel;
+import kmg.gr.gr002.dailytasks.carryover.application.model.ItemStatsModel;
 
 /**
  * 日別の持ち越しの集計の DTO<br>
@@ -17,6 +19,60 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.DailySummaryModel;
  * @version 0.1.0
  */
 public class DailySummaryDto {
+
+    /**
+     * 持ち越し元の月ごとの集計を保存用の DTO にする<br>
+     *
+     * @since 0.1.0
+     *
+     * @param day
+     *            日別の集計
+     *
+     * @return 持ち越し元の月ごとの集計
+     */
+    private static ItemStatsDto byOriginMonthOf(final DailySummaryModel day) {
+
+        final ItemStatsModel byOriginMonth = day.getByOriginMonth();
+        final ItemStatsDto   result        = new ItemStatsDto(byOriginMonth);
+        return result;
+
+    }
+
+    /**
+     * 項目ごとの集計を保存用の DTO にする<br>
+     *
+     * @since 0.1.0
+     *
+     * @param day
+     *            日別の集計
+     *
+     * @return 項目ごとの集計
+     */
+    private static ItemStatsDto byItemOf(final DailySummaryModel day) {
+
+        final ItemStatsModel byItem = day.getByItem();
+        final ItemStatsDto   result = new ItemStatsDto(byItem);
+        return result;
+
+    }
+
+    /**
+     * 全体の集計を保存用の DTO にする<br>
+     *
+     * @since 0.1.0
+     *
+     * @param day
+     *            日別の集計
+     *
+     * @return 全体の集計
+     */
+    private static ItemStatDto totalOf(final DailySummaryModel day) {
+
+        final ItemStatModel total  = day.getTotal();
+        final ItemStatDto   result = new ItemStatDto(total);
+        return result;
+
+    }
 
     /**
      * 項目ごとの集計（キーは項目名）
@@ -73,8 +129,8 @@ public class DailySummaryDto {
      */
     public DailySummaryDto(final DailySummaryModel day) {
 
-        this(day.getDate(), day.getIssue(), day.getDeclaredCount(), new ItemStatDto(day.getTotal()),
-            new ItemStatsDto(day.getByItem()), new ItemStatsDto(day.getByOriginMonth()));
+        this(day.getDate(), day.getIssue(), day.getDeclaredCount(), DailySummaryDto.totalOf(day),
+            DailySummaryDto.byItemOf(day), DailySummaryDto.byOriginMonthOf(day));
 
     }
 

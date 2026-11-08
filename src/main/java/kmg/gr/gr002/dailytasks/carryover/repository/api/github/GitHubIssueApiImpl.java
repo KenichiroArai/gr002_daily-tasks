@@ -3,6 +3,7 @@ package kmg.gr.gr002.dailytasks.carryover.repository.api.github;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
+import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
@@ -11,6 +12,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.slf4j.Logger;
@@ -173,15 +175,19 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
     private static GitHubIssueDto toIssue(final JsonNode node) {
 
         final GitHubIssueDto result;
-        final JsonNode       numberNode = node.path(GitHubIssueFieldTypes.NUMBER.getFieldName());
-        final int            number     = numberNode.asInt();
+        final JsonNode       numberNode    = node.path(GitHubIssueFieldTypes.NUMBER.getFieldName());
+        final int            number        = numberNode.asInt();
+        final String         title         = GitHubIssueApiImpl.textOrEmpty(node,
+            GitHubIssueFieldTypes.TITLE.getFieldName());
+        final String         state         = GitHubIssueApiImpl.textOrEmpty(node,
+            GitHubIssueFieldTypes.STATE.getFieldName());
+        final String         updatedAtText = GitHubIssueApiImpl.textOrEmpty(node,
+            GitHubIssueFieldTypes.UPDATED_AT.getFieldName());
+        final Instant        updatedAt     = GitHubIssueApiImpl.parseUpdatedAt(updatedAtText);
+        final String         body          = GitHubIssueApiImpl.textOrEmpty(node,
+            GitHubIssueFieldTypes.BODY.getFieldName());
 
-        result = new GitHubIssueDto(number,
-            GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.TITLE.getFieldName()),
-            GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.STATE.getFieldName()),
-            GitHubIssueApiImpl
-                .parseUpdatedAt(GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.UPDATED_AT.getFieldName())),
-            GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.BODY.getFieldName()));
+        result = new GitHubIssueDto(number, title, state, updatedAt, body);
         return result;
 
     }
@@ -199,13 +205,17 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
     private static GitHubIssueRefDto toRef(final JsonNode node) {
 
         final GitHubIssueRefDto result;
-        final JsonNode          numberNode = node.path(GitHubIssueFieldTypes.NUMBER.getFieldName());
-        final int               number     = numberNode.asInt();
+        final JsonNode          numberNode    = node.path(GitHubIssueFieldTypes.NUMBER.getFieldName());
+        final int               number        = numberNode.asInt();
+        final String            title         = GitHubIssueApiImpl.textOrEmpty(node,
+            GitHubIssueFieldTypes.TITLE.getFieldName());
+        final String            state         = GitHubIssueApiImpl.textOrEmpty(node,
+            GitHubIssueFieldTypes.STATE.getFieldName());
+        final String            updatedAtText = GitHubIssueApiImpl.textOrEmpty(node,
+            GitHubIssueFieldTypes.UPDATED_AT.getFieldName());
+        final Instant           updatedAt     = GitHubIssueApiImpl.parseUpdatedAt(updatedAtText);
 
-        result = new GitHubIssueRefDto(number,
-            GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.TITLE.getFieldName()),
-            GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.STATE.getFieldName()), GitHubIssueApiImpl
-                .parseUpdatedAt(GitHubIssueApiImpl.textOrEmpty(node, GitHubIssueFieldTypes.UPDATED_AT.getFieldName())));
+        result = new GitHubIssueRefDto(number, title, state, updatedAt);
         return result;
 
     }
@@ -654,8 +664,10 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
         }
 
         /* レート制限のログ */
-        final String remainingHeader = GitHubApiHeaderTypes.RATE_LIMIT_REMAINING.getHeader();
-        final String remaining       = response.headers().firstValue(remainingHeader).orElse(null);
+        final HttpHeaders      headers           = response.headers();
+        final String           remainingHeader   = GitHubApiHeaderTypes.RATE_LIMIT_REMAINING.getHeader();
+        final Optional<String> remainingOptional = headers.firstValue(remainingHeader);
+        final String           remaining         = remainingOptional.orElse(null);
 
         /* レート制限のヘッダがあるか */
         if (remaining != null) {
@@ -663,10 +675,11 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
             // レート制限のヘッダがある場合
 
             // 残数をログに出す
-            final String resetHeader  = GitHubApiHeaderTypes.RATE_LIMIT_RESET.getHeader();
-            final String reset        = response.headers().firstValue(resetHeader).orElse(null);
-            final String resetValue   = reset == null ? GitHubApiTextTypes.EMPTY.getText() : reset;
-            final String debugMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG51002);
+            final String           resetHeader   = GitHubApiHeaderTypes.RATE_LIMIT_RESET.getHeader();
+            final Optional<String> resetOptional = headers.firstValue(resetHeader);
+            final String           reset         = resetOptional.orElse(null);
+            final String           resetValue    = reset == null ? GitHubApiTextTypes.EMPTY.getText() : reset;
+            final String           debugMessage  = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG51002);
             GitHubIssueApiImpl.LOGGER.debug(debugMessage, remaining, resetValue);
 
             /* レート制限の残りが閾値以下か */

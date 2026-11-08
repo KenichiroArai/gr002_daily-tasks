@@ -301,9 +301,10 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
      */
     private Path issuePath(final int number) {
 
-        final Path result = this.dataDir.resolve(CarryoverDataFileTypes.ISSUES_DIR.getFileName())
-            .resolve(String.format(CarryoverDataFormatTypes.ISSUE_FILE_NAME.getFormat(), number,
-                CarryoverDataFileTypes.JSON_EXTENSION.getFileName()));
+        final Path   issuesDir = this.dataDir.resolve(CarryoverDataFileTypes.ISSUES_DIR.getFileName());
+        final String fileName  = String.format(CarryoverDataFormatTypes.ISSUE_FILE_NAME.getFormat(), number,
+            CarryoverDataFileTypes.JSON_EXTENSION.getFileName());
+        final Path   result    = issuesDir.resolve(fileName);
         return result;
 
     }
