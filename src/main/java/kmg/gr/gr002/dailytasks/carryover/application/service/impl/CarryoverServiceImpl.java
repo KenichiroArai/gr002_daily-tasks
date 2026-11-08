@@ -478,53 +478,6 @@ public class CarryoverServiceImpl implements CarryoverService {
     }
 
     /**
-     * 単位状態を初期化する<br>
-     * <p>
-     * 単位の番号、解析結果、分割済み参照、取得件数と補完・不明の件数を初期値に戻す。解析して保存した Issue の件数の累計は戻さない。
-     * </p>
-     *
-     * @since 0.1.0
-     */
-    private void initializeUnitState() {
-
-        this.batchIndex = 0;
-        this.batchAggregated = false;
-        this.batchIssues = List.of();
-        this.batches = List.of();
-        this.remoteCount = 0;
-        this.defaultCount = 0;
-        this.unknownCount = 0;
-
-    }
-
-    /**
-     * ログに出すモードの名前を返す<br>
-     *
-     * @since 0.1.0
-     *
-     * @return モードの名前（全件 / 差分）
-     */
-    private String modeName() {
-
-        final String result;
-
-        /* 全件モードか */
-        if (!this.full) {
-
-            // 全件モードではない場合
-
-            // 差分の名前を返す
-            result = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31008);
-            return result;
-
-        }
-
-        result = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31007);
-        return result;
-
-    }
-
-    /**
      * 本文を持たない索引を作り、単位に分ける<br>
      * <p>
      * {@link #initialize(CarryoverPropertiesModel, boolean)} のあと、{@link #collect()} の前に呼ぶ。単位が残っているときは
@@ -569,6 +522,53 @@ public class CarryoverServiceImpl implements CarryoverService {
         CarryoverServiceImpl.LOGGER.info(message, this.remoteCount, this.batches.size());
 
         result = this.hasNext();
+        return result;
+
+    }
+
+    /**
+     * 単位状態を初期化する<br>
+     * <p>
+     * 単位の番号、解析結果、分割済み参照、取得件数と補完・不明の件数を初期値に戻す。解析して保存した Issue の件数の累計は戻さない。
+     * </p>
+     *
+     * @since 0.1.0
+     */
+    private void initializeUnitState() {
+
+        this.batchIndex = 0;
+        this.batchAggregated = false;
+        this.batchIssues = List.of();
+        this.batches = List.of();
+        this.remoteCount = 0;
+        this.defaultCount = 0;
+        this.unknownCount = 0;
+
+    }
+
+    /**
+     * ログに出すモードの名前を返す<br>
+     *
+     * @since 0.1.0
+     *
+     * @return モードの名前（全件 / 差分）
+     */
+    private String modeName() {
+
+        final String result;
+
+        /* 全件モードか */
+        if (!this.full) {
+
+            // 全件モードではない場合
+
+            // 差分の名前を返す
+            result = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31008);
+            return result;
+
+        }
+
+        result = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31007);
         return result;
 
     }

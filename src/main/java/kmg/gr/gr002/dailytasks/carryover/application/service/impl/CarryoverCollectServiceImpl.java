@@ -478,6 +478,28 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
     }
 
     /**
+     * 今回解析した Issue を保存する<br>
+     * <p>
+     * {@link #analyze()} のあとで呼ぶ。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     書き込みに失敗した場合
+     */
+    @Override
+    public void saveIssues() throws IOException {
+
+        for (final CarryoverIssueModel parsed : this.pendingSaves) {
+
+            this.carryoverDataLogic.saveIssue(parsed);
+
+        }
+
+    }
+
+    /**
      * Issue を解析し直す必要があるかを返す<br>
      *
      * @since 0.1.0
@@ -590,28 +612,6 @@ public class CarryoverCollectServiceImpl implements CarryoverCollectService {
         /* 解析ロジックの初期化 */
         this.carryoverParseLogic.initialize(defaultMinutes);
         this.minutesReady = true;
-
-    }
-
-    /**
-     * 今回解析した Issue を保存する<br>
-     * <p>
-     * {@link #analyze()} のあとで呼ぶ。
-     * </p>
-     *
-     * @since 0.1.0
-     *
-     * @throws IOException
-     *                     書き込みに失敗した場合
-     */
-    @Override
-    public void saveIssues() throws IOException {
-
-        for (final CarryoverIssueModel parsed : this.pendingSaves) {
-
-            this.carryoverDataLogic.saveIssue(parsed);
-
-        }
 
     }
 

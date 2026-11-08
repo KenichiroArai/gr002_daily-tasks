@@ -113,82 +113,6 @@ public class CarryoverCommandImpl implements CarryoverCommand {
     }
 
     /**
-     * ログに出すモードの名前を返す<br>
-     *
-     * @since 0.1.0
-     *
-     * @return モードの名前（全件 / 差分）
-     */
-    private String modeName() {
-
-        String result = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31008);
-
-        /* 全件モードか */
-        if (!this.full) {
-
-            // 全件モードではない場合
-
-            // 差分の名前を返す
-            return result;
-
-        }
-
-        result = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31007);
-        return result;
-
-    }
-
-    /**
-     * コマンドライン引数を解析してオプションをフィールドに設定する<br>
-     *
-     * @since 0.1.0
-     *
-     * @param args
-     *             コマンドライン引数
-     *
-     * @throws IllegalArgumentException
-     *                                  不明な引数が指定された場合
-     */
-    private void parseArgs(final String[] args) {
-
-        this.full = false;
-        this.help = false;
-
-        for (final String arg : args) {
-
-            final CommandOptionTypes option = CommandOptionTypes.getEnum(arg);
-
-            /* オプションの反映 */
-            this.help = switch (option) {
-
-                case FULL -> {
-
-                    this.full = true;
-                    yield this.help;
-
-                }
-
-                case HELP, HELP_SHORT -> {
-
-                    yield true;
-
-                }
-
-                case NONE -> {
-
-                    final String template = this.messageSource.getExcMessage(Gr002GenMsgTypes.GR002_GEN41001);
-                    final String message  = String.format(template, arg);
-                    throw new IllegalArgumentException(message);
-
-                }
-
-            };
-
-        }
-
-    }
-
-    /**
      * Spring Boot の起動後にコマンドを実行する<br>
      *
      * @since 0.1.0
@@ -264,6 +188,82 @@ public class CarryoverCommandImpl implements CarryoverCommand {
             final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG41003);
             CarryoverCommandImpl.LOGGER.error(message, e.getMessage(), e);
             throw e;
+
+        }
+
+    }
+
+    /**
+     * ログに出すモードの名前を返す<br>
+     *
+     * @since 0.1.0
+     *
+     * @return モードの名前（全件 / 差分）
+     */
+    private String modeName() {
+
+        String result = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31008);
+
+        /* 全件モードか */
+        if (!this.full) {
+
+            // 全件モードではない場合
+
+            // 差分の名前を返す
+            return result;
+
+        }
+
+        result = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31007);
+        return result;
+
+    }
+
+    /**
+     * コマンドライン引数を解析してオプションをフィールドに設定する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param args
+     *             コマンドライン引数
+     *
+     * @throws IllegalArgumentException
+     *                                  不明な引数が指定された場合
+     */
+    private void parseArgs(final String[] args) {
+
+        this.full = false;
+        this.help = false;
+
+        for (final String arg : args) {
+
+            final CommandOptionTypes option = CommandOptionTypes.getEnum(arg);
+
+            /* オプションの反映 */
+            this.help = switch (option) {
+
+                case FULL -> {
+
+                    this.full = true;
+                    yield this.help;
+
+                }
+
+                case HELP, HELP_SHORT -> {
+
+                    yield true;
+
+                }
+
+                case NONE -> {
+
+                    final String template = this.messageSource.getExcMessage(Gr002GenMsgTypes.GR002_GEN41001);
+                    final String message  = String.format(template, arg);
+                    throw new IllegalArgumentException(message);
+
+                }
+
+            };
 
         }
 

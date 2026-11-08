@@ -517,6 +517,24 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
     }
 
     /**
+     * タイトルから日付を取得する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param title
+     *              Issue タイトル
+     *
+     * @return 日付。取得できない場合は null
+     */
+    @Override
+    public LocalDate parseTitleDate(final String title) {
+
+        final LocalDate result = CarryoverParseLogicImpl.titleDate(title);
+        return result;
+
+    }
+
+    /**
      * 持ち越し項目の内容を解析する<br>
      *
      * @since 0.1.0
@@ -632,24 +650,6 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
         /* 標準時間での項目作成 */
         result
             = new CarryoverItemModel(name, originDate, checked, defaultValue, MinutesSourceTypes.DEFAULT, section, raw);
-        return result;
-
-    }
-
-    /**
-     * タイトルから日付を取得する<br>
-     *
-     * @since 0.1.0
-     *
-     * @param title
-     *              Issue タイトル
-     *
-     * @return 日付。取得できない場合は null
-     */
-    @Override
-    public LocalDate parseTitleDate(final String title) {
-
-        final LocalDate result = CarryoverParseLogicImpl.titleDate(title);
         return result;
 
     }

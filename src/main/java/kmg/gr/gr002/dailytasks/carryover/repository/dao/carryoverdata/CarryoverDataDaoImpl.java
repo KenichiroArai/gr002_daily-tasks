@@ -112,29 +112,6 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
     }
 
     /**
-     * 改行を LF に統一した整形出力を作る<br>
-     *
-     * @since 0.1.0
-     *
-     * @return JSON の出力
-     */
-    private ObjectWriter createObjectWriter() {
-
-        /* 改行を LF に統一した整形出力 */
-        final ObjectWriter         result;
-        final DefaultIndenter      indenter = new DefaultIndenter(CarryoverDataFormatTypes.INDENT.getFormat(),
-            CarryoverDataFormatTypes.LINE_FEED.getFormat());
-        final DefaultPrettyPrinter printer  = new DefaultPrettyPrinter()
-            .withSeparators(Separators.createDefaultInstance().withObjectNameValueSpacing(Separators.Spacing.AFTER))
-            .withObjectIndenter(indenter).withArrayIndenter(indenter);
-        final ObjectWriter         writer   = this.jsonMapper.writer();
-
-        result = writer.with(printer);
-        return result;
-
-    }
-
-    /**
      * 出力先のディレクトリを受け取り、フィールドに保持する<br>
      *
      * @since 0.1.0
@@ -147,25 +124,6 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
     public void initialize(final Path dataDir) {
 
         this.dataDir = dataDir;
-
-    }
-
-    /**
-     * Issue ごとの解析結果のパスを返す<br>
-     *
-     * @since 0.1.0
-     *
-     * @param number
-     *               Issue 番号
-     *
-     * @return JSON ファイルのパス
-     */
-    private Path issuePath(final int number) {
-
-        final Path result = this.dataDir.resolve(CarryoverDataFileTypes.ISSUES_DIR.getFileName())
-            .resolve(String.format(CarryoverDataFormatTypes.ISSUE_FILE_NAME.getFormat(), number,
-                CarryoverDataFileTypes.JSON_EXTENSION.getFileName()));
-        return result;
 
     }
 
@@ -261,37 +219,6 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
     }
 
     /**
-     * Issue ごとの解析結果の JSON ファイルを読み込む<br>
-     *
-     * @since 0.1.0
-     *
-     * @param path
-     *             JSON ファイル
-     *
-     * @return 解析結果
-     *
-     * @throws IOException
-     *                     読み込みまたは JSON の変換に失敗した場合
-     */
-    private CarryoverIssueJsonDto readIssue(final Path path) throws IOException {
-
-        final CarryoverIssueJsonDto result;
-
-        try {
-
-            result = this.jsonMapper.readValue(path.toFile(), CarryoverIssueJsonDto.class);
-
-        } catch (final JacksonException e) {
-
-            throw new IOException(e);
-
-        }
-
-        return result;
-
-    }
-
-    /**
      * Issue ごとの解析結果を保存する<br>
      * <p>
      * ファイル名は Issue 番号を 4 桁でゼロ埋めした名前（例: 0001.json）とする。
@@ -336,6 +263,79 @@ public class CarryoverDataDaoImpl implements CarryoverDataDao {
         final String                  message     = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG52003);
         CarryoverDataDaoImpl.LOGGER.debug(message, path);
         this.write(path, summaryJson);
+
+    }
+
+    /**
+     * 改行を LF に統一した整形出力を作る<br>
+     *
+     * @since 0.1.0
+     *
+     * @return JSON の出力
+     */
+    private ObjectWriter createObjectWriter() {
+
+        /* 改行を LF に統一した整形出力 */
+        final ObjectWriter         result;
+        final DefaultIndenter      indenter = new DefaultIndenter(CarryoverDataFormatTypes.INDENT.getFormat(),
+            CarryoverDataFormatTypes.LINE_FEED.getFormat());
+        final DefaultPrettyPrinter printer  = new DefaultPrettyPrinter()
+            .withSeparators(Separators.createDefaultInstance().withObjectNameValueSpacing(Separators.Spacing.AFTER))
+            .withObjectIndenter(indenter).withArrayIndenter(indenter);
+        final ObjectWriter         writer   = this.jsonMapper.writer();
+
+        result = writer.with(printer);
+        return result;
+
+    }
+
+    /**
+     * Issue ごとの解析結果のパスを返す<br>
+     *
+     * @since 0.1.0
+     *
+     * @param number
+     *               Issue 番号
+     *
+     * @return JSON ファイルのパス
+     */
+    private Path issuePath(final int number) {
+
+        final Path result = this.dataDir.resolve(CarryoverDataFileTypes.ISSUES_DIR.getFileName())
+            .resolve(String.format(CarryoverDataFormatTypes.ISSUE_FILE_NAME.getFormat(), number,
+                CarryoverDataFileTypes.JSON_EXTENSION.getFileName()));
+        return result;
+
+    }
+
+    /**
+     * Issue ごとの解析結果の JSON ファイルを読み込む<br>
+     *
+     * @since 0.1.0
+     *
+     * @param path
+     *             JSON ファイル
+     *
+     * @return 解析結果
+     *
+     * @throws IOException
+     *                     読み込みまたは JSON の変換に失敗した場合
+     */
+    private CarryoverIssueJsonDto readIssue(final Path path) throws IOException {
+
+        final CarryoverIssueJsonDto result;
+
+        try {
+
+            result = this.jsonMapper.readValue(path.toFile(), CarryoverIssueJsonDto.class);
+
+        } catch (final JacksonException e) {
+
+            throw new IOException(e);
+
+        }
+
+        return result;
 
     }
 

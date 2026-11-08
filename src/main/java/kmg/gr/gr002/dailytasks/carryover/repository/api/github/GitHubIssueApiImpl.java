@@ -327,6 +327,94 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
     }
 
     /**
+     * すべての Issue の参照（本文なし）を取得する<br>
+     * <p>
+     * プルリクエストは除外する。{@link #initialize(GitHubSettingsDto)} のあとで呼ぶ。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @return Issue の参照（作成順）。本文は含まない
+     *
+     * @throws IOException
+     *                     通信に失敗した場合、または応答が不正な場合
+     */
+    @Override
+    public List<GitHubIssueRefDto> fetchIssueRefs() throws IOException {
+
+        final List<GitHubIssueRefDto> result = new ArrayList<>();
+        final List<JsonNode>          nodes  = this.fetchIssueNodes();
+
+        for (final JsonNode node : nodes) {
+
+            result.add(GitHubIssueApiImpl.toRef(node));
+
+        }
+
+        return result;
+
+    }
+
+    /**
+     * 最新の指定件数までの Issue の参照（本文なし）を取得する<br>
+     * <p>
+     * 作成降順で取得し、プルリクエストを除いたうえで上限件数に達したら打ち切る。戻り値は作成昇順。{@link #initialize(GitHubSettingsDto)} のあとで呼ぶ。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @param limit
+     *              取得する最大件数。1 未満のときは空を返す
+     *
+     * @return Issue の参照（作成順）。本文は含まない
+     *
+     * @throws IOException
+     *                     通信に失敗した場合、または応答が不正な場合
+     */
+    @Override
+    public List<GitHubIssueRefDto> fetchRecentIssueRefs(final int limit) throws IOException {
+
+        final List<GitHubIssueRefDto> result = new ArrayList<>();
+
+        /* 上限が 1 未満か */
+        if (limit < 1) {
+
+            // 上限が 1 未満の場合
+
+            // 空を返す
+            return result;
+
+        }
+
+        final List<JsonNode> nodes = this.fetchRecentIssueNodes(limit);
+
+        for (final JsonNode node : nodes) {
+
+            result.add(GitHubIssueApiImpl.toRef(node));
+
+        }
+
+        return result;
+
+    }
+
+    /**
+     * GitHub API の接続設定を受け取り、フィールドに保持する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param settings
+     *                 GitHub API の接続設定
+     */
+    @SuppressWarnings("hiding")
+    @Override
+    public void initialize(final GitHubSettingsDto settings) {
+
+        this.settings = settings;
+
+    }
+
+    /**
      * プルリクエストを除いた Issue の JSON を、作成順に取得する<br>
      *
      * @since 0.1.0
@@ -382,35 +470,6 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
         /* 取得件数のログ出力 */
         final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG51000);
         GitHubIssueApiImpl.LOGGER.info(message, result.size(), page - 1);
-        return result;
-
-    }
-
-    /**
-     * すべての Issue の参照（本文なし）を取得する<br>
-     * <p>
-     * プルリクエストは除外する。{@link #initialize(GitHubSettingsDto)} のあとで呼ぶ。
-     * </p>
-     *
-     * @since 0.1.0
-     *
-     * @return Issue の参照（作成順）。本文は含まない
-     *
-     * @throws IOException
-     *                     通信に失敗した場合、または応答が不正な場合
-     */
-    @Override
-    public List<GitHubIssueRefDto> fetchIssueRefs() throws IOException {
-
-        final List<GitHubIssueRefDto> result = new ArrayList<>();
-        final List<JsonNode>          nodes  = this.fetchIssueNodes();
-
-        for (final JsonNode node : nodes) {
-
-            result.add(GitHubIssueApiImpl.toRef(node));
-
-        }
-
         return result;
 
     }
@@ -532,49 +591,6 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
         /* 取得件数のログ出力 */
         final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG51005);
         GitHubIssueApiImpl.LOGGER.info(message, result.size(), page - 1);
-        return result;
-
-    }
-
-    /**
-     * 最新の指定件数までの Issue の参照（本文なし）を取得する<br>
-     * <p>
-     * 作成降順で取得し、プルリクエストを除いたうえで上限件数に達したら打ち切る。戻り値は作成昇順。{@link #initialize(GitHubSettingsDto)} のあとで呼ぶ。
-     * </p>
-     *
-     * @since 0.1.0
-     *
-     * @param limit
-     *              取得する最大件数。1 未満のときは空を返す
-     *
-     * @return Issue の参照（作成順）。本文は含まない
-     *
-     * @throws IOException
-     *                     通信に失敗した場合、または応答が不正な場合
-     */
-    @Override
-    public List<GitHubIssueRefDto> fetchRecentIssueRefs(final int limit) throws IOException {
-
-        final List<GitHubIssueRefDto> result = new ArrayList<>();
-
-        /* 上限が 1 未満か */
-        if (limit < 1) {
-
-            // 上限が 1 未満の場合
-
-            // 空を返す
-            return result;
-
-        }
-
-        final List<JsonNode> nodes = this.fetchRecentIssueNodes(limit);
-
-        for (final JsonNode node : nodes) {
-
-            result.add(GitHubIssueApiImpl.toRef(node));
-
-        }
-
         return result;
 
     }
@@ -714,22 +730,6 @@ public class GitHubIssueApiImpl implements GitHubIssueApi {
 
         final boolean result = KmgString.isNotBlank(this.settings.getToken());
         return result;
-
-    }
-
-    /**
-     * GitHub API の接続設定を受け取り、フィールドに保持する<br>
-     *
-     * @since 0.1.0
-     *
-     * @param settings
-     *                 GitHub API の接続設定
-     */
-    @SuppressWarnings("hiding")
-    @Override
-    public void initialize(final GitHubSettingsDto settings) {
-
-        this.settings = settings;
 
     }
 
