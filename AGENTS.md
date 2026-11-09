@@ -52,11 +52,11 @@ src/main/java/kmg/gr/gr002/dailytasks/
     application/             # ユースケースや業務ロジック層
       service/               # 役割ごとのサービス（CarryoverCollectService、CarryoverAggregateService。実装は impl）
       service/impl/          # presentation のサービスと役割ごとのサービスの実装（収集と集計）
-      logic/                 # domain に求めるロジック（Issue の取得 DailyTaskIssueLogic、標準時間 DefaultMinutesLogic、解析結果と集計の読み書き CarryoverDataLogic、解析 CarryoverParseLogic、集計 CarryoverAggregateLogic。実装は domain）
+      logic/                 # domain に求めるロジック（Issue の取得 DailyTaskIssueLogic、標準時間 DefaultMinutesLogic、解析結果と集計の読み書き CarryoverDataLogic、解析 CarryoverParseLogic、集計 CarryoverAggregateLogic、参照の単位分割 CarryoverBatchLogic。実装は domain）
       model/                 # 業務モデル（Issue、持ち越し項目、日別集計、標準時間、domain に引き継ぐ設定 CarryoverSourceModel）
       types/                 # 列挙型（残り時間の取得元 MinutesSourceTypes、Issue の状態 IssueStateTypes、取得元の文字列表現 CarryoverSourceFormatTypes。KmgCmnTypes を実装）
     domain/                  # 共通ロジック層
-      logic/impl/            # application のロジックの実装（Issue の取得、標準時間の読み込み、解析結果と集計の読み書き、Issue 本文の解析ルール、日別の集計）
+      logic/impl/            # application のロジックの実装（Issue の取得、標準時間の読み込み、解析結果と集計の読み書き、Issue 本文の解析ルール、日別の集計、参照の単位分割）
       repository/api/        # repository に求める外部 API（GitHubIssueApi。実装は repository/api）
       repository/dao/        # repository に求める DAO（JSON ファイル CarryoverDataDao、標準時間 DefaultMinutesDao。実装は repository/dao）
       dto/                   # repository と受け渡す DTO。変換先が変換元を受け取って作る（解析結果、集計、GitHub の Issue、接続設定 GitHubSettingsDto）
@@ -219,7 +219,7 @@ flowchart LR
 
 - 呼ぶ側の層は、下の層に求めるインタフェースと受け渡しの型を、自層の種類ごとのパッケージに置く（モデルは `model/`、サービスは `service/`、ロジックは `logic/` など）
   - presentation: application に求めるサービス（`service/CarryoverService`）と設定（`model/CarryoverPropertiesModel`）
-  - application: domain に求めるロジック（Issue の取得 `logic/DailyTaskIssueLogic`、標準時間 `logic/DefaultMinutesLogic`、解析結果と集計の読み書き `logic/CarryoverDataLogic`、解析 `logic/CarryoverParseLogic`、集計 `logic/CarryoverAggregateLogic`）と業務モデル（`model/`）
+  - application: domain に求めるロジック（Issue の取得 `logic/DailyTaskIssueLogic`、標準時間 `logic/DefaultMinutesLogic`、解析結果と集計の読み書き `logic/CarryoverDataLogic`、解析 `logic/CarryoverParseLogic`、集計 `logic/CarryoverAggregateLogic`、参照の単位分割 `logic/CarryoverBatchLogic`）と業務モデル（`model/`）
   - domain: repository に求める外部 API（`repository/api/GitHubIssueApi`）と DAO（`repository/dao/CarryoverDataDao`、`repository/dao/DefaultMinutesDao`）と DTO（`dto/`）
 - 呼ばれる側の層は、すぐ上の層のインタフェースを `impl/` で実装する（例: `application/service/impl/CarryoverServiceImpl` は `presentation/service/CarryoverService` を実装する）
 - 依存する側（下の層）が何を参照するかは制御しない。下の層は、すぐ上の層のどのクラス（`impl/` を含む）を参照してもよい。制限するのは層の向きと飛び越しだけとする

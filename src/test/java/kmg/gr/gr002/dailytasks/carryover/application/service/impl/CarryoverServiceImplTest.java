@@ -27,6 +27,7 @@ import kmg.gr.gr002.dailytasks.carryover.application.service.CarryoverAggregateS
 import kmg.gr.gr002.dailytasks.carryover.application.service.CarryoverCollectService;
 import kmg.gr.gr002.dailytasks.carryover.application.types.MinutesSourceTypes;
 import kmg.gr.gr002.dailytasks.carryover.domain.logic.impl.CarryoverAggregateLogicImpl;
+import kmg.gr.gr002.dailytasks.carryover.domain.logic.impl.CarryoverBatchLogicImpl;
 import kmg.gr.gr002.dailytasks.carryover.domain.logic.impl.CarryoverParseLogicImpl;
 import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel;
 import kmg.gr.gr002.dailytasks.testutil.DailyTasksMessageSourceTestUtil;
@@ -950,7 +951,7 @@ public class CarryoverServiceImplTest {
         final CarryoverAggregateServiceImpl aggregateService = new CarryoverAggregateServiceImpl(
             new CarryoverAggregateLogicImpl(DailyTasksMessageSourceTestUtil.create()), dataLogic);
         final CarryoverServiceImpl          result           = new CarryoverServiceImpl(aggregateService,
-            collectService, DailyTasksMessageSourceTestUtil.create());
+            new CarryoverBatchLogicImpl(), collectService, DailyTasksMessageSourceTestUtil.create());
         return result;
 
     }
@@ -1163,7 +1164,7 @@ public class CarryoverServiceImplTest {
         /* 準備 */
         final List<String>         testSteps  = new ArrayList<>();
         final CarryoverServiceImpl testTarget = new CarryoverServiceImpl(
-            new CarryoverServiceImplTest.RecordingAggregateService(testSteps),
+            new CarryoverServiceImplTest.RecordingAggregateService(testSteps), new CarryoverBatchLogicImpl(),
             new CarryoverServiceImplTest.RecordingCollectService(testSteps), DailyTasksMessageSourceTestUtil.create());
 
         /* テスト対象の実行 */
@@ -1198,7 +1199,7 @@ public class CarryoverServiceImplTest {
         /* 準備 */
         final List<String>         testSteps  = new ArrayList<>();
         final CarryoverServiceImpl testTarget = new CarryoverServiceImpl(
-            new CarryoverServiceImplTest.RecordingAggregateService(testSteps),
+            new CarryoverServiceImplTest.RecordingAggregateService(testSteps), new CarryoverBatchLogicImpl(),
             new CarryoverServiceImplTest.RecordingCollectService(testSteps), DailyTasksMessageSourceTestUtil.create());
 
         /* テスト対象の実行 */
@@ -1518,7 +1519,7 @@ public class CarryoverServiceImplTest {
         /* 準備 */
         final List<String>         testSteps  = new ArrayList<>();
         final CarryoverServiceImpl testTarget = new CarryoverServiceImpl(
-            new CarryoverServiceImplTest.RecordingAggregateService(testSteps),
+            new CarryoverServiceImplTest.RecordingAggregateService(testSteps), new CarryoverBatchLogicImpl(),
             new CarryoverServiceImplTest.RecordingCollectService(testSteps), DailyTasksMessageSourceTestUtil.create());
 
         /* テスト対象の実行 */
