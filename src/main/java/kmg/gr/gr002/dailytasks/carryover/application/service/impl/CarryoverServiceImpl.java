@@ -218,78 +218,17 @@ public class CarryoverServiceImpl implements CarryoverService {
     @Override
     public void aggregate() throws IOException {
 
-        /* この単位をまだ進めていないか */
-        if (!this.batchAggregated) {
+        /* 全件モードか */
+        if (this.full) {
 
-            // この単位をまだ進めていない場合
+            // 全件モードの場合
 
-            /* 全件モードか */
-            if (this.full) {
-
-                // 全件モードの場合
-
-                // 日付順のまま足す
-                this.carryoverAggregateService.append(this.batchIssues);
-
-            }
-
-            this.batchIndex++;
-            this.batchAggregated = true;
-            this.batchIssues = List.of();
-
-        }
-
-        /* 差分モードか */
-        if (!this.full) {
-
-            // 差分モードの場合
-
-            /* 最後の単位か */
-            final boolean finished = this.batchIndex >= this.batches.size();
-
-            if (!finished) {
-
-                // 最後の単位ではない場合
-
-                // 集計の保存は最後にまとめて行う
-                return;
-
-            }
-
-            /* 保存済み全件からの再構築 */
-            final CarryoverSummaryModel summary = this.carryoverAggregateService.rebuildFromStored();
-            this.carryoverAggregateService.saveSummary(summary);
-
-            /* 結果のログ出力 */
-            final String                  collectMessage = this.messageSource
-                .getLogMessage(Gr002LogMsgTypes.GR002_LOG31000);
-            final String                  modeName       = this.modeName();
-            final List<DailySummaryModel> days           = summary.getDays();
-            final int                     dayCount       = days.size();
-            CarryoverServiceImpl.LOGGER.info(collectMessage, modeName, this.remoteCount, this.savedCount, dayCount);
-
-            final String minutesSourceMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31001);
-            CarryoverServiceImpl.LOGGER.info(minutesSourceMessage, this.defaultCount, this.unknownCount);
+            this.aggregateFull();
             return;
 
         }
 
-        /* 集計の取得 */
-        final CarryoverSummaryModel summary = this.carryoverAggregateService.summary();
-
-        /* 集計の保存 */
-        this.carryoverAggregateService.saveSummary(summary);
-
-        /* 結果のログ出力 */
-        final String                  collectMessage = this.messageSource
-            .getLogMessage(Gr002LogMsgTypes.GR002_LOG31002);
-        final String                  modeName       = this.modeName();
-        final List<DailySummaryModel> days           = summary.getDays();
-        final int                     dayCount       = days.size();
-        CarryoverServiceImpl.LOGGER.info(collectMessage, modeName, this.remoteCount, this.savedCount, dayCount);
-
-        final String minutesSourceMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31003);
-        CarryoverServiceImpl.LOGGER.info(minutesSourceMessage, this.defaultCount, this.unknownCount);
+        this.aggregateDiff();
 
     }
 
@@ -444,6 +383,105 @@ public class CarryoverServiceImpl implements CarryoverService {
 
         result = this.hasNext();
         return result;
+
+    }
+
+    /**
+     * 差分モード用に、直前の {@link #collect()} の単位を進め、最後の単位のあとに summary.json を上書きする<br>
+     * <p>
+     * 単位ごとの足し込みはせず、最後の単位のあとに保存済みの Issue 全件から集計を作り直す。結果のログも出す。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     書き込みに失敗した場合
+     */
+    private void aggregateDiff() throws IOException {
+
+        /* この単位をまだ進めていないか */
+        if (!this.batchAggregated) {
+
+            // この単位をまだ進めていない場合
+
+            this.batchIndex++;
+            this.batchAggregated = true;
+            this.batchIssues = List.of();
+
+        }
+
+        /* 最後の単位か */
+        final boolean finished = this.batchIndex >= this.batches.size();
+
+        if (!finished) {
+
+            // 最後の単位ではない場合
+
+            // 集計の保存は最後にまとめて行う
+            return;
+
+        }
+
+        /* 保存済み全件からの再構築 */
+        final CarryoverSummaryModel summary = this.carryoverAggregateService.rebuildFromStored();
+        this.carryoverAggregateService.saveSummary(summary);
+
+        /* 結果のログ出力 */
+        final String                  collectMessage = this.messageSource
+            .getLogMessage(Gr002LogMsgTypes.GR002_LOG31000);
+        final String                  modeName       = this.modeName();
+        final List<DailySummaryModel> days           = summary.getDays();
+        final int                     dayCount       = days.size();
+        CarryoverServiceImpl.LOGGER.info(collectMessage, modeName, this.remoteCount, this.savedCount, dayCount);
+
+        final String minutesSourceMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31001);
+        CarryoverServiceImpl.LOGGER.info(minutesSourceMessage, this.defaultCount, this.unknownCount);
+
+    }
+
+    /**
+     * 全件モード用に、直前の {@link #collect()} の結果を集計の状態へ足し、その時点の summary.json を上書きする<br>
+     * <p>
+     * 結果のログも出す。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @throws IOException
+     *                     書き込みに失敗した場合
+     */
+    private void aggregateFull() throws IOException {
+
+        /* この単位をまだ進めていないか */
+        if (!this.batchAggregated) {
+
+            // この単位をまだ進めていない場合
+
+            // 日付順のまま足す
+            this.carryoverAggregateService.append(this.batchIssues);
+
+            this.batchIndex++;
+            this.batchAggregated = true;
+            this.batchIssues = List.of();
+
+        }
+
+        /* 集計の取得 */
+        final CarryoverSummaryModel summary = this.carryoverAggregateService.summary();
+
+        /* 集計の保存 */
+        this.carryoverAggregateService.saveSummary(summary);
+
+        /* 結果のログ出力 */
+        final String                  collectMessage = this.messageSource
+            .getLogMessage(Gr002LogMsgTypes.GR002_LOG31002);
+        final String                  modeName       = this.modeName();
+        final List<DailySummaryModel> days           = summary.getDays();
+        final int                     dayCount       = days.size();
+        CarryoverServiceImpl.LOGGER.info(collectMessage, modeName, this.remoteCount, this.savedCount, dayCount);
+
+        final String minutesSourceMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31003);
+        CarryoverServiceImpl.LOGGER.info(minutesSourceMessage, this.defaultCount, this.unknownCount);
 
     }
 
