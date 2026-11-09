@@ -65,6 +65,7 @@ public class CarryoverBatchLogicImpl implements CarryoverBatchLogic {
      * @param batchSize
      *                  単位（Issue の件数）。1 未満のときは全件を 1 単位にする
      */
+    @SuppressWarnings("hiding")
     @Override
     public void initialize(final List<DailyTaskIssueRefModel> refs, final int batchSize) {
 
