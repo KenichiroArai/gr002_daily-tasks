@@ -1182,7 +1182,7 @@ public class CarryoverServiceImplTest {
     }
 
     /**
-     * collect と aggregate のテスト - 正常系:全件モードでは単位ごとに集計へ足す場合
+     * collect と aggregate のテスト - 正常系:全件モードでは単位ごとに集計へ足し、再呼び出しでは足さない場合
      *
      * @since 0.1.0
      *
@@ -1194,7 +1194,7 @@ public class CarryoverServiceImplTest {
 
         /* 期待値の定義 */
         final List<String> expectedSteps = List.of("collect.initialize", "aggregate.initialize", "fetchRefs",
-            "collectBatch", "append", "summary", "saveSummary");
+            "collectBatch", "append", "summary", "saveSummary", "summary", "saveSummary");
 
         /* 準備 */
         final List<String>         testSteps  = new ArrayList<>();
@@ -1206,6 +1206,7 @@ public class CarryoverServiceImplTest {
         testTarget.initialize(CarryoverServiceImplTest.PROPERTIES, true);
         testTarget.open();
         testTarget.collect();
+        testTarget.aggregate();
         testTarget.aggregate();
 
         /* 検証の準備 */
