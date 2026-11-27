@@ -33,7 +33,7 @@ public class DailyTasksApplicationTest {
     public void testMain_normalHelp() {
 
         /* 期待値の定義 */
-        final String expectedPrefix = "使い方: java -jar gr002_daily-tasks-0.1.0.jar";
+        final String expectedPrefix = "使い方: java -jar gr002_daily-tasks-0.2.0.jar";
 
         /* 準備 */
         final PrintStream           testOriginalOut = System.out;
