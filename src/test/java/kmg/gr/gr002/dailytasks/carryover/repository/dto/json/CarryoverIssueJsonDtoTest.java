@@ -18,7 +18,7 @@ import kmg.gr.gr002.dailytasks.testutil.ReflectionTestUtil;
  *
  * @since 0.1.0
  *
- * @version 0.1.0
+ * @version 0.2.0
  */
 @SuppressWarnings({
     "nls", "static-method"
@@ -54,7 +54,7 @@ public class CarryoverIssueJsonDtoTest {
         final CarryoverItemJsonDto  item   = new CarryoverItemJsonDto("国語", "2026-06-18", false, 8.5, "parsed", "持ち越し",
             "- [ ] 国語2026/06/18（残り時間：8.5分）");
         final CarryoverIssueJsonDto result = new CarryoverIssueJsonDto(371, "2026年10月06日のタスク", "2026-10-06", "open",
-            "2026-10-06T14:23:08Z", List.of("持ち越し"), 1, 1, 8.5, List.of(item));
+            "2026-10-06T14:23:08Z", List.of("持ち越し"), 1, null, 1, 8.5, List.of(item));
         return result;
 
     }
@@ -350,7 +350,7 @@ public class CarryoverIssueJsonDtoTest {
         final CarryoverItemJsonDto  testItem = new CarryoverItemJsonDto("国語", "2026-06-18", false, 15.0, "default",
             "持ち越し", "- [ ] 国語2026/06/18");
         final CarryoverIssueJsonDto testJson = new CarryoverIssueJsonDto(370, "2026年10月05日のタスク", "2026-10-05", "closed",
-            expectedUpdatedAt, List.of("持ち越し"), 1, 1, 15.0, List.of(testItem));
+            expectedUpdatedAt, List.of("持ち越し"), 1, null, 1, 15.0, List.of(testItem));
 
         /* テスト対象の実行 */
         final CarryoverIssueDto testResult = testJson.toCarryoverIssueDto();

@@ -9,26 +9,27 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessageSource;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002GenMsgTypes;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTypes;
+import kmg.gr.gr002.dailytasks.infrastructure.context.DailyTasksMessageSource;
+import kmg.gr.gr002.dailytasks.infrastructure.types.msg.Gr002GenMsgTypes;
+import kmg.gr.gr002.dailytasks.infrastructure.types.msg.Gr002LogMsgTypes;
 import kmg.gr.gr002.dailytasks.carryover.presentation.command.CarryoverCommand;
 import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel;
 import kmg.gr.gr002.dailytasks.carryover.presentation.service.CarryoverService;
 import kmg.gr.gr002.dailytasks.carryover.presentation.types.CommandOptionTypes;
 
 /**
- * 持ち越しの収集コマンドの実装<br>
+ * 毎日タスク（持ち越し・先行）の収集コマンドの実装<br>
  * <p>
  * 入力の窓口として、設定ファイル（application.properties）の値とコマンドライン引数を presentation 層のサービス（application 層が実装する）へ引き継ぐ。Spring Boot の起動後に
- * {@link CommandLineRunner} として実行される。索引を開いたあと、単位が続くあいだ、収集のあと集計を呼ぶ。daily-tasks-git のルートをカレントディレクトリとして実行する。
+ * {@link CommandLineRunner} として実行される。索引を開いたあと、単位が続くあいだ、収集のあと集計を呼ぶ。集計では持ち越しの
+ * {@code summary.json} に加え、先行の {@code advance/summary.json} も書き出す（先行専用の Command は置かない）。daily-tasks-git のルートをカレントディレクトリとして実行する。
  * </p>
  *
  * @author KenichiroArai
  *
  * @since 0.1.0
  *
- * @version 0.1.0
+ * @version 0.2.0
  */
 @Component
 public class CarryoverCommandImpl implements CarryoverCommand {

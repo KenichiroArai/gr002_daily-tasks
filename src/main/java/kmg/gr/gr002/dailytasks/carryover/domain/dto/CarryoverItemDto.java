@@ -4,8 +4,8 @@ import java.time.LocalDate;
 
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverItemModel;
 import kmg.gr.gr002.dailytasks.carryover.application.types.MinutesSourceTypes;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessageSource;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002GenMsgTypes;
+import kmg.gr.gr002.dailytasks.infrastructure.context.DailyTasksMessageSource;
+import kmg.gr.gr002.dailytasks.infrastructure.types.msg.Gr002GenMsgTypes;
 
 /**
  * 持ち越し項目の DTO（Issue ごとの解析結果の 1 行分）<br>
@@ -17,7 +17,7 @@ import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002GenMsgTyp
  *
  * @since 0.1.0
  *
- * @version 0.1.0
+ * @version 0.2.0
  */
 public class CarryoverItemDto {
 

@@ -23,11 +23,12 @@ import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverItemDto;
  *
  * @since 0.1.0
  *
- * @version 0.1.0
+ * @version 0.2.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder({
-    "number", "title", "date", "state", "updatedAt", "sections", "declaredCount", "count", "minutes", "items"
+    "number", "title", "date", "state", "updatedAt", "sections", "declaredCount", "advanceDeclaredCount", "count",
+    "minutes", "items"
 })
 public class CarryoverIssueJsonDto {
 
@@ -200,6 +201,13 @@ public class CarryoverIssueJsonDto {
     private final Integer declaredCount;
 
     /**
+     * 本文の「件数：N」の値（先行）。記載がない場合は null
+     *
+     * @since 0.2.0
+     */
+    private final Integer advanceDeclaredCount;
+
+    /**
      * 持ち越し項目
      *
      * @since 0.1.0
@@ -259,43 +267,48 @@ public class CarryoverIssueJsonDto {
     public CarryoverIssueJsonDto(final CarryoverIssueDto issue) {
 
         this(issue.getNumber(), issue.getTitle(), CarryoverIssueJsonDto.dateText(issue), issue.getState(),
-            CarryoverIssueJsonDto.updatedAtText(issue), issue.getSections(), issue.getDeclaredCount(), issue.getCount(),
-            issue.getMinutes(), CarryoverIssueJsonDto.toItemJsons(issue));
+            CarryoverIssueJsonDto.updatedAtText(issue), issue.getSections(), issue.getDeclaredCount(),
+            issue.getAdvanceDeclaredCount(), issue.getCount(), issue.getMinutes(),
+            CarryoverIssueJsonDto.toItemJsons(issue));
 
     }
 
     /**
      * コンストラクタ<br>
      *
-     * @since 0.1.0
+     * @since 0.2.0
      *
      * @param number
-     *                      Issue 番号
+     *                             Issue 番号
      * @param title
-     *                      Issue タイトル
+     *                             Issue タイトル
      * @param date
-     *                      その日の日付（yyyy-MM-dd）。タイトルから取得できない場合は null
+     *                             その日の日付（yyyy-MM-dd）。タイトルから取得できない場合は null
      * @param state
-     *                      Issue の状態（open / closed）
+     *                             Issue の状態（open / closed）
      * @param updatedAt
-     *                      Issue の更新日時（ISO-8601）
+     *                             Issue の更新日時（ISO-8601）
      * @param sections
-     *                      本文にあった対象セクション名
+     *                             本文にあった対象セクション名
      * @param declaredCount
-     *                      本文の「残：N」の値。記載がない場合は null
+     *                             本文の「残：N」の値。記載がない場合は null
+     * @param advanceDeclaredCount
+     *                             本文の「件数：N」の値。記載がない場合は null
      * @param count
-     *                      持ち越し項目の件数
+     *                             持ち越し項目の件数
      * @param minutes
-     *                      持ち越し項目の残り時間（分）の合計
+     *                             持ち越し項目の残り時間（分）の合計
      * @param items
-     *                      持ち越し項目
+     *                             持ち越し項目
      */
     @JsonCreator
     public CarryoverIssueJsonDto(@JsonProperty("number") final int number, @JsonProperty("title") final String title,
         @JsonProperty("date") final String date, @JsonProperty("state") final String state,
         @JsonProperty("updatedAt") final String updatedAt, @JsonProperty("sections") final List<String> sections,
-        @JsonProperty("declaredCount") final Integer declaredCount, @JsonProperty("count") final int count,
-        @JsonProperty("minutes") final double minutes, @JsonProperty("items") final List<CarryoverItemJsonDto> items) {
+        @JsonProperty("declaredCount") final Integer declaredCount,
+        @JsonProperty("advanceDeclaredCount") final Integer advanceDeclaredCount,
+        @JsonProperty("count") final int count, @JsonProperty("minutes") final double minutes,
+        @JsonProperty("items") final List<CarryoverItemJsonDto> items) {
 
         this.number = number;
         this.title = title;
@@ -304,6 +317,7 @@ public class CarryoverIssueJsonDto {
         this.updatedAt = updatedAt;
         this.sections = List.copyOf(sections);
         this.declaredCount = declaredCount;
+        this.advanceDeclaredCount = advanceDeclaredCount;
         this.count = count;
         this.minutes = minutes;
         this.items = List.copyOf(items);
@@ -334,6 +348,20 @@ public class CarryoverIssueJsonDto {
     public String getDate() {
 
         final String result = this.date;
+        return result;
+
+    }
+
+    /**
+     * 本文の「件数：N」の値を返す<br>
+     *
+     * @since 0.2.0
+     *
+     * @return 「件数：N」の値。記載がない場合は null
+     */
+    public Integer getAdvanceDeclaredCount() {
+
+        final Integer result = this.advanceDeclaredCount;
         return result;
 
     }
@@ -469,7 +497,7 @@ public class CarryoverIssueJsonDto {
         final Instant   updatedAtValue = CarryoverIssueJsonDto.parseInstant(this.updatedAt);
 
         result = new CarryoverIssueDto(this.number, this.title, dateValue, this.state, updatedAtValue, this.sections,
-            this.declaredCount, this.count, this.minutes, carryoverItemDto);
+            this.declaredCount, this.advanceDeclaredCount, this.count, this.minutes, carryoverItemDto);
         return result;
 
     }

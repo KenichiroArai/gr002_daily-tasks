@@ -15,8 +15,9 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverItemModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSummaryModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailySummaryModel;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessageSource;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTypes;
+import kmg.gr.gr002.dailytasks.carryover.domain.types.TargetSectionTypes;
+import kmg.gr.gr002.dailytasks.infrastructure.context.DailyTasksMessageSource;
+import kmg.gr.gr002.dailytasks.infrastructure.types.msg.Gr002LogMsgTypes;
 
 /**
  * 持ち越しの解析結果を日別に集計する実装<br>
@@ -28,7 +29,7 @@ import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTyp
  *
  * @since 0.1.0
  *
- * @version 0.1.0
+ * @version 0.2.0
  */
 @Component
 public class CarryoverAggregateLogicImpl implements CarryoverAggregateLogic {
@@ -91,8 +92,9 @@ public class CarryoverAggregateLogicImpl implements CarryoverAggregateLogic {
 
         }
 
-        /* セクション追跡の更新 */
-        final boolean hasSection = issue.hasSection();
+        /* セクション追跡の更新（持ち越し系のみ） */
+        final boolean hasSection = issue.getSections().stream()
+            .anyMatch(section -> TargetSectionTypes.getEnum(section).isCarryover());
         aggregation.track(hasSection);
 
         /* 集計対象の追跡中か */
@@ -107,10 +109,22 @@ public class CarryoverAggregateLogicImpl implements CarryoverAggregateLogic {
 
         }
 
-        /* 日別集計への加算 */
+        /* 日別集計への加算（持ち越し系の項目のみ） */
         final DailySummaryModel day = new DailySummaryModel(date, issue.getNumber(), issue.getDeclaredCount());
 
         for (final CarryoverItemModel item : issue.getItems()) {
+
+            /* 持ち越し系の項目か */
+            final TargetSectionTypes sectionType = TargetSectionTypes.getEnum(item.getSection());
+
+            if (!sectionType.isCarryover()) {
+
+                // 持ち越し系ではない場合
+
+                // 次の項目へ進む
+                continue;
+
+            }
 
             day.add(item);
             aggregation.addItem(item.getName());

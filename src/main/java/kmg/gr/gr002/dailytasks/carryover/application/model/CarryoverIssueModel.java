@@ -9,13 +9,13 @@ import kmg.core.infrastructure.utils.KmgListUtils;
 import kmg.gr.gr002.dailytasks.carryover.application.types.IssueStateTypes;
 
 /**
- * 持ち越しの解析結果（Issue 単位）<br>
+ * 持ち越し・先行の解析結果（Issue 単位）<br>
  *
  * @author KenichiroArai
  *
  * @since 0.1.0
  *
- * @version 0.1.0
+ * @version 0.2.0
  */
 public class CarryoverIssueModel {
 
@@ -34,7 +34,14 @@ public class CarryoverIssueModel {
     private final Integer declaredCount;
 
     /**
-     * 持ち越し項目
+     * 本文の「件数：N」の値（先行）。記載がない場合は null
+     *
+     * @since 0.2.0
+     */
+    private final Integer advanceDeclaredCount;
+
+    /**
+     * 持ち越し・先行の項目
      *
      * @since 0.1.0
      */
@@ -76,7 +83,7 @@ public class CarryoverIssueModel {
     private final Instant updatedAt;
 
     /**
-     * コンストラクタ<br>
+     * コンストラクタ（先行の件数なし）<br>
      *
      * @since 0.1.0
      *
@@ -95,11 +102,43 @@ public class CarryoverIssueModel {
      * @param declaredCount
      *                      本文の「残：N」の値。記載がない場合は null
      * @param items
-     *                      持ち越し項目
+     *                      持ち越し・先行の項目
      */
     public CarryoverIssueModel(final int number, final String title, final LocalDate date, final String state,
         final Instant updatedAt, final List<String> sections, final Integer declaredCount,
         final List<CarryoverItemModel> items) {
+
+        this(number, title, date, state, updatedAt, sections, declaredCount, null, items);
+
+    }
+
+    /**
+     * コンストラクタ<br>
+     *
+     * @since 0.2.0
+     *
+     * @param number
+     *                             Issue 番号
+     * @param title
+     *                             Issue タイトル
+     * @param date
+     *                             その日の日付。タイトルから取得できない場合は null
+     * @param state
+     *                             Issue の状態（open / closed）
+     * @param updatedAt
+     *                             Issue の更新日時。欠落時は null
+     * @param sections
+     *                             本文にあった対象セクション名
+     * @param declaredCount
+     *                             本文の「残：N」の値。記載がない場合は null
+     * @param advanceDeclaredCount
+     *                             本文の「件数：N」の値。記載がない場合は null
+     * @param items
+     *                             持ち越し・先行の項目
+     */
+    public CarryoverIssueModel(final int number, final String title, final LocalDate date, final String state,
+        final Instant updatedAt, final List<String> sections, final Integer declaredCount,
+        final Integer advanceDeclaredCount, final List<CarryoverItemModel> items) {
 
         this.number = number;
         this.title = title;
@@ -108,16 +147,31 @@ public class CarryoverIssueModel {
         this.updatedAt = updatedAt;
         this.sections = List.copyOf(sections);
         this.declaredCount = declaredCount;
+        this.advanceDeclaredCount = advanceDeclaredCount;
         this.items = List.copyOf(items);
 
     }
 
     /**
-     * 持ち越し項目の件数を返す<br>
+     * 本文の「件数：N」の値を返す<br>
+     *
+     * @since 0.2.0
+     *
+     * @return 「件数：N」の値。記載がない場合は null
+     */
+    public Integer getAdvanceDeclaredCount() {
+
+        final Integer result = this.advanceDeclaredCount;
+        return result;
+
+    }
+
+    /**
+     * 項目の件数を返す<br>
      *
      * @since 0.1.0
      *
-     * @return 持ち越し項目の件数
+     * @return 項目の件数
      */
     public int getCount() {
 
@@ -155,11 +209,11 @@ public class CarryoverIssueModel {
     }
 
     /**
-     * 持ち越し項目を返す<br>
+     * 持ち越し・先行の項目を返す<br>
      *
      * @since 0.1.0
      *
-     * @return 持ち越し項目
+     * @return 項目
      */
     public List<CarryoverItemModel> getItems() {
 
@@ -169,7 +223,7 @@ public class CarryoverIssueModel {
     }
 
     /**
-     * 持ち越し項目の残り時間（分）の合計を返す<br>
+     * 項目の残り時間（分）の合計を返す<br>
      *
      * @since 0.1.0
      *

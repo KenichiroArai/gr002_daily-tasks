@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import kmg.gr.gr002.dailytasks.advance.application.service.AdvanceAggregateService;
 import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverBatchLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverItemModel;
@@ -19,24 +20,24 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueRefMode
 import kmg.gr.gr002.dailytasks.carryover.application.service.CarryoverAggregateService;
 import kmg.gr.gr002.dailytasks.carryover.application.service.CarryoverCollectService;
 import kmg.gr.gr002.dailytasks.carryover.application.types.MinutesSourceTypes;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessageSource;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002GenMsgTypes;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTypes;
 import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel;
 import kmg.gr.gr002.dailytasks.carryover.presentation.service.CarryoverService;
+import kmg.gr.gr002.dailytasks.infrastructure.context.DailyTasksMessageSource;
+import kmg.gr.gr002.dailytasks.infrastructure.types.msg.Gr002GenMsgTypes;
+import kmg.gr.gr002.dailytasks.infrastructure.types.msg.Gr002LogMsgTypes;
 
 /**
- * 持ち越しの収集・集計を統合するサービスの実装<br>
+ * 毎日タスク（持ち越し・先行）の収集・集計を統合するサービスの実装<br>
  * <p>
  * presentation 層のサービスを実装する。収集と集計は役割ごとのサービスへ分け、{@link #open()} のあと単位ごとに {@link #collect()} と {@link #aggregate()}
- * から決まった順で呼ぶ。
+ * から決まった順で呼ぶ。集計では持ち越しの {@code summary.json} に加え、{@link AdvanceAggregateService} で先行の {@code advance/summary.json} も保存する。
  * </p>
  *
  * @author KenichiroArai
  *
  * @since 0.1.0
  *
- * @version 0.1.0
+ * @version 0.2.0
  */
 @Service
 @Scope("prototype")
@@ -72,6 +73,13 @@ public class CarryoverServiceImpl implements CarryoverService {
         return result;
 
     }
+
+    /**
+     * 先行の集計
+     *
+     * @since 0.2.0
+     */
+    private final AdvanceAggregateService advanceAggregateService;
 
     /**
      * 持ち越しの集計
@@ -182,6 +190,8 @@ public class CarryoverServiceImpl implements CarryoverService {
      *
      * @since 0.1.0
      *
+     * @param advanceAggregateService
+     *                                  先行の集計
      * @param carryoverAggregateService
      *                                  持ち越しの集計
      * @param carryoverBatchLogic
@@ -191,10 +201,11 @@ public class CarryoverServiceImpl implements CarryoverService {
      * @param messageSource
      *                                  メッセージの取得
      */
-    public CarryoverServiceImpl(final CarryoverAggregateService carryoverAggregateService,
-        final CarryoverBatchLogic carryoverBatchLogic, final CarryoverCollectService carryoverCollectService,
-        final DailyTasksMessageSource messageSource) {
+    public CarryoverServiceImpl(final AdvanceAggregateService advanceAggregateService,
+        final CarryoverAggregateService carryoverAggregateService, final CarryoverBatchLogic carryoverBatchLogic,
+        final CarryoverCollectService carryoverCollectService, final DailyTasksMessageSource messageSource) {
 
+        this.advanceAggregateService = advanceAggregateService;
         this.carryoverAggregateService = carryoverAggregateService;
         this.carryoverBatchLogic = carryoverBatchLogic;
         this.carryoverCollectService = carryoverCollectService;
@@ -333,6 +344,7 @@ public class CarryoverServiceImpl implements CarryoverService {
         this.savedCount = 0;
         this.carryoverCollectService.initialize(source, properties.getRecentCount(), full);
         this.carryoverAggregateService.initialize(source.getDataDir());
+        this.advanceAggregateService.initialize(source.getDataDir());
 
     }
 
@@ -425,6 +437,7 @@ public class CarryoverServiceImpl implements CarryoverService {
         /* 保存済み全件からの再構築 */
         final CarryoverSummaryModel summary = this.carryoverAggregateService.rebuildFromStored();
         this.carryoverAggregateService.saveSummary(summary);
+        this.saveAdvanceSummary();
 
         /* 結果のログ出力 */
         final String                  collectMessage = this.messageSource
@@ -471,6 +484,7 @@ public class CarryoverServiceImpl implements CarryoverService {
 
         /* 集計の保存 */
         this.carryoverAggregateService.saveSummary(summary);
+        this.saveAdvanceSummary();
 
         /* 結果のログ出力 */
         final String                  collectMessage = this.messageSource
@@ -482,6 +496,26 @@ public class CarryoverServiceImpl implements CarryoverService {
 
         final String minutesSourceMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31003);
         CarryoverServiceImpl.LOGGER.info(minutesSourceMessage, this.defaultCount, this.unknownCount);
+
+    }
+
+    /**
+     * 保存済み Issue から先行の画面用集計を作り直して保存する<br>
+     *
+     * @since 0.2.0
+     *
+     * @throws IOException
+     *                     書き込みに失敗した場合
+     */
+    private void saveAdvanceSummary() throws IOException {
+
+        final CarryoverSummaryModel advanceSummary = this.advanceAggregateService.rebuildFromStored();
+        this.advanceAggregateService.saveSummary(advanceSummary);
+
+        final String                  advanceMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31019);
+        final List<DailySummaryModel> advanceDays    = advanceSummary.getDays();
+        final int                     advanceDayCount = advanceDays.size();
+        CarryoverServiceImpl.LOGGER.info(advanceMessage, advanceDayCount);
 
     }
 

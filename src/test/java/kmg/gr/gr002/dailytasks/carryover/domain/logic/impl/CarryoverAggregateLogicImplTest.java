@@ -15,6 +15,7 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.DailySummaryModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.ItemStatModel;
 import kmg.gr.gr002.dailytasks.carryover.application.service.impl.CarryoverAggregateServiceImpl;
 import kmg.gr.gr002.dailytasks.carryover.application.types.MinutesSourceTypes;
+import kmg.gr.gr002.dailytasks.carryover.domain.types.TargetSectionTypes;
 import kmg.gr.gr002.dailytasks.testutil.DailyTasksMessageSourceTestUtil;
 
 /**
@@ -24,7 +25,7 @@ import kmg.gr.gr002.dailytasks.testutil.DailyTasksMessageSourceTestUtil;
  *
  * @since 0.1.0
  *
- * @version 0.1.0
+ * @version 0.2.0
  */
 @SuppressWarnings({
     "nls", "static-method"
@@ -237,6 +238,42 @@ public class CarryoverAggregateLogicImplTest {
         /* 検証の実施 */
         Assertions.assertEquals(expectedLatestIssue, actualLatestIssue, "最新の Issue 番号が一致しません");
         Assertions.assertTrue(actualDaysEmpty, "日別の集計は空になる必要があります");
+
+    }
+
+    /**
+     * aggregate メソッドのテスト - 正常系:先行項目は持ち越しの集計に含めない場合
+     *
+     * @since 0.2.0
+     */
+    @Test
+    public void testAggregate_normalSkipAdvanceItems() {
+
+        /* 期待値の定義 */
+        final int expectedCount = 1;
+
+        /* 準備 */
+        final CarryoverItemModel carryoverItem = CarryoverAggregateLogicImplTest.createItem("国語");
+        final CarryoverItemModel advanceItem   = new CarryoverItemModel("音楽", LocalDate.parse("2026-06-18"), false,
+            15, MinutesSourceTypes.PARSED, TargetSectionTypes.ADVANCE.getSection(), "raw");
+        final List<CarryoverIssueModel> testIssues = List.of(
+            CarryoverAggregateLogicImplTest.createIssue(174, "2026-03-23", List.of(), List.of()),
+            CarryoverAggregateLogicImplTest.createIssue(175, "2026-03-24", List.of("負債"),
+                List.of(carryoverItem, advanceItem)));
+        final CarryoverAggregateLogicImpl testTarget = new CarryoverAggregateLogicImpl(
+            DailyTasksMessageSourceTestUtil.create());
+
+        /* テスト対象の実行 */
+        final CarryoverSummaryModel testResult = testTarget.aggregate(testIssues);
+
+        /* 検証の準備 */
+        final ItemStatModel total       = testResult.getDays().get(0).getTotal();
+        final int           actualCount = total.getCount();
+        final List<String>  actualItems = testResult.getItems();
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedCount, actualCount, "件数が一致しません");
+        Assertions.assertEquals(List.of("国語"), actualItems, "先行項目は項目名一覧に含めない必要があります");
 
     }
 

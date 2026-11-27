@@ -13,8 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.ObjectProvider;
 
 import kmg.core.infrastructure.type.KmgString;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessageSource;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002GenMsgTypes;
+import kmg.gr.gr002.dailytasks.infrastructure.context.DailyTasksMessageSource;
+import kmg.gr.gr002.dailytasks.infrastructure.types.msg.Gr002GenMsgTypes;
 import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel;
 import kmg.gr.gr002.dailytasks.carryover.presentation.service.CarryoverService;
 import kmg.gr.gr002.dailytasks.testutil.DailyTasksMessageSourceTestUtil;
@@ -29,7 +29,7 @@ import kmg.gr.gr002.dailytasks.testutil.ReflectionTestUtil;
  *
  * @since 0.1.0
  *
- * @version 0.1.0
+ * @version 0.2.0
  */
 @SuppressWarnings({
     "nls", "static-method"
@@ -46,7 +46,7 @@ public class CarryoverCommandImplTest {
      *
      * @since 0.1.0
      *
-     * @version 0.1.0
+     * @version 0.2.0
      */
     private static final class StubCarryoverService implements CarryoverService {
 
@@ -260,7 +260,7 @@ public class CarryoverCommandImplTest {
      *
      * @since 0.1.0
      *
-     * @version 0.1.0
+     * @version 0.2.0
      */
     private static final class StubServiceProvider implements ObjectProvider<CarryoverService> {
 

@@ -9,7 +9,7 @@ Cursor / Codex / Claude Code など複数ツールで共通利用する。
 
 ## プロジェクト概要
 
-- **役割**: GitHub Issue（1 日 1 Issue）で管理している日々のタスクのうち、「持ち越し」（旧「繰り越し」「負債」）を Issue から収集・解析し、JSON として出力する
+- **役割**: GitHub Issue（1 日 1 Issue）で管理している日々のタスクのうち、「持ち越し」（旧「繰り越し」「負債」）と「先行」を Issue から収集・解析し、JSON として出力する
 - **関連リポジトリ**（ローカルでは同じフォルダの下に兄弟ディレクトリとして置く）
 
 | リポジトリ | 役割 |
@@ -42,6 +42,11 @@ pom.xml
 launch/                      # Eclipse の実行の構成（収集の差分モード・全件モード、mvn clean package）
 src/main/java/kmg/gr/gr002/dailytasks/
   DailyTasksApplication.java # 起動クラス（Spring Boot を起動するだけ）
+  infrastructure/            # 共通（業務を知らない汎用ユーティリティ。全機能で共有）
+    types/msg/               # メッセージの種類（Gr002GenMsgTypes、Gr002LogMsgTypes、Gr002ValMsgTypes）
+    context/                 # メッセージリソース（KmgMessageSource を継承した DailyTasksMessageSource）
+  repository/                # 共通のデータアクセス層
+    api/github/              # GitHub REST API の実装（GitHubApiClient / GitHubIssueClient / GitHubIssueApiImpl）
   carryover/                 # 機能パッケージ（持ち越しの収集・集計）
     presentation/            # CLI などの入出力層
       command/               # コマンドのインタフェース（CommandLineRunner を継承）
@@ -61,15 +66,16 @@ src/main/java/kmg/gr/gr002/dailytasks/
       repository/dao/        # repository に求める DAO（JSON ファイル CarryoverDataDao、標準時間 DefaultMinutesDao。実装は repository/dao）
       dto/                   # repository と受け渡す DTO。変換先が変換元を受け取って作る（解析結果、集計、GitHub の Issue、接続設定 GitHubSettingsDto）
       types/                 # 列挙型（対象セクション TargetSectionTypes、解析の正規表現 CarryoverParsePatternTypes、解析の固定文字列 CarryoverParseTextTypes、接続設定の文字列表現 GitHubSettingsFormatTypes）
-    infrastructure/          # 業務を知らない汎用ユーティリティ
-      types/msg/             # メッセージの種類（Gr002GenMsgTypes、Gr002LogMsgTypes、Gr002ValMsgTypes）
-      context/               # メッセージリソース（KmgMessageSource を継承した DailyTasksMessageSource）
-    repository/              # データアクセス層
-      api/github/            # 外部 API の実装（GitHubApiClient / GitHubIssueClient / GitHubIssueApiImpl）
+    repository/              # 機能固有のデータアクセス（carryover 配下）
       dao/carryoverdata/     # DAO の実装（持ち越しの JSON ファイルの読み書き CarryoverDataDaoImpl）
       dao/defaultminutes/    # DAO の実装（標準時間の設定ファイルの読み込み DefaultMinutesDaoImpl）
       dto/json/              # JSON ファイルの形（Jackson のアノテーションを持つのはここだけ）。domain の DTO との変換もここ
-      types/                 # 列挙型（出力ファイル名 CarryoverDataFileTypes、JSON の出力書式 CarryoverDataFormatTypes、GitHub API の URL GitHubApiUrlTypes、ヘッダ GitHubApiHeaderTypes、項目名 GitHubIssueFieldTypes、空文字 GitHubApiTextTypes）
+      types/                 # 列挙型（出力ファイル名 CarryoverDataFileTypes、JSON の出力書式 CarryoverDataFormatTypes など）
+  advance/                   # 機能パッケージ（先行の収集・集計。carryover と同じ 5 層構成）
+    presentation/
+    application/
+    domain/
+    repository/              # 機能固有の DAO など
 src/main/resources/
   application.properties     # 設定値（carryover.*: 対象リポジトリ、トークン、出力先、標準時間のファイル、最新の件数、単位の件数 batchSize。spring.*: Spring Boot の設定）
   messages.properties        # 一般メッセージ（使い方、例外）。キーは Gr002GenMsgTypes の key
@@ -87,14 +93,16 @@ daily-tasks-git/
   config/
     default-minutes.json     # 時間表記なしの行を補完する項目ごとの標準時間
   docs/data/
-    issues/NNNN.json         # Issue ごとの解析結果（4 桁ゼロ埋め）
-    summary.json             # 画面用の日別集計
+    issues/NNNN.json         # Issue ごとの解析結果（4 桁ゼロ埋め。sections に「先行」が含まれることがある）
+    summary.json             # 持ち越しの画面用日別集計
+    advance/
+      summary.json           # 先行の画面用日別集計
 ```
 
 ## パッケージ構成のルール
 
-- `kmg.gr.gr002.dailytasks` の直下に機能パッケージ（例: `carryover`）を置く
-- 各機能パッケージは次の 5 層で構成する
+- `kmg.gr.gr002.dailytasks` の直下に、共通の `infrastructure/` と `repository/api/github/`、機能パッケージ（`carryover`、`advance`）を置く
+- 各機能パッケージは次の 5 層で構成する（機能固有の `repository/dao/` などは機能パッケージ内に置く）
 
 | 層 | 役割 |
 | --- | --- |
@@ -104,7 +112,7 @@ daily-tasks-git/
 | `infrastructure/` | 業務やドメインを知らない、他の層に依存しない汎用のユーティリティ（メッセージの取得など） |
 | `repository/` | 外部 API（GitHub API など）とファイル・DB へのアクセス（DAO）のデータアクセス層 |
 
-- 新しい機能は `carryover/` と同じ構成で追加する
+- 新しい業務機能は `carryover/` と `advance/` と同じ 5 層パターンで追加する
 - 各層の処理を受け持つクラスは、後述の「サービスとロジック」に従って `service/` か `logic/` にまとめる。データ系の型は後述の「データ系の型」に従って `model/`、`dto/`、`types/` にまとめる。データアクセスは後述の「外部 API と DAO」に従って `api/` か `dao/` にまとめる
 - `command/` のように、フレームワーク（Spring など）に固有のものや、各層で使わない種類のものは、役割の分かるパッケージ名でそのまま置く
 - 中身のないパッケージには、Git で消えないように Javadoc 付きの `package-info.java` を置く
@@ -322,9 +330,11 @@ mvn clean package
 mvn test
 
 # 収集の実行（daily-tasks-git をカレントにして実行。差分モード / 全件モード）:
+# CLI 入口は CarryoverCommandImpl のみ。1 回の実行で持ち越し（summary.json）と先行（advance/summary.json）の両方を出力する。
+# ## 先行 の解析を既存 issues/*.json に反映するには --full が必要。
 cd ../daily-tasks-git
-java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.1.0.jar
-java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.1.0.jar --full
+java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.2.0.jar
+java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.2.0.jar --full
 ```
 
 - カバレッジレポート: `target/site/jacoco/index.html`
@@ -488,6 +498,7 @@ final boolean empty = KmgListUtils.isEmpty(refs);
   - フィールド、enum 定数、メソッド、コンストラクタ: `@since`
   - メソッドとコンストラクタは、シグネチャに応じて `@param`（引数ごと）、`@return`（void 以外）、`@throws`（throws 句があるとき）も必須
 - `@since` は追加したときのバージョン、`@version` は型を更新したときのバージョンとする。Javadoc の追加だけでは `@version` を上げない
+- パッケージを変更した場合（型の移動・パッケージ宣言の変更）は、その型と移したメンバーの `@since` を新しいバージョンにする。`@version` も同じバージョンに上げる
 - タグの間は空行で区切る。メソッドとコンストラクタのタグ順は `@since`、`@param`、`@return`、`@throws`、`@see`
 - `{@inheritDoc}` は使わない。オーバーライドやインタフェースの実装でも、メソッドの説明と必須タグをそのメソッドに書く。説明は、実装するインタフェースの Javadoc に合わせる
 - 後述の「Javadoc のフォーマットルール」に従う
@@ -797,7 +808,7 @@ public class SampleClass {
 | `@throws` | 発生する可能性のある例外の説明 |
 | `@author` | 作成者 |
 | `@version` | バージョン情報 |
-| `@since` | 導入されたバージョン |
+| `@since` | 導入されたバージョン（パッケージ変更時は新しいバージョン） |
 | `@see` | 関連する他のクラスやメソッドへの参照 |
 | `@deprecated` | 非推奨であることを示す |
 | `@link` | 他のクラスやメソッドへのリンク |
@@ -810,6 +821,7 @@ public class SampleClass {
 - 最初の文は要約文として簡潔に書く
 - フィールド（インスタンス変数・クラス変数）と enum 定数の Javadoc は複数行にし、説明と `@since` を書く。`@version` は付けない
 - `@since` にはそのメンバーを追加したバージョンを書く。型の `@version` は、その型の実装を更新したバージョンに上げる
+- パッケージを変更した場合は、その型と移したメンバーの `@since` を新しいバージョンにする。`@version` も同じバージョンに上げる
 - 完全な文章で、技術的に正確に記述する
 - 必要な情報を漏れなく記載し、HTML タグを適切に使う
 
@@ -910,7 +922,7 @@ public class SampleClass {
 - [ ] `mvn test` で JaCoCo カバレッジ 100% を維持
 - [ ] コーディングルール（戻り値 `result`、`result` は戻り値以外に使わない、読まれない初期代入は書かない、ローカル変数は直前・最小スコープで未使用初期化なし（`result` は先頭）、不要な `Integer.valueOf(int)` は書かない、早期リターン、処理コメント、`record` 禁止、実行時の文字列結合は `KmgString.concat`、文字列・コレクションの空判定は `KmgString` / `KmgListUtils` / `KmgMapUtils` / `KmgArrayUtils`、日付・日時は対応 API があるときだけ `KmgLocalDateUtils` / `KmgLocalDateTimeUtils`、生成時の初期化はコンストラクタまたは static 初期化子、共通の情報は `initialize`）の順守
 - [ ] アクセス修飾子の順守（公開しないものは `private`、修飾子なしは原則禁止）
-- [ ] Javadoc の追加 / 更新（`{@inheritDoc}` は使わない）
+- [ ] Javadoc の追加 / 更新（`{@inheritDoc}` は使わない。パッケージ変更時は `@since` を新バージョンにする）
 - [ ] 解析ルールを変更した場合、`declaredCount` との食い違いと補完件数のログを確認し、kb002_daily-tasks_doc の仕様を更新
 - [ ] JSON の形式を変えた場合、mk002_daily-tasks_web-next の画面（zod スキーマ）と kb002_daily-tasks_doc の設計書への影響を確認
 - [ ] README の更新

@@ -16,8 +16,8 @@ import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssueDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssuesDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverSummaryDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.CarryoverDataDao;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessageSource;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTypes;
+import kmg.gr.gr002.dailytasks.infrastructure.context.DailyTasksMessageSource;
+import kmg.gr.gr002.dailytasks.infrastructure.types.msg.Gr002LogMsgTypes;
 import kmg.gr.gr002.dailytasks.carryover.repository.dto.json.CarryoverIssueJsonDto;
 import kmg.gr.gr002.dailytasks.carryover.repository.dto.json.CarryoverSummaryJsonDto;
 import kmg.gr.gr002.dailytasks.carryover.repository.types.CarryoverDataFileTypes;
@@ -39,7 +39,7 @@ import tools.jackson.databind.json.JsonMapper;
  *
  * @since 0.1.0
  *
- * @version 0.1.0
+ * @version 0.2.0
  */
 @Repository
 @Scope("prototype")

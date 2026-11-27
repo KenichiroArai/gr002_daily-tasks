@@ -24,8 +24,8 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueRefModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DefaultMinutesModel;
 import kmg.gr.gr002.dailytasks.carryover.application.service.CarryoverCollectService;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessageSource;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTypes;
+import kmg.gr.gr002.dailytasks.infrastructure.context.DailyTasksMessageSource;
+import kmg.gr.gr002.dailytasks.infrastructure.types.msg.Gr002LogMsgTypes;
 
 /**
  * 持ち越しの収集サービスの実装<br>
@@ -37,7 +37,7 @@ import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTyp
  *
  * @since 0.1.0
  *
- * @version 0.1.0
+ * @version 0.2.0
  */
 @Service
 @Scope("prototype")

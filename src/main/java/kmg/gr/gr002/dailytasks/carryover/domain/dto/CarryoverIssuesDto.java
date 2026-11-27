@@ -5,7 +5,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssuesModel;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessageSource;
+import kmg.gr.gr002.dailytasks.infrastructure.context.DailyTasksMessageSource;
 
 /**
  * Issue 番号と持ち越しの解析結果の対応の DTO<br>
@@ -17,7 +17,7 @@ import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessag
  *
  * @since 0.1.0
  *
- * @version 0.1.0
+ * @version 0.2.0
  */
 public class CarryoverIssuesDto {
 

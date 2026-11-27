@@ -36,7 +36,7 @@ import kmg.core.infrastructure.type.KmgString;
  *
  * @since 0.1.0
  *
- * @version 0.1.0
+ * @version 0.2.0
  */
 @SuppressWarnings({
     "nls", "static-method"
@@ -202,9 +202,9 @@ public class ArchitectureTest {
         /* 期待値の定義 */
 
         /* 準備 */
-        final ArchRule testRule
-            = ArchRuleDefinition.noClasses().that().resideOutsideOfPackage("..carryover.repository.dto.json..").should()
-                .dependOnClassesThat().resideInAPackage("com.fasterxml.jackson.annotation..");
+        final ArchRule testRule = ArchRuleDefinition.noClasses().that()
+            .resideOutsideOfPackages("..carryover.repository.dto.json..", "..advance.repository.dto.json..").should()
+            .dependOnClassesThat().resideInAPackage("com.fasterxml.jackson.annotation..");
 
         /* テスト対象の実行 */
         testRule.check(ArchitectureTest.classes);
@@ -228,15 +228,19 @@ public class ArchitectureTest {
 
         /* 準備 */
         // 処理の流れは presentation → application → domain → repository、依存はその逆とする
+        // 機能パッケージ（carryover / advance）とルート直下の共通 domain / repository を層に含める
         final ArchRule testRule = Architectures.layeredArchitecture().consideringOnlyDependenciesInLayers()
             .layer("EntryPoint").definedBy(ArchitectureTest.ROOT_PACKAGE).layer("Presentation")
-            .definedBy("..carryover.presentation..").layer("Application").definedBy("..carryover.application..")
-            .layer("Domain").definedBy("..carryover.domain..").layer("Repository").definedBy("..carryover.repository..")
-            .optionalLayer("Infrastructure").definedBy("..carryover.infrastructure..").whereLayer("EntryPoint")
-            .mayNotBeAccessedByAnyLayer().whereLayer("Presentation").mayOnlyBeAccessedByLayers("Application")
-            .whereLayer("Application").mayOnlyBeAccessedByLayers("Domain").whereLayer("Domain")
-            .mayOnlyBeAccessedByLayers("Repository").whereLayer("Repository").mayNotBeAccessedByAnyLayer()
-            .whereLayer("Infrastructure").mayNotAccessAnyLayer();
+            .definedBy("..carryover.presentation..", "..advance.presentation..").layer("Application")
+            .definedBy("..carryover.application..", "..advance.application..").layer("Domain")
+            .definedBy("..carryover.domain..", "..advance.domain..", "kmg.gr.gr002.dailytasks.domain..")
+            .layer("Repository")
+            .definedBy("..carryover.repository..", "..advance.repository..", "kmg.gr.gr002.dailytasks.repository..")
+            .optionalLayer("Infrastructure").definedBy("kmg.gr.gr002.dailytasks.infrastructure..")
+            .whereLayer("EntryPoint").mayNotBeAccessedByAnyLayer().whereLayer("Presentation")
+            .mayOnlyBeAccessedByLayers("Application").whereLayer("Application").mayOnlyBeAccessedByLayers("Domain")
+            .whereLayer("Domain").mayOnlyBeAccessedByLayers("Repository").whereLayer("Repository")
+            .mayNotBeAccessedByAnyLayer().whereLayer("Infrastructure").mayNotAccessAnyLayer();
 
         /* テスト対象の実行 */
         testRule.check(ArchitectureTest.classes);
@@ -259,8 +263,9 @@ public class ArchitectureTest {
         /* 期待値の定義 */
 
         /* 準備 */
-        final ArchRule testRule = ArchRuleDefinition.noClasses().that().resideInAPackage("..carryover..logic..")
-            .should().dependOnClassesThat().resideInAPackage("..carryover..service..");
+        final ArchRule testRule = ArchRuleDefinition.noClasses().that()
+            .resideInAnyPackage("..carryover..logic..", "..advance..logic..").should().dependOnClassesThat()
+            .resideInAnyPackage("..carryover..service..", "..advance..service..");
 
         /* テスト対象の実行 */
         testRule.check(ArchitectureTest.classes);
@@ -308,7 +313,7 @@ public class ArchitectureTest {
 
         /* 準備 */
         final ArchRule testRule = ArchRuleDefinition.classes().that().areAnnotatedWith(ConfigurationProperties.class)
-            .should().resideInAPackage("..carryover.presentation..");
+            .should().resideInAnyPackage("..carryover.presentation..", "..advance.presentation..");
 
         /* テスト対象の実行 */
         testRule.check(ArchitectureTest.classes);

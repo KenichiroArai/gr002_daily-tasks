@@ -12,8 +12,8 @@ import org.springframework.stereotype.Repository;
 
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.DefaultMinutesDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.DefaultMinutesDao;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessageSource;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTypes;
+import kmg.gr.gr002.dailytasks.infrastructure.context.DailyTasksMessageSource;
+import kmg.gr.gr002.dailytasks.infrastructure.types.msg.Gr002LogMsgTypes;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.json.JsonMapper;
@@ -25,7 +25,7 @@ import tools.jackson.databind.json.JsonMapper;
  *
  * @since 0.1.0
  *
- * @version 0.1.0
+ * @version 0.2.0
  */
 @Repository
 @Scope("prototype")

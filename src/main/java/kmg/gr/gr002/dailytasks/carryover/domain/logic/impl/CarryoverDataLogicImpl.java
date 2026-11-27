@@ -14,7 +14,7 @@ import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssueDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverIssuesDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.dto.CarryoverSummaryDto;
 import kmg.gr.gr002.dailytasks.carryover.domain.repository.dao.CarryoverDataDao;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessageSource;
+import kmg.gr.gr002.dailytasks.infrastructure.context.DailyTasksMessageSource;
 
 /**
  * 持ち越しの解析結果と画面用の集計を読み書きするロジックの実装<br>
@@ -27,7 +27,7 @@ import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessag
  *
  * @since 0.1.0
  *
- * @version 0.1.0
+ * @version 0.2.0
  */
 @Component
 @Scope("prototype")

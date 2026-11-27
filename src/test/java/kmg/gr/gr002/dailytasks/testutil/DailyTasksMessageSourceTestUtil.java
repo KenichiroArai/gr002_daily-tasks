@@ -5,7 +5,7 @@ import java.nio.charset.StandardCharsets;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessageSource;
+import kmg.gr.gr002.dailytasks.infrastructure.context.DailyTasksMessageSource;
 
 /**
  * テスト用のメッセージリソースの生成<br>
@@ -17,7 +17,7 @@ import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessag
  *
  * @since 0.1.0
  *
- * @version 0.1.0
+ * @version 0.2.0
  */
 @SuppressWarnings("nls")
 public final class DailyTasksMessageSourceTestUtil {

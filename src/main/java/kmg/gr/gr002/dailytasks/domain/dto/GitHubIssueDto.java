@@ -1,0 +1,168 @@
+package kmg.gr.gr002.dailytasks.domain.dto;
+
+import java.time.Instant;
+
+import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueModel;
+
+/**
+ * GitHub API から取得した Issue の DTO<br>
+ * <p>
+ * domain 層の受け渡しの型。
+ * </p>
+ *
+ * @author KenichiroArai
+ *
+ * @since 0.2.0
+ *
+ * @version 0.2.0
+ */
+public class GitHubIssueDto {
+
+    /**
+     * Issue 本文
+     *
+     * @since 0.2.0
+     */
+    private final String body;
+
+    /**
+     * Issue 番号
+     *
+     * @since 0.2.0
+     */
+    private final int number;
+
+    /**
+     * Issue の状態（open / closed）
+     *
+     * @since 0.2.0
+     */
+    private final String state;
+
+    /**
+     * Issue タイトル
+     *
+     * @since 0.2.0
+     */
+    private final String title;
+
+    /**
+     * Issue の更新日時。欠落時は null
+     *
+     * @since 0.2.0
+     */
+    private final Instant updatedAt;
+
+    /**
+     * コンストラクタ<br>
+     *
+     * @since 0.2.0
+     *
+     * @param number
+     *                  Issue 番号
+     * @param title
+     *                  Issue タイトル
+     * @param state
+     *                  Issue の状態（open / closed）
+     * @param updatedAt
+     *                  Issue の更新日時。欠落時は null
+     * @param body
+     *                  Issue 本文
+     */
+    public GitHubIssueDto(final int number, final String title, final String state, final Instant updatedAt,
+        final String body) {
+
+        this.number = number;
+        this.title = title;
+        this.state = state;
+        this.updatedAt = updatedAt;
+        this.body = body;
+
+    }
+
+    /**
+     * Issue 本文を返す<br>
+     *
+     * @since 0.2.0
+     *
+     * @return Issue 本文
+     */
+    public String getBody() {
+
+        final String result = this.body;
+        return result;
+
+    }
+
+    /**
+     * Issue 番号を返す<br>
+     *
+     * @since 0.2.0
+     *
+     * @return Issue 番号
+     */
+    public int getNumber() {
+
+        final int result = this.number;
+        return result;
+
+    }
+
+    /**
+     * Issue の状態を返す<br>
+     *
+     * @since 0.2.0
+     *
+     * @return Issue の状態（open / closed）
+     */
+    public String getState() {
+
+        final String result = this.state;
+        return result;
+
+    }
+
+    /**
+     * Issue タイトルを返す<br>
+     *
+     * @since 0.2.0
+     *
+     * @return Issue タイトル
+     */
+    public String getTitle() {
+
+        final String result = this.title;
+        return result;
+
+    }
+
+    /**
+     * Issue の更新日時を返す<br>
+     *
+     * @since 0.2.0
+     *
+     * @return Issue の更新日時。欠落時は null
+     */
+    public Instant getUpdatedAt() {
+
+        final Instant result = this.updatedAt;
+        return result;
+
+    }
+
+    /**
+     * GitHub API から取得した Issue を日々のタスク Issue に変換する<br>
+     *
+     * @since 0.2.0
+     *
+     * @return 日々のタスク Issue
+     */
+    public DailyTaskIssueModel toDailyTaskIssueModel() {
+
+        final DailyTaskIssueModel result
+            = new DailyTaskIssueModel(this.number, this.title, this.state, this.updatedAt, this.body);
+        return result;
+
+    }
+
+}

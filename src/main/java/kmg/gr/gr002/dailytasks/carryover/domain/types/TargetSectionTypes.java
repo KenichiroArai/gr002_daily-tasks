@@ -12,7 +12,7 @@ import kmg.core.infrastructure.cmn.KmgCmnTypes;
  *
  * @since 0.1.0
  *
- * @version 0.1.0
+ * @version 0.2.0
  */
 @SuppressWarnings("nls")
 public enum TargetSectionTypes implements KmgCmnTypes<String> {
@@ -46,6 +46,13 @@ public enum TargetSectionTypes implements KmgCmnTypes<String> {
      * @since 0.1.0
      */
     DEBT("負債", "Debt", "旧名称の対象セクション", "負債"),
+
+    /**
+     * 先行
+     *
+     * @since 0.2.0
+     */
+    ADVANCE("先行", "Advance", "先行の対象セクション", "先行"),
 
     /* 定義：終了 */
     ;
@@ -267,6 +274,34 @@ public enum TargetSectionTypes implements KmgCmnTypes<String> {
     public String getSection() {
 
         final String result = this.section;
+        return result;
+
+    }
+
+    /**
+     * 先行の対象セクションかを返す<br>
+     *
+     * @since 0.2.0
+     *
+     * @return true：先行、false：それ以外
+     */
+    public boolean isAdvance() {
+
+        final boolean result = this == ADVANCE;
+        return result;
+
+    }
+
+    /**
+     * 持ち越し系の対象セクションかを返す<br>
+     *
+     * @since 0.2.0
+     *
+     * @return true：持ち越し・繰り越し・負債、false：それ以外
+     */
+    public boolean isCarryover() {
+
+        final boolean result = (this == CARRYOVER) || (this == CARRYOVER_LEGACY) || (this == DEBT);
         return result;
 
     }

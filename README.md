@@ -1,7 +1,13 @@
 # gr002_daily-tasks
 
-日々のタスク（GitHub Issue、1 日 1 Issue）の「持ち越し」を集計する収集ツール（Java）です。
+日々のタスク（GitHub Issue、1 日 1 Issue）の「持ち越し」と「先行」を集計する収集ツール（Java）です。
 [daily-tasks-git](https://github.com/KenichiroArai/daily-tasks-git) の Issue を GitHub REST API で取得・解析し、daily-tasks-git の `docs/data/` に JSON を出力します。
+
+- 持ち越し: `docs/data/summary.json`
+- 先行: `docs/data/advance/summary.json`
+- Issue 単位: `docs/data/issues/NNNN.json`（両セクションを含む）
+
+CLI の入口は `CarryoverCommandImpl` です。専用の Advance 用 command はなく、1 回の実行で持ち越しと先行の両方を収集・集計します。解析ルール変更後は `--full` で全件を作り直してください。
 
 ## 関連リポジトリ
 
@@ -26,14 +32,15 @@ mvn clean package
 cd ../daily-tasks-git
 
 # 収集（差分モード）: 最新 10 件の Issue だけを取得して毎回解析し直す（古い Issue は --full）
-java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.1.0.jar
+# 出力は summary.json（持ち越し）と advance/summary.json（先行）の両方
+java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.2.0.jar
 
-# 収集（全件モード）: #1 から最新まで解析し直す
-java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.1.0.jar --full
+# 収集（全件モード）: #1 から最新まで解析し直す（## 先行 の導入後はこちらが必要）
+java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.2.0.jar --full
 ```
 
 - 環境変数 `GITHUB_TOKEN` を設定すると GitHub API の認証に使います（未設定でも公開リポジトリなら動きます）。
-- 解析ルールや標準時間を変えたときは、全件モードで JSON を作り直してください。
+- 解析ルールや標準時間を変えたとき、および先行（`## 先行`）を既存の `issues/*.json` に反映するときは、全件モードで JSON を作り直してください。
 - 対象リポジトリ・トークン（`${GITHUB_TOKEN:}`）・出力先・標準時間の設定ファイル・差分モードで取得する最新の件数は [`src/main/resources/application.properties`](src/main/resources/application.properties) の `carryover.*`、使い方や例外のメッセージは [`src/main/resources/messages.properties`](src/main/resources/messages.properties)、ログのメッセージは [`src/main/resources/messages-log.properties`](src/main/resources/messages-log.properties) で管理しています。キーは列挙型の key（定数名のパスカルケース）です。
 - 設定値は Spring Boot の仕組みにより環境変数で上書きできます（例: `CARRYOVER_RECENTCOUNT=20`）。コマンドライン引数は `--full` と `--help` だけを受け付けます。
 - アプリ固有のログレベルは `logging.level.kmg.gr.gr002.dailytasks`（既定 `INFO`）。調査時は `LOGGING_LEVEL_KMG_GR_GR002_DAILYTASKS=DEBUG` で Issue 単位のスキップ理由や API ページ進捗も出せます。

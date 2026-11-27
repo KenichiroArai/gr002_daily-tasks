@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
 import kmg.gr.gr002.dailytasks.carryover.application.logic.DailyTaskIssueLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueRefModel;
-import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubIssueDto;
-import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubIssueRefDto;
-import kmg.gr.gr002.dailytasks.carryover.domain.dto.GitHubSettingsDto;
-import kmg.gr.gr002.dailytasks.carryover.domain.repository.api.GitHubIssueApi;
+import kmg.gr.gr002.dailytasks.domain.dto.GitHubIssueDto;
+import kmg.gr.gr002.dailytasks.domain.dto.GitHubIssueRefDto;
+import kmg.gr.gr002.dailytasks.domain.dto.GitHubSettingsDto;
+import kmg.gr.gr002.dailytasks.domain.repository.api.GitHubIssueApi;
 
 /**
  * 日々のタスク Issue を取得するロジックの実装<br>
@@ -26,7 +26,7 @@ import kmg.gr.gr002.dailytasks.carryover.domain.repository.api.GitHubIssueApi;
  *
  * @since 0.1.0
  *
- * @version 0.1.0
+ * @version 0.2.0
  */
 @Component
 @Scope("prototype")

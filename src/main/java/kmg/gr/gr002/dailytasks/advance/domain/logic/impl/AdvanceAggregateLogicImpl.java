@@ -1,0 +1,215 @@
+package kmg.gr.gr002.dailytasks.advance.domain.logic.impl;
+
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+import kmg.gr.gr002.dailytasks.advance.application.logic.AdvanceAggregateLogic;
+import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverAggregationModel;
+import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
+import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverItemModel;
+import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverSummaryModel;
+import kmg.gr.gr002.dailytasks.carryover.application.model.DailySummaryModel;
+import kmg.gr.gr002.dailytasks.carryover.domain.types.TargetSectionTypes;
+import kmg.gr.gr002.dailytasks.infrastructure.context.DailyTasksMessageSource;
+import kmg.gr.gr002.dailytasks.infrastructure.types.msg.Gr002LogMsgTypes;
+
+/**
+ * 先行の解析結果を日別に集計する実装<br>
+ * <p>
+ * 対象セクション「先行」が最初に現れた Issue 以降を集計対象とする。それ以降で「先行」セクションがない日は 0 件として扱う。集計する項目は先行セクションの行のみとする。
+ * </p>
+ *
+ * @author KenichiroArai
+ *
+ * @since 0.2.0
+ *
+ * @version 0.2.0
+ */
+@Component
+public class AdvanceAggregateLogicImpl implements AdvanceAggregateLogic {
+
+    /**
+     * ロガー
+     *
+     * @since 0.2.0
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(AdvanceAggregateLogicImpl.class);
+
+    /**
+     * メッセージの取得
+     *
+     * @since 0.2.0
+     */
+    private final DailyTasksMessageSource messageSource;
+
+    /**
+     * コンストラクタ<br>
+     *
+     * @since 0.2.0
+     *
+     * @param messageSource
+     *                      メッセージの取得
+     */
+    public AdvanceAggregateLogicImpl(final DailyTasksMessageSource messageSource) {
+
+        this.messageSource = messageSource;
+
+    }
+
+    /**
+     * 解析結果を 1 件、集計の状態へ足す<br>
+     * <p>
+     * 日付がある Issue は、呼ぶ側が日付順に渡す。
+     * </p>
+     *
+     * @since 0.2.0
+     *
+     * @param aggregation
+     *                    単位をまたいで持ち越す集計の状態
+     * @param issue
+     *                    持ち越しの解析結果
+     */
+    @Override
+    public void add(final CarryoverAggregationModel aggregation, final CarryoverIssueModel issue) {
+
+        aggregation.updateLatest(issue.getNumber());
+
+        /* 日付がないか */
+        final LocalDate date = issue.getDate();
+
+        if (date == null) {
+
+            // 日付がない場合
+
+            // 最大の Issue 番号だけ更新して次へ進む
+            return;
+
+        }
+
+        /* セクション追跡の更新（「先行」のみ） */
+        final boolean hasSection = issue.getSections().stream()
+            .anyMatch(section -> TargetSectionTypes.getEnum(section).isAdvance());
+        aggregation.track(hasSection);
+
+        /* 集計対象の追跡中か */
+        final boolean tracking = aggregation.isTracking();
+
+        if (!tracking) {
+
+            // 集計対象の追跡中ではない場合
+
+            // 日別の行にはしない
+            return;
+
+        }
+
+        /* 日別集計への加算 */
+        final DailySummaryModel day
+            = new DailySummaryModel(date, issue.getNumber(), issue.getAdvanceDeclaredCount());
+
+        for (final CarryoverItemModel item : issue.getItems()) {
+
+            /* 先行セクションの項目か */
+            if (!TargetSectionTypes.getEnum(item.getSection()).isAdvance()) {
+
+                // 先行セクションの項目ではない場合
+
+                // 加算しない
+                continue;
+
+            }
+
+            day.add(item);
+            aggregation.addItem(item.getName());
+
+        }
+
+        aggregation.addDay(day);
+
+    }
+
+    /**
+     * 解析結果を集計する<br>
+     *
+     * @since 0.2.0
+     *
+     * @param issues
+     *               持ち越しの解析結果
+     *
+     * @return 画面用の持ち越しの集計
+     */
+    @SuppressWarnings("null")
+    @Override
+    public CarryoverSummaryModel aggregate(final Collection<CarryoverIssueModel> issues) {
+
+        final CarryoverSummaryModel     result;
+        final CarryoverAggregationModel aggregation = new CarryoverAggregationModel();
+
+        /* 日付のある Issue を日付順に並べる */
+        final List<CarryoverIssueModel> sorted = issues.stream().filter(issue -> issue.getDate() != null)
+            .sorted(Comparator.comparing(CarryoverIssueModel::getDate).thenComparingInt(CarryoverIssueModel::getNumber))
+            .toList();
+
+        /* 日付順 Issue の集計 */
+        for (final CarryoverIssueModel issue : sorted) {
+
+            this.add(aggregation, issue);
+
+        }
+
+        /* 日付なし Issue の集計 */
+        for (final CarryoverIssueModel issue : issues) {
+
+            /* 日付があるか */
+            final LocalDate date = issue.getDate();
+
+            if (date != null) {
+
+                // 日付がある場合
+
+                // 日付順の追加で足し終わっている
+                continue;
+
+            }
+
+            this.add(aggregation, issue);
+
+        }
+
+        /* 画面用集計への変換 */
+        result = this.toSummary(aggregation);
+        return result;
+
+    }
+
+    /**
+     * ここまでの集計の状態から画面用の集計を作る<br>
+     *
+     * @since 0.2.0
+     *
+     * @param aggregation
+     *                    単位をまたいで持ち越す集計の状態
+     *
+     * @return 画面用の持ち越しの集計
+     */
+    @Override
+    public CarryoverSummaryModel toSummary(final CarryoverAggregationModel aggregation) {
+
+        final List<String>            rankedItemNames = aggregation.rankedItemNames();
+        final List<DailySummaryModel> days            = aggregation.getDays();
+        final int                     latestIssue     = aggregation.getLatestIssue();
+        final CarryoverSummaryModel   result          = new CarryoverSummaryModel(latestIssue, rankedItemNames, days);
+        final String                  message         = this.messageSource
+            .getLogMessage(Gr002LogMsgTypes.GR002_LOG12008);
+        AdvanceAggregateLogicImpl.LOGGER.debug(message, days.size(), latestIssue, rankedItemNames.size());
+        return result;
+
+    }
+
+}

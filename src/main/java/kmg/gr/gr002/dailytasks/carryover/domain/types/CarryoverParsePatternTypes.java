@@ -12,7 +12,7 @@ import kmg.core.infrastructure.cmn.KmgCmnTypes;
  *
  * @since 0.1.0
  *
- * @version 0.1.0
+ * @version 0.2.0
  */
 @SuppressWarnings("nls")
 public enum CarryoverParsePatternTypes implements KmgCmnTypes<String> {
@@ -46,6 +46,13 @@ public enum CarryoverParsePatternTypes implements KmgCmnTypes<String> {
      * @since 0.1.0
      */
     DECLARED_COUNT("残数", "DeclaredCount", "残数", "^\\s*残\\s*[：:]\\s*(\\d+)\\s*$"),
+
+    /**
+     * 先行の件数
+     *
+     * @since 0.2.0
+     */
+    ADVANCE_DECLARED_COUNT("先行の件数", "AdvanceDeclaredCount", "先行の件数", "^\\s*件数\\s*[：:]\\s*(\\d+)\\s*$"),
 
     /**
      * 見出し

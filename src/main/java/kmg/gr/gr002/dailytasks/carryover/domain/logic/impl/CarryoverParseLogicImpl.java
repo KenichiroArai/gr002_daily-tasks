@@ -21,20 +21,20 @@ import kmg.gr.gr002.dailytasks.carryover.application.types.MinutesSourceTypes;
 import kmg.gr.gr002.dailytasks.carryover.domain.types.CarryoverParsePatternTypes;
 import kmg.gr.gr002.dailytasks.carryover.domain.types.CarryoverParseTextTypes;
 import kmg.gr.gr002.dailytasks.carryover.domain.types.TargetSectionTypes;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessageSource;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.types.msg.Gr002LogMsgTypes;
+import kmg.gr.gr002.dailytasks.infrastructure.context.DailyTasksMessageSource;
+import kmg.gr.gr002.dailytasks.infrastructure.types.msg.Gr002LogMsgTypes;
 
 /**
- * 日々のタスク Issue から持ち越し項目を解析する実装<br>
+ * 日々のタスク Issue から持ち越し・先行項目を解析する実装<br>
  * <p>
- * 対象セクションは「負債」「繰り越し」「持ち越し」。未チェック・チェック済みの両方を対象とする。
+ * 対象セクションは「負債」「繰り越し」「持ち越し」「先行」。未チェック・チェック済みの両方を対象とする。
  * </p>
  *
  * @author KenichiroArai
  *
  * @since 0.1.0
  *
- * @version 0.1.0
+ * @version 0.2.0
  */
 @Component
 @Scope("prototype")
@@ -61,6 +61,14 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
      */
     private static final Pattern DECLARED_COUNT
         = Pattern.compile(CarryoverParsePatternTypes.DECLARED_COUNT.getPattern());
+
+    /**
+     * 先行の件数（件数：N）
+     *
+     * @since 0.2.0
+     */
+    private static final Pattern ADVANCE_DECLARED_COUNT
+        = Pattern.compile(CarryoverParsePatternTypes.ADVANCE_DECLARED_COUNT.getPattern());
 
     /**
      * 見出し（## 見出し）
@@ -438,10 +446,13 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
         }
 
         /* 本文の解析 */
-        final List<String>             sections       = new ArrayList<>();
-        final List<CarryoverItemModel> items          = new ArrayList<>();
-        Integer                        declaredCount  = null;
-        String                         currentSection = CarryoverParseTextTypes.EMPTY.getText();
+        final List<String>             sections              = new ArrayList<>();
+        final List<CarryoverItemModel> items                 = new ArrayList<>();
+        Integer                        declaredCount         = null;
+        Integer                        advanceDeclaredCount  = null;
+        int                            carryoverItemCount    = 0;
+        int                            advanceItemCount      = 0;
+        String                         currentSection        = CarryoverParseTextTypes.EMPTY.getText();
 
         for (final String line : CarryoverParseLogicImpl.splitLines(issue.getBody())) {
 
@@ -472,16 +483,30 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
 
             }
 
-            /* 残数の行か */
+            /* 残数の行か（持ち越し） */
             final Matcher declaredMatcher = CarryoverParseLogicImpl.DECLARED_COUNT.matcher(line);
             final boolean declared        = declaredMatcher.matches();
 
-            if (declared) {
+            if (declared && sectionType.isCarryover()) {
 
                 // 残数の行の場合
 
                 // 残数を控えて、次の行へ進む
                 declaredCount = Integer.valueOf(declaredMatcher.group(1));
+                continue;
+
+            }
+
+            /* 件数の行か（先行） */
+            final Matcher advanceDeclaredMatcher = CarryoverParseLogicImpl.ADVANCE_DECLARED_COUNT.matcher(line);
+            final boolean advanceDeclared        = advanceDeclaredMatcher.matches();
+
+            if (advanceDeclared && sectionType.isAdvance()) {
+
+                // 先行の件数の行の場合
+
+                // 件数を控えて、次の行へ進む
+                advanceDeclaredCount = Integer.valueOf(advanceDeclaredMatcher.group(1));
                 continue;
 
             }
@@ -504,13 +529,31 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
             final boolean checked       = !KmgString.equals(uncheckedText, checkboxMatcher.group(1));
             items.add(this.parseItem(issue.getNumber(), currentSection, checked, checkboxMatcher.group(2), line));
 
+            /* セクション別の件数 */
+            if (sectionType.isCarryover()) {
+
+                // 持ち越し系の場合
+
+                carryoverItemCount++;
+
+            }
+
+            if (sectionType.isAdvance()) {
+
+                // 先行の場合
+
+                advanceItemCount++;
+
+            }
+
         }
 
-        /* 残数の検証 */
-        this.verifyDeclaredCount(issue.getNumber(), declaredCount, items.size());
+        /* 残数・件数の検証 */
+        this.verifyDeclaredCount(issue.getNumber(), declaredCount, carryoverItemCount);
+        this.verifyDeclaredCount(issue.getNumber(), advanceDeclaredCount, advanceItemCount);
 
         result = new CarryoverIssueModel(issue.getNumber(), issue.getTitle(), date, issue.getState(),
-            issue.getUpdatedAt(), sections, declaredCount, items);
+            issue.getUpdatedAt(), sections, declaredCount, advanceDeclaredCount, items);
         final String message = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG12007);
         CarryoverParseLogicImpl.LOGGER.debug(message, issue.getNumber(), items.size());
         return result;

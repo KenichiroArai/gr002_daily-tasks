@@ -6,7 +6,7 @@ import java.util.List;
 
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.CarryoverItemModel;
-import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessageSource;
+import kmg.gr.gr002.dailytasks.infrastructure.context.DailyTasksMessageSource;
 
 /**
  * 持ち越しの解析結果（Issue 単位）の DTO<br>
@@ -18,7 +18,7 @@ import kmg.gr.gr002.dailytasks.carryover.infrastructure.context.DailyTasksMessag
  *
  * @since 0.1.0
  *
- * @version 0.1.0
+ * @version 0.2.0
  */
 public class CarryoverIssueDto {
 
@@ -62,6 +62,13 @@ public class CarryoverIssueDto {
      * @since 0.1.0
      */
     private final Integer declaredCount;
+
+    /**
+     * 本文の「件数：N」の値（先行）。記載がない場合は null
+     *
+     * @since 0.2.0
+     */
+    private final Integer advanceDeclaredCount;
 
     /**
      * 持ち越し項目
@@ -126,13 +133,13 @@ public class CarryoverIssueDto {
     public CarryoverIssueDto(final CarryoverIssueModel issue) {
 
         this(issue.getNumber(), issue.getTitle(), issue.getDate(), issue.getState(), issue.getUpdatedAt(),
-            issue.getSections(), issue.getDeclaredCount(), issue.getCount(), issue.getMinutes(),
-            CarryoverIssueDto.toItemDtos(issue));
+            issue.getSections(), issue.getDeclaredCount(), issue.getAdvanceDeclaredCount(), issue.getCount(),
+            issue.getMinutes(), CarryoverIssueDto.toItemDtos(issue));
 
     }
 
     /**
-     * コンストラクタ<br>
+     * コンストラクタ（先行の件数なし）<br>
      *
      * @since 0.1.0
      *
@@ -161,6 +168,43 @@ public class CarryoverIssueDto {
         final Instant updatedAt, final List<String> sections, final Integer declaredCount, final int count,
         final double minutes, final List<CarryoverItemDto> items) {
 
+        this(number, title, date, state, updatedAt, sections, declaredCount, null, count, minutes, items);
+
+    }
+
+    /**
+     * コンストラクタ<br>
+     *
+     * @since 0.2.0
+     *
+     * @param number
+     *                             Issue 番号
+     * @param title
+     *                             Issue タイトル
+     * @param date
+     *                             その日の日付。タイトルから取得できない場合は null
+     * @param state
+     *                             Issue の状態（open / closed）
+     * @param updatedAt
+     *                             Issue の更新日時。欠落時は null
+     * @param sections
+     *                             本文にあった対象セクション名
+     * @param declaredCount
+     *                             本文の「残：N」の値。記載がない場合は null
+     * @param advanceDeclaredCount
+     *                             本文の「件数：N」の値。記載がない場合は null
+     * @param count
+     *                             持ち越し項目の件数
+     * @param minutes
+     *                             持ち越し項目の残り時間（分）の合計
+     * @param items
+     *                             持ち越し項目
+     */
+    public CarryoverIssueDto(final int number, final String title, final LocalDate date, final String state,
+        final Instant updatedAt, final List<String> sections, final Integer declaredCount,
+        final Integer advanceDeclaredCount, final int count, final double minutes,
+        final List<CarryoverItemDto> items) {
+
         this.number = number;
         this.title = title;
         this.date = date;
@@ -168,6 +212,7 @@ public class CarryoverIssueDto {
         this.updatedAt = updatedAt;
         this.sections = List.copyOf(sections);
         this.declaredCount = declaredCount;
+        this.advanceDeclaredCount = advanceDeclaredCount;
         this.count = count;
         this.minutes = minutes;
         this.items = List.copyOf(items);
@@ -198,6 +243,20 @@ public class CarryoverIssueDto {
     public LocalDate getDate() {
 
         final LocalDate result = this.date;
+        return result;
+
+    }
+
+    /**
+     * 本文の「件数：N」の値を返す<br>
+     *
+     * @since 0.2.0
+     *
+     * @return 「件数：N」の値。記載がない場合は null
+     */
+    public Integer getAdvanceDeclaredCount() {
+
+        final Integer result = this.advanceDeclaredCount;
         return result;
 
     }
@@ -334,7 +393,7 @@ public class CarryoverIssueDto {
         final List<CarryoverItemModel> itemModels
             = this.items.stream().map(item -> item.toCarryoverItemModel(messageSource)).toList();
         result = new CarryoverIssueModel(this.number, this.title, this.date, this.state, this.updatedAt, this.sections,
-            this.declaredCount, itemModels);
+            this.declaredCount, this.advanceDeclaredCount, itemModels);
         return result;
 
     }
