@@ -13,7 +13,7 @@
 
     <groupId>kmg.gr.gr002</groupId>
     <artifactId>gr002_daily-tasks</artifactId>
-    <version>0.2.0</version>
+    <version>0.2.1</version>
     <packaging>jar</packaging>
     <name>gr002_daily-tasks</name>
     <description>毎日タスクのバックエンド</description>

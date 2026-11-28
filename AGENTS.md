@@ -333,8 +333,8 @@ mvn test
 # CLI 入口は CarryoverCommandImpl のみ。1 回の実行で持ち越し（summary.json）と先行（advance/summary.json）の両方を出力する。
 # ## 先行 の解析を既存 issues/*.json に反映するには --full が必要。
 cd ../daily-tasks-git
-java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.2.0.jar
-java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.2.0.jar --full
+java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.2.1.jar
+java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.2.1.jar --full
 ```
 
 - カバレッジレポート: `target/site/jacoco/index.html`

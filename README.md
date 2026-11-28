@@ -33,10 +33,10 @@ cd ../daily-tasks-git
 
 # 収集（差分モード）: 最新 10 件の Issue だけを取得して毎回解析し直す（古い Issue は --full）
 # 出力は summary.json（持ち越し）と advance/summary.json（先行）の両方
-java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.2.0.jar
+java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.2.1.jar
 
 # 収集（全件モード）: #1 から最新まで解析し直す（## 先行 の導入後はこちらが必要）
-java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.2.0.jar --full
+java -jar ../gr002_daily-tasks/target/gr002_daily-tasks-0.2.1.jar --full
 ```
 
 - 環境変数 `GITHUB_TOKEN` を設定すると GitHub API の認証に使います（未設定でも公開リポジトリなら動きます）。

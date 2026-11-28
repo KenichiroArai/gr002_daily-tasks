@@ -32,7 +32,7 @@ import kmg.fund.infrastructure.cmn.msg.KmgFundCmnGenMsgTypes;
  *
  * @since 0.2.0
  *
- * @version 0.2.0
+ * @version 0.2.1
  */
 @SuppressWarnings("nls")
 public enum Gr002GenMsgTypes implements KmgFundCmnGenMsgTypes, KmgFundCmnExcMsgTypes {
@@ -72,7 +72,7 @@ public enum Gr002GenMsgTypes implements KmgFundCmnGenMsgTypes, KmgFundCmnExcMsgT
      * @since 0.2.0
      */
     GR002_GEN41000("使い方", "Gr002Gen41000", "コマンドの使い方", """
-        使い方: java -jar gr002_daily-tasks-0.2.0.jar [--full] [--help]
+        使い方: java -jar gr002_daily-tasks-0.2.1.jar [--full] [--help]
           （引数なし）  差分モード。最新 10 件の Issue だけを取得して毎回解析し直す。古い Issue は --full で扱う
           --full        全件モード。#1 から最新まで解析し直す
           --help, -h    この使い方を表示する
