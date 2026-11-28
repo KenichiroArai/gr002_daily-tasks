@@ -132,8 +132,8 @@ public class AdvanceDataDaoImplTest {
         testTarget.saveSummary(new CarryoverSummaryDto(371, List.of("国語"), List.of()));
 
         /* 検証の準備 */
-        final String actualJson = Files.readString(
-            this.tempDir.resolve("advance").resolve("summary.json"), StandardCharsets.UTF_8);
+        final String actualJson
+            = Files.readString(this.tempDir.resolve("advance").resolve("summary.json"), StandardCharsets.UTF_8);
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedJson, actualJson, "JSON が一致しません");
@@ -163,8 +163,8 @@ public class AdvanceDataDaoImplTest {
         testTarget.saveSummary(new CarryoverSummaryDto(371, List.of("国語"), List.of()));
 
         /* 検証の準備 */
-        final Path   testPath   = this.tempDir.resolve("advance").resolve("summary.json");
-        final String actualJson = Files.readString(testPath, StandardCharsets.UTF_8);
+        final Path    testPath         = this.tempDir.resolve("advance").resolve("summary.json");
+        final String  actualJson       = Files.readString(testPath, StandardCharsets.UTF_8);
         final boolean actualStartsWith = actualJson.startsWith("{\n");
         final boolean actualHasCr      = actualJson.contains("\r");
         final boolean actualEndsWithLf = actualJson.endsWith("}\n");
@@ -189,7 +189,7 @@ public class AdvanceDataDaoImplTest {
 
         /* 準備 */
         final AdvanceDataDaoImpl testTarget = AdvanceDataDaoImplTest.createTarget();
-        final Path                 testPath   = this.tempDir.resolve("error.json");
+        final Path               testPath   = this.tempDir.resolve("error.json");
 
         /* テスト対象の実行 */
         final IOException testException = Assertions.assertThrows(IOException.class,
@@ -221,9 +221,9 @@ public class AdvanceDataDaoImplTest {
 
         /* 準備 */
         final AdvanceDataDaoImpl testTarget = AdvanceDataDaoImplTest.createTarget();
-        final Path                 dirA       = this.tempDir.resolve("a");
-        final Path                 dirB       = dirA.resolve("b");
-        final Path                 testPath   = dirB.resolve("c.json");
+        final Path               dirA       = this.tempDir.resolve("a");
+        final Path               dirB       = dirA.resolve("b");
+        final Path               testPath   = dirB.resolve("c.json");
 
         /* テスト対象の実行 */
         AdvanceDataDaoImplTest.write(testTarget, testPath, List.of(1));

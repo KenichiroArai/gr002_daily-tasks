@@ -115,31 +115,6 @@ public class AdvanceDataFileTypesTest {
     }
 
     /**
-     * getEnum メソッドのテスト - 正常系:キーから種類を返す場合
-     *
-     * @since 0.2.0
-     */
-    @Test
-    public void testGetEnum_normalAdvanceDirKey() {
-
-        /* 期待値の定義 */
-        final AdvanceDataFileTypes expectedType = AdvanceDataFileTypes.ADVANCE_DIR;
-
-        /* 準備 */
-        final String testKey = "AdvanceDir";
-
-        /* テスト対象の実行 */
-        final AdvanceDataFileTypes testResult = AdvanceDataFileTypes.getEnum(testKey);
-
-        /* 検証の準備 */
-        final AdvanceDataFileTypes actualType = testResult;
-
-        /* 検証の実施 */
-        Assertions.assertEquals(expectedType, actualType, "ファイルの種類が一致しません");
-
-    }
-
-    /**
      * getEnum メソッドのテスト - 正常系:ファイル名の別名から種類を返す場合
      *
      * @since 0.2.0
@@ -165,18 +140,18 @@ public class AdvanceDataFileTypesTest {
     }
 
     /**
-     * getEnum メソッドのテスト - 正常系:集計ファイル名の別名から種類を返す場合
+     * getEnum メソッドのテスト - 正常系:キーから種類を返す場合
      *
      * @since 0.2.0
      */
     @Test
-    public void testGetEnum_normalSummaryFileAlias() {
+    public void testGetEnum_normalAdvanceDirKey() {
 
         /* 期待値の定義 */
-        final AdvanceDataFileTypes expectedType = AdvanceDataFileTypes.SUMMARY_FILE;
+        final AdvanceDataFileTypes expectedType = AdvanceDataFileTypes.ADVANCE_DIR;
 
         /* 準備 */
-        final String testKey = "summary.json";
+        final String testKey = "AdvanceDir";
 
         /* テスト対象の実行 */
         final AdvanceDataFileTypes testResult = AdvanceDataFileTypes.getEnum(testKey);
@@ -185,7 +160,7 @@ public class AdvanceDataFileTypesTest {
         final AdvanceDataFileTypes actualType = testResult;
 
         /* 検証の実施 */
-        Assertions.assertEquals(expectedType, actualType, "別名からの種類が一致しません");
+        Assertions.assertEquals(expectedType, actualType, "ファイルの種類が一致しません");
 
     }
 
@@ -202,6 +177,31 @@ public class AdvanceDataFileTypesTest {
 
         /* 準備 */
         final String testKey = ".json";
+
+        /* テスト対象の実行 */
+        final AdvanceDataFileTypes testResult = AdvanceDataFileTypes.getEnum(testKey);
+
+        /* 検証の準備 */
+        final AdvanceDataFileTypes actualType = testResult;
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedType, actualType, "別名からの種類が一致しません");
+
+    }
+
+    /**
+     * getEnum メソッドのテスト - 正常系:集計ファイル名の別名から種類を返す場合
+     *
+     * @since 0.2.0
+     */
+    @Test
+    public void testGetEnum_normalSummaryFileAlias() {
+
+        /* 期待値の定義 */
+        final AdvanceDataFileTypes expectedType = AdvanceDataFileTypes.SUMMARY_FILE;
+
+        /* 準備 */
+        final String testKey = "summary.json";
 
         /* テスト対象の実行 */
         final AdvanceDataFileTypes testResult = AdvanceDataFileTypes.getEnum(testKey);

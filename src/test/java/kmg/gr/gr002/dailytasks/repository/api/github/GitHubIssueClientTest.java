@@ -421,8 +421,8 @@ public class GitHubIssueClientTest {
         /* 準備 */
 
         /* テスト対象の実行 */
-        final Instant testResult = ReflectionTestUtil.invokeStatic(GitHubIssueClient.class, "parseUpdatedAt",
-            new Class<?>[] {
+        final Instant testResult
+            = ReflectionTestUtil.invokeStatic(GitHubIssueClient.class, "parseUpdatedAt", new Class<?>[] {
                 String.class
             }, " ");
 
@@ -451,8 +451,8 @@ public class GitHubIssueClientTest {
         /* 準備 */
 
         /* テスト対象の実行 */
-        final Instant testResult = ReflectionTestUtil.invokeStatic(GitHubIssueClient.class, "parseUpdatedAt",
-            new Class<?>[] {
+        final Instant testResult
+            = ReflectionTestUtil.invokeStatic(GitHubIssueClient.class, "parseUpdatedAt", new Class<?>[] {
                 String.class
             }, (String) null);
 

@@ -28,16 +28,16 @@ public class CarryoverIssueModelTest {
      *
      * @since 0.1.0
      */
-    private static final CarryoverItemModel ITEM1 = new CarryoverItemModel("国語", LocalDate.parse("2026-06-18"), false, 15,
-        MinutesSourceTypes.PARSED, "持ち越し", "- [ ] 国語2026/06/18（残り時間：15分）");
+    private static final CarryoverItemModel ITEM1 = new CarryoverItemModel("国語", LocalDate.parse("2026-06-18"), false,
+        15, MinutesSourceTypes.PARSED, "持ち越し", "- [ ] 国語2026/06/18（残り時間：15分）");
 
     /**
      * テスト用の持ち越し項目（チェック済み、8.5分）
      *
      * @since 0.1.0
      */
-    private static final CarryoverItemModel ITEM2 = new CarryoverItemModel("音楽", LocalDate.parse("2026-08-18"), true, 8.5,
-        MinutesSourceTypes.PARSED, "持ち越し", "- [x] 音楽2026/08/18（残り時間：8.5分）");
+    private static final CarryoverItemModel ITEM2 = new CarryoverItemModel("音楽", LocalDate.parse("2026-08-18"), true,
+        8.5, MinutesSourceTypes.PARSED, "持ち越し", "- [x] 音楽2026/08/18（残り時間：8.5分）");
 
     /**
      * テスト用の解析結果を作成する<br>
@@ -53,8 +53,9 @@ public class CarryoverIssueModelTest {
      */
     private static CarryoverIssueModel createIssue(final String state, final List<String> sections) {
 
-        final CarryoverIssueModel result = new CarryoverIssueModel(371, "2026年10月06日のタスク", LocalDate.parse("2026-10-06"), state,
-            Instant.parse("2026-10-06T14:23:08Z"), sections, 2, List.of(CarryoverIssueModelTest.ITEM1, CarryoverIssueModelTest.ITEM2));
+        final CarryoverIssueModel result = new CarryoverIssueModel(371, "2026年10月06日のタスク",
+            LocalDate.parse("2026-10-06"), state, Instant.parse("2026-10-06T14:23:08Z"), sections, 2,
+            List.of(CarryoverIssueModelTest.ITEM1, CarryoverIssueModelTest.ITEM2));
         return result;
 
     }

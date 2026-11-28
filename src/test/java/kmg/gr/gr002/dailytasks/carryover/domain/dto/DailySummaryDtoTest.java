@@ -34,8 +34,8 @@ public class DailySummaryDtoTest {
         byItem.add("英語", new ItemStatDto(1, 30, 0, 0));
         byItem.add("国語", new ItemStatDto(1, 15, 1, 15));
         byOriginMonth.add("2026-03", new ItemStatDto(2, 45, 1, 15));
-        final DailySummaryDto result
-            = new DailySummaryDto(LocalDate.parse("2026-03-24"), 175, 2, new ItemStatDto(2, 45, 1, 15), byItem, byOriginMonth);
+        final DailySummaryDto result = new DailySummaryDto(LocalDate.parse("2026-03-24"), 175, 2,
+            new ItemStatDto(2, 45, 1, 15), byItem, byOriginMonth);
         return result;
 
     }

@@ -22,6 +22,163 @@ import kmg.core.infrastructure.type.KmgString;
 public final class ReflectionTestUtil {
 
     /**
+     * インスタンスフィールドの値を取得する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param <T>
+     *               値の型
+     * @param target
+     *               フィールドを持つインスタンス
+     * @param name
+     *               フィールド名
+     *
+     * @return フィールドの値
+     *
+     * @throws ReflectiveOperationException
+     *                                      フィールドが見つからない場合、または値を取得できない場合
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T getField(final Object target, final String name) throws ReflectiveOperationException {
+
+        final T     result;
+        final Field field = ReflectionTestUtil.findField(target.getClass(), name);
+
+        field.setAccessible(true);
+        result = (T) field.get(target);
+        return result;
+
+    }
+
+    /**
+     * static フィールドの値を取得する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param <T>
+     *              値の型
+     * @param clazz
+     *              フィールドを定義したクラス
+     * @param name
+     *              フィールド名
+     *
+     * @return フィールドの値
+     *
+     * @throws ReflectiveOperationException
+     *                                      フィールドが見つからない場合、または値を取得できない場合
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T getStaticField(final Class<?> clazz, final String name) throws ReflectiveOperationException {
+
+        final T     result;
+        final Field field = clazz.getDeclaredField(name);
+
+        field.setAccessible(true);
+        result = (T) field.get(null);
+        return result;
+
+    }
+
+    /**
+     * インスタンスメソッドを呼び出す<br>
+     * <p>
+     * 呼び出したメソッドが例外を投げた場合は、その例外をそのまま投げ直す。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @param <T>
+     *                       戻り値の型
+     * @param target
+     *                       呼び出し対象のインスタンス
+     * @param name
+     *                       メソッド名
+     * @param parameterTypes
+     *                       引数の型
+     * @param args
+     *                       引数
+     *
+     * @return メソッドの戻り値
+     *
+     * @throws Exception
+     *                   メソッドが見つからない場合、またはメソッドが例外を投げた場合
+     */
+    public static <T> T invoke(final Object target, final String name, final Class<?>[] parameterTypes,
+        final Object... args) throws Exception {
+
+        final T        result;
+        final Class<?> type   = target.getClass();
+        final Method   method = ReflectionTestUtil.findMethod(type, name, parameterTypes);
+
+        result = ReflectionTestUtil.invokeMethod(method, target, args);
+        return result;
+
+    }
+
+    /**
+     * static メソッドを呼び出す<br>
+     * <p>
+     * 呼び出したメソッドが例外を投げた場合は、その例外をそのまま投げ直す。
+     * </p>
+     *
+     * @since 0.1.0
+     *
+     * @param <T>
+     *                       戻り値の型
+     * @param clazz
+     *                       メソッドを定義したクラス
+     * @param name
+     *                       メソッド名
+     * @param parameterTypes
+     *                       引数の型
+     * @param args
+     *                       引数
+     *
+     * @return メソッドの戻り値
+     *
+     * @throws Exception
+     *                   メソッドが見つからない場合、またはメソッドが例外を投げた場合
+     */
+    public static <T> T invokeStatic(final Class<?> clazz, final String name, final Class<?>[] parameterTypes,
+        final Object... args) throws Exception {
+
+        final T      result;
+        final Method method = ReflectionTestUtil.findMethod(clazz, name, parameterTypes);
+
+        result = ReflectionTestUtil.invokeMethod(method, null, args);
+        return result;
+
+    }
+
+    /**
+     * インスタンスフィールドに値を設定する<br>
+     *
+     * @since 0.1.0
+     *
+     * @param target
+     *               フィールドを持つインスタンス
+     * @param name
+     *               フィールド名
+     * @param value
+     *               設定する値
+     */
+    public static void setField(final Object target, final String name, final Object value) {
+
+        try {
+
+            final Field field = ReflectionTestUtil.findField(target.getClass(), name);
+            field.setAccessible(true);
+            field.set(target, value);
+
+        } catch (final ReflectiveOperationException e) {
+
+            throw new IllegalStateException(e);
+
+        }
+
+    }
+
+    /**
      * クラスとその親クラスからフィールドを探す<br>
      *
      * @since 0.1.0
@@ -124,100 +281,6 @@ public final class ReflectionTestUtil {
     }
 
     /**
-     * インスタンスフィールドの値を取得する<br>
-     *
-     * @since 0.1.0
-     *
-     * @param <T>
-     *               値の型
-     * @param target
-     *               フィールドを持つインスタンス
-     * @param name
-     *               フィールド名
-     *
-     * @return フィールドの値
-     *
-     * @throws ReflectiveOperationException
-     *                                      フィールドが見つからない場合、または値を取得できない場合
-     */
-    @SuppressWarnings("unchecked")
-    public static <T> T getField(final Object target, final String name) throws ReflectiveOperationException {
-
-        final T     result;
-        final Field field = ReflectionTestUtil.findField(target.getClass(), name);
-
-        field.setAccessible(true);
-        result = (T) field.get(target);
-        return result;
-
-    }
-
-    /**
-     * static フィールドの値を取得する<br>
-     *
-     * @since 0.1.0
-     *
-     * @param <T>
-     *              値の型
-     * @param clazz
-     *              フィールドを定義したクラス
-     * @param name
-     *              フィールド名
-     *
-     * @return フィールドの値
-     *
-     * @throws ReflectiveOperationException
-     *                                      フィールドが見つからない場合、または値を取得できない場合
-     */
-    @SuppressWarnings("unchecked")
-    public static <T> T getStaticField(final Class<?> clazz, final String name) throws ReflectiveOperationException {
-
-        final T     result;
-        final Field field = clazz.getDeclaredField(name);
-
-        field.setAccessible(true);
-        result = (T) field.get(null);
-        return result;
-
-    }
-
-    /**
-     * インスタンスメソッドを呼び出す<br>
-     * <p>
-     * 呼び出したメソッドが例外を投げた場合は、その例外をそのまま投げ直す。
-     * </p>
-     *
-     * @since 0.1.0
-     *
-     * @param <T>
-     *                       戻り値の型
-     * @param target
-     *                       呼び出し対象のインスタンス
-     * @param name
-     *                       メソッド名
-     * @param parameterTypes
-     *                       引数の型
-     * @param args
-     *                       引数
-     *
-     * @return メソッドの戻り値
-     *
-     * @throws Exception
-     *                   メソッドが見つからない場合、またはメソッドが例外を投げた場合
-     */
-    public static <T> T invoke(final Object target, final String name, final Class<?>[] parameterTypes,
-        final Object... args) throws Exception {
-
-        final T        result;
-        final Class<?> type   = target.getClass();
-        final Method   method = ReflectionTestUtil.findMethod(type, name, parameterTypes);
-
-        result = ReflectionTestUtil.invokeMethod(method, target, args);
-        return result;
-
-    }
-
-    /**
      * メソッドを呼び出し、呼び出し先の例外を取り出して投げ直す<br>
      *
      * @since 0.1.0
@@ -274,69 +337,6 @@ public final class ReflectionTestUtil {
         }
 
         return result;
-
-    }
-
-    /**
-     * static メソッドを呼び出す<br>
-     * <p>
-     * 呼び出したメソッドが例外を投げた場合は、その例外をそのまま投げ直す。
-     * </p>
-     *
-     * @since 0.1.0
-     *
-     * @param <T>
-     *                       戻り値の型
-     * @param clazz
-     *                       メソッドを定義したクラス
-     * @param name
-     *                       メソッド名
-     * @param parameterTypes
-     *                       引数の型
-     * @param args
-     *                       引数
-     *
-     * @return メソッドの戻り値
-     *
-     * @throws Exception
-     *                   メソッドが見つからない場合、またはメソッドが例外を投げた場合
-     */
-    public static <T> T invokeStatic(final Class<?> clazz, final String name, final Class<?>[] parameterTypes,
-        final Object... args) throws Exception {
-
-        final T      result;
-        final Method method = ReflectionTestUtil.findMethod(clazz, name, parameterTypes);
-
-        result = ReflectionTestUtil.invokeMethod(method, null, args);
-        return result;
-
-    }
-
-    /**
-     * インスタンスフィールドに値を設定する<br>
-     *
-     * @since 0.1.0
-     *
-     * @param target
-     *               フィールドを持つインスタンス
-     * @param name
-     *               フィールド名
-     * @param value
-     *               設定する値
-     */
-    public static void setField(final Object target, final String name, final Object value) {
-
-        try {
-
-            final Field field = ReflectionTestUtil.findField(target.getClass(), name);
-            field.setAccessible(true);
-            field.set(target, value);
-
-        } catch (final ReflectiveOperationException e) {
-
-            throw new IllegalStateException(e);
-
-        }
 
     }
 

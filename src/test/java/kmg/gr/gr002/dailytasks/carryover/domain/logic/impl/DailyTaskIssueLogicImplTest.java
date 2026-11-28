@@ -158,20 +158,6 @@ public class DailyTaskIssueLogicImplTest {
         }
 
         /**
-         * 受け取った接続設定を返す<br>
-         *
-         * @since 0.1.0
-         *
-         * @return 受け取った接続設定
-         */
-        private GitHubSettingsDto getSettings() {
-
-            final GitHubSettingsDto result = this.settings;
-            return result;
-
-        }
-
-        /**
          * 接続設定を記録する<br>
          *
          * @since 0.1.0
@@ -183,6 +169,20 @@ public class DailyTaskIssueLogicImplTest {
         public void initialize(final GitHubSettingsDto gitHubSettings) {
 
             this.settings = gitHubSettings;
+
+        }
+
+        /**
+         * 受け取った接続設定を返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @return 受け取った接続設定
+         */
+        private GitHubSettingsDto getSettings() {
+
+            final GitHubSettingsDto result = this.settings;
+            return result;
 
         }
 

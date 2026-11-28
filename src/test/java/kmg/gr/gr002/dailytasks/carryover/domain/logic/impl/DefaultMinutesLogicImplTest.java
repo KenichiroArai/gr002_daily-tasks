@@ -63,20 +63,6 @@ public class DefaultMinutesLogicImplTest {
         }
 
         /**
-         * 受け取った設定ファイルのパスを返す<br>
-         *
-         * @since 0.1.0
-         *
-         * @return 受け取った設定ファイルのパス
-         */
-        private Path getConfigFile() {
-
-            final Path result = this.configFile;
-            return result;
-
-        }
-
-        /**
          * 設定ファイルのパスを記録し、設定した標準時間を返す<br>
          *
          * @since 0.1.0
@@ -102,6 +88,20 @@ public class DefaultMinutesLogicImplTest {
         public DefaultMinutesDto load() {
 
             final DefaultMinutesDto result = this.minutes;
+            return result;
+
+        }
+
+        /**
+         * 受け取った設定ファイルのパスを返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @return 受け取った設定ファイルのパス
+         */
+        private Path getConfigFile() {
+
+            final Path result = this.configFile;
             return result;
 
         }

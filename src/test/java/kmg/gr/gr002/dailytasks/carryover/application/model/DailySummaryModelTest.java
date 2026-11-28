@@ -38,7 +38,8 @@ public class DailySummaryModelTest {
     private static CarryoverItemModel createItem(final String name, final String originDate) {
 
         final CarryoverItemModel result
-            = new CarryoverItemModel(name, (originDate == null) ? null : LocalDate.parse(originDate), false, 15, MinutesSourceTypes.PARSED, "持ち越し", "raw");
+            = new CarryoverItemModel(name, (originDate == null) ? null : LocalDate.parse(originDate), false, 15,
+                MinutesSourceTypes.PARSED, "持ち越し", "raw");
         return result;
 
     }

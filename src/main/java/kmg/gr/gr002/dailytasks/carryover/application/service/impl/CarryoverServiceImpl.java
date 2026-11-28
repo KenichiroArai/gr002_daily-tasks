@@ -30,7 +30,8 @@ import kmg.gr.gr002.dailytasks.infrastructure.types.msg.Gr002LogMsgTypes;
  * 毎日タスク（持ち越し・先行）の収集・集計を統合するサービスの実装<br>
  * <p>
  * presentation 層のサービスを実装する。収集と集計は役割ごとのサービスへ分け、{@link #open()} のあと単位ごとに {@link #collect()} と {@link #aggregate()}
- * から決まった順で呼ぶ。集計では持ち越しの {@code summary.json} に加え、{@link AdvanceAggregateService} で先行の {@code advance/summary.json} も保存する。
+ * から決まった順で呼ぶ。集計では持ち越しの {@code summary.json} に加え、{@link AdvanceAggregateService} で先行の {@code advance/summary.json}
+ * も保存する。
  * </p>
  *
  * @author KenichiroArai
@@ -500,26 +501,6 @@ public class CarryoverServiceImpl implements CarryoverService {
     }
 
     /**
-     * 保存済み Issue から先行の画面用集計を作り直して保存する<br>
-     *
-     * @since 0.2.0
-     *
-     * @throws IOException
-     *                     書き込みに失敗した場合
-     */
-    private void saveAdvanceSummary() throws IOException {
-
-        final CarryoverSummaryModel advanceSummary = this.advanceAggregateService.rebuildFromStored();
-        this.advanceAggregateService.saveSummary(advanceSummary);
-
-        final String                  advanceMessage = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31019);
-        final List<DailySummaryModel> advanceDays    = advanceSummary.getDays();
-        final int                     advanceDayCount = advanceDays.size();
-        CarryoverServiceImpl.LOGGER.info(advanceMessage, advanceDayCount);
-
-    }
-
-    /**
      * 単位状態を初期化する<br>
      * <p>
      * 単位の番号、解析結果、分割済み参照、取得件数と補完・不明の件数を初期値に戻す。解析して保存した Issue の件数の累計は戻さない。
@@ -563,6 +544,27 @@ public class CarryoverServiceImpl implements CarryoverService {
 
         result = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG31007);
         return result;
+
+    }
+
+    /**
+     * 保存済み Issue から先行の画面用集計を作り直して保存する<br>
+     *
+     * @since 0.2.0
+     *
+     * @throws IOException
+     *                     書き込みに失敗した場合
+     */
+    private void saveAdvanceSummary() throws IOException {
+
+        final CarryoverSummaryModel advanceSummary = this.advanceAggregateService.rebuildFromStored();
+        this.advanceAggregateService.saveSummary(advanceSummary);
+
+        final String                  advanceMessage  = this.messageSource
+            .getLogMessage(Gr002LogMsgTypes.GR002_LOG31019);
+        final List<DailySummaryModel> advanceDays     = advanceSummary.getDays();
+        final int                     advanceDayCount = advanceDays.size();
+        CarryoverServiceImpl.LOGGER.info(advanceMessage, advanceDayCount);
 
     }
 

@@ -52,13 +52,13 @@ public class CarryoverBatchLogicImplTest {
     public void testInitialize_normalKeepFields() {
 
         /* 期待値の定義 */
-        final int expectedBatchCount = 1;
+        final int expectedBatchCount  = 1;
         final int expectedFirstNumber = 1;
 
         /* 準備 */
         final CarryoverBatchLogicImpl      testTarget = new CarryoverBatchLogicImpl();
-        final List<DailyTaskIssueRefModel> testRefs
-            = List.of(CarryoverBatchLogicImplTest.createRef(1, LocalDate.parse("2026-01-01")));
+        final List<DailyTaskIssueRefModel> testRefs   = List
+            .of(CarryoverBatchLogicImplTest.createRef(1, LocalDate.parse("2026-01-01")));
 
         /* テスト対象の実行 */
         testTarget.initialize(testRefs, 2);
@@ -75,6 +75,48 @@ public class CarryoverBatchLogicImplTest {
     }
 
     /**
+     * split メソッドのテスト - 正常系:単位の件数が 1 未満のときは全件を 1 単位にする場合
+     *
+     * @since 0.1.0
+     */
+    @Test
+    public void testSplit_normalBatchSizeLessThanOne() {
+
+        /* 期待値の定義 */
+        final int expectedBatchCount   = 1;
+        final int expectedSize         = 3;
+        final int expectedFirstNumber  = 1;
+        final int expectedSecondNumber = 2;
+        final int expectedThirdNumber  = 99;
+
+        /* 準備 */
+        final CarryoverBatchLogicImpl      testTarget = new CarryoverBatchLogicImpl();
+        final List<DailyTaskIssueRefModel> testRefs   = List.of(
+            CarryoverBatchLogicImplTest.createRef(2, LocalDate.parse("2026-01-02")),
+            CarryoverBatchLogicImplTest.createRef(99, null),
+            CarryoverBatchLogicImplTest.createRef(1, LocalDate.parse("2026-01-01")));
+        testTarget.initialize(testRefs, 0);
+
+        /* テスト対象の実行 */
+        final List<List<DailyTaskIssueRefModel>> testBatches = testTarget.split();
+
+        /* 検証の準備 */
+        final int actualBatchCount   = testBatches.size();
+        final int actualSize         = testBatches.get(0).size();
+        final int actualFirstNumber  = testBatches.get(0).get(0).getNumber();
+        final int actualSecondNumber = testBatches.get(0).get(1).getNumber();
+        final int actualThirdNumber  = testBatches.get(0).get(2).getNumber();
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedBatchCount, actualBatchCount, "単位の件数が一致しません");
+        Assertions.assertEquals(expectedSize, actualSize, "1 単位の件数が一致しません");
+        Assertions.assertEquals(expectedFirstNumber, actualFirstNumber, "日付順の先頭が一致しません");
+        Assertions.assertEquals(expectedSecondNumber, actualSecondNumber, "日付順の 2 件目が一致しません");
+        Assertions.assertEquals(expectedThirdNumber, actualThirdNumber, "日付なしが末尾に続く必要があります");
+
+    }
+
+    /**
      * split メソッドのテスト - 正常系:日付がある参照を単位の件数で分ける場合
      *
      * @since 0.1.0
@@ -83,9 +125,9 @@ public class CarryoverBatchLogicImplTest {
     public void testSplit_normalChunkByBatchSize() {
 
         /* 期待値の定義 */
-        final int expectedBatchCount = 2;
-        final int expectedFirstSize  = 2;
-        final int expectedSecondSize = 1;
+        final int expectedBatchCount   = 2;
+        final int expectedFirstSize    = 2;
+        final int expectedSecondSize   = 1;
         final int expectedFirstNumber  = 1;
         final int expectedSecondNumber = 2;
         final int expectedThirdNumber  = 3;
@@ -160,14 +202,13 @@ public class CarryoverBatchLogicImplTest {
     public void testSplit_normalUndatedLastBatch() {
 
         /* 期待値の定義 */
-        final int expectedBatchCount   = 2;
-        final int expectedDatedNumber  = 1;
+        final int expectedBatchCount    = 2;
+        final int expectedDatedNumber   = 1;
         final int expectedUndatedNumber = 99;
 
         /* 準備 */
         final CarryoverBatchLogicImpl      testTarget = new CarryoverBatchLogicImpl();
-        final List<DailyTaskIssueRefModel> testRefs   = List.of(
-            CarryoverBatchLogicImplTest.createRef(99, null),
+        final List<DailyTaskIssueRefModel> testRefs   = List.of(CarryoverBatchLogicImplTest.createRef(99, null),
             CarryoverBatchLogicImplTest.createRef(1, LocalDate.parse("2026-01-01")));
         testTarget.initialize(testRefs, 10);
 
@@ -183,48 +224,6 @@ public class CarryoverBatchLogicImplTest {
         Assertions.assertEquals(expectedBatchCount, actualBatchCount, "単位の件数が一致しません");
         Assertions.assertEquals(expectedDatedNumber, actualDatedNumber, "日付ありの番号が一致しません");
         Assertions.assertEquals(expectedUndatedNumber, actualUndatedNumber, "日付なしの番号が一致しません");
-
-    }
-
-    /**
-     * split メソッドのテスト - 正常系:単位の件数が 1 未満のときは全件を 1 単位にする場合
-     *
-     * @since 0.1.0
-     */
-    @Test
-    public void testSplit_normalBatchSizeLessThanOne() {
-
-        /* 期待値の定義 */
-        final int expectedBatchCount = 1;
-        final int expectedSize       = 3;
-        final int expectedFirstNumber  = 1;
-        final int expectedSecondNumber = 2;
-        final int expectedThirdNumber  = 99;
-
-        /* 準備 */
-        final CarryoverBatchLogicImpl      testTarget = new CarryoverBatchLogicImpl();
-        final List<DailyTaskIssueRefModel> testRefs   = List.of(
-            CarryoverBatchLogicImplTest.createRef(2, LocalDate.parse("2026-01-02")),
-            CarryoverBatchLogicImplTest.createRef(99, null),
-            CarryoverBatchLogicImplTest.createRef(1, LocalDate.parse("2026-01-01")));
-        testTarget.initialize(testRefs, 0);
-
-        /* テスト対象の実行 */
-        final List<List<DailyTaskIssueRefModel>> testBatches = testTarget.split();
-
-        /* 検証の準備 */
-        final int actualBatchCount   = testBatches.size();
-        final int actualSize         = testBatches.get(0).size();
-        final int actualFirstNumber  = testBatches.get(0).get(0).getNumber();
-        final int actualSecondNumber = testBatches.get(0).get(1).getNumber();
-        final int actualThirdNumber  = testBatches.get(0).get(2).getNumber();
-
-        /* 検証の実施 */
-        Assertions.assertEquals(expectedBatchCount, actualBatchCount, "単位の件数が一致しません");
-        Assertions.assertEquals(expectedSize, actualSize, "1 単位の件数が一致しません");
-        Assertions.assertEquals(expectedFirstNumber, actualFirstNumber, "日付順の先頭が一致しません");
-        Assertions.assertEquals(expectedSecondNumber, actualSecondNumber, "日付順の 2 件目が一致しません");
-        Assertions.assertEquals(expectedThirdNumber, actualThirdNumber, "日付なしが末尾に続く必要があります");
 
     }
 
@@ -271,8 +270,7 @@ public class CarryoverBatchLogicImplTest {
 
         /* 準備 */
         final CarryoverBatchLogicImpl      testTarget = new CarryoverBatchLogicImpl();
-        final List<DailyTaskIssueRefModel> testRefs
-            = List.of(CarryoverBatchLogicImplTest.createRef(7, null));
+        final List<DailyTaskIssueRefModel> testRefs   = List.of(CarryoverBatchLogicImplTest.createRef(7, null));
         testTarget.initialize(testRefs, 10);
 
         /* テスト対象の実行 */

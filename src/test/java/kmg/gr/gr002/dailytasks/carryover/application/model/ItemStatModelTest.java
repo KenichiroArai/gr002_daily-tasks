@@ -35,8 +35,8 @@ public class ItemStatModelTest {
      */
     private static CarryoverItemModel createItem(final boolean checked, final double minutes) {
 
-        final CarryoverItemModel result
-            = new CarryoverItemModel("国語", LocalDate.parse("2026-06-18"), checked, minutes, MinutesSourceTypes.PARSED, "持ち越し", "raw");
+        final CarryoverItemModel result = new CarryoverItemModel("国語", LocalDate.parse("2026-06-18"), checked, minutes,
+            MinutesSourceTypes.PARSED, "持ち越し", "raw");
         return result;
 
     }

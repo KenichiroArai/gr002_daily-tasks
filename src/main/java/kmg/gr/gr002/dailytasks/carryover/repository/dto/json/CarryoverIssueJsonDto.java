@@ -325,6 +325,20 @@ public class CarryoverIssueJsonDto {
     }
 
     /**
+     * 本文の「件数：N」の値を返す<br>
+     *
+     * @since 0.2.0
+     *
+     * @return 「件数：N」の値。記載がない場合は null
+     */
+    public Integer getAdvanceDeclaredCount() {
+
+        final Integer result = this.advanceDeclaredCount;
+        return result;
+
+    }
+
+    /**
      * 持ち越し項目の件数を返す<br>
      *
      * @since 0.1.0
@@ -348,20 +362,6 @@ public class CarryoverIssueJsonDto {
     public String getDate() {
 
         final String result = this.date;
-        return result;
-
-    }
-
-    /**
-     * 本文の「件数：N」の値を返す<br>
-     *
-     * @since 0.2.0
-     *
-     * @return 「件数：N」の値。記載がない場合は null
-     */
-    public Integer getAdvanceDeclaredCount() {
-
-        final Integer result = this.advanceDeclaredCount;
         return result;
 
     }

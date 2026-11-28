@@ -37,8 +37,9 @@ public class CarryoverIssueDtoTest {
 
         final CarryoverItemModel  item   = new CarryoverItemModel("音楽", LocalDate.parse("2026-08-18"), true, 11.5,
             MinutesSourceTypes.PARSED, "持ち越し", "- [x] 音楽2026/08/18（残り時間：11.5分）");
-        final CarryoverIssueModel result = new CarryoverIssueModel(371, "2026年10月06日のタスク", LocalDate.parse("2026-10-06"), "open",
-            Instant.parse("2026-10-06T14:23:08Z"), List.of("持ち越し"), 1, List.of(item));
+        final CarryoverIssueModel result = new CarryoverIssueModel(371, "2026年10月06日のタスク",
+            LocalDate.parse("2026-10-06"), "open", Instant.parse("2026-10-06T14:23:08Z"), List.of("持ち越し"), 1,
+            List.of(item));
         return result;
 
     }
@@ -55,10 +56,10 @@ public class CarryoverIssueDtoTest {
      */
     private static CarryoverIssueDto createIssueDto(final String minutesSource) {
 
-        final CarryoverItemDto  item   = new CarryoverItemDto("国語", LocalDate.parse("2026-06-18"), false, 15.0, minutesSource, "持ち越し",
-            "- [ ] 国語2026/06/18");
-        final CarryoverIssueDto result = new CarryoverIssueDto(371, "2026年10月06日のタスク", LocalDate.parse("2026-10-06"), "open",
-            Instant.parse("2026-10-06T14:23:08Z"), List.of("持ち越し"), 1, 1, 15.0, List.of(item));
+        final CarryoverItemDto  item   = new CarryoverItemDto("国語", LocalDate.parse("2026-06-18"), false, 15.0,
+            minutesSource, "持ち越し", "- [ ] 国語2026/06/18");
+        final CarryoverIssueDto result = new CarryoverIssueDto(371, "2026年10月06日のタスク", LocalDate.parse("2026-10-06"),
+            "open", Instant.parse("2026-10-06T14:23:08Z"), List.of("持ち越し"), 1, 1, 15.0, List.of(item));
         return result;
 
     }
@@ -72,10 +73,10 @@ public class CarryoverIssueDtoTest {
      */
     private static CarryoverIssueDto createTarget() {
 
-        final CarryoverItemDto  item   = new CarryoverItemDto("国語", LocalDate.parse("2026-06-18"), false, 8.5, "parsed", "持ち越し",
-            "- [ ] 国語2026/06/18（残り時間：8.5分）");
-        final CarryoverIssueDto result = new CarryoverIssueDto(371, "2026年10月06日のタスク", LocalDate.parse("2026-10-06"), "open",
-            Instant.parse("2026-10-06T14:23:08Z"), List.of("持ち越し"), 1, 1, 8.5, List.of(item));
+        final CarryoverItemDto  item   = new CarryoverItemDto("国語", LocalDate.parse("2026-06-18"), false, 8.5, "parsed",
+            "持ち越し", "- [ ] 国語2026/06/18（残り時間：8.5分）");
+        final CarryoverIssueDto result = new CarryoverIssueDto(371, "2026年10月06日のタスク", LocalDate.parse("2026-10-06"),
+            "open", Instant.parse("2026-10-06T14:23:08Z"), List.of("持ち越し"), 1, 1, 8.5, List.of(item));
         return result;
 
     }

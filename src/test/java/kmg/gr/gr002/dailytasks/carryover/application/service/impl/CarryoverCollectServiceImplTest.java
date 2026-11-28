@@ -70,20 +70,6 @@ public class CarryoverCollectServiceImplTest {
         private final CarryoverIssuesModel storedIssues = new CarryoverIssuesModel();
 
         /**
-         * 保存した Issue 番号を返す<br>
-         *
-         * @since 0.1.0
-         *
-         * @return 保存した Issue 番号
-         */
-        private List<Integer> getSavedNumbers() {
-
-            final List<Integer> result = this.savedNumbers;
-            return result;
-
-        }
-
-        /**
          * 保存先のディレクトリを受け取る<br>
          *
          * @since 0.1.0
@@ -158,6 +144,20 @@ public class CarryoverCollectServiceImplTest {
         public void saveSummary(final CarryoverSummaryModel summary) {
 
             // 収集サービスは集計を保存しない
+
+        }
+
+        /**
+         * 保存した Issue 番号を返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @return 保存した Issue 番号
+         */
+        private List<Integer> getSavedNumbers() {
+
+            final List<Integer> result = this.savedNumbers;
+            return result;
 
         }
 
@@ -378,8 +378,8 @@ public class CarryoverCollectServiceImplTest {
      *
      * @since 0.1.0
      */
-    private static final DailyTaskIssueModel ISSUE1
-        = new DailyTaskIssueModel(1, "2026年03月24日のタスク", "closed", Instant.parse("2026-03-01T00:00:00Z"), "## 負債\n- [ ] 国語2026/03/20");
+    private static final DailyTaskIssueModel ISSUE1 = new DailyTaskIssueModel(1, "2026年03月24日のタスク", "closed",
+        Instant.parse("2026-03-01T00:00:00Z"), "## 負債\n- [ ] 国語2026/03/20");
 
     /**
      * テスト用の Issue 本文の解析
@@ -408,12 +408,11 @@ public class CarryoverCollectServiceImplTest {
      */
     private static List<DailyTaskIssueModel> createIssues(final int count) {
 
-        final List<DailyTaskIssueModel> result
-            = IntStream.rangeClosed(1, count)
-                .mapToObj(number -> new DailyTaskIssueModel(number,
-                    String.format("2026年03月%02d日のタスク", Integer.valueOf(number)), "closed",
-                    Instant.parse("2026-03-01T00:00:00Z").plusSeconds(number), "## 負債\n- [ ] 英語2026/03/01（残り時間：10分）"))
-                .toList();
+        final List<DailyTaskIssueModel> result = IntStream.rangeClosed(1, count)
+            .mapToObj(number -> new DailyTaskIssueModel(number,
+                String.format("2026年03月%02d日のタスク", Integer.valueOf(number)), "closed",
+                Instant.parse("2026-03-01T00:00:00Z").plusSeconds(number), "## 負債\n- [ ] 英語2026/03/01（残り時間：10分）"))
+            .toList();
         return result;
 
     }
@@ -495,7 +494,7 @@ public class CarryoverCollectServiceImplTest {
             = new CarryoverCollectServiceImpl(null, null, null, null, DailyTasksMessageSourceTestUtil.create());
         ReflectionTestUtil.setField(target, "full", Boolean.valueOf(full));
         final int     issueNumber = remoteIssue.getNumber();
-        final Instant  updatedAt   = remoteIssue.getUpdatedAt();
+        final Instant updatedAt   = remoteIssue.getUpdatedAt();
         final boolean result      = ReflectionTestUtil.<Boolean>invoke(target, "needsUpdate", new Class<?>[] {
             CarryoverIssueModel.class, int.class, Instant.class, int.class
         }, stored, Integer.valueOf(issueNumber), updatedAt, Integer.valueOf(recentFrom));
@@ -651,8 +650,8 @@ public class CarryoverCollectServiceImplTest {
                 List.of(CarryoverCollectServiceImplTest.ISSUE1)), testDataLogic);
         testTarget.initialize(new CarryoverSourceModel(CarryoverCollectServiceImplTest.PROPERTIES), 10, false);
         ReflectionTestUtil.setField(testTarget, "recentFrom", Integer.valueOf(2));
-        final DailyTaskIssueRefModel testRef
-            = new DailyTaskIssueRefModel(1, "2026年03月24日のタスク", "closed", Instant.parse("2026-03-01T00:00:00Z"), LocalDate.parse("2026-03-24"));
+        final DailyTaskIssueRefModel testRef = new DailyTaskIssueRefModel(1, "2026年03月24日のタスク", "closed",
+            Instant.parse("2026-03-01T00:00:00Z"), LocalDate.parse("2026-03-24"));
 
         /* テスト対象の実行 */
         final int testResult = testTarget.collectBatch(List.of(testRef));
@@ -779,7 +778,8 @@ public class CarryoverCollectServiceImplTest {
         /* 準備 */
         final CarryoverIssueModel testStored = CarryoverCollectServiceImplTest
             .parse(CarryoverCollectServiceImplTest.ISSUE1);
-        final DailyTaskIssueModel testRemote = new DailyTaskIssueModel(1, "2026年03月24日のタスク", "closed", Instant.parse("2026-03-09T00:00:00Z"), "");
+        final DailyTaskIssueModel testRemote = new DailyTaskIssueModel(1, "2026年03月24日のタスク", "closed",
+            Instant.parse("2026-03-09T00:00:00Z"), "");
 
         /* テスト対象の実行 */
         final boolean testResult = CarryoverCollectServiceImplTest.needsUpdate(false, testStored, testRemote, 2);
@@ -845,8 +845,9 @@ public class CarryoverCollectServiceImplTest {
         final int expectedRecentFrom = 1;
 
         /* 準備 */
-        final List<DailyTaskIssueModel> testIssues = List.of(
-            new DailyTaskIssueModel(2, "2026年03月25日のタスク", "open", Instant.parse("2026-03-02T00:00:00Z"), ""), CarryoverCollectServiceImplTest.ISSUE1);
+        final List<DailyTaskIssueModel> testIssues
+            = List.of(new DailyTaskIssueModel(2, "2026年03月25日のタスク", "open", Instant.parse("2026-03-02T00:00:00Z"), ""),
+                CarryoverCollectServiceImplTest.ISSUE1);
 
         /* テスト対象の実行 */
         final int testResult = CarryoverCollectServiceImplTest.recentFrom(testIssues, 10);

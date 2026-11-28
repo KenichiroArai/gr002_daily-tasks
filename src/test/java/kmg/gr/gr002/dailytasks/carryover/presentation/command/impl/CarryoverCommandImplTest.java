@@ -13,10 +13,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.ObjectProvider;
 
 import kmg.core.infrastructure.type.KmgString;
-import kmg.gr.gr002.dailytasks.infrastructure.context.DailyTasksMessageSource;
-import kmg.gr.gr002.dailytasks.infrastructure.types.msg.Gr002GenMsgTypes;
 import kmg.gr.gr002.dailytasks.carryover.presentation.model.CarryoverPropertiesModel;
 import kmg.gr.gr002.dailytasks.carryover.presentation.service.CarryoverService;
+import kmg.gr.gr002.dailytasks.infrastructure.context.DailyTasksMessageSource;
+import kmg.gr.gr002.dailytasks.infrastructure.types.msg.Gr002GenMsgTypes;
 import kmg.gr.gr002.dailytasks.testutil.DailyTasksMessageSourceTestUtil;
 import kmg.gr.gr002.dailytasks.testutil.LogAssertions;
 import kmg.gr.gr002.dailytasks.testutil.LogCapture;
@@ -132,48 +132,6 @@ public class CarryoverCommandImplTest {
         }
 
         /**
-         * 呼び出し時のモードを返す<br>
-         *
-         * @since 0.1.0
-         *
-         * @return 呼び出し時のモード
-         */
-        private List<Boolean> getCalls() {
-
-            final List<Boolean> result = this.calls;
-            return result;
-
-        }
-
-        /**
-         * 呼び出し時の設定を返す<br>
-         *
-         * @since 0.1.0
-         *
-         * @return 呼び出し時の設定
-         */
-        private List<CarryoverPropertiesModel> getPropertiesList() {
-
-            final List<CarryoverPropertiesModel> result = this.propertiesList;
-            return result;
-
-        }
-
-        /**
-         * 呼び出しの順を返す<br>
-         *
-         * @since 0.1.0
-         *
-         * @return 呼び出しの順
-         */
-        private List<String> getSteps() {
-
-            final List<String> result = this.steps;
-            return result;
-
-        }
-
-        /**
          * 次の単位があるかを返す<br>
          *
          * @since 0.1.0
@@ -219,6 +177,48 @@ public class CarryoverCommandImplTest {
 
             this.steps.add("open");
             final boolean result = this.batchIndex < this.batchCount;
+            return result;
+
+        }
+
+        /**
+         * 呼び出し時のモードを返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @return 呼び出し時のモード
+         */
+        private List<Boolean> getCalls() {
+
+            final List<Boolean> result = this.calls;
+            return result;
+
+        }
+
+        /**
+         * 呼び出し時の設定を返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @return 呼び出し時の設定
+         */
+        private List<CarryoverPropertiesModel> getPropertiesList() {
+
+            final List<CarryoverPropertiesModel> result = this.propertiesList;
+            return result;
+
+        }
+
+        /**
+         * 呼び出しの順を返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @return 呼び出しの順
+         */
+        private List<String> getSteps() {
+
+            final List<String> result = this.steps;
             return result;
 
         }

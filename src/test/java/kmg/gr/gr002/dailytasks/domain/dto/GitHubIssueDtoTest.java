@@ -30,7 +30,8 @@ public class GitHubIssueDtoTest {
      */
     private static GitHubIssueDto createTarget() {
 
-        final GitHubIssueDto result = new GitHubIssueDto(371, "2026年10月06日のタスク", "open", Instant.parse("2026-10-06T14:23:08Z"), "本文");
+        final GitHubIssueDto result
+            = new GitHubIssueDto(371, "2026年10月06日のタスク", "open", Instant.parse("2026-10-06T14:23:08Z"), "本文");
         return result;
 
     }
@@ -172,7 +173,8 @@ public class GitHubIssueDtoTest {
         final String expectedBody = "本文";
 
         /* 準備 */
-        final GitHubIssueDto testDto = new GitHubIssueDto(371, "2026年10月06日のタスク", "open", Instant.parse("2026-10-06T14:23:08Z"), "本文");
+        final GitHubIssueDto testDto
+            = new GitHubIssueDto(371, "2026年10月06日のタスク", "open", Instant.parse("2026-10-06T14:23:08Z"), "本文");
 
         /* テスト対象の実行 */
         final DailyTaskIssueModel testResult = testDto.toDailyTaskIssueModel();
@@ -197,7 +199,8 @@ public class GitHubIssueDtoTest {
         final int expectedNumber = 371;
 
         /* 準備 */
-        final GitHubIssueDto testDto = new GitHubIssueDto(371, "2026年10月06日のタスク", "open", Instant.parse("2026-10-06T14:23:08Z"), "本文");
+        final GitHubIssueDto testDto
+            = new GitHubIssueDto(371, "2026年10月06日のタスク", "open", Instant.parse("2026-10-06T14:23:08Z"), "本文");
 
         /* テスト対象の実行 */
         final DailyTaskIssueModel testResult = testDto.toDailyTaskIssueModel();

@@ -143,8 +143,7 @@ public class GitHubApiClientTest {
      */
     private static boolean hasToken(final GitHubSettingsDto settings) throws Exception {
 
-        final GitHubApiClient target
-            = new GitHubApiClient(new JsonMapper(), DailyTasksMessageSourceTestUtil.create());
+        final GitHubApiClient target = new GitHubApiClient(new JsonMapper(), DailyTasksMessageSourceTestUtil.create());
         target.initialize(settings);
         final boolean result = ReflectionTestUtil.<Boolean>invoke(target, "hasToken", new Class<?>[] {});
         return result;
@@ -543,8 +542,7 @@ public class GitHubApiClientTest {
                 .build();
 
             /* テスト対象の実行 */
-            final HttpResponse<String> testResult
-                = GitHubApiClientTest.send(testTarget, testHttpClient, testRequest);
+            final HttpResponse<String> testResult = GitHubApiClientTest.send(testTarget, testHttpClient, testRequest);
 
             /* 検証の準備 */
             final String actualBody = testResult.body();

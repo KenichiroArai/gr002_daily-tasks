@@ -11,6 +11,7 @@ import java.util.stream.IntStream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import kmg.gr.gr002.dailytasks.advance.application.service.AdvanceAggregateService;
 import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverDataLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.logic.CarryoverParseLogic;
 import kmg.gr.gr002.dailytasks.carryover.application.logic.DailyTaskIssueLogic;
@@ -23,7 +24,6 @@ import kmg.gr.gr002.dailytasks.carryover.application.model.DailySummaryModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DailyTaskIssueRefModel;
 import kmg.gr.gr002.dailytasks.carryover.application.model.DefaultMinutesModel;
-import kmg.gr.gr002.dailytasks.advance.application.service.AdvanceAggregateService;
 import kmg.gr.gr002.dailytasks.carryover.application.service.CarryoverAggregateService;
 import kmg.gr.gr002.dailytasks.carryover.application.service.CarryoverCollectService;
 import kmg.gr.gr002.dailytasks.carryover.application.types.MinutesSourceTypes;
@@ -49,6 +49,128 @@ import kmg.gr.gr002.dailytasks.testutil.ReflectionTestUtil;
     "nls", "static-method"
 })
 public class CarryoverServiceImplTest {
+
+    /**
+     * 呼び出し順を記録する先行の集計サービス<br>
+     *
+     * @author KenichiroArai
+     *
+     * @since 0.2.0
+     *
+     * @version 0.2.0
+     */
+    private static final class RecordingAdvanceAggregateService implements AdvanceAggregateService {
+
+        /**
+         * 呼び出し順
+         *
+         * @since 0.2.0
+         */
+        private final List<String> steps;
+
+        /**
+         * コンストラクタ<br>
+         *
+         * @since 0.2.0
+         *
+         * @param steps
+         *              呼び出し順
+         */
+        private RecordingAdvanceAggregateService(final List<String> steps) {
+
+            this.steps = steps;
+
+        }
+
+        /**
+         * {@inheritDoc}
+         *
+         * @since 0.2.0
+         */
+        @Override
+        public CarryoverSummaryModel aggregate(final Collection<CarryoverIssueModel> issues) {
+
+            this.steps.add("advance.aggregate");
+            final CarryoverSummaryModel result = new CarryoverSummaryModel(0, List.of(), List.of());
+            return result;
+
+        }
+
+        /**
+         * {@inheritDoc}
+         *
+         * @since 0.2.0
+         */
+        @Override
+        public void append(final List<CarryoverIssueModel> issues) {
+
+            this.steps.add("advance.append");
+
+        }
+
+        /**
+         * {@inheritDoc}
+         *
+         * @since 0.2.0
+         */
+        @Override
+        public void clear() {
+
+            this.steps.add("advance.clear");
+
+        }
+
+        /**
+         * {@inheritDoc}
+         *
+         * @since 0.2.0
+         */
+        @Override
+        public void initialize(final Path dataDir) {
+
+            this.steps.add("advance.initialize");
+
+        }
+
+        /**
+         * {@inheritDoc}
+         *
+         * @since 0.2.0
+         */
+        @Override
+        public CarryoverSummaryModel rebuildFromStored() {
+
+            this.steps.add("advance.rebuildFromStored");
+            final CarryoverSummaryModel result = new CarryoverSummaryModel(0, List.of(), List.of());
+            return result;
+
+        }
+
+        /**
+         * {@inheritDoc}
+         *
+         * @since 0.2.0
+         */
+        @Override
+        public void saveCurrentSummary() {
+
+            this.steps.add("advance.saveCurrentSummary");
+
+        }
+
+        /**
+         * {@inheritDoc}
+         *
+         * @since 0.2.0
+         */
+        @Override
+        public void saveSummary(final CarryoverSummaryModel summary) {
+
+            this.steps.add("advance.saveSummary");
+
+        }
+
+    }
 
     /**
      * 呼び出し順を記録する集計サービス<br>
@@ -175,128 +297,6 @@ public class CarryoverServiceImplTest {
             this.steps.add("summary");
             final CarryoverSummaryModel result = new CarryoverSummaryModel(0, List.of(), List.of());
             return result;
-
-        }
-
-    }
-
-    /**
-     * 呼び出し順を記録する先行の集計サービス<br>
-     *
-     * @author KenichiroArai
-     *
-     * @since 0.2.0
-     *
-     * @version 0.2.0
-     */
-    private static final class RecordingAdvanceAggregateService implements AdvanceAggregateService {
-
-        /**
-         * 呼び出し順
-         *
-         * @since 0.2.0
-         */
-        private final List<String> steps;
-
-        /**
-         * コンストラクタ<br>
-         *
-         * @since 0.2.0
-         *
-         * @param steps
-         *              呼び出し順
-         */
-        private RecordingAdvanceAggregateService(final List<String> steps) {
-
-            this.steps = steps;
-
-        }
-
-        /**
-         * {@inheritDoc}
-         *
-         * @since 0.2.0
-         */
-        @Override
-        public CarryoverSummaryModel aggregate(final Collection<CarryoverIssueModel> issues) {
-
-            this.steps.add("advance.aggregate");
-            final CarryoverSummaryModel result = new CarryoverSummaryModel(0, List.of(), List.of());
-            return result;
-
-        }
-
-        /**
-         * {@inheritDoc}
-         *
-         * @since 0.2.0
-         */
-        @Override
-        public void append(final List<CarryoverIssueModel> issues) {
-
-            this.steps.add("advance.append");
-
-        }
-
-        /**
-         * {@inheritDoc}
-         *
-         * @since 0.2.0
-         */
-        @Override
-        public void clear() {
-
-            this.steps.add("advance.clear");
-
-        }
-
-        /**
-         * {@inheritDoc}
-         *
-         * @since 0.2.0
-         */
-        @Override
-        public void initialize(final Path dataDir) {
-
-            this.steps.add("advance.initialize");
-
-        }
-
-        /**
-         * {@inheritDoc}
-         *
-         * @since 0.2.0
-         */
-        @Override
-        public CarryoverSummaryModel rebuildFromStored() {
-
-            this.steps.add("advance.rebuildFromStored");
-            final CarryoverSummaryModel result = new CarryoverSummaryModel(0, List.of(), List.of());
-            return result;
-
-        }
-
-        /**
-         * {@inheritDoc}
-         *
-         * @since 0.2.0
-         */
-        @Override
-        public void saveCurrentSummary() {
-
-            this.steps.add("advance.saveCurrentSummary");
-
-        }
-
-        /**
-         * {@inheritDoc}
-         *
-         * @since 0.2.0
-         */
-        @Override
-        public void saveSummary(final CarryoverSummaryModel summary) {
-
-            this.steps.add("advance.saveSummary");
 
         }
 
@@ -525,62 +525,6 @@ public class CarryoverServiceImplTest {
         private final CarryoverIssuesModel storedIssues = new CarryoverIssuesModel();
 
         /**
-         * 受け取った保存先のディレクトリを返す<br>
-         *
-         * @since 0.1.0
-         *
-         * @return 受け取った保存先のディレクトリ
-         */
-        private Path getDataDir() {
-
-            final Path result = this.dataDir;
-            return result;
-
-        }
-
-        /**
-         * 読み込んだ Issue 番号を返す<br>
-         *
-         * @since 0.1.0
-         *
-         * @return 読み込んだ Issue 番号
-         */
-        private List<Integer> getLoadedNumbers() {
-
-            final List<Integer> result = this.loadedNumbers;
-            return result;
-
-        }
-
-        /**
-         * 保存した Issue 番号を返す<br>
-         *
-         * @since 0.1.0
-         *
-         * @return 保存した Issue 番号
-         */
-        private List<Integer> getSavedNumbers() {
-
-            final List<Integer> result = this.savedNumbers;
-            return result;
-
-        }
-
-        /**
-         * 保存した集計を返す<br>
-         *
-         * @since 0.1.0
-         *
-         * @return 保存した集計。保存していない場合は null
-         */
-        private CarryoverSummaryModel getSavedSummary() {
-
-            final CarryoverSummaryModel result = this.savedSummary;
-            return result;
-
-        }
-
-        /**
          * 保存先のディレクトリを記録する<br>
          *
          * @since 0.1.0
@@ -654,6 +598,62 @@ public class CarryoverServiceImplTest {
         public void saveSummary(final CarryoverSummaryModel summary) {
 
             this.savedSummary = summary;
+
+        }
+
+        /**
+         * 受け取った保存先のディレクトリを返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @return 受け取った保存先のディレクトリ
+         */
+        private Path getDataDir() {
+
+            final Path result = this.dataDir;
+            return result;
+
+        }
+
+        /**
+         * 読み込んだ Issue 番号を返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @return 読み込んだ Issue 番号
+         */
+        private List<Integer> getLoadedNumbers() {
+
+            final List<Integer> result = this.loadedNumbers;
+            return result;
+
+        }
+
+        /**
+         * 保存した Issue 番号を返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @return 保存した Issue 番号
+         */
+        private List<Integer> getSavedNumbers() {
+
+            final List<Integer> result = this.savedNumbers;
+            return result;
+
+        }
+
+        /**
+         * 保存した集計を返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @return 保存した集計。保存していない場合は null
+         */
+        private CarryoverSummaryModel getSavedSummary() {
+
+            final CarryoverSummaryModel result = this.savedSummary;
+            return result;
 
         }
 
@@ -823,6 +823,25 @@ public class CarryoverServiceImplTest {
         }
 
         /**
+         * 対象リポジトリとトークンを記録する<br>
+         *
+         * @since 0.1.0
+         *
+         * @param repository
+         *                   Issue を取得するリポジトリ（owner/name）
+         * @param token
+         *                   GitHub API のトークン
+         */
+        @Override
+        public void initialize(@SuppressWarnings("hiding") final String repository,
+            @SuppressWarnings("hiding") final String token) {
+
+            this.repository = repository;
+            this.token = token;
+
+        }
+
+        /**
          * 本文を取得した Issue 番号を返す<br>
          *
          * @since 0.1.0
@@ -864,25 +883,6 @@ public class CarryoverServiceImplTest {
 
         }
 
-        /**
-         * 対象リポジトリとトークンを記録する<br>
-         *
-         * @since 0.1.0
-         *
-         * @param repository
-         *                   Issue を取得するリポジトリ（owner/name）
-         * @param token
-         *                   GitHub API のトークン
-         */
-        @Override
-        public void initialize(@SuppressWarnings("hiding") final String repository,
-            @SuppressWarnings("hiding") final String token) {
-
-            this.repository = repository;
-            this.token = token;
-
-        }
-
     }
 
     /**
@@ -902,20 +902,6 @@ public class CarryoverServiceImplTest {
          * @since 0.1.0
          */
         private Path defaultMinutesFile;
-
-        /**
-         * 受け取った設定ファイルを返す<br>
-         *
-         * @since 0.1.0
-         *
-         * @return 受け取った設定ファイル
-         */
-        private Path getDefaultMinutesFile() {
-
-            final Path result = this.defaultMinutesFile;
-            return result;
-
-        }
 
         /**
          * 設定ファイルを記録する<br>
@@ -947,6 +933,20 @@ public class CarryoverServiceImplTest {
 
         }
 
+        /**
+         * 受け取った設定ファイルを返す<br>
+         *
+         * @since 0.1.0
+         *
+         * @return 受け取った設定ファイル
+         */
+        private Path getDefaultMinutesFile() {
+
+            final Path result = this.defaultMinutesFile;
+            return result;
+
+        }
+
     }
 
     /**
@@ -961,16 +961,16 @@ public class CarryoverServiceImplTest {
      *
      * @since 0.1.0
      */
-    private static final DailyTaskIssueModel ISSUE1
-        = new DailyTaskIssueModel(1, "2026年03月24日のタスク", "closed", Instant.parse("2026-03-01T00:00:00Z"), "## 負債\n- [ ] 国語2026/03/20");
+    private static final DailyTaskIssueModel ISSUE1 = new DailyTaskIssueModel(1, "2026年03月24日のタスク", "closed",
+        Instant.parse("2026-03-01T00:00:00Z"), "## 負債\n- [ ] 国語2026/03/20");
 
     /**
      * テスト用の Issue #2（時間表記あり、更新日時 u2）
      *
      * @since 0.1.0
      */
-    private static final DailyTaskIssueModel ISSUE2
-        = new DailyTaskIssueModel(2, "2026年03月25日のタスク", "open", Instant.parse("2026-03-02T00:00:00Z"), "## 負債\n- [ ] 英語2026/03/20（残り時間：10分）");
+    private static final DailyTaskIssueModel ISSUE2 = new DailyTaskIssueModel(2, "2026年03月25日のタスク", "open",
+        Instant.parse("2026-03-02T00:00:00Z"), "## 負債\n- [ ] 英語2026/03/20（残り時間：10分）");
 
     /**
      * テスト用の Issue 本文の解析
@@ -1028,12 +1028,11 @@ public class CarryoverServiceImplTest {
      */
     private static List<DailyTaskIssueModel> createIssues(final int count) {
 
-        final List<DailyTaskIssueModel> result
-            = IntStream.rangeClosed(1, count)
-                .mapToObj(number -> new DailyTaskIssueModel(number,
-                    String.format("2026年03月%02d日のタスク", Integer.valueOf(number)), "closed",
-                    Instant.parse("2026-03-01T00:00:00Z").plusSeconds(number), "## 負債\n- [ ] 英語2026/03/01（残り時間：10分）"))
-                .toList();
+        final List<DailyTaskIssueModel> result = IntStream.rangeClosed(1, count)
+            .mapToObj(number -> new DailyTaskIssueModel(number,
+                String.format("2026年03月%02d日のタスク", Integer.valueOf(number)), "closed",
+                Instant.parse("2026-03-01T00:00:00Z").plusSeconds(number), "## 負債\n- [ ] 英語2026/03/01（残り時間：10分）"))
+            .toList();
         return result;
 
     }
@@ -1073,7 +1072,7 @@ public class CarryoverServiceImplTest {
             CarryoverServiceImplTest.PARSE_LOGIC, issueLogic, minutesLogic, DailyTasksMessageSourceTestUtil.create());
         final CarryoverAggregateServiceImpl aggregateService = new CarryoverAggregateServiceImpl(
             new CarryoverAggregateLogicImpl(DailyTasksMessageSourceTestUtil.create()), dataLogic);
-        final CarryoverServiceImpl result = new CarryoverServiceImpl(
+        final CarryoverServiceImpl          result           = new CarryoverServiceImpl(
             new CarryoverServiceImplTest.RecordingAdvanceAggregateService(new ArrayList<>()), aggregateService,
             new CarryoverBatchLogicImpl(), collectService, DailyTasksMessageSourceTestUtil.create());
         return result;
@@ -1129,8 +1128,7 @@ public class CarryoverServiceImplTest {
         final int      expectedDays  = 12;
         final String[] expectedMsgs  = {
             "[Gr002Log31004] 参照を取得しました: 参照=10 件、バッチ=1 件", "[Gr002Log31005] バッチを開始します: 1/1、対象=10 件",
-            "[Gr002Log31006] バッチが完了しました: 1/1、再解析=10 件、再利用=0 件",
-            "[Gr002Log31019] 先行の集計を保存しました: 集計=0 日",
+            "[Gr002Log31006] バッチが完了しました: 1/1、再解析=10 件、再利用=0 件", "[Gr002Log31019] 先行の集計を保存しました: 集計=0 日",
             "[Gr002Log31000] モード=[Gr002Log31008] 差分、取得=10 件、解析・保存=10 件、集計=12 日",
             "[Gr002Log31001] 標準時間で補完した行=0 件、標準時間が未登録の行=0 件",
         };
@@ -1182,8 +1180,7 @@ public class CarryoverServiceImplTest {
         final int      expectedCount = 2;
         final String[] expectedMsgs  = {
             "[Gr002Log31004] 参照を取得しました: 参照=2 件、バッチ=1 件", "[Gr002Log31005] バッチを開始します: 1/1、対象=2 件",
-            "[Gr002Log31006] バッチが完了しました: 1/1、再解析=2 件、再利用=0 件",
-            "[Gr002Log31019] 先行の集計を保存しました: 集計=0 日",
+            "[Gr002Log31006] バッチが完了しました: 1/1、再解析=2 件、再利用=0 件", "[Gr002Log31019] 先行の集計を保存しました: 集計=0 日",
             "[Gr002Log31000] モード=[Gr002Log31008] 差分、取得=2 件、解析・保存=2 件、集計=2 日",
             "[Gr002Log31001] 標準時間で補完した行=1 件、標準時間が未登録の行=0 件",
         };
@@ -1233,8 +1230,7 @@ public class CarryoverServiceImplTest {
         final int           expectedDays         = 2;
         final String[]      expectedMsgs         = {
             "[Gr002Log31004] 参照を取得しました: 参照=2 件、バッチ=1 件", "[Gr002Log31005] バッチを開始します: 1/1、対象=2 件",
-            "[Gr002Log31006] バッチが完了しました: 1/1、再解析=2 件、再利用=0 件",
-            "[Gr002Log31019] 先行の集計を保存しました: 集計=0 日",
+            "[Gr002Log31006] バッチが完了しました: 1/1、再解析=2 件、再利用=0 件", "[Gr002Log31019] 先行の集計を保存しました: 集計=0 日",
             "[Gr002Log31002] モード=[Gr002Log31007] 全件、取得=2 件、解析・保存=2 件、集計=2 日",
             "[Gr002Log31003] 標準時間で補完した行=1 件、標準時間が未登録の行=0 件",
         };
@@ -1285,9 +1281,9 @@ public class CarryoverServiceImplTest {
     public void testCollect_normalOrder() throws IOException {
 
         /* 期待値の定義 */
-        final List<String> expectedSteps = List.of("collect.initialize", "aggregate.initialize", "advance.initialize",
-            "fetchRefs", "collectBatch", "rebuildFromStored", "saveSummary", "advance.rebuildFromStored",
-            "advance.saveSummary");
+        final List<String> expectedSteps
+            = List.of("collect.initialize", "aggregate.initialize", "advance.initialize", "fetchRefs", "collectBatch",
+                "rebuildFromStored", "saveSummary", "advance.rebuildFromStored", "advance.saveSummary");
 
         /* 準備 */
         final List<String>         testSteps  = new ArrayList<>();
@@ -1410,11 +1406,9 @@ public class CarryoverServiceImplTest {
         final String[]      expectedMsgs         = {
             "[Gr002Log31004] 参照を取得しました: 参照=10 件、バッチ=2 件", "[Gr002Log31005] バッチを開始します: 1/2、対象=6 件",
             "[Gr002Log31006] バッチが完了しました: 1/2、再解析=6 件、再利用=0 件", "[Gr002Log31005] バッチを開始します: 2/2、対象=4 件",
-            "[Gr002Log31006] バッチが完了しました: 2/2、再解析=4 件、再利用=0 件",
-            "[Gr002Log31019] 先行の集計を保存しました: 集計=0 日",
+            "[Gr002Log31006] バッチが完了しました: 2/2、再解析=4 件、再利用=0 件", "[Gr002Log31019] 先行の集計を保存しました: 集計=0 日",
             "[Gr002Log31000] モード=[Gr002Log31008] 差分、取得=10 件、解析・保存=10 件、集計=12 日",
-            "[Gr002Log31001] 標準時間で補完した行=0 件、標準時間が未登録の行=0 件",
-            "[Gr002Log31019] 先行の集計を保存しました: 集計=0 日",
+            "[Gr002Log31001] 標準時間で補完した行=0 件、標準時間が未登録の行=0 件", "[Gr002Log31019] 先行の集計を保存しました: 集計=0 日",
             "[Gr002Log31000] モード=[Gr002Log31008] 差分、取得=10 件、解析・保存=10 件、集計=12 日",
             "[Gr002Log31001] 標準時間で補完した行=0 件、標準時間が未登録の行=0 件",
         };
@@ -1647,9 +1641,9 @@ public class CarryoverServiceImplTest {
     public void testOpen_normalReopenAfterFinished() throws IOException {
 
         /* 期待値の定義 */
-        final List<String> expectedSteps = List.of("collect.initialize", "aggregate.initialize", "advance.initialize",
-            "fetchRefs", "collectBatch", "rebuildFromStored", "saveSummary", "advance.rebuildFromStored",
-            "advance.saveSummary", "fetchRefs");
+        final List<String> expectedSteps
+            = List.of("collect.initialize", "aggregate.initialize", "advance.initialize", "fetchRefs", "collectBatch",
+                "rebuildFromStored", "saveSummary", "advance.rebuildFromStored", "advance.saveSummary", "fetchRefs");
 
         /* 準備 */
         final List<String>         testSteps  = new ArrayList<>();

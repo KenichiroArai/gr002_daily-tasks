@@ -198,34 +198,6 @@ public class AdvanceAggregateServiceImplTest {
         }
 
         /**
-         * 最後に保存された集計を返す<br>
-         *
-         * @since 0.2.0
-         *
-         * @return 最後に保存された集計
-         */
-        private CarryoverSummaryModel getSavedSummary() {
-
-            final CarryoverSummaryModel result = this.savedSummary;
-            return result;
-
-        }
-
-        /**
-         * 最後に受け取った出力先を返す<br>
-         *
-         * @since 0.2.0
-         *
-         * @return 最後に受け取った出力先
-         */
-        private Path getDataDir() {
-
-            final Path result = this.dataDir;
-            return result;
-
-        }
-
-        /**
          * 呼び出しを記録する<br>
          *
          * @since 0.2.0
@@ -254,6 +226,34 @@ public class AdvanceAggregateServiceImplTest {
 
             this.savedSummary = summary;
             this.steps.add("advanceData.saveSummary");
+
+        }
+
+        /**
+         * 最後に受け取った出力先を返す<br>
+         *
+         * @since 0.2.0
+         *
+         * @return 最後に受け取った出力先
+         */
+        private Path getDataDir() {
+
+            final Path result = this.dataDir;
+            return result;
+
+        }
+
+        /**
+         * 最後に保存された集計を返す<br>
+         *
+         * @since 0.2.0
+         *
+         * @return 最後に保存された集計
+         */
+        private CarryoverSummaryModel getSavedSummary() {
+
+            final CarryoverSummaryModel result = this.savedSummary;
+            return result;
 
         }
 
@@ -290,9 +290,9 @@ public class AdvanceAggregateServiceImplTest {
          * @since 0.2.0
          *
          * @param steps
-         *                  呼び出しの順
+         *                    呼び出しの順
          * @param issuesModel
-         *                  loadIssues の返却値
+         *                    loadIssues の返却値
          */
         private RecordingCarryoverDataLogic(final List<String> steps, final CarryoverIssuesModel issuesModel) {
 
@@ -398,12 +398,12 @@ public class AdvanceAggregateServiceImplTest {
         final int expectedLatestIssue = 100;
 
         /* 準備 */
-        final List<String>                  steps      = new ArrayList<>();
+        final List<String>                   steps          = new ArrayList<>();
         final RecordingAdvanceAggregateLogic aggregateLogic = new RecordingAdvanceAggregateLogic(steps);
         final RecordingAdvanceDataLogic      dataLogic      = new RecordingAdvanceDataLogic(steps);
-        final RecordingCarryoverDataLogic    carryoverData   = new RecordingCarryoverDataLogic(steps,
+        final RecordingCarryoverDataLogic    carryoverData  = new RecordingCarryoverDataLogic(steps,
             new CarryoverIssuesModel());
-        final AdvanceAggregateServiceImpl  testTarget     = new AdvanceAggregateServiceImpl(aggregateLogic, dataLogic,
+        final AdvanceAggregateServiceImpl    testTarget     = new AdvanceAggregateServiceImpl(aggregateLogic, dataLogic,
             carryoverData);
 
         /* テスト対象の実行 */
@@ -430,18 +430,18 @@ public class AdvanceAggregateServiceImplTest {
         final int expectedAddCount = 2;
 
         /* 準備 */
-        final List<String>                  steps      = new ArrayList<>();
+        final List<String>                   steps          = new ArrayList<>();
         final RecordingAdvanceAggregateLogic aggregateLogic = new RecordingAdvanceAggregateLogic(steps);
         final RecordingAdvanceDataLogic      dataLogic      = new RecordingAdvanceDataLogic(steps);
-        final RecordingCarryoverDataLogic    carryoverData   = new RecordingCarryoverDataLogic(steps,
+        final RecordingCarryoverDataLogic    carryoverData  = new RecordingCarryoverDataLogic(steps,
             new CarryoverIssuesModel());
-        final AdvanceAggregateServiceImpl  testTarget     = new AdvanceAggregateServiceImpl(aggregateLogic, dataLogic,
+        final AdvanceAggregateServiceImpl    testTarget     = new AdvanceAggregateServiceImpl(aggregateLogic, dataLogic,
             carryoverData);
-        final List<CarryoverIssueModel>    testIssues     = List.of(
-            new CarryoverIssueModel(174, "title", LocalDate.parse("2026-03-23"), "closed", Instant.parse("2026-10-06T00:00:00Z"),
-                List.of(), null, List.of()),
-            new CarryoverIssueModel(175, "title", LocalDate.parse("2026-03-24"), "closed", Instant.parse("2026-10-06T00:00:00Z"),
-                List.of(TargetSectionTypes.ADVANCE.getSection()), null,
+        final List<CarryoverIssueModel>      testIssues     = List.of(
+            new CarryoverIssueModel(174, "title", LocalDate.parse("2026-03-23"), "closed",
+                Instant.parse("2026-10-06T00:00:00Z"), List.of(), null, List.of()),
+            new CarryoverIssueModel(175, "title", LocalDate.parse("2026-03-24"), "closed",
+                Instant.parse("2026-10-06T00:00:00Z"), List.of(TargetSectionTypes.ADVANCE.getSection()), null,
                 List.of(AdvanceAggregateServiceImplTest.createAdvanceItem("国語"))));
 
         /* テスト対象の実行 */
@@ -470,18 +470,18 @@ public class AdvanceAggregateServiceImplTest {
         final int expectedLatestIssue = 0;
 
         /* 準備 */
-        final List<String>               steps           = new ArrayList<>();
-        final AdvanceAggregateLogicImpl  aggregateLogic  = new AdvanceAggregateLogicImpl(
+        final List<String>                steps          = new ArrayList<>();
+        final AdvanceAggregateLogicImpl   aggregateLogic = new AdvanceAggregateLogicImpl(
             DailyTasksMessageSourceTestUtil.create());
-        final RecordingAdvanceDataLogic    dataLogic       = new RecordingAdvanceDataLogic(steps);
-        final RecordingCarryoverDataLogic carryoverData    = new RecordingCarryoverDataLogic(steps,
+        final RecordingAdvanceDataLogic   dataLogic      = new RecordingAdvanceDataLogic(steps);
+        final RecordingCarryoverDataLogic carryoverData  = new RecordingCarryoverDataLogic(steps,
             new CarryoverIssuesModel());
-        final AdvanceAggregateServiceImpl testTarget      = new AdvanceAggregateServiceImpl(aggregateLogic, dataLogic,
+        final AdvanceAggregateServiceImpl testTarget     = new AdvanceAggregateServiceImpl(aggregateLogic, dataLogic,
             carryoverData);
-        final List<CarryoverIssueModel>   testIssues      = List.of(new CarryoverIssueModel(175, "title",
-            LocalDate.parse("2026-03-24"), "closed", Instant.parse("2026-10-06T00:00:00Z"),
-            List.of(TargetSectionTypes.ADVANCE.getSection()), null, Integer.valueOf(1),
-            List.of(AdvanceAggregateServiceImplTest.createAdvanceItem("国語"))));
+        final List<CarryoverIssueModel>   testIssues     = List
+            .of(new CarryoverIssueModel(175, "title", LocalDate.parse("2026-03-24"), "closed",
+                Instant.parse("2026-10-06T00:00:00Z"), List.of(TargetSectionTypes.ADVANCE.getSection()), null,
+                1, List.of(AdvanceAggregateServiceImplTest.createAdvanceItem("国語"))));
 
         /* テスト対象の実行 */
         testTarget.append(testIssues);
@@ -511,12 +511,12 @@ public class AdvanceAggregateServiceImplTest {
         final Path expectedDataDir = Path.of("docs", "data");
 
         /* 準備 */
-        final List<String>                  steps      = new ArrayList<>();
+        final List<String>                   steps          = new ArrayList<>();
         final RecordingAdvanceAggregateLogic aggregateLogic = new RecordingAdvanceAggregateLogic(steps);
         final RecordingAdvanceDataLogic      dataLogic      = new RecordingAdvanceDataLogic(steps);
-        final RecordingCarryoverDataLogic    carryoverData   = new RecordingCarryoverDataLogic(steps,
+        final RecordingCarryoverDataLogic    carryoverData  = new RecordingCarryoverDataLogic(steps,
             new CarryoverIssuesModel());
-        final AdvanceAggregateServiceImpl  testTarget     = new AdvanceAggregateServiceImpl(aggregateLogic, dataLogic,
+        final AdvanceAggregateServiceImpl    testTarget     = new AdvanceAggregateServiceImpl(aggregateLogic, dataLogic,
             carryoverData);
 
         /* テスト対象の実行 */
@@ -527,8 +527,7 @@ public class AdvanceAggregateServiceImplTest {
 
         /* 検証の実施 */
         Assertions.assertEquals(expectedDataDir, actualDataDir, "出力先のディレクトリが一致しません");
-        Assertions.assertEquals(List.of("advanceData.initialize", "carryoverData.initialize"), steps,
-            "呼び出しの順が一致しません");
+        Assertions.assertEquals(List.of("advanceData.initialize", "carryoverData.initialize"), steps, "呼び出しの順が一致しません");
 
     }
 
@@ -547,14 +546,15 @@ public class AdvanceAggregateServiceImplTest {
         final int expectedLatestIssue = 175;
 
         /* 準備 */
-        final List<String>            steps       = new ArrayList<>();
+        final List<String>              steps          = new ArrayList<>();
         final AdvanceAggregateLogicImpl aggregateLogic = new AdvanceAggregateLogicImpl(
             DailyTasksMessageSourceTestUtil.create());
-        final RecordingAdvanceDataLogic dataLogic       = new RecordingAdvanceDataLogic(steps);
-        final CarryoverIssuesModel      issuesModel     = new CarryoverIssuesModel();
-        issuesModel.put(175, new CarryoverIssueModel(175, "title", LocalDate.parse("2026-03-24"), "closed",
-            Instant.parse("2026-10-06T00:00:00Z"), List.of(TargetSectionTypes.ADVANCE.getSection()), null,
-            Integer.valueOf(1), List.of(AdvanceAggregateServiceImplTest.createAdvanceItem("国語"))));
+        final RecordingAdvanceDataLogic dataLogic      = new RecordingAdvanceDataLogic(steps);
+        final CarryoverIssuesModel      issuesModel    = new CarryoverIssuesModel();
+        issuesModel.put(175,
+            new CarryoverIssueModel(175, "title", LocalDate.parse("2026-03-24"), "closed",
+                Instant.parse("2026-10-06T00:00:00Z"), List.of(TargetSectionTypes.ADVANCE.getSection()), null,
+                1, List.of(AdvanceAggregateServiceImplTest.createAdvanceItem("国語"))));
         final RecordingCarryoverDataLogic carryoverData = new RecordingCarryoverDataLogic(steps, issuesModel);
         final AdvanceAggregateServiceImpl testTarget    = new AdvanceAggregateServiceImpl(aggregateLogic, dataLogic,
             carryoverData);
@@ -586,12 +586,12 @@ public class AdvanceAggregateServiceImplTest {
         final int expectedLatestIssue = 200;
 
         /* 準備 */
-        final List<String>                  steps      = new ArrayList<>();
+        final List<String>                   steps          = new ArrayList<>();
         final RecordingAdvanceAggregateLogic aggregateLogic = new RecordingAdvanceAggregateLogic(steps);
         final RecordingAdvanceDataLogic      dataLogic      = new RecordingAdvanceDataLogic(steps);
-        final RecordingCarryoverDataLogic    carryoverData   = new RecordingCarryoverDataLogic(steps,
+        final RecordingCarryoverDataLogic    carryoverData  = new RecordingCarryoverDataLogic(steps,
             new CarryoverIssuesModel());
-        final AdvanceAggregateServiceImpl  testTarget     = new AdvanceAggregateServiceImpl(aggregateLogic, dataLogic,
+        final AdvanceAggregateServiceImpl    testTarget     = new AdvanceAggregateServiceImpl(aggregateLogic, dataLogic,
             carryoverData);
 
         /* テスト対象の実行 */
@@ -622,14 +622,14 @@ public class AdvanceAggregateServiceImplTest {
         final int expectedLatestIssue = 371;
 
         /* 準備 */
-        final List<String>                  steps      = new ArrayList<>();
+        final List<String>                   steps          = new ArrayList<>();
         final RecordingAdvanceAggregateLogic aggregateLogic = new RecordingAdvanceAggregateLogic(steps);
         final RecordingAdvanceDataLogic      dataLogic      = new RecordingAdvanceDataLogic(steps);
-        final RecordingCarryoverDataLogic    carryoverData   = new RecordingCarryoverDataLogic(steps,
+        final RecordingCarryoverDataLogic    carryoverData  = new RecordingCarryoverDataLogic(steps,
             new CarryoverIssuesModel());
-        final AdvanceAggregateServiceImpl  testTarget     = new AdvanceAggregateServiceImpl(aggregateLogic, dataLogic,
+        final AdvanceAggregateServiceImpl    testTarget     = new AdvanceAggregateServiceImpl(aggregateLogic, dataLogic,
             carryoverData);
-        final CarryoverSummaryModel       testSummary    = new CarryoverSummaryModel(371, List.of("国語"), List.of());
+        final CarryoverSummaryModel          testSummary    = new CarryoverSummaryModel(371, List.of("国語"), List.of());
 
         /* テスト対象の実行 */
         testTarget.saveSummary(testSummary);

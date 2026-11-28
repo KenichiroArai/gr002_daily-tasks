@@ -83,36 +83,6 @@ public class CarryoverIssueModel {
     private final Instant updatedAt;
 
     /**
-     * コンストラクタ（先行の件数なし）<br>
-     *
-     * @since 0.1.0
-     *
-     * @param number
-     *                      Issue 番号
-     * @param title
-     *                      Issue タイトル
-     * @param date
-     *                      その日の日付。タイトルから取得できない場合は null
-     * @param state
-     *                      Issue の状態（open / closed）
-     * @param updatedAt
-     *                      Issue の更新日時。欠落時は null
-     * @param sections
-     *                      本文にあった対象セクション名
-     * @param declaredCount
-     *                      本文の「残：N」の値。記載がない場合は null
-     * @param items
-     *                      持ち越し・先行の項目
-     */
-    public CarryoverIssueModel(final int number, final String title, final LocalDate date, final String state,
-        final Instant updatedAt, final List<String> sections, final Integer declaredCount,
-        final List<CarryoverItemModel> items) {
-
-        this(number, title, date, state, updatedAt, sections, declaredCount, null, items);
-
-    }
-
-    /**
      * コンストラクタ<br>
      *
      * @since 0.2.0
@@ -149,6 +119,36 @@ public class CarryoverIssueModel {
         this.declaredCount = declaredCount;
         this.advanceDeclaredCount = advanceDeclaredCount;
         this.items = List.copyOf(items);
+
+    }
+
+    /**
+     * コンストラクタ（先行の件数なし）<br>
+     *
+     * @since 0.1.0
+     *
+     * @param number
+     *                      Issue 番号
+     * @param title
+     *                      Issue タイトル
+     * @param date
+     *                      その日の日付。タイトルから取得できない場合は null
+     * @param state
+     *                      Issue の状態（open / closed）
+     * @param updatedAt
+     *                      Issue の更新日時。欠落時は null
+     * @param sections
+     *                      本文にあった対象セクション名
+     * @param declaredCount
+     *                      本文の「残：N」の値。記載がない場合は null
+     * @param items
+     *                      持ち越し・先行の項目
+     */
+    public CarryoverIssueModel(final int number, final String title, final LocalDate date, final String state,
+        final Instant updatedAt, final List<String> sections, final Integer declaredCount,
+        final List<CarryoverItemModel> items) {
+
+        this(number, title, date, state, updatedAt, sections, declaredCount, null, items);
 
     }
 

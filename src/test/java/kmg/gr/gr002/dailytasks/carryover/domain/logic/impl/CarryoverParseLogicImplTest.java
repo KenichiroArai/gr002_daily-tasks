@@ -74,7 +74,8 @@ public class CarryoverParseLogicImplTest {
      */
     private static DailyTaskIssueModel createIssue(final String title, final String body) {
 
-        final DailyTaskIssueModel result = new DailyTaskIssueModel(371, title, "open", Instant.parse("2026-10-06T14:23:08Z"), body);
+        final DailyTaskIssueModel result
+            = new DailyTaskIssueModel(371, title, "open", Instant.parse("2026-10-06T14:23:08Z"), body);
         return result;
 
     }
@@ -229,7 +230,7 @@ public class CarryoverParseLogicImplTest {
     private static LocalDate parseTitleDate(final String title) {
 
         final CarryoverParseLogicImpl target = new CarryoverParseLogicImpl(DailyTasksMessageSourceTestUtil.create());
-        final LocalDate                  result = target.parseTitleDate(title);
+        final LocalDate               result = target.parseTitleDate(title);
         return result;
 
     }
@@ -526,6 +527,53 @@ public class CarryoverParseLogicImplTest {
     }
 
     /**
+     * parse メソッドのテスト - 正常系:先行の件数行と（N分）の項目を解析する場合
+     *
+     * @since 0.2.0
+     */
+    @Test
+    public void testParse_normalAdvanceDeclaredCount() {
+
+        /* 期待値の定義 */
+        final Integer      expectedAdvanceDeclaredCount = 2;
+        final int          expectedCount                = 2;
+        final List<String> expectedSections             = List.of("先行");
+        final String[]     expectedMsgs                 = {};
+
+        /* 準備 */
+        final String                  testBody   = String.join("\n", "## 先行", "件数：2", "- [ ] 国語2026/06/18（20分）",
+            "- [ ] 音楽2026/06/18（15分）");
+        final CarryoverParseLogicImpl testTarget = CarryoverParseLogicImplTest.createTarget();
+        final DailyTaskIssueModel     testIssue  = CarryoverParseLogicImplTest.createIssue("2026年10月06日のタスク", testBody);
+
+        /* テスト対象の実行 */
+        final CarryoverIssueModel testResult;
+
+        try (LogCapture testLog = new LogCapture(CarryoverParseLogicImpl.class)) {
+
+            testResult = testTarget.parse(testIssue);
+
+            /* 検証の準備 */
+            final String[]                 actualMsgs                 = testLog.getMessages();
+            final Integer                  actualAdvanceDeclaredCount = testResult.getAdvanceDeclaredCount();
+            final int                      actualCount                = testResult.getCount();
+            final List<String>             actualSections             = testResult.getSections();
+            final List<CarryoverItemModel> items                      = testResult.getItems();
+            final CarryoverItemModel       firstItem                  = items.get(0);
+            final double                   actualFirstMinutes         = firstItem.getMinutes();
+
+            /* 検証の実施 */
+            Assertions.assertEquals(expectedAdvanceDeclaredCount, actualAdvanceDeclaredCount, "件数が一致しません");
+            Assertions.assertEquals(expectedCount, actualCount, "件数が一致しません");
+            Assertions.assertEquals(expectedSections, actualSections, "対象セクション名が一致しません");
+            Assertions.assertEquals(20.0, actualFirstMinutes, "残り時間が一致しません");
+            LogAssertions.assertMessages(expectedMsgs, actualMsgs);
+
+        }
+
+    }
+
+    /**
      * parse メソッドのテスト - 正常系:持ち越しセクションの項目を解析する場合
      *
      * @since 0.1.0
@@ -557,7 +605,7 @@ public class CarryoverParseLogicImplTest {
 
             /* 検証の準備 */
             final String[]                 actualMsgs          = testLog.getMessages();
-            final LocalDate                   actualDate          = testResult.getDate();
+            final LocalDate                actualDate          = testResult.getDate();
             final List<String>             actualSections      = testResult.getSections();
             final Integer                  actualDeclaredCount = testResult.getDeclaredCount();
             final int                      actualCount         = testResult.getCount();
@@ -573,136 +621,6 @@ public class CarryoverParseLogicImplTest {
             Assertions.assertEquals(expectedCount, actualCount, "件数が一致しません");
             Assertions.assertEquals(expectedMinutes, actualMinutes, "残り時間の合計が一致しません");
             Assertions.assertTrue(actualSecondChecked, "2 件目はチェック済みになる必要があります");
-            LogAssertions.assertMessages(expectedMsgs, actualMsgs);
-
-        }
-
-    }
-
-    /**
-     * parse メソッドのテスト - 正常系:先行の件数行と（N分）の項目を解析する場合
-     *
-     * @since 0.2.0
-     */
-    @Test
-    public void testParse_normalAdvanceDeclaredCount() {
-
-        /* 期待値の定義 */
-        final Integer      expectedAdvanceDeclaredCount = Integer.valueOf(2);
-        final int          expectedCount                = 2;
-        final List<String> expectedSections             = List.of("先行");
-        final String[]     expectedMsgs                 = {};
-
-        /* 準備 */
-        final String testBody = String.join("\n", "## 先行", "件数：2", "- [ ] 国語2026/06/18（20分）",
-            "- [ ] 音楽2026/06/18（15分）");
-        final CarryoverParseLogicImpl testTarget = CarryoverParseLogicImplTest.createTarget();
-        final DailyTaskIssueModel     testIssue  = CarryoverParseLogicImplTest.createIssue("2026年10月06日のタスク", testBody);
-
-        /* テスト対象の実行 */
-        final CarryoverIssueModel testResult;
-
-        try (LogCapture testLog = new LogCapture(CarryoverParseLogicImpl.class)) {
-
-            testResult = testTarget.parse(testIssue);
-
-            /* 検証の準備 */
-            final String[]   actualMsgs                 = testLog.getMessages();
-            final Integer    actualAdvanceDeclaredCount = testResult.getAdvanceDeclaredCount();
-            final int        actualCount                = testResult.getCount();
-            final List<String> actualSections         = testResult.getSections();
-            final List<CarryoverItemModel> items        = testResult.getItems();
-            final CarryoverItemModel       firstItem    = items.get(0);
-            final double                   actualFirstMinutes = firstItem.getMinutes();
-
-            /* 検証の実施 */
-            Assertions.assertEquals(expectedAdvanceDeclaredCount, actualAdvanceDeclaredCount, "件数が一致しません");
-            Assertions.assertEquals(expectedCount, actualCount, "件数が一致しません");
-            Assertions.assertEquals(expectedSections, actualSections, "対象セクション名が一致しません");
-            Assertions.assertEquals(20.0, actualFirstMinutes, "残り時間が一致しません");
-            LogAssertions.assertMessages(expectedMsgs, actualMsgs);
-
-        }
-
-    }
-
-    /**
-     * parse メソッドのテスト - 準正常系:持ち越しセクションの件数行は先行の件数にしない場合
-     *
-     * @since 0.2.0
-     */
-    @Test
-    public void testParse_semiDeclaredCountInCarryoverSection() {
-
-        /* 期待値の定義 */
-        final Integer expectedAdvanceDeclaredCount = null;
-        final Integer expectedDeclaredCount        = Integer.valueOf(1);
-        final String[] expectedMsgs = {
-            "[Gr002Log12005] #371 想定外の行です: 件数：2",
-        };
-
-        /* 準備 */
-        final String testBody = String.join("\n", "## 持ち越し", "件数：2", "残：1",
-            "- [ ] 国語2026/06/18（残り時間：15分）");
-        final CarryoverParseLogicImpl testTarget = CarryoverParseLogicImplTest.createTarget();
-        final DailyTaskIssueModel     testIssue  = CarryoverParseLogicImplTest.createIssue("2026年10月06日のタスク", testBody);
-
-        /* テスト対象の実行 */
-        final CarryoverIssueModel testResult;
-
-        try (LogCapture testLog = new LogCapture(CarryoverParseLogicImpl.class)) {
-
-            testResult = testTarget.parse(testIssue);
-
-            /* 検証の準備 */
-            final String[] actualMsgs                   = testLog.getMessages();
-            final Integer  actualAdvanceDeclaredCount = testResult.getAdvanceDeclaredCount();
-            final Integer  actualDeclaredCount        = testResult.getDeclaredCount();
-
-            /* 検証の実施 */
-            Assertions.assertEquals(expectedAdvanceDeclaredCount, actualAdvanceDeclaredCount, "件数が一致しません");
-            Assertions.assertEquals(expectedDeclaredCount, actualDeclaredCount, "残数が一致しません");
-            LogAssertions.assertMessages(expectedMsgs, actualMsgs);
-
-        }
-
-    }
-
-    /**
-     * parse メソッドのテスト - 準正常系:先行セクションの残数行は持ち越しの残数にしない場合
-     *
-     * @since 0.2.0
-     */
-    @Test
-    public void testParse_semiDeclaredInAdvanceSection() {
-
-        /* 期待値の定義 */
-        final Integer expectedDeclaredCount = null;
-        final Integer expectedAdvanceDeclaredCount = Integer.valueOf(1);
-        final String[] expectedMsgs = {
-            "[Gr002Log12005] #371 想定外の行です: 残：2",
-        };
-
-        /* 準備 */
-        final String testBody = String.join("\n", "## 先行", "残：2", "件数：1", "- [ ] 国語2026/06/18（20分）");
-        final CarryoverParseLogicImpl testTarget = CarryoverParseLogicImplTest.createTarget();
-        final DailyTaskIssueModel     testIssue  = CarryoverParseLogicImplTest.createIssue("2026年10月06日のタスク", testBody);
-
-        /* テスト対象の実行 */
-        final CarryoverIssueModel testResult;
-
-        try (LogCapture testLog = new LogCapture(CarryoverParseLogicImpl.class)) {
-
-            testResult = testTarget.parse(testIssue);
-
-            /* 検証の準備 */
-            final String[] actualMsgs                   = testLog.getMessages();
-            final Integer  actualDeclaredCount          = testResult.getDeclaredCount();
-            final Integer  actualAdvanceDeclaredCount = testResult.getAdvanceDeclaredCount();
-
-            /* 検証の実施 */
-            Assertions.assertEquals(expectedDeclaredCount, actualDeclaredCount, "残数が一致しません");
-            Assertions.assertEquals(expectedAdvanceDeclaredCount, actualAdvanceDeclaredCount, "件数が一致しません");
             LogAssertions.assertMessages(expectedMsgs, actualMsgs);
 
         }
@@ -766,6 +684,48 @@ public class CarryoverParseLogicImplTest {
     }
 
     /**
+     * parse メソッドのテスト - 準正常系:持ち越しセクションの件数行は先行の件数にしない場合
+     *
+     * @since 0.2.0
+     */
+    @Test
+    public void testParse_semiDeclaredCountInCarryoverSection() {
+
+        /* 期待値の定義 */
+        final Integer  expectedAdvanceDeclaredCount = null;
+        final Integer  expectedDeclaredCount        = 1;
+        final String[] expectedMsgs                 = {
+            "[Gr002Log12005] #371 想定外の行です: 件数：2",
+        };
+
+        /* 準備 */
+        final String                  testBody   = String.join("\n", "## 持ち越し", "件数：2", "残：1",
+            "- [ ] 国語2026/06/18（残り時間：15分）");
+        final CarryoverParseLogicImpl testTarget = CarryoverParseLogicImplTest.createTarget();
+        final DailyTaskIssueModel     testIssue  = CarryoverParseLogicImplTest.createIssue("2026年10月06日のタスク", testBody);
+
+        /* テスト対象の実行 */
+        final CarryoverIssueModel testResult;
+
+        try (LogCapture testLog = new LogCapture(CarryoverParseLogicImpl.class)) {
+
+            testResult = testTarget.parse(testIssue);
+
+            /* 検証の準備 */
+            final String[] actualMsgs                 = testLog.getMessages();
+            final Integer  actualAdvanceDeclaredCount = testResult.getAdvanceDeclaredCount();
+            final Integer  actualDeclaredCount        = testResult.getDeclaredCount();
+
+            /* 検証の実施 */
+            Assertions.assertEquals(expectedAdvanceDeclaredCount, actualAdvanceDeclaredCount, "件数が一致しません");
+            Assertions.assertEquals(expectedDeclaredCount, actualDeclaredCount, "残数が一致しません");
+            LogAssertions.assertMessages(expectedMsgs, actualMsgs);
+
+        }
+
+    }
+
+    /**
      * parse メソッドのテスト - 準正常系:残数と解析件数が一致しない場合
      *
      * @since 0.1.0
@@ -799,6 +759,47 @@ public class CarryoverParseLogicImplTest {
     }
 
     /**
+     * parse メソッドのテスト - 準正常系:先行セクションの残数行は持ち越しの残数にしない場合
+     *
+     * @since 0.2.0
+     */
+    @Test
+    public void testParse_semiDeclaredInAdvanceSection() {
+
+        /* 期待値の定義 */
+        final Integer  expectedDeclaredCount        = null;
+        final Integer  expectedAdvanceDeclaredCount = 1;
+        final String[] expectedMsgs                 = {
+            "[Gr002Log12005] #371 想定外の行です: 残：2",
+        };
+
+        /* 準備 */
+        final String                  testBody   = String.join("\n", "## 先行", "残：2", "件数：1", "- [ ] 国語2026/06/18（20分）");
+        final CarryoverParseLogicImpl testTarget = CarryoverParseLogicImplTest.createTarget();
+        final DailyTaskIssueModel     testIssue  = CarryoverParseLogicImplTest.createIssue("2026年10月06日のタスク", testBody);
+
+        /* テスト対象の実行 */
+        final CarryoverIssueModel testResult;
+
+        try (LogCapture testLog = new LogCapture(CarryoverParseLogicImpl.class)) {
+
+            testResult = testTarget.parse(testIssue);
+
+            /* 検証の準備 */
+            final String[] actualMsgs                 = testLog.getMessages();
+            final Integer  actualDeclaredCount        = testResult.getDeclaredCount();
+            final Integer  actualAdvanceDeclaredCount = testResult.getAdvanceDeclaredCount();
+
+            /* 検証の実施 */
+            Assertions.assertEquals(expectedDeclaredCount, actualDeclaredCount, "残数が一致しません");
+            Assertions.assertEquals(expectedAdvanceDeclaredCount, actualAdvanceDeclaredCount, "件数が一致しません");
+            LogAssertions.assertMessages(expectedMsgs, actualMsgs);
+
+        }
+
+    }
+
+    /**
      * parse メソッドのテスト - 準正常系:タイトルに日付がない場合
      *
      * @since 0.1.0
@@ -821,8 +822,8 @@ public class CarryoverParseLogicImplTest {
             final CarryoverIssueModel testResult = testTarget.parse(testIssue);
 
             /* 検証の準備 */
-            final String[] actualMsgs = testLog.getMessages();
-            final LocalDate   actualDate = testResult.getDate();
+            final String[]  actualMsgs = testLog.getMessages();
+            final LocalDate actualDate = testResult.getDate();
 
             /* 検証の実施 */
             Assertions.assertNull(actualDate, "日付は null になる必要があります");
@@ -920,7 +921,7 @@ public class CarryoverParseLogicImplTest {
 
         /* 期待値の定義 */
         final String             expectedName          = "国語";
-        final LocalDate             expectedOriginDate    = LocalDate.parse("2026-06-18");
+        final LocalDate          expectedOriginDate    = LocalDate.parse("2026-06-18");
         final double             expectedMinutes       = 4;
         final MinutesSourceTypes expectedMinutesSource = MinutesSourceTypes.PARSED;
         final String             expectedSection       = "持ち越し";
@@ -934,7 +935,7 @@ public class CarryoverParseLogicImplTest {
 
         /* 検証の準備 */
         final String             actualName          = testResult.getName();
-        final LocalDate             actualOriginDate    = testResult.getOriginDate();
+        final LocalDate          actualOriginDate    = testResult.getOriginDate();
         final double             actualMinutes       = testResult.getMinutes();
         final MinutesSourceTypes actualMinutesSource = testResult.getMinutesSource();
         final String             actualSection       = testResult.getSection();
@@ -1096,10 +1097,10 @@ public class CarryoverParseLogicImplTest {
                 = CarryoverParseLogicImplTest.parseItem(testTarget, 371, "持ち越し", false, "国語（10分）", "- [ ] 国語（10分）");
 
             /* 検証の準備 */
-            final String[] actualMsgs       = testLog.getMessages();
-            final String   actualName       = testResult.getName();
-            final LocalDate   actualOriginDate = testResult.getOriginDate();
-            final double   actualMinutes    = testResult.getMinutes();
+            final String[]  actualMsgs       = testLog.getMessages();
+            final String    actualName       = testResult.getName();
+            final LocalDate actualOriginDate = testResult.getOriginDate();
+            final double    actualMinutes    = testResult.getMinutes();
 
             /* 検証の実施 */
             Assertions.assertEquals(expectedName, actualName, "項目名が一致しません");

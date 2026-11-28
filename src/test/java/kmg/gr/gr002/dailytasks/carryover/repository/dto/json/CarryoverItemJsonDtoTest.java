@@ -238,6 +238,66 @@ public class CarryoverItemJsonDtoTest {
     }
 
     /**
+     * parseDate メソッドのテスト - 日付の文字列が空の場合
+     *
+     * @since 0.1.0
+     *
+     * @throws Exception
+     *                   例外
+     */
+    @Test
+    public void testParseDate_semiBlank() throws Exception {
+
+        /* 期待値の定義 */
+        final LocalDate expected = null;
+
+        /* 準備 */
+
+        /* テスト対象の実行 */
+        final LocalDate testResult
+            = ReflectionTestUtil.invokeStatic(CarryoverItemJsonDto.class, "parseDate", new Class<?>[] {
+                String.class
+            }, " ");
+
+        /* 検証の準備 */
+        final LocalDate actual = testResult;
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expected, actual, "変換結果が一致しません");
+
+    }
+
+    /**
+     * parseDate メソッドのテスト - 日付の文字列が null の場合
+     *
+     * @since 0.1.0
+     *
+     * @throws Exception
+     *                   例外
+     */
+    @Test
+    public void testParseDate_semiNull() throws Exception {
+
+        /* 期待値の定義 */
+        final LocalDate expected = null;
+
+        /* 準備 */
+
+        /* テスト対象の実行 */
+        final LocalDate testResult
+            = ReflectionTestUtil.invokeStatic(CarryoverItemJsonDto.class, "parseDate", new Class<?>[] {
+                String.class
+            }, (String) null);
+
+        /* 検証の準備 */
+        final LocalDate actual = testResult;
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expected, actual, "変換結果が一致しません");
+
+    }
+
+    /**
      * toCarryoverItemDto メソッドのテスト - 正常系:残り時間の取得元を引き継ぐ場合
      *
      * @since 0.1.0
@@ -263,62 +323,6 @@ public class CarryoverItemJsonDtoTest {
 
     }
 
-    /**
-     * parseDate メソッドのテスト - 日付の文字列が null の場合
-     *
-     * @since 0.1.0
-     *
-     * @throws Exception
-     *                   例外
-     */
-    @Test
-    public void testParseDate_semiNull() throws Exception {
-
-        /* 期待値の定義 */
-        final LocalDate expected = null;
-
-        /* 準備 */
-
-        /* テスト対象の実行 */
-        final LocalDate testResult = ReflectionTestUtil.invokeStatic(CarryoverItemJsonDto.class, "parseDate", new Class<?>[] {
-            String.class
-        }, (String) null);
-
-        /* 検証の準備 */
-        final LocalDate actual = testResult;
-
-        /* 検証の実施 */
-        Assertions.assertEquals(expected, actual, "変換結果が一致しません");
-
-    }
-    /**
-     * parseDate メソッドのテスト - 日付の文字列が空の場合
-     *
-     * @since 0.1.0
-     *
-     * @throws Exception
-     *                   例外
-     */
-    @Test
-    public void testParseDate_semiBlank() throws Exception {
-
-        /* 期待値の定義 */
-        final LocalDate expected = null;
-
-        /* 準備 */
-
-        /* テスト対象の実行 */
-        final LocalDate testResult = ReflectionTestUtil.invokeStatic(CarryoverItemJsonDto.class, "parseDate", new Class<?>[] {
-            String.class
-        }, " ");
-
-        /* 検証の準備 */
-        final LocalDate actual = testResult;
-
-        /* 検証の実施 */
-        Assertions.assertEquals(expected, actual, "変換結果が一致しません");
-
-    }
     /**
      * toText メソッドのテスト - 日付が null の場合
      *

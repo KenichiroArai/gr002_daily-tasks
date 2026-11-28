@@ -93,8 +93,8 @@ public class CarryoverAggregateLogicImpl implements CarryoverAggregateLogic {
         }
 
         /* セクション追跡の更新（持ち越し系のみ） */
-        final boolean hasSection = issue.getSections().stream()
-            .anyMatch(section -> TargetSectionTypes.getEnum(section).isCarryover());
+        final boolean hasSection
+            = issue.getSections().stream().anyMatch(section -> TargetSectionTypes.getEnum(section).isCarryover());
         aggregation.track(hasSection);
 
         /* 集計対象の追跡中か */

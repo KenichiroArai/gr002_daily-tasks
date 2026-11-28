@@ -446,13 +446,13 @@ public class CarryoverParseLogicImpl implements CarryoverParseLogic {
         }
 
         /* 本文の解析 */
-        final List<String>             sections              = new ArrayList<>();
-        final List<CarryoverItemModel> items                 = new ArrayList<>();
-        Integer                        declaredCount         = null;
-        Integer                        advanceDeclaredCount  = null;
-        int                            carryoverItemCount    = 0;
-        int                            advanceItemCount      = 0;
-        String                         currentSection        = CarryoverParseTextTypes.EMPTY.getText();
+        final List<String>             sections             = new ArrayList<>();
+        final List<CarryoverItemModel> items                = new ArrayList<>();
+        Integer                        declaredCount        = null;
+        Integer                        advanceDeclaredCount = null;
+        int                            carryoverItemCount   = 0;
+        int                            advanceItemCount     = 0;
+        String                         currentSection       = CarryoverParseTextTypes.EMPTY.getText();
 
         for (final String line : CarryoverParseLogicImpl.splitLines(issue.getBody())) {
 

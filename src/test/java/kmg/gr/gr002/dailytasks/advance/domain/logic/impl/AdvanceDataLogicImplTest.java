@@ -51,34 +51,6 @@ public class AdvanceDataLogicImplTest {
         private CarryoverSummaryDto savedSummary;
 
         /**
-         * 最後に受け取った出力先のディレクトリを返す<br>
-         *
-         * @since 0.2.0
-         *
-         * @return 最後に受け取った出力先のディレクトリ
-         */
-        private Path getDataDir() {
-
-            final Path result = this.dataDir;
-            return result;
-
-        }
-
-        /**
-         * 保存された集計を返す<br>
-         *
-         * @since 0.2.0
-         *
-         * @return 保存された集計
-         */
-        private CarryoverSummaryDto getSavedSummary() {
-
-            final CarryoverSummaryDto result = this.savedSummary;
-            return result;
-
-        }
-
-        /**
          * 出力先のディレクトリを記録する<br>
          *
          * @since 0.2.0
@@ -105,6 +77,34 @@ public class AdvanceDataLogicImplTest {
         public void saveSummary(final CarryoverSummaryDto summary) throws IOException {
 
             this.savedSummary = summary;
+
+        }
+
+        /**
+         * 最後に受け取った出力先のディレクトリを返す<br>
+         *
+         * @since 0.2.0
+         *
+         * @return 最後に受け取った出力先のディレクトリ
+         */
+        private Path getDataDir() {
+
+            final Path result = this.dataDir;
+            return result;
+
+        }
+
+        /**
+         * 保存された集計を返す<br>
+         *
+         * @since 0.2.0
+         *
+         * @return 保存された集計
+         */
+        private CarryoverSummaryDto getSavedSummary() {
+
+            final CarryoverSummaryDto result = this.savedSummary;
+            return result;
 
         }
 
@@ -168,8 +168,8 @@ public class AdvanceDataLogicImplTest {
         final int expectedLatestIssue = 371;
 
         /* 準備 */
-        final StubAdvanceDataDao   testData    = new StubAdvanceDataDao();
-        final AdvanceDataLogicImpl testTarget  = AdvanceDataLogicImplTest.createTarget(testData);
+        final StubAdvanceDataDao    testData    = new StubAdvanceDataDao();
+        final AdvanceDataLogicImpl  testTarget  = AdvanceDataLogicImplTest.createTarget(testData);
         final CarryoverSummaryModel testSummary = new CarryoverSummaryModel(371, List.of(), List.of());
 
         /* テスト対象の実行 */

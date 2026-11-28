@@ -202,8 +202,7 @@ public class CarryoverIssueDto {
      */
     public CarryoverIssueDto(final int number, final String title, final LocalDate date, final String state,
         final Instant updatedAt, final List<String> sections, final Integer declaredCount,
-        final Integer advanceDeclaredCount, final int count, final double minutes,
-        final List<CarryoverItemDto> items) {
+        final Integer advanceDeclaredCount, final int count, final double minutes, final List<CarryoverItemDto> items) {
 
         this.number = number;
         this.title = title;
@@ -216,6 +215,20 @@ public class CarryoverIssueDto {
         this.count = count;
         this.minutes = minutes;
         this.items = List.copyOf(items);
+
+    }
+
+    /**
+     * 本文の「件数：N」の値を返す<br>
+     *
+     * @since 0.2.0
+     *
+     * @return 「件数：N」の値。記載がない場合は null
+     */
+    public Integer getAdvanceDeclaredCount() {
+
+        final Integer result = this.advanceDeclaredCount;
+        return result;
 
     }
 
@@ -243,20 +256,6 @@ public class CarryoverIssueDto {
     public LocalDate getDate() {
 
         final LocalDate result = this.date;
-        return result;
-
-    }
-
-    /**
-     * 本文の「件数：N」の値を返す<br>
-     *
-     * @since 0.2.0
-     *
-     * @return 「件数：N」の値。記載がない場合は null
-     */
-    public Integer getAdvanceDeclaredCount() {
-
-        final Integer result = this.advanceDeclaredCount;
         return result;
 
     }

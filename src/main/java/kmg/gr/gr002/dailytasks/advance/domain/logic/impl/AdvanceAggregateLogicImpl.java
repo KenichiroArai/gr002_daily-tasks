@@ -93,8 +93,8 @@ public class AdvanceAggregateLogicImpl implements AdvanceAggregateLogic {
         }
 
         /* セクション追跡の更新（「先行」のみ） */
-        final boolean hasSection = issue.getSections().stream()
-            .anyMatch(section -> TargetSectionTypes.getEnum(section).isAdvance());
+        final boolean hasSection
+            = issue.getSections().stream().anyMatch(section -> TargetSectionTypes.getEnum(section).isAdvance());
         aggregation.track(hasSection);
 
         /* 集計対象の追跡中か */
@@ -110,8 +110,7 @@ public class AdvanceAggregateLogicImpl implements AdvanceAggregateLogic {
         }
 
         /* 日別集計への加算 */
-        final DailySummaryModel day
-            = new DailySummaryModel(date, issue.getNumber(), issue.getAdvanceDeclaredCount());
+        final DailySummaryModel day = new DailySummaryModel(date, issue.getNumber(), issue.getAdvanceDeclaredCount());
 
         for (final CarryoverItemModel item : issue.getItems()) {
 

@@ -32,34 +32,6 @@ import kmg.gr.gr002.dailytasks.testutil.DailyTasksMessageSourceTestUtil;
 public class AdvanceAggregateLogicImplTest {
 
     /**
-     * テスト用の解析結果を作成する<br>
-     *
-     * @since 0.2.0
-     *
-     * @param number
-     *                      Issue 番号
-     * @param date
-     *                      日付
-     * @param sections
-     *                             対象セクション名
-     * @param advanceDeclaredCount
-     *                             本文の「件数：N」
-     * @param items
-     *                             持ち越し項目
-     *
-     * @return 解析結果
-     */
-    private static CarryoverIssueModel createIssue(final int number, final String date, final List<String> sections,
-        final Integer advanceDeclaredCount, final List<CarryoverItemModel> items) {
-
-        final CarryoverIssueModel result = new CarryoverIssueModel(number, "title",
-            (date == null) ? null : LocalDate.parse(date), "closed", Instant.parse("2026-10-06T00:00:00Z"), sections,
-            null, advanceDeclaredCount, items);
-        return result;
-
-    }
-
-    /**
      * テスト用の先行項目を作成する<br>
      *
      * @since 0.2.0
@@ -78,53 +50,30 @@ public class AdvanceAggregateLogicImplTest {
     }
 
     /**
-     * aggregate メソッドのテスト - 正常系:「先行」セクション以降を日付順に集計する場合
+     * テスト用の解析結果を作成する<br>
      *
      * @since 0.2.0
+     *
+     * @param number
+     *                             Issue 番号
+     * @param date
+     *                             日付
+     * @param sections
+     *                             対象セクション名
+     * @param advanceDeclaredCount
+     *                             本文の「件数：N」
+     * @param items
+     *                             持ち越し項目
+     *
+     * @return 解析結果
      */
-    @Test
-    public void testAggregate_normalFromFirstAdvanceSection() {
+    private static CarryoverIssueModel createIssue(final int number, final String date, final List<String> sections,
+        final Integer advanceDeclaredCount, final List<CarryoverItemModel> items) {
 
-        /* 期待値の定義 */
-        final List<LocalDate> expectedDates     = List.of(LocalDate.parse("2026-03-24"), LocalDate.parse("2026-03-25"));
-        final List<Integer>   expectedCounts    = List.of(1, 0);
-        final List<String>    expectedItems     = List.of("国語");
-        final int             expectedLatestIssue = 176;
-
-        /* 準備 */
-        final List<CarryoverIssueModel> testIssues = List.of(
-            AdvanceAggregateLogicImplTest.createIssue(176, "2026-03-25", List.of(), null, List.of()),
-            AdvanceAggregateLogicImplTest.createIssue(175, "2026-03-24", List.of(TargetSectionTypes.ADVANCE.getSection()),
-                Integer.valueOf(1),
-                List.of(AdvanceAggregateLogicImplTest.createAdvanceItem("国語"),
-                    new CarryoverItemModel("音楽", LocalDate.parse("2026-06-18"), false, 15, MinutesSourceTypes.PARSED,
-                        TargetSectionTypes.CARRYOVER.getSection(), "raw"))),
-            AdvanceAggregateLogicImplTest.createIssue(174, "2026-03-23", List.of(), null, List.of()));
-        final AdvanceAggregateLogicImpl testTarget = new AdvanceAggregateLogicImpl(
-            DailyTasksMessageSourceTestUtil.create());
-
-        /* テスト対象の実行 */
-        final CarryoverSummaryModel testResult = testTarget.aggregate(testIssues);
-
-        /* 検証の準備 */
-        final List<DailySummaryModel> days = testResult.getDays();
-
-        @SuppressWarnings("null")
-        final List<LocalDate> actualDates  = days.stream().map(DailySummaryModel::getDate).toList();
-        final List<Integer> actualCounts = days.stream().map(day -> {
-
-                                               final ItemStatModel total = day.getTotal();
-                                               return total.getCount();
-
-                                           }).toList();
-        final List<String>  actualItems       = testResult.getItems();
-        final int           actualLatestIssue = testResult.getLatestIssue();
-
-        /* 検証の実施 */
-        Assertions.assertEquals(expectedDates, actualDates, "日付が一致しません");
-        Assertions.assertEquals(expectedCounts, actualCounts, "件数が一致しません");
-        Assertions.assertEquals(expectedItems, actualItems, "項目名が一致しません");
-        Assertions.assertEquals(expectedLatestIssue, actualLatestIssue, "最新の Issue 番号が一致しません");
+        final CarryoverIssueModel result
+            = new CarryoverIssueModel(number, "title", (date == null) ? null : LocalDate.parse(date), "closed",
+                Instant.parse("2026-10-06T00:00:00Z"), sections, null, advanceDeclaredCount, items);
+        return result;
 
     }
 
@@ -137,16 +86,16 @@ public class AdvanceAggregateLogicImplTest {
     public void testAdd_normalBeforeAdvanceSection() {
 
         /* 期待値の定義 */
-        final CarryoverIssueModel issueBefore = AdvanceAggregateLogicImplTest.createIssue(174, "2026-03-23", List.of(),
+        final CarryoverIssueModel issueBefore  = AdvanceAggregateLogicImplTest.createIssue(174, "2026-03-23", List.of(),
             null, List.of());
         final CarryoverIssueModel issueAdvance = AdvanceAggregateLogicImplTest.createIssue(175, "2026-03-24",
-            List.of(TargetSectionTypes.ADVANCE.getSection()), Integer.valueOf(1),
+            List.of(TargetSectionTypes.ADVANCE.getSection()), 1,
             List.of(AdvanceAggregateLogicImplTest.createAdvanceItem("国語")));
 
         /* 準備 */
-        final AdvanceAggregateLogicImpl   testTarget      = new AdvanceAggregateLogicImpl(
+        final AdvanceAggregateLogicImpl testTarget      = new AdvanceAggregateLogicImpl(
             DailyTasksMessageSourceTestUtil.create());
-        final CarryoverAggregationModel   testAggregation = new CarryoverAggregationModel();
+        final CarryoverAggregationModel testAggregation = new CarryoverAggregationModel();
 
         /* テスト対象の実行 */
         testTarget.add(testAggregation, issueBefore);
@@ -176,10 +125,10 @@ public class AdvanceAggregateLogicImplTest {
         final int expectedLatestIssue = 176;
 
         /* 準備 */
-        final CarryoverIssueModel       testIssue   = AdvanceAggregateLogicImplTest.createIssue(176, null,
-            List.of(TargetSectionTypes.ADVANCE.getSection()), Integer.valueOf(1),
+        final CarryoverIssueModel       testIssue       = AdvanceAggregateLogicImplTest.createIssue(176, null,
+            List.of(TargetSectionTypes.ADVANCE.getSection()), 1,
             List.of(AdvanceAggregateLogicImplTest.createAdvanceItem("国語")));
-        final AdvanceAggregateLogicImpl testTarget  = new AdvanceAggregateLogicImpl(
+        final AdvanceAggregateLogicImpl testTarget      = new AdvanceAggregateLogicImpl(
             DailyTasksMessageSourceTestUtil.create());
         final CarryoverAggregationModel testAggregation = new CarryoverAggregationModel();
 
@@ -188,8 +137,8 @@ public class AdvanceAggregateLogicImplTest {
         final CarryoverSummaryModel testResult = testTarget.toSummary(testAggregation);
 
         /* 検証の準備 */
-        final boolean               actualDaysEmpty   = testResult.getDays().isEmpty();
-        final int                   actualLatestIssue = testResult.getLatestIssue();
+        final boolean actualDaysEmpty   = testResult.getDays().isEmpty();
+        final int     actualLatestIssue = testResult.getLatestIssue();
 
         /* 検証の実施 */
         Assertions.assertTrue(actualDaysEmpty, "日付がないときは日別の行を作らない必要があります");
@@ -208,9 +157,9 @@ public class AdvanceAggregateLogicImplTest {
         /* 期待値の定義 */
 
         /* 準備 */
-        final CarryoverIssueModel       testIssue   = AdvanceAggregateLogicImplTest.createIssue(174, "2026-03-23",
+        final CarryoverIssueModel       testIssue       = AdvanceAggregateLogicImplTest.createIssue(174, "2026-03-23",
             List.of(), null, List.of());
-        final AdvanceAggregateLogicImpl testTarget  = new AdvanceAggregateLogicImpl(
+        final AdvanceAggregateLogicImpl testTarget      = new AdvanceAggregateLogicImpl(
             DailyTasksMessageSourceTestUtil.create());
         final CarryoverAggregationModel testAggregation = new CarryoverAggregationModel();
 
@@ -229,31 +178,54 @@ public class AdvanceAggregateLogicImplTest {
     }
 
     /**
-     * aggregate メソッドのテスト - 準正常系:解析結果がない場合
+     * aggregate メソッドのテスト - 正常系:「先行」セクション以降を日付順に集計する場合
      *
      * @since 0.2.0
      */
     @Test
-    public void testAggregate_semiEmpty() {
+    public void testAggregate_normalFromFirstAdvanceSection() {
 
         /* 期待値の定義 */
-        final int expectedLatestIssue = 0;
+        final List<LocalDate> expectedDates       = List.of(LocalDate.parse("2026-03-24"),
+            LocalDate.parse("2026-03-25"));
+        final List<Integer>   expectedCounts      = List.of(1, 0);
+        final List<String>    expectedItems       = List.of("国語");
+        final int             expectedLatestIssue = 176;
 
         /* 準備 */
+        final List<CarryoverIssueModel> testIssues = List.of(
+            AdvanceAggregateLogicImplTest.createIssue(176, "2026-03-25", List.of(), null, List.of()),
+            AdvanceAggregateLogicImplTest.createIssue(175, "2026-03-24",
+                List.of(TargetSectionTypes.ADVANCE.getSection()), 1,
+                List.of(AdvanceAggregateLogicImplTest.createAdvanceItem("国語"),
+                    new CarryoverItemModel("音楽", LocalDate.parse("2026-06-18"), false, 15, MinutesSourceTypes.PARSED,
+                        TargetSectionTypes.CARRYOVER.getSection(), "raw"))),
+            AdvanceAggregateLogicImplTest.createIssue(174, "2026-03-23", List.of(), null, List.of()));
         final AdvanceAggregateLogicImpl testTarget = new AdvanceAggregateLogicImpl(
             DailyTasksMessageSourceTestUtil.create());
 
         /* テスト対象の実行 */
-        final CarryoverSummaryModel testResult = testTarget.aggregate(List.of());
+        final CarryoverSummaryModel testResult = testTarget.aggregate(testIssues);
 
         /* 検証の準備 */
-        final int                     actualLatestIssue = testResult.getLatestIssue();
-        final List<DailySummaryModel> days              = testResult.getDays();
-        final boolean                 actualDaysEmpty   = days.isEmpty();
+        final List<DailySummaryModel> days = testResult.getDays();
+
+        @SuppressWarnings("null")
+        final List<LocalDate> actualDates       = days.stream().map(DailySummaryModel::getDate).toList();
+        final List<Integer>   actualCounts      = days.stream().map(day -> {
+
+                                                    final ItemStatModel total = day.getTotal();
+                                                    return total.getCount();
+
+                                                }).toList();
+        final List<String>    actualItems       = testResult.getItems();
+        final int             actualLatestIssue = testResult.getLatestIssue();
 
         /* 検証の実施 */
+        Assertions.assertEquals(expectedDates, actualDates, "日付が一致しません");
+        Assertions.assertEquals(expectedCounts, actualCounts, "件数が一致しません");
+        Assertions.assertEquals(expectedItems, actualItems, "項目名が一致しません");
         Assertions.assertEquals(expectedLatestIssue, actualLatestIssue, "最新の Issue 番号が一致しません");
-        Assertions.assertTrue(actualDaysEmpty, "日別の集計は空になる必要があります");
 
     }
 
@@ -271,11 +243,11 @@ public class AdvanceAggregateLogicImplTest {
         /* 準備 */
         final List<CarryoverIssueModel> testIssues = List.of(
             AdvanceAggregateLogicImplTest.createIssue(176, "2026-03-25", List.of(), null, List.of()),
-            AdvanceAggregateLogicImplTest.createIssue(175, "2026-03-24", List.of(TargetSectionTypes.ADVANCE.getSection()),
-                Integer.valueOf(1),
+            AdvanceAggregateLogicImplTest.createIssue(175, "2026-03-24",
+                List.of(TargetSectionTypes.ADVANCE.getSection()), 1,
                 List.of(AdvanceAggregateLogicImplTest.createAdvanceItem("国語"))),
             AdvanceAggregateLogicImplTest.createIssue(174, null, List.of(TargetSectionTypes.ADVANCE.getSection()),
-                Integer.valueOf(1), List.of(AdvanceAggregateLogicImplTest.createAdvanceItem("音楽"))));
+                1, List.of(AdvanceAggregateLogicImplTest.createAdvanceItem("音楽"))));
         final AdvanceAggregateLogicImpl testTarget = new AdvanceAggregateLogicImpl(
             DailyTasksMessageSourceTestUtil.create());
 
@@ -291,6 +263,35 @@ public class AdvanceAggregateLogicImplTest {
     }
 
     /**
+     * aggregate メソッドのテスト - 準正常系:解析結果がない場合
+     *
+     * @since 0.2.0
+     */
+    @Test
+    public void testAggregate_semiEmpty() {
+
+        /* 期待値の定義 */
+        final int expectedLatestIssue = 0;
+
+        /* 準備 */
+        final AdvanceAggregateLogicImpl testTarget
+            = new AdvanceAggregateLogicImpl(DailyTasksMessageSourceTestUtil.create());
+
+        /* テスト対象の実行 */
+        final CarryoverSummaryModel testResult = testTarget.aggregate(List.of());
+
+        /* 検証の準備 */
+        final int                     actualLatestIssue = testResult.getLatestIssue();
+        final List<DailySummaryModel> days              = testResult.getDays();
+        final boolean                 actualDaysEmpty   = days.isEmpty();
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedLatestIssue, actualLatestIssue, "最新の Issue 番号が一致しません");
+        Assertions.assertTrue(actualDaysEmpty, "日別の集計は空になる必要があります");
+
+    }
+
+    /**
      * toSummary メソッドのテスト - 正常系:集計の状態から画面用の集計を作る場合
      *
      * @since 0.2.0
@@ -299,15 +300,15 @@ public class AdvanceAggregateLogicImplTest {
     public void testToSummary_normalFromAggregation() {
 
         /* 期待値の定義 */
-        final int           expectedLatestIssue = 175;
-        final List<String>  expectedItems       = List.of("国語");
+        final int          expectedLatestIssue = 175;
+        final List<String> expectedItems       = List.of("国語");
 
         /* 準備 */
         final AdvanceAggregateLogicImpl testTarget      = new AdvanceAggregateLogicImpl(
             DailyTasksMessageSourceTestUtil.create());
         final CarryoverAggregationModel testAggregation = new CarryoverAggregationModel();
         final CarryoverIssueModel       testIssue       = AdvanceAggregateLogicImplTest.createIssue(175, "2026-03-24",
-            List.of(TargetSectionTypes.ADVANCE.getSection()), Integer.valueOf(1),
+            List.of(TargetSectionTypes.ADVANCE.getSection()), 1,
             List.of(AdvanceAggregateLogicImplTest.createAdvanceItem("国語")));
         testTarget.add(testAggregation, testIssue);
 

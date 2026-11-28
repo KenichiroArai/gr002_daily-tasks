@@ -263,9 +263,9 @@ public class ArchitectureTest {
         /* 期待値の定義 */
 
         /* 準備 */
-        final ArchRule testRule = ArchRuleDefinition.noClasses().that()
-            .resideInAnyPackage("..carryover..logic..", "..advance..logic..").should().dependOnClassesThat()
-            .resideInAnyPackage("..carryover..service..", "..advance..service..");
+        final ArchRule testRule
+            = ArchRuleDefinition.noClasses().that().resideInAnyPackage("..carryover..logic..", "..advance..logic..")
+                .should().dependOnClassesThat().resideInAnyPackage("..carryover..service..", "..advance..service..");
 
         /* テスト対象の実行 */
         testRule.check(ArchitectureTest.classes);

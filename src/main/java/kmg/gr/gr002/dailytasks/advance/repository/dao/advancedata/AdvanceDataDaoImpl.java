@@ -119,8 +119,7 @@ public class AdvanceDataDaoImpl implements AdvanceDataDao {
     @Override
     public void saveSummary(final CarryoverSummaryDto summary) throws IOException {
 
-        final Path                    path        = this.dataDir
-            .resolve(AdvanceDataFileTypes.ADVANCE_DIR.getFileName())
+        final Path                    path        = this.dataDir.resolve(AdvanceDataFileTypes.ADVANCE_DIR.getFileName())
             .resolve(AdvanceDataFileTypes.SUMMARY_FILE.getFileName());
         final CarryoverSummaryJsonDto summaryJson = new CarryoverSummaryJsonDto(summary);
         final String                  message     = this.messageSource.getLogMessage(Gr002LogMsgTypes.GR002_LOG52003);

@@ -37,10 +37,11 @@ public class CarryoverSummaryDtoTest {
     private static CarryoverSummaryModel createSummary() {
 
         final CarryoverSummaryModel    result;
-        final CarryoverItemModel       item      = new CarryoverItemModel("音楽", LocalDate.parse("2026-08-18"), true, 11.5,
-            MinutesSourceTypes.PARSED, "持ち越し", "- [x] 音楽2026/08/18（残り時間：11.5分）");
-        final CarryoverIssueModel      issue     = new CarryoverIssueModel(371, "2026年10月06日のタスク", LocalDate.parse("2026-10-06"), "open",
-            Instant.parse("2026-10-06T14:23:08Z"), List.of("持ち越し"), 1, List.of(item));
+        final CarryoverItemModel       item      = new CarryoverItemModel("音楽", LocalDate.parse("2026-08-18"), true,
+            11.5, MinutesSourceTypes.PARSED, "持ち越し", "- [x] 音楽2026/08/18（残り時間：11.5分）");
+        final CarryoverIssueModel      issue     = new CarryoverIssueModel(371, "2026年10月06日のタスク",
+            LocalDate.parse("2026-10-06"), "open", Instant.parse("2026-10-06T14:23:08Z"), List.of("持ち越し"), 1,
+            List.of(item));
         final DailySummaryModel        day       = new DailySummaryModel(LocalDate.parse("2026-10-06"), 371, 1);
         final List<CarryoverItemModel> items     = issue.getItems();
         final CarryoverItemModel       firstItem = items.get(0);

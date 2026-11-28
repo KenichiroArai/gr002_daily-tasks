@@ -262,6 +262,31 @@ public class Gr002LogMsgTypesTest {
     }
 
     /**
+     * getValue メソッドのテスト - 正常系:先行の集計結果の文面
+     *
+     * @since 0.2.0
+     */
+    @Test
+    public void testGetValue_normalAdvanceSummaryResult() {
+
+        /* 期待値の定義 */
+        final String expectedValue = "先行の集計を保存しました: 集計={} 日";
+
+        /* 準備 */
+        final Gr002LogMsgTypes testTarget = Gr002LogMsgTypes.GR002_LOG31019;
+
+        /* テスト対象の実行 */
+        final String testResult = testTarget.getValue();
+
+        /* 検証の準備 */
+        final String actualValue = testResult;
+
+        /* 検証の実施 */
+        Assertions.assertEquals(expectedValue, actualValue, "メッセージの値が一致しません");
+
+    }
+
+    /**
      * getValue メソッドのテスト - 正常系:収集開始の文面
      *
      * @since 0.2.0
@@ -299,31 +324,6 @@ public class Gr002LogMsgTypesTest {
 
         /* 準備 */
         final Gr002LogMsgTypes testTarget = Gr002LogMsgTypes.GR002_LOG31001;
-
-        /* テスト対象の実行 */
-        final String testResult = testTarget.getValue();
-
-        /* 検証の準備 */
-        final String actualValue = testResult;
-
-        /* 検証の実施 */
-        Assertions.assertEquals(expectedValue, actualValue, "メッセージの値が一致しません");
-
-    }
-
-    /**
-     * getValue メソッドのテスト - 正常系:先行の集計結果の文面
-     *
-     * @since 0.2.0
-     */
-    @Test
-    public void testGetValue_normalAdvanceSummaryResult() {
-
-        /* 期待値の定義 */
-        final String expectedValue = "先行の集計を保存しました: 集計={} 日";
-
-        /* 準備 */
-        final Gr002LogMsgTypes testTarget = Gr002LogMsgTypes.GR002_LOG31019;
 
         /* テスト対象の実行 */
         final String testResult = testTarget.getValue();

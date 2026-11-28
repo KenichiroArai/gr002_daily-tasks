@@ -41,7 +41,8 @@ public class DailySummaryJsonDtoTest {
         byItem.add("音楽", new ItemStatDto(1, 11.5, 1, 11.5));
         byItem.add("国語", new ItemStatDto(1, 15.0, 0, 0.0));
         byOriginMonth.add("2026-08", new ItemStatDto(1, 11.5, 1, 11.5));
-        final DailySummaryDto result = new DailySummaryDto(LocalDate.parse("2026-10-06"), 371, 2, total, byItem, byOriginMonth);
+        final DailySummaryDto result
+            = new DailySummaryDto(LocalDate.parse("2026-10-06"), 371, 2, total, byItem, byOriginMonth);
         return result;
 
     }

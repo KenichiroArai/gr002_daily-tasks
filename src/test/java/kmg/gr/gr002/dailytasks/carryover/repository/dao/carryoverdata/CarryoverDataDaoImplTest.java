@@ -84,10 +84,10 @@ public class CarryoverDataDaoImplTest {
      */
     private static CarryoverIssueDto createIssue(final int number) {
 
-        final CarryoverItemDto  item   = new CarryoverItemDto("国語", LocalDate.parse("2026-06-18"), true, 8.5, "parsed", "持ち越し",
-            "- [x] 国語2026/06/18（残り時間：8.5分）");
-        final CarryoverIssueDto result = new CarryoverIssueDto(number, "2026年10月06日のタスク", LocalDate.parse("2026-10-06"), "open",
-            Instant.parse("2026-10-06T14:23:08Z"), List.of("持ち越し"), 1, 1, 8.5, List.of(item));
+        final CarryoverItemDto  item   = new CarryoverItemDto("国語", LocalDate.parse("2026-06-18"), true, 8.5, "parsed",
+            "持ち越し", "- [x] 国語2026/06/18（残り時間：8.5分）");
+        final CarryoverIssueDto result = new CarryoverIssueDto(number, "2026年10月06日のタスク", LocalDate.parse("2026-10-06"),
+            "open", Instant.parse("2026-10-06T14:23:08Z"), List.of("持ち越し"), 1, 1, 8.5, List.of(item));
         return result;
 
     }

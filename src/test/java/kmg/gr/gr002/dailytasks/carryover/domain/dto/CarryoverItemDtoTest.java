@@ -28,8 +28,8 @@ public class CarryoverItemDtoTest {
      */
     private static CarryoverItemDto createTarget() {
 
-        final CarryoverItemDto result
-            = new CarryoverItemDto("音楽", LocalDate.parse("2026-08-18"), true, 11.5, "parsed", "持ち越し", "- [x] 音楽2026/08/18（残り時間：11.5分）");
+        final CarryoverItemDto result = new CarryoverItemDto("音楽", LocalDate.parse("2026-08-18"), true, 11.5, "parsed",
+            "持ち越し", "- [x] 音楽2026/08/18（残り時間：11.5分）");
         return result;
 
     }
